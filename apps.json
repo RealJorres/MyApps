@@ -1,0 +1,13 @@
+[
+  {
+    "id": "pdf-to-image",
+    "name": "PDF ↔ Image Converter",
+    "description": "Convert PDF pages to PNG or JPEG images, and combine multiple images into a single PDF.",
+    "port": 5001,
+    "path": "./the-apps/pdf-to-image",
+    "entry": "app.py",
+    "icon": "📄",
+    "color": "#4f46e5",
+    "tags": ["PDF", "Images", "Converter"]
+  }
+]

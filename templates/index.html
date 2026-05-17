@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Library</title>
+  <style>
+    :root {
+      --bg:           #1b2838;
+      --surface:      #16202d;
+      --surface2:     #1d3148;
+      --border:       #2a475e;
+      --accent:       #66c0f4;
+      --accent-dark:  #1b8fc4;
+      --text:         #c6d4df;
+      --muted:        #7a8a97;
+      --green:        #5ba32b;
+      --green-glow:   rgba(91,163,43,0.35);
+      --red:          #c25050;
+      --tag-bg:       #1e3448;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 58px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.75rem;
+      gap: 1.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .logo .glyph {
+      font-size: 1.3rem;
+    }
+    .logo .dim { color: var(--muted); font-weight: 400; }
+
+    .search-box {
+      flex: 1;
+      max-width: 300px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 0.42rem 0.85rem 0.42rem 2rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-box input::placeholder { color: var(--muted); }
+    .search-box input:focus { border-color: var(--accent); }
+    .search-box .search-icon {
+      position: absolute;
+      left: 0.55rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.8rem;
+      pointer-events: none;
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 5px var(--green);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+    .live-label { font-size: 0.75rem; color: var(--muted); }
+
+    /* ── Main ── */
+    main { padding: 1.5rem 1.75rem 3rem; }
+
+    /* ── Filter bar ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.32rem 0.85rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 3px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.12s;
+      font-family: inherit;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d1b26;
+      font-weight: 700;
+    }
+    .app-count {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.1rem;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .card-cover {
+      height: 155px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.45));
+    }
+
+    .card-body { padding: 0.9rem; }
+
+    .card-name {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-desc {
+      font-size: 0.77rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-bottom: 0.6rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.2em;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.75rem;
+    }
+    .tag {
+      font-size: 0.68rem;
+      padding: 0.12rem 0.45rem;
+      background: var(--tag-bg);
+      color: var(--muted);
+      border-radius: 2px;
+      letter-spacing: 0.02em;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding-top: 0.7rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.running { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
+    .status-dot.stopped { background: var(--muted); }
+
+    .status-text {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .status-text.running { color: var(--green); }
+
+    .card-actions { margin-left: auto; display: flex; gap: 0.35rem; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.28rem 0.65rem;
+      border-radius: 3px;
+      border: none;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.12s, background 0.12s;
+      font-family: inherit;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+    .btn-launch { background: var(--accent); color: #0d1b26; }
+    .btn-launch:hover { background: #85d0f8; }
+
+    .btn-open { background: var(--green); color: #fff; }
+    .btn-open:hover { background: #6dc435; }
+
+    .btn-stop {
+      background: transparent;
+      border: 1px solid var(--red);
+      color: #e07070;
+    }
+    .btn-stop:hover { background: rgba(194,80,80,0.18); }
+
+    /* ── Empty state ── */
+    .empty {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 2rem;
+      gap: 0.6rem;
+      color: var(--muted);
+    }
+    .empty .empty-icon { font-size: 2.5rem; }
+    .empty p { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="glyph">⚡</span>
+    App <span class="dim">Library</span>
+  </div>
+
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input id="searchInput" type="text" placeholder="Search apps…" oninput="applyFilters()" />
+  </div>
+
+  <div class="header-right">
+    <span class="live-dot"></span>
+    <span class="live-label">live</span>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <button class="filter-btn active" data-f="all"     onclick="setFilter(this)">All</button>
+    <button class="filter-btn"        data-f="running" onclick="setFilter(this)">Running</button>
+<span class="app-count" id="appCount"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+let allApps = [];
+let activeFilter = 'all';
+
+/* ── colour helpers ── */
+function darken(hex, by = 55) {
+  const n = parseInt(hex.replace('#', ''), 16);
+  const c = v => Math.max(0, v - by).toString(16).padStart(2, '0');
+  return '#' + c(n >> 16) + c((n >> 8) & 0xff) + c(n & 0xff);
+}
+
+/* ── API ── */
+async function fetchApps() {
+  try {
+    const res = await fetch('/api/apps');
+    allApps = await res.json();
+    applyFilters();
+  } catch { /* retry on next tick */ }
+}
+
+function launchApp(url) {
+  window.open(url, '_blank');
+}
+
+async function stopApp(id) {
+  const btn = document.querySelector(`#card-${id} .btn-stop`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Stopping…'; }
+  await fetch(`/api/apps/${id}/stop`, { method: 'POST' });
+  await fetchApps();
+}
+
+/* ── Filters ── */
+function setFilter(el) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = el.dataset.f;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const visible = allApps.filter(a => {
+    if (activeFilter === 'running' && a.status !== 'running') return false;
+    if (activeFilter === 'stopped' && a.status !== 'stopped') return false;
+    if (q) {
+      const hay = [a.name, a.description, ...a.tags].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  renderGrid(visible);
+  document.getElementById('appCount').textContent =
+    `${visible.length} app${visible.length !== 1 ? 's' : ''}`;
+}
+
+/* ── Render ── */
+function renderGrid(apps) {
+  const grid = document.getElementById('grid');
+
+  if (!apps.length) {
+    grid.innerHTML = `
+      <div class="empty">
+        <span class="empty-icon">🔍</span>
+        <p>No apps match your filter.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = apps.map(cardHTML).join('');
+}
+
+function cardHTML(a) {
+  const running = a.status === 'running';
+  const grad = `linear-gradient(140deg, ${darken(a.color)}, ${a.color})`;
+
+  const tags = a.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('');
+
+  const actions = running
+    ? `<a  class="btn btn-open"   href="${a.url}" target="_blank">↗ Open</a>
+       <button class="btn btn-stop"  onclick="stopApp('${esc(a.id)}')">■ Stop</button>`
+    : `<button class="btn btn-launch" onclick="launchApp('${esc(a.url)}')">▶ Launch</button>`;
+
+  return `
+    <div class="card" id="card-${esc(a.id)}">
+      <div class="card-cover" style="background:${grad}">${a.icon}</div>
+      <div class="card-body">
+        <div class="card-name"  title="${esc(a.name)}">${esc(a.name)}</div>
+        <div class="card-desc">${esc(a.description)}</div>
+        <div class="card-tags">${tags}</div>
+        <div class="card-footer">
+          <span class="status-dot ${a.status}"></span>
+          <span class="status-text ${a.status}">${running ? 'Running' : 'Stopped'}</span>
+          <div class="card-actions">${actions}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ── Boot ── */
+fetchApps();
+setInterval(fetchApps, 3000);
+</script>
+</body>
+</html>
