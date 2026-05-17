@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favicon Generator</title>
+<style>
+:root {
+  --primary: #7c3aed; --primary-h: #6d28d9;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.drop-zone { border: 2px dashed var(--border); border-radius: 0.75rem; padding: 3rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: #f5f3ff; }
+.drop-zone input { display: none; }
+.drop-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.drop-text { color: var(--muted); font-size: 0.9rem; }
+.drop-text strong { color: var(--primary); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.sizes-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.size-check { display: flex; align-items: center; gap: 0.35rem; background: var(--bg); border: 1px solid var(--border); border-radius: 0.4rem; padding: 0.35rem 0.6rem; cursor: pointer; font-size: 0.85rem; transition: border-color 0.15s; }
+.size-check:hover { border-color: var(--primary); }
+.size-check input[type=checkbox] { cursor: pointer; accent-color: var(--primary); }
+.format-toggle { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; width: fit-content; }
+.format-btn { padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; background: var(--bg); color: var(--muted); font-family: inherit; transition: all 0.15s; }
+.format-btn.active { background: var(--primary); color: white; }
+.source-preview { display: none; text-align: center; margin-bottom: 1rem; }
+.source-preview img { max-width: 200px; max-height: 200px; border-radius: 0.5rem; border: 1px solid var(--border); }
+.preview-grid { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-top: 1rem; }
+.preview-item { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+.preview-item canvas { border: 1px solid var(--border); border-radius: 0.25rem; image-rendering: pixelated; }
+.preview-item span { font-size: 0.7rem; color: var(--muted); }
+.hidden { display: none; }
+.error-msg { background: var(--error-bg); color: var(--error-fg); border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.875rem; margin-top: 0.75rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Favicon Generator</h1>
+    <p>Generate favicons in all sizes from any image</p>
+  </header>
+
+  <div class="card">
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this.files[0])">
+      <div class="drop-icon">🎨</div>
+      <div class="drop-text"><strong>Click to upload</strong> or drag and drop</div>
+      <div class="drop-text" style="margin-top:0.3rem">PNG, JPG, SVG, or any image format</div>
+    </div>
+    <div class="source-preview" id="sourcePreview">
+      <img id="sourceImg" alt="Source">
+      <div style="color:var(--muted);font-size:0.8rem;margin-top:0.4rem" id="sourceInfo"></div>
+    </div>
+    <div id="errorMsg" class="error-msg hidden"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Sizes to Include</div>
+    <div class="sizes-grid" id="sizesGrid"></div>
+    <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+      <button class="btn btn-ghost" onclick="selectAll(true)" style="padding:0.3rem 0.75rem;font-size:0.78rem">Select All</button>
+      <button class="btn btn-ghost" onclick="selectAll(false)" style="padding:0.3rem 0.75rem;font-size:0.78rem">Deselect All</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Format</div>
+    <div class="format-toggle">
+      <button class="format-btn active" id="fmt-png" onclick="setFormat('png')">PNG</button>
+      <button class="format-btn" id="fmt-ico" onclick="setFormat('ico')">ICO</button>
+    </div>
+  </div>
+
+  <div class="card" id="previewCard" style="display:none">
+    <div class="section-title">Preview</div>
+    <div class="preview-grid" id="previewGrid"></div>
+  </div>
+
+  <div style="text-align:center">
+    <button class="btn btn-primary" onclick="generate()" style="padding:0.75rem 2.5rem;font-size:1rem">
+      ⬇ Generate &amp; Download ZIP
+    </button>
+  </div>
+</div>
+
+<script>
+const SIZES = [16, 32, 48, 64, 96, 128, 180, 192, 256, 512];
+let currentFile = null;
+let selectedFormat = 'png';
+
+// Build size checkboxes
+const sizesGrid = document.getElementById('sizesGrid');
+SIZES.forEach(s => {
+  const label = document.createElement('label');
+  label.className = 'size-check';
+  label.innerHTML = `<input type="checkbox" value="${s}" checked> ${s}×${s}`;
+  sizesGrid.appendChild(label);
+});
+
+function selectAll(v) {
+  document.querySelectorAll('#sizesGrid input').forEach(cb => cb.checked = v);
+  renderPreviews();
+}
+function setFormat(f) {
+  selectedFormat = f;
+  document.getElementById('fmt-png').classList.toggle('active', f === 'png');
+  document.getElementById('fmt-ico').classList.toggle('active', f === 'ico');
+}
+
+function dragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+function dragLeave() { document.getElementById('dropZone').classList.remove('drag-over'); }
+function dropFile(e) { e.preventDefault(); dragLeave(); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }
+
+function handleFile(file) {
+  if (!file) return;
+  currentFile = file;
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById('sourceImg');
+  img.src = url;
+  img.onload = () => {
+    document.getElementById('sourceInfo').textContent = `${img.naturalWidth}×${img.naturalHeight}px — ${(file.size/1024).toFixed(1)} KB`;
+    document.getElementById('sourcePreview').style.display = 'block';
+    renderPreviews();
+  };
+  document.getElementById('errorMsg').classList.add('hidden');
+}
+
+function getSelectedSizes() {
+  return Array.from(document.querySelectorAll('#sizesGrid input:checked')).map(cb => parseInt(cb.value));
+}
+
+function renderPreviews() {
+  if (!currentFile) return;
+  const sizes = getSelectedSizes();
+  const grid = document.getElementById('previewGrid');
+  grid.innerHTML = '';
+  if (!sizes.length) { document.getElementById('previewCard').style.display = 'none'; return; }
+  document.getElementById('previewCard').style.display = '';
+  const sourceImg = document.getElementById('sourceImg');
+  sizes.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'preview-item';
+    const canvas = document.createElement('canvas');
+    const displaySize = Math.min(s, 64);
+    canvas.width = s; canvas.height = s;
+    canvas.style.width = displaySize + 'px'; canvas.style.height = displaySize + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(sourceImg, 0, 0, s, s);
+    const label = document.createElement('span');
+    label.textContent = `${s}×${s}`;
+    item.appendChild(canvas);
+    item.appendChild(label);
+    grid.appendChild(item);
+  });
+}
+
+async function generate() {
+  if (!currentFile) { alert('Please upload an image first.'); return; }
+  const sizes = getSelectedSizes();
+  if (!sizes.length) { alert('Please select at least one size.'); return; }
+  const fd = new FormData();
+  fd.append('file', currentFile);
+  fd.append('format', selectedFormat);
+  fd.append('sizes', sizes.join(','));
+  try {
+    const res = await fetch('api/generate', { method: 'POST', body: fd });
+    if (!res.ok) { const d = await res.json(); throw new Error(d.error || 'Failed'); }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'favicons.zip'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    const msg = document.getElementById('errorMsg');
+    msg.textContent = 'Error: ' + e.message;
+    msg.classList.remove('hidden');
+  }
+}
+
+document.querySelectorAll('#sizesGrid input').forEach(cb => {
+  cb.addEventListener('change', renderPreviews);
+});
+</script>
+</body>
+</html>

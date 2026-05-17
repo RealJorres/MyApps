@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentage Calculator</title>
+<style>
+:root {
+  --primary: #d97706; --primary-h: #b45309;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=number] { padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 1rem; background: #fff; color: var(--text); outline: none; font-family: inherit; width: 140px; }
+input:focus { border-color: var(--primary); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.calc-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; font-size: 1rem; font-weight: 500; }
+.op-text { font-size: 1rem; color: var(--muted); padding: 0 0.2rem; white-space: nowrap; }
+.result-box { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; padding: 0.85rem 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; }
+.result-eq { font-size: 0.9rem; color: var(--muted); }
+.result-num { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+.result-num.increase { color: #16a34a; }
+.result-num.decrease { color: #dc2626; }
+.result-num.neutral { color: var(--text); }
+.result-badge { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 0.25rem; }
+.badge-up { background: var(--success-bg); color: var(--success-fg); }
+.badge-down { background: var(--error-bg); color: #dc2626; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Percentage Calculator</h1>
+    <p>Three modes for every percentage calculation you need</p>
+  </header>
+
+  <!-- Mode 1 -->
+  <div class="card">
+    <div class="section-title">Mode 1 — What is X% of Y?</div>
+    <div class="calc-row">
+      <span class="op-text">What is</span>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <label style="margin-bottom:0.2rem">Percent</label>
+        <input type="number" id="m1x" value="20" step="any" oninput="calc1()">
+      </div>
+      <span class="op-text">% of</span>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <label style="margin-bottom:0.2rem">Value</label>
+        <input type="number" id="m1y" value="150" step="any" oninput="calc1()">
+      </div>
+      <span class="op-text">?</span>
+    </div>
+    <div class="result-box">
+      <span class="result-eq" id="m1eq">20% of 150 =</span>
+      <span class="result-num" id="m1result">30</span>
+      <button class="btn btn-ghost btn-sm" onclick="copyResult('m1result')">Copy</button>
+    </div>
+  </div>
+
+  <!-- Mode 2 -->
+  <div class="card">
+    <div class="section-title">Mode 2 — X is what % of Y?</div>
+    <div class="calc-row">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <label style="margin-bottom:0.2rem">Value X</label>
+        <input type="number" id="m2x" value="45" step="any" oninput="calc2()">
+      </div>
+      <span class="op-text">is what % of</span>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <label style="margin-bottom:0.2rem">Value Y</label>
+        <input type="number" id="m2y" value="180" step="any" oninput="calc2()">
+      </div>
+      <span class="op-text">?</span>
+    </div>
+    <div class="result-box">
+      <span class="result-eq" id="m2eq">45 is what % of 180 =</span>
+      <span class="result-num" id="m2result">25%</span>
+      <button class="btn btn-ghost btn-sm" onclick="copyResult('m2result')">Copy</button>
+    </div>
+  </div>
+
+  <!-- Mode 3 -->
+  <div class="card">
+    <div class="section-title">Mode 3 — % Change from X to Y</div>
+    <div class="calc-row">
+      <span class="op-text">From</span>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <label style="margin-bottom:0.2rem">Original (X)</label>
+        <input type="number" id="m3x" value="80" step="any" oninput="calc3()">
+      </div>
+      <span class="op-text">to</span>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <label style="margin-bottom:0.2rem">New Value (Y)</label>
+        <input type="number" id="m3y" value="100" step="any" oninput="calc3()">
+      </div>
+    </div>
+    <div class="result-box">
+      <span class="result-eq" id="m3eq">Change from 80 to 100 =</span>
+      <span class="result-num increase" id="m3result">+25%</span>
+      <span class="result-badge badge-up" id="m3badge">Increase</span>
+      <button class="btn btn-ghost btn-sm" onclick="copyResult('m3result')">Copy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function round(n) { return Math.round(n * 10000) / 10000; }
+
+function calc1() {
+  const x = parseFloat(document.getElementById('m1x').value);
+  const y = parseFloat(document.getElementById('m1y').value);
+  if (isNaN(x) || isNaN(y)) return;
+  const result = x / 100 * y;
+  document.getElementById('m1eq').textContent = `${x}% of ${y} =`;
+  document.getElementById('m1result').textContent = round(result);
+}
+
+function calc2() {
+  const x = parseFloat(document.getElementById('m2x').value);
+  const y = parseFloat(document.getElementById('m2y').value);
+  if (isNaN(x) || isNaN(y) || y === 0) {
+    document.getElementById('m2result').textContent = y === 0 ? 'Undefined' : '—';
+    return;
+  }
+  const result = x / y * 100;
+  document.getElementById('m2eq').textContent = `${x} is what % of ${y} =`;
+  document.getElementById('m2result').textContent = round(result) + '%';
+}
+
+function calc3() {
+  const x = parseFloat(document.getElementById('m3x').value);
+  const y = parseFloat(document.getElementById('m3y').value);
+  if (isNaN(x) || isNaN(y) || x === 0) {
+    document.getElementById('m3result').textContent = x === 0 ? 'Undefined' : '—';
+    return;
+  }
+  const pct = (y - x) / Math.abs(x) * 100;
+  const rEl = document.getElementById('m3result');
+  const bEl = document.getElementById('m3badge');
+  document.getElementById('m3eq').textContent = `Change from ${x} to ${y} =`;
+  if (pct > 0) {
+    rEl.textContent = '+' + round(pct) + '%';
+    rEl.className = 'result-num increase';
+    bEl.textContent = 'Increase';
+    bEl.className = 'result-badge badge-up';
+  } else if (pct < 0) {
+    rEl.textContent = round(pct) + '%';
+    rEl.className = 'result-num decrease';
+    bEl.textContent = 'Decrease';
+    bEl.className = 'result-badge badge-down';
+  } else {
+    rEl.textContent = '0%';
+    rEl.className = 'result-num neutral';
+    bEl.textContent = 'No Change';
+    bEl.className = 'result-badge';
+  }
+}
+
+function copyResult(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById(id);
+    const orig = el.textContent;
+    el.style.opacity = '0.6';
+    setTimeout(() => { el.style.opacity = '1'; }, 600);
+  });
+}
+
+calc1(); calc2(); calc3();
+</script>
+</body>
+</html>

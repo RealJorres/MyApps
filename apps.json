@@ -3,240 +3,238 @@
     "id": "pdf-to-image",
     "name": "PDF ↔ Image Converter",
     "description": "Convert PDF pages to PNG or JPEG images, and combine multiple images into a single PDF.",
-    "port": 5001,
-    "path": "./the-apps/pdf-to-image",
-    "entry": "app.py",
-    "icon": "📄",
-    "color": "#4f46e5",
-    "tags": ["PDF", "Images", "Converter"],
-    "category": "Document / File"
+    "port": 5001, "path": "./the-apps/pdf-to-image", "entry": "app.py",
+    "icon": "📄", "color": "#4f46e5", "tags": ["PDF", "Images", "Converter"], "category": "Document / File"
   },
   {
     "id": "image-tools",
     "name": "Image Tools",
     "description": "Resize, compress, and convert images between PNG, JPEG, WEBP, and BMP.",
-    "port": 5002,
-    "path": "./the-apps/image-tools",
-    "entry": "app.py",
-    "icon": "🖼️",
-    "color": "#0891b2",
-    "tags": ["Images", "Resize", "Convert"],
-    "category": "Document / File"
+    "port": 5002, "path": "./the-apps/image-tools", "entry": "app.py",
+    "icon": "🖼️", "color": "#0891b2", "tags": ["Images", "Resize", "Convert"], "category": "Document / File"
   },
   {
     "id": "qr-generator",
     "name": "QR Code Generator",
     "description": "Generate QR codes for URLs, text, or anything. Download as PNG.",
-    "port": 5003,
-    "path": "./the-apps/qr-generator",
-    "entry": "app.py",
-    "icon": "▦",
-    "color": "#1d4ed8",
-    "tags": ["QR", "Generator"],
-    "category": "Document / File"
+    "port": 5003, "path": "./the-apps/qr-generator", "entry": "app.py",
+    "icon": "▦", "color": "#1d4ed8", "tags": ["QR", "Generator"], "category": "Document / File"
   },
   {
     "id": "csv-viewer",
     "name": "CSV / Excel Viewer",
     "description": "Upload and browse CSV or Excel files as a searchable, paginated table.",
-    "port": 5004,
-    "path": "./the-apps/csv-viewer",
-    "entry": "app.py",
-    "icon": "📊",
-    "color": "#059669",
-    "tags": ["CSV", "Excel", "Data"],
-    "category": "Document / File"
+    "port": 5004, "path": "./the-apps/csv-viewer", "entry": "app.py",
+    "icon": "📊", "color": "#059669", "tags": ["CSV", "Excel", "Data"], "category": "Document / File"
   },
   {
     "id": "text-diff",
     "name": "Text Diff",
     "description": "Compare two blocks of text side-by-side with highlighted added and removed lines.",
-    "port": 5016,
-    "path": "./the-apps/text-diff",
-    "entry": "app.py",
-    "icon": "⇄",
-    "color": "#4f46e5",
-    "tags": ["Diff", "Compare", "Text"],
-    "category": "Document / File"
+    "port": 5016, "path": "./the-apps/text-diff", "entry": "app.py",
+    "icon": "⇄", "color": "#4f46e5", "tags": ["Diff", "Compare", "Text"], "category": "Document / File"
   },
   {
     "id": "base64-tool",
     "name": "Base64 Tool",
     "description": "Encode and decode text or files to and from Base64.",
-    "port": 5017,
-    "path": "./the-apps/base64-tool",
-    "entry": "app.py",
-    "icon": "64",
-    "color": "#c2410c",
-    "tags": ["Base64", "Encode", "Decode"],
-    "category": "Document / File"
+    "port": 5017, "path": "./the-apps/base64-tool", "entry": "app.py",
+    "icon": "64", "color": "#c2410c", "tags": ["Base64", "Encode", "Decode"], "category": "Document / File"
+  },
+  {
+    "id": "invoice-generator",
+    "name": "Invoice Generator",
+    "description": "Fill in your business details and line items, then download a clean PDF invoice.",
+    "port": 5021, "path": "./the-apps/invoice-generator", "entry": "app.py",
+    "icon": "🧾", "color": "#0f766e", "tags": ["Invoice", "PDF", "Finance"], "category": "Document / File"
+  },
+  {
+    "id": "exif-viewer",
+    "name": "EXIF Viewer",
+    "description": "Upload a photo to view its embedded metadata: camera, exposure, GPS, and more.",
+    "port": 5022, "path": "./the-apps/exif-viewer", "entry": "app.py",
+    "icon": "📷", "color": "#0891b2", "tags": ["EXIF", "Metadata", "Images"], "category": "Document / File"
+  },
+  {
+    "id": "favicon-generator",
+    "name": "Favicon Generator",
+    "description": "Upload any image and download a ZIP of all standard favicon sizes.",
+    "port": 5023, "path": "./the-apps/favicon-generator", "entry": "app.py",
+    "icon": "⭐", "color": "#7c3aed", "tags": ["Favicon", "Icons", "Images"], "category": "Document / File"
   },
   {
     "id": "json-formatter",
     "name": "JSON Formatter",
     "description": "Prettify, minify, and validate JSON. Spot errors instantly.",
-    "port": 5005,
-    "path": "./the-apps/json-formatter",
-    "entry": "app.py",
-    "icon": "{ }",
-    "color": "#d97706",
-    "tags": ["JSON", "Formatter", "Dev"],
-    "category": "Developer Utilities"
+    "port": 5005, "path": "./the-apps/json-formatter", "entry": "app.py",
+    "icon": "{ }", "color": "#d97706", "tags": ["JSON", "Formatter", "Dev"], "category": "Developer Utilities"
   },
   {
     "id": "hash-generator",
     "name": "Hash Generator",
     "description": "Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text or uploaded files.",
-    "port": 5006,
-    "path": "./the-apps/hash-generator",
-    "entry": "app.py",
-    "icon": "#",
-    "color": "#7c3aed",
-    "tags": ["Hash", "Security", "Dev"],
-    "category": "Developer Utilities"
+    "port": 5006, "path": "./the-apps/hash-generator", "entry": "app.py",
+    "icon": "#", "color": "#7c3aed", "tags": ["Hash", "Security", "Dev"], "category": "Developer Utilities"
   },
   {
     "id": "regex-tester",
     "name": "Regex Tester",
     "description": "Test Python regular expressions with live match highlighting and group capture.",
-    "port": 5007,
-    "path": "./the-apps/regex-tester",
-    "entry": "app.py",
-    "icon": ".*",
-    "color": "#be185d",
-    "tags": ["Regex", "Dev", "Python"],
-    "category": "Developer Utilities"
+    "port": 5007, "path": "./the-apps/regex-tester", "entry": "app.py",
+    "icon": ".*", "color": "#be185d", "tags": ["Regex", "Dev", "Python"], "category": "Developer Utilities"
   },
   {
     "id": "color-picker",
     "name": "Color Picker",
     "description": "Pick colors and convert between HEX, RGB, and HSL. Generate tints and shades.",
-    "port": 5011,
-    "path": "./the-apps/color-picker",
-    "entry": "app.py",
-    "icon": "🎨",
-    "color": "#7c3aed",
-    "tags": ["Color", "Design", "Dev"],
-    "category": "Developer Utilities"
+    "port": 5011, "path": "./the-apps/color-picker", "entry": "app.py",
+    "icon": "🎨", "color": "#7c3aed", "tags": ["Color", "Design", "Dev"], "category": "Developer Utilities"
   },
   {
     "id": "jwt-decoder",
     "name": "JWT Decoder",
     "description": "Paste a JWT to decode the header and payload. Shows expiry status instantly.",
-    "port": 5012,
-    "path": "./the-apps/jwt-decoder",
-    "entry": "app.py",
-    "icon": "🔓",
-    "color": "#0891b2",
-    "tags": ["JWT", "Auth", "Dev"],
-    "category": "Developer Utilities"
+    "port": 5012, "path": "./the-apps/jwt-decoder", "entry": "app.py",
+    "icon": "🔓", "color": "#0891b2", "tags": ["JWT", "Auth", "Dev"], "category": "Developer Utilities"
   },
   {
     "id": "timestamp-converter",
     "name": "Timestamp Converter",
     "description": "Convert Unix timestamps to human-readable dates and back, with a live clock.",
-    "port": 5013,
-    "path": "./the-apps/timestamp-converter",
-    "entry": "app.py",
-    "icon": "⏱",
-    "color": "#d97706",
-    "tags": ["Timestamp", "Date", "Dev"],
-    "category": "Developer Utilities"
+    "port": 5013, "path": "./the-apps/timestamp-converter", "entry": "app.py",
+    "icon": "⏱", "color": "#d97706", "tags": ["Timestamp", "Date", "Dev"], "category": "Developer Utilities"
   },
   {
     "id": "base-converter",
     "name": "Number Base Converter",
     "description": "Convert numbers between binary, octal, decimal, and hexadecimal in real time.",
-    "port": 5014,
-    "path": "./the-apps/base-converter",
-    "entry": "app.py",
-    "icon": "01",
-    "color": "#059669",
-    "tags": ["Binary", "Hex", "Dev"],
-    "category": "Developer Utilities"
+    "port": 5014, "path": "./the-apps/base-converter", "entry": "app.py",
+    "icon": "01", "color": "#059669", "tags": ["Binary", "Hex", "Dev"], "category": "Developer Utilities"
   },
   {
     "id": "url-parser",
     "name": "URL Parser",
     "description": "Parse URLs into components, encode/decode query strings, and build URLs visually.",
-    "port": 5015,
-    "path": "./the-apps/url-parser",
-    "entry": "app.py",
-    "icon": "🔗",
-    "color": "#be185d",
-    "tags": ["URL", "Encode", "Dev"],
-    "category": "Developer Utilities"
+    "port": 5015, "path": "./the-apps/url-parser", "entry": "app.py",
+    "icon": "🔗", "color": "#be185d", "tags": ["URL", "Encode", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "uuid-generator",
+    "name": "UUID Generator",
+    "description": "Generate UUID v4 or v1 in bulk. Copy individually or all at once.",
+    "port": 5024, "path": "./the-apps/uuid-generator", "entry": "app.py",
+    "icon": "⬡", "color": "#d97706", "tags": ["UUID", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "cron-builder",
+    "name": "Cron Builder",
+    "description": "Build cron expressions visually with a human-readable description and next run times.",
+    "port": 5025, "path": "./the-apps/cron-builder", "entry": "app.py",
+    "icon": "⏰", "color": "#be185d", "tags": ["Cron", "Scheduler", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "html-entity-encoder",
+    "name": "HTML Entity Encoder",
+    "description": "Encode and decode HTML entities. Includes a common entities reference table.",
+    "port": 5026, "path": "./the-apps/html-entity-encoder", "entry": "app.py",
+    "icon": "&amp;", "color": "#059669", "tags": ["HTML", "Encode", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "chmod-calculator",
+    "name": "Chmod Calculator",
+    "description": "Click permissions for owner, group, and others — see the octal and chmod command live.",
+    "port": 5027, "path": "./the-apps/chmod-calculator", "entry": "app.py",
+    "icon": "🔐", "color": "#1d4ed8", "tags": ["chmod", "Linux", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "sql-formatter",
+    "name": "SQL Formatter",
+    "description": "Prettify and minify SQL queries with configurable indentation and keyword case.",
+    "port": 5028, "path": "./the-apps/sql-formatter", "entry": "app.py",
+    "icon": "🗄", "color": "#c2410c", "tags": ["SQL", "Formatter", "Dev"], "category": "Developer Utilities"
   },
   {
     "id": "markdown-editor",
     "name": "Markdown Editor",
     "description": "Write Markdown with a live preview side-by-side. Download as HTML.",
-    "port": 5008,
-    "path": "./the-apps/markdown-editor",
-    "entry": "app.py",
-    "icon": "M↓",
-    "color": "#0f766e",
-    "tags": ["Markdown", "Editor", "Writing"],
-    "category": "Text / Productivity"
+    "port": 5008, "path": "./the-apps/markdown-editor", "entry": "app.py",
+    "icon": "M↓", "color": "#0f766e", "tags": ["Markdown", "Editor", "Writing"], "category": "Text / Productivity"
   },
   {
     "id": "word-counter",
     "name": "Word Counter",
     "description": "Count words, characters, sentences and get reading time and word frequency stats.",
-    "port": 5009,
-    "path": "./the-apps/word-counter",
-    "entry": "app.py",
-    "icon": "Aa",
-    "color": "#c2410c",
-    "tags": ["Text", "Writing", "Stats"],
-    "category": "Text / Productivity"
+    "port": 5009, "path": "./the-apps/word-counter", "entry": "app.py",
+    "icon": "Aa", "color": "#c2410c", "tags": ["Text", "Writing", "Stats"], "category": "Text / Productivity"
   },
   {
     "id": "password-generator",
     "name": "Password Generator",
     "description": "Generate secure passwords with configurable length and character sets.",
-    "port": 5010,
-    "path": "./the-apps/password-generator",
-    "entry": "app.py",
-    "icon": "🔑",
-    "color": "#15803d",
-    "tags": ["Password", "Security"],
-    "category": "Text / Productivity"
+    "port": 5010, "path": "./the-apps/password-generator", "entry": "app.py",
+    "icon": "🔑", "color": "#15803d", "tags": ["Password", "Security"], "category": "Text / Productivity"
   },
   {
     "id": "unit-converter",
     "name": "Unit Converter",
     "description": "Convert length, weight, temperature, volume, area, speed, and time units.",
-    "port": 5018,
-    "path": "./the-apps/unit-converter",
-    "entry": "app.py",
-    "icon": "⇆",
-    "color": "#15803d",
-    "tags": ["Units", "Convert", "Math"],
-    "category": "Text / Productivity"
+    "port": 5018, "path": "./the-apps/unit-converter", "entry": "app.py",
+    "icon": "⇆", "color": "#15803d", "tags": ["Units", "Convert", "Math"], "category": "Text / Productivity"
   },
   {
     "id": "lorem-ipsum",
     "name": "Lorem Ipsum Generator",
     "description": "Generate placeholder text by paragraphs, sentences, or words. Copy or download.",
-    "port": 5019,
-    "path": "./the-apps/lorem-ipsum",
-    "entry": "app.py",
-    "icon": "¶",
-    "color": "#6d28d9",
-    "tags": ["Lorem", "Placeholder", "Text"],
-    "category": "Text / Productivity"
+    "port": 5019, "path": "./the-apps/lorem-ipsum", "entry": "app.py",
+    "icon": "¶", "color": "#6d28d9", "tags": ["Lorem", "Placeholder", "Text"], "category": "Text / Productivity"
   },
   {
     "id": "notepad",
     "name": "Notepad",
     "description": "A simple persistent scratchpad. Auto-saves to your browser as you type.",
-    "port": 5020,
-    "path": "./the-apps/notepad",
-    "entry": "app.py",
-    "icon": "📝",
-    "color": "#1d4ed8",
-    "tags": ["Notes", "Productivity"],
-    "category": "Text / Productivity"
+    "port": 5020, "path": "./the-apps/notepad", "entry": "app.py",
+    "icon": "📝", "color": "#1d4ed8", "tags": ["Notes", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "pomodoro-timer",
+    "name": "Pomodoro Timer",
+    "description": "Focus timer with 25/5 work and break cycles, session counter, and configurable durations.",
+    "port": 5029, "path": "./the-apps/pomodoro-timer", "entry": "app.py",
+    "icon": "🍅", "color": "#dc2626", "tags": ["Timer", "Focus", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "flashcards",
+    "name": "Flashcards",
+    "description": "Create decks and study with flip-card UI. Tracks your score. Saved in browser.",
+    "port": 5030, "path": "./the-apps/flashcards", "entry": "app.py",
+    "icon": "🃏", "color": "#7c3aed", "tags": ["Study", "Flashcards", "Learning"], "category": "Text / Productivity"
+  },
+  {
+    "id": "countdown-timer",
+    "name": "Countdown Timer",
+    "description": "Set a target date and watch the days, hours, minutes, and seconds count down.",
+    "port": 5031, "path": "./the-apps/countdown-timer", "entry": "app.py",
+    "icon": "⏳", "color": "#0f766e", "tags": ["Countdown", "Timer", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "loan-calculator",
+    "name": "Loan Calculator",
+    "description": "Calculate monthly payments, total interest, and view a full amortization schedule.",
+    "port": 5032, "path": "./the-apps/loan-calculator", "entry": "app.py",
+    "icon": "🏦", "color": "#1d4ed8", "tags": ["Loan", "Finance", "Math"], "category": "Finance / Math"
+  },
+  {
+    "id": "tip-calculator",
+    "name": "Tip Calculator",
+    "description": "Enter the bill, pick a tip percentage, split by number of people — done.",
+    "port": 5033, "path": "./the-apps/tip-calculator", "entry": "app.py",
+    "icon": "💰", "color": "#059669", "tags": ["Tip", "Finance", "Math"], "category": "Finance / Math"
+  },
+  {
+    "id": "percentage-calculator",
+    "name": "Percentage Calculator",
+    "description": "Three modes: X% of Y, X is what % of Y, and percentage change from X to Y.",
+    "port": 5034, "path": "./the-apps/percentage-calculator", "entry": "app.py",
+    "icon": "%", "color": "#d97706", "tags": ["Percentage", "Math"], "category": "Finance / Math"
   }
 ]

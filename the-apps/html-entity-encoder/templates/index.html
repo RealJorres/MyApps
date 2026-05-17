@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Entity Encoder</title>
+<style>
+:root {
+  --primary: #059669; --primary-h: #047857;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 960px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: 'Courier New', monospace; resize: vertical; min-height: 220px; line-height: 1.5; }
+textarea:focus { border-color: var(--primary); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.main-layout { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+.textarea-wrapper { display: flex; flex-direction: column; gap: 0.5rem; }
+.textarea-header { display: flex; justify-content: space-between; align-items: center; }
+.textarea-header label { margin-bottom: 0; }
+.char-count { font-size: 0.75rem; color: var(--muted); }
+.middle-btns { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center; padding-top: 2.5rem; }
+.ref-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.ref-table th { text-align: left; padding: 0.4rem 0.75rem; background: var(--bg); font-size: 0.75rem; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.ref-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); font-family: inherit; }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table .sym { font-size: 1.1rem; text-align: center; }
+.ref-table .name { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--primary); }
+.ref-table .num { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--muted); }
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>HTML Entity Encoder</h1>
+    <p>Encode and decode HTML entities instantly</p>
+  </header>
+
+  <div class="card">
+    <div class="main-layout">
+      <div class="textarea-wrapper">
+        <div class="textarea-header">
+          <label>Raw HTML / Text</label>
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span class="char-count" id="leftCount">0 chars</span>
+            <button class="btn btn-ghost btn-sm" onclick="copyLeft()">Copy</button>
+          </div>
+        </div>
+        <textarea id="rawInput" placeholder="Paste your HTML or text here...&#10;&#10;Example:&#10;&lt;div class=&quot;hello&quot;&gt;Hello &amp; welcome!&lt;/div&gt;" oninput="updateCounts()"></textarea>
+      </div>
+      <div class="middle-btns">
+        <button class="btn btn-primary" onclick="encode()" title="Encode raw to entities">Encode →</button>
+        <button class="btn btn-ghost" onclick="decode()" title="Decode entities to raw">← Decode</button>
+      </div>
+      <div class="textarea-wrapper">
+        <div class="textarea-header">
+          <label>Encoded HTML</label>
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span class="char-count" id="rightCount">0 chars</span>
+            <button class="btn btn-ghost btn-sm" onclick="copyRight()">Copy</button>
+          </div>
+        </div>
+        <textarea id="encodedOutput" placeholder="Encoded entities will appear here...&#10;&#10;Example:&#10;&amp;lt;div class=&amp;quot;hello&amp;quot;&amp;gt;Hello &amp;amp; welcome!&amp;lt;/div&amp;gt;" oninput="updateCounts()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Common HTML Entities Reference</div>
+    <table class="ref-table">
+      <thead><tr><th>Symbol</th><th>Name</th><th>Numeric</th><th>Description</th><th>Symbol</th><th>Name</th><th>Numeric</th><th>Description</th></tr></thead>
+      <tbody id="refBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const ENTITIES = [
+  ['&', '&amp;', '&#38;', 'Ampersand'],
+  ['<', '&lt;', '&#60;', 'Less than'],
+  ['>', '&gt;', '&#62;', 'Greater than'],
+  ['"', '&quot;', '&#34;', 'Double quote'],
+  ["'", '&apos;', '&#39;', 'Apostrophe'],
+  ['©', '&copy;', '&#169;', 'Copyright'],
+  ['®', '&reg;', '&#174;', 'Registered'],
+  ['™', '&trade;', '&#8482;', 'Trademark'],
+  ['€', '&euro;', '&#8364;', 'Euro'],
+  ['£', '&pound;', '&#163;', 'Pound'],
+  ['¥', '&yen;', '&#165;', 'Yen'],
+  ['¢', '&cent;', '&#162;', 'Cent'],
+  ['°', '&deg;', '&#176;', 'Degree'],
+  ['±', '&plusmn;', '&#177;', 'Plus-minus'],
+  ['×', '&times;', '&#215;', 'Multiply'],
+  ['÷', '&divide;', '&#247;', 'Divide'],
+  ['→', '&rarr;', '&#8594;', 'Right arrow'],
+  ['←', '&larr;', '&#8592;', 'Left arrow'],
+  ['↑', '&uarr;', '&#8593;', 'Up arrow'],
+  ['↓', '&darr;', '&#8595;', 'Down arrow'],
+];
+
+function buildRef() {
+  const tbody = document.getElementById('refBody');
+  for (let i = 0; i < ENTITIES.length; i += 2) {
+    const tr = document.createElement('tr');
+    const pair = [ENTITIES[i], ENTITIES[i+1] || null];
+    pair.forEach(e => {
+      if (!e) { tr.innerHTML += '<td></td><td></td><td></td><td></td>'; return; }
+      tr.innerHTML += `<td class="sym">${e[0]}</td><td class="name">${e[1]}</td><td class="num">${e[2]}</td><td style="font-size:0.8rem;color:var(--muted)">${e[3]}</td>`;
+    });
+    tbody.appendChild(tr);
+  }
+}
+
+function encode() {
+  const raw = document.getElementById('rawInput').value;
+  const encoded = raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/[^\x00-\x7E]/g, c => `&#${c.charCodeAt(0)};`);
+  document.getElementById('encodedOutput').value = encoded;
+  updateCounts();
+}
+
+function decode() {
+  const encoded = document.getElementById('encodedOutput').value;
+  const el = document.createElement('textarea');
+  el.innerHTML = encoded;
+  document.getElementById('rawInput').value = el.value;
+  updateCounts();
+}
+
+function updateCounts() {
+  document.getElementById('leftCount').textContent = document.getElementById('rawInput').value.length + ' chars';
+  document.getElementById('rightCount').textContent = document.getElementById('encodedOutput').value.length + ' chars';
+}
+
+function copyLeft() {
+  navigator.clipboard.writeText(document.getElementById('rawInput').value).then(() => alert('Copied!'));
+}
+function copyRight() {
+  navigator.clipboard.writeText(document.getElementById('encodedOutput').value).then(() => alert('Copied!'));
+}
+
+buildRef();
+</script>
+</body>
+</html>

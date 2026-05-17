@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown Timer</title>
+<style>
+:root {
+  --primary: #0f766e; --primary-h: #0d6b63;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; } .btn-danger:hover { background: #fee2e2; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=text], input[type=datetime-local] { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus { border-color: var(--primary); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.add-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.75rem; align-items: flex-end; }
+.timer-card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 0.75rem; }
+.timer-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
+.countdown-blocks { display: flex; gap: 0.75rem; }
+.block { background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.75rem 1rem; text-align: center; min-width: 72px; flex: 1; }
+.block-num { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; font-variant-numeric: tabular-nums; }
+.block-label { font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-top: 0.25rem; letter-spacing: 0.05em; }
+.done-badge { background: var(--success-bg); color: var(--success-fg); border: 1px solid #bbf7d0; border-radius: 0.5rem; padding: 0.75rem 1rem; text-align: center; font-weight: 700; font-size: 1.1rem; }
+.target-date { font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; }
+.empty-msg { text-align: center; color: var(--muted); font-style: italic; padding: 1.5rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Countdown Timer</h1>
+    <p>Track multiple events with live countdowns</p>
+  </header>
+
+  <div class="card">
+    <div class="section-title">Add New Timer</div>
+    <div class="add-form">
+      <div>
+        <label>Event Title</label>
+        <input type="text" id="eventTitle" placeholder="My Event" onkeydown="if(event.key==='Enter')addTimer()">
+      </div>
+      <div>
+        <label>Target Date &amp; Time</label>
+        <input type="datetime-local" id="eventDate">
+      </div>
+      <div>
+        <button class="btn btn-primary" onclick="addTimer()" style="white-space:nowrap">+ Add Timer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="timerList"></div>
+</div>
+
+<script>
+let timers = [];
+let ticker = null;
+
+function loadTimers() {
+  const s = localStorage.getItem('countdown_timers');
+  if (s) { try { timers = JSON.parse(s); } catch(e) { timers = []; } }
+}
+function saveTimers() { localStorage.setItem('countdown_timers', JSON.stringify(timers)); }
+
+function addTimer() {
+  const title = document.getElementById('eventTitle').value.trim() || 'Event';
+  const date = document.getElementById('eventDate').value;
+  if (!date) { alert('Please select a date and time.'); return; }
+  timers.push({ id: 'timer_' + Date.now(), title, target: new Date(date).getTime() });
+  saveTimers();
+  document.getElementById('eventTitle').value = '';
+  renderTimers();
+}
+
+function removeTimer(id) {
+  timers = timers.filter(t => t.id !== id);
+  saveTimers();
+  renderTimers();
+}
+
+function getCountdown(target) {
+  const diff = target - Date.now();
+  if (diff <= 0) return null;
+  const total = Math.floor(diff / 1000);
+  const s = total % 60;
+  const m = Math.floor(total / 60) % 60;
+  const h = Math.floor(total / 3600) % 24;
+  const d = Math.floor(total / 86400);
+  return { d, h, m, s };
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function renderTimers() {
+  const container = document.getElementById('timerList');
+  if (!timers.length) {
+    container.innerHTML = '<div class="card"><div class="empty-msg">No timers yet. Add one above!</div></div>';
+    return;
+  }
+  container.innerHTML = timers.map(t => {
+    const cd = getCountdown(t.target);
+    const targetStr = new Date(t.target).toLocaleString();
+    return `<div class="timer-card" id="tc-${t.id}">
+      <div class="timer-title">
+        <span>${esc(t.title)}</span>
+        <button class="btn btn-danger" style="padding:0.3rem 0.6rem;font-size:0.78rem" onclick="removeTimer('${t.id}')">✕ Remove</button>
+      </div>
+      ${cd ? `
+        <div class="countdown-blocks" id="blocks-${t.id}">
+          <div class="block"><div class="block-num" id="d-${t.id}">${cd.d}</div><div class="block-label">Days</div></div>
+          <div class="block"><div class="block-num" id="h-${t.id}">${pad(cd.h)}</div><div class="block-label">Hours</div></div>
+          <div class="block"><div class="block-num" id="m-${t.id}">${pad(cd.m)}</div><div class="block-label">Minutes</div></div>
+          <div class="block"><div class="block-num" id="s-${t.id}">${pad(cd.s)}</div><div class="block-label">Seconds</div></div>
+        </div>
+      ` : `<div class="done-badge">🎉 Time's up!</div>`}
+      <div class="target-date">Target: ${targetStr}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateTimers() {
+  timers.forEach(t => {
+    const cd = getCountdown(t.target);
+    const dEl = document.getElementById('d-' + t.id);
+    if (dEl && cd) {
+      document.getElementById('d-' + t.id).textContent = cd.d;
+      document.getElementById('h-' + t.id).textContent = pad(cd.h);
+      document.getElementById('m-' + t.id).textContent = pad(cd.m);
+      document.getElementById('s-' + t.id).textContent = pad(cd.s);
+    } else if (!cd) {
+      const tc = document.getElementById('tc-' + t.id);
+      if (tc) {
+        const blocks = document.getElementById('blocks-' + t.id);
+        if (blocks) blocks.innerHTML = '<div class="done-badge" style="width:100%">🎉 Time\'s up!</div>';
+      }
+    }
+  });
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Set default datetime (tomorrow)
+const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(12, 0, 0, 0);
+document.getElementById('eventDate').value = tomorrow.toISOString().slice(0, 16);
+
+loadTimers();
+if (!timers.length) {
+  const ny = new Date(new Date().getFullYear() + 1, 0, 1);
+  timers.push({ id: 'timer_demo', title: 'New Year', target: ny.getTime() });
+  saveTimers();
+}
+renderTimers();
+setInterval(updateTimers, 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXIF Viewer</title>
+<style>
+:root {
+  --primary: #0891b2; --primary-h: #0e7490;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.drop-zone { border: 2px dashed var(--border); border-radius: 0.75rem; padding: 3rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: #ecfeff; }
+.drop-zone input { display: none; }
+.drop-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.drop-text { color: var(--muted); font-size: 0.9rem; }
+.drop-text strong { color: var(--primary); }
+.preview-row { display: flex; gap: 1.5rem; align-items: flex-start; }
+.thumb { width: 160px; height: 160px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border); flex-shrink: 0; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem; flex: 1; }
+.info-item { display: flex; flex-direction: column; }
+.info-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+.info-value { font-size: 0.95rem; font-weight: 600; margin-top: 0.1rem; }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.exif-table { width: 100%; border-collapse: collapse; }
+.exif-table tr:nth-child(even) { background: #f8fafc; }
+.exif-table td { padding: 0.4rem 0.6rem; font-size: 0.83rem; vertical-align: top; }
+.exif-table td:first-child { font-weight: 600; color: var(--muted); width: 40%; white-space: nowrap; }
+.exif-table td:last-child { word-break: break-all; }
+.group-label { font-size: 0.75rem; font-weight: 700; color: var(--primary); background: #ecfeff; padding: 0.3rem 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; }
+details summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; padding: 0.4rem 0; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+details summary::before { content: '▶'; font-size: 0.65rem; color: var(--muted); transition: transform 0.2s; }
+details[open] summary::before { transform: rotate(90deg); }
+.no-exif { color: var(--muted); font-style: italic; font-size: 0.9rem; padding: 1rem 0; }
+.error-msg { background: var(--error-bg); color: var(--error-fg); border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.875rem; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>EXIF Viewer</h1>
+    <p>Extract and inspect metadata from your images</p>
+  </header>
+
+  <div class="card">
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/tiff,image/heic,image/*" onchange="handleFile(this.files[0])">
+      <div class="drop-icon">🖼️</div>
+      <div class="drop-text"><strong>Click to upload</strong> or drag and drop</div>
+      <div class="drop-text" style="margin-top:0.3rem">JPG, PNG, TIFF, HEIC supported</div>
+    </div>
+  </div>
+
+  <div id="results" class="hidden">
+    <!-- Image info -->
+    <div class="card" id="infoCard">
+      <div class="section-title">Image Info</div>
+      <div class="preview-row">
+        <img id="thumb" class="thumb" alt="Preview">
+        <div class="info-grid" id="infoGrid"></div>
+      </div>
+    </div>
+
+    <!-- EXIF Sections -->
+    <div class="card" id="exifCard">
+      <div class="section-title">
+        EXIF Data
+        <button class="btn btn-ghost" onclick="copyAllExif()" style="padding:0.3rem 0.75rem;font-size:0.78rem">Copy JSON</button>
+      </div>
+      <div id="exifSections"></div>
+    </div>
+
+    <!-- All EXIF -->
+    <div class="card" id="allExifCard">
+      <details>
+        <summary>All EXIF Tags</summary>
+        <div style="margin-top:1rem">
+          <table class="exif-table" id="allExifTable"></table>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div id="errorMsg" class="card hidden">
+    <div class="error-msg" id="errorText"></div>
+  </div>
+</div>
+<script>
+let lastExifData = {};
+
+function dragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+function dragLeave(e) { document.getElementById('dropZone').classList.remove('drag-over'); }
+function dropFile(e) {
+  e.preventDefault();
+  dragLeave(e);
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+}
+
+function handleFile(file) {
+  if (!file) return;
+  // Show thumbnail
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('thumb').src = e.target.result; };
+  reader.readAsDataURL(file);
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('errorMsg').classList.add('hidden');
+
+  fetch('api/exif', { method: 'POST', body: fd })
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) {
+        document.getElementById('errorText').textContent = data.error;
+        document.getElementById('errorMsg').classList.remove('hidden');
+        return;
+      }
+      lastExifData = data.exif || {};
+      renderInfo(data.info);
+      renderExif(data.exif || {});
+      document.getElementById('results').classList.remove('hidden');
+    })
+    .catch(e => {
+      document.getElementById('errorText').textContent = 'Error: ' + e.message;
+      document.getElementById('errorMsg').classList.remove('hidden');
+    });
+}
+
+function renderInfo(info) {
+  const grid = document.getElementById('infoGrid');
+  grid.innerHTML = `
+    <div class="info-item"><span class="info-label">Dimensions</span><span class="info-value">${info.width} × ${info.height} px</span></div>
+    <div class="info-item"><span class="info-label">Format</span><span class="info-value">${info.format}</span></div>
+    <div class="info-item"><span class="info-label">Color Mode</span><span class="info-value">${info.mode}</span></div>
+    <div class="info-item"><span class="info-label">Megapixels</span><span class="info-value">${info.size_mp} MP</span></div>
+  `;
+}
+
+function renderExif(exif) {
+  const groups = {
+    'Camera': ['Make', 'Model', 'Software', 'LensMake', 'LensModel'],
+    'Exposure': ['ExposureTime', 'FNumber', 'ISOSpeedRatings', 'ExposureMode', 'ExposureBiasValue', 'MeteringMode', 'Flash', 'ShutterSpeedValue', 'ApertureValue'],
+    'Location': ['GPSLatitude', 'GPSLongitude', 'GPSAltitude', 'GPSLatitudeRef', 'GPSLongitudeRef'],
+    'Date': ['DateTimeOriginal', 'DateTime', 'DateTimeDigitized', 'OffsetTime']
+  };
+
+  const container = document.getElementById('exifSections');
+  container.innerHTML = '';
+  const allTable = document.getElementById('allExifTable');
+  allTable.innerHTML = '';
+
+  let hasAny = false;
+  for (const [group, keys] of Object.entries(groups)) {
+    const rows = keys.filter(k => exif[k]);
+    if (rows.length === 0) continue;
+    hasAny = true;
+    const header = document.createElement('tr');
+    header.innerHTML = `<td colspan="2" class="group-label">${group}</td>`;
+    container.appendChild(buildTable(rows.map(k => [k, exif[k]])));
+  }
+
+  if (!hasAny && Object.keys(exif).length === 0) {
+    container.innerHTML = '<div class="no-exif">No EXIF data found in this image.</div>';
+  }
+
+  // All EXIF
+  for (const [k, v] of Object.entries(exif)) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${esc(k)}</td><td>${esc(v)}</td>`;
+    allTable.appendChild(tr);
+  }
+  document.getElementById('allExifCard').style.display = Object.keys(exif).length ? '' : 'none';
+}
+
+function buildTable(pairs) {
+  const wrapper = document.createElement('div');
+  wrapper.style.marginBottom = '1rem';
+  const tbl = document.createElement('table');
+  tbl.className = 'exif-table';
+  pairs.forEach(([k, v]) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${esc(k)}</td><td>${esc(v)}</td>`;
+    tbl.appendChild(tr);
+  });
+  wrapper.appendChild(tbl);
+  return wrapper;
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function copyAllExif() {
+  navigator.clipboard.writeText(JSON.stringify(lastExifData, null, 2))
+    .then(() => alert('EXIF data copied as JSON!'))
+    .catch(() => alert('Copy failed'));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chmod Calculator</title>
+<style>
+:root {
+  --primary: #1d4ed8; --primary-h: #1e40af;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=text], input[type=number] { padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus { border-color: var(--primary); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.perm-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: 0.75rem; overflow: hidden; }
+.perm-col-header { background: var(--primary); color: white; text-align: center; padding: 0.6rem; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.perm-row { display: contents; }
+.perm-cell { display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.65rem 0.5rem; border-top: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: background 0.12s; }
+.perm-cell:last-child, .perm-cell:nth-child(3n) { border-right: none; }
+.perm-cell:hover { background: #eff6ff; }
+.perm-cell input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
+.perm-label { font-size: 0.82rem; }
+.perm-row-label { display: flex; align-items: center; justify-content: center; background: #f8fafc; color: var(--muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; border-top: 1px solid var(--border); border-right: 1px solid var(--border); }
+.result-row { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.result-item { display: flex; flex-direction: column; }
+.result-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 0.2rem; }
+.result-value { font-family: 'Courier New', monospace; font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+.command-box { background: #1e293b; color: #e2e8f0; border-radius: 0.5rem; padding: 0.75rem 1rem; font-family: 'Courier New', monospace; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+.manual-row { display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1rem; }
+.manual-row > div { display: flex; flex-direction: column; }
+.manual-row input { width: 120px; font-family: 'Courier New', monospace; }
+.presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.description-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.88rem; color: #1e40af; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Chmod Calculator</h1>
+    <p>Calculate Unix file permissions visually</p>
+  </header>
+
+  <!-- Quick presets -->
+  <div class="card">
+    <div class="section-title">Quick Presets</div>
+    <div class="presets">
+      <button class="btn btn-ghost btn-sm" onclick="setOctal(644)">644 — Standard File</button>
+      <button class="btn btn-ghost btn-sm" onclick="setOctal(755)">755 — Executable</button>
+      <button class="btn btn-ghost btn-sm" onclick="setOctal(777)">777 — Open (all)</button>
+      <button class="btn btn-ghost btn-sm" onclick="setOctal(600)">600 — Private</button>
+      <button class="btn btn-ghost btn-sm" onclick="setOctal(400)">400 — Read-only</button>
+      <button class="btn btn-ghost btn-sm" onclick="setOctal(700)">700 — Owner only</button>
+      <button class="btn btn-ghost btn-sm" onclick="setOctal(664)">664 — Group write</button>
+    </div>
+  </div>
+
+  <!-- Permission grid -->
+  <div class="card">
+    <div class="section-title">Permission Grid</div>
+    <div class="perm-grid">
+      <div class="perm-col-header">Owner</div>
+      <div class="perm-col-header">Group</div>
+      <div class="perm-col-header">Others</div>
+      <!-- Read row -->
+      <label class="perm-cell"><input type="checkbox" id="or" onchange="fromCheckboxes()"> <span class="perm-label">Read (r)</span></label>
+      <label class="perm-cell"><input type="checkbox" id="gr" onchange="fromCheckboxes()"> <span class="perm-label">Read (r)</span></label>
+      <label class="perm-cell"><input type="checkbox" id="wr" onchange="fromCheckboxes()"> <span class="perm-label">Read (r)</span></label>
+      <!-- Write row -->
+      <label class="perm-cell"><input type="checkbox" id="ow" onchange="fromCheckboxes()"> <span class="perm-label">Write (w)</span></label>
+      <label class="perm-cell"><input type="checkbox" id="gw" onchange="fromCheckboxes()"> <span class="perm-label">Write (w)</span></label>
+      <label class="perm-cell"><input type="checkbox" id="ww" onchange="fromCheckboxes()"> <span class="perm-label">Write (w)</span></label>
+      <!-- Execute row -->
+      <label class="perm-cell"><input type="checkbox" id="ox" onchange="fromCheckboxes()"> <span class="perm-label">Execute (x)</span></label>
+      <label class="perm-cell"><input type="checkbox" id="gx" onchange="fromCheckboxes()"> <span class="perm-label">Execute (x)</span></label>
+      <label class="perm-cell"><input type="checkbox" id="wx" onchange="fromCheckboxes()"> <span class="perm-label">Execute (x)</span></label>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card">
+    <div class="section-title">Result</div>
+    <div class="result-row">
+      <div class="result-item">
+        <span class="result-label">Octal</span>
+        <span class="result-value" id="octalVal">644</span>
+      </div>
+      <div class="result-item">
+        <span class="result-label">Symbolic</span>
+        <span class="result-value" id="symbolicVal" style="font-size:1.2rem">rw-r--r--</span>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem">
+      <div class="result-label" style="margin-bottom:0.4rem">Command</div>
+      <div class="command-box">
+        <span id="commandText">chmod 644 filename</span>
+        <button class="btn btn-ghost btn-sm" onclick="copyCommand()" style="background:#334155;color:#e2e8f0;border-color:#475569">Copy</button>
+      </div>
+    </div>
+    <div class="description-box" id="descriptionBox"></div>
+  </div>
+
+  <!-- Manual input -->
+  <div class="card">
+    <div class="section-title">Manual Input</div>
+    <div class="manual-row">
+      <div>
+        <label>Octal (e.g. 755)</label>
+        <input type="number" id="octalInput" min="0" max="777" value="644" oninput="setOctalFromInput()">
+      </div>
+      <div>
+        <label>Symbolic (e.g. rwxr-xr-x)</label>
+        <input type="text" id="symbolicInput" value="rw-r--r--" maxlength="9" oninput="setFromSymbolic()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function getChecks() {
+  return {
+    or: document.getElementById('or').checked,
+    ow: document.getElementById('ow').checked,
+    ox: document.getElementById('ox').checked,
+    gr: document.getElementById('gr').checked,
+    gw: document.getElementById('gw').checked,
+    gx: document.getElementById('gx').checked,
+    wr: document.getElementById('wr').checked,
+    ww: document.getElementById('ww').checked,
+    wx: document.getElementById('wx').checked,
+  };
+}
+
+function octalFromChecks(c) {
+  const owner = (c.or ? 4 : 0) + (c.ow ? 2 : 0) + (c.ox ? 1 : 0);
+  const group = (c.gr ? 4 : 0) + (c.gw ? 2 : 0) + (c.gx ? 1 : 0);
+  const others = (c.wr ? 4 : 0) + (c.ww ? 2 : 0) + (c.wx ? 1 : 0);
+  return { owner, group, others, full: owner * 100 + group * 10 + others };
+}
+
+function symbolicFromChecks(c) {
+  return [
+    c.or?'r':'-', c.ow?'w':'-', c.ox?'x':'-',
+    c.gr?'r':'-', c.gw?'w':'-', c.gx?'x':'-',
+    c.wr?'r':'-', c.ww?'w':'-', c.wx?'x':'-'
+  ].join('');
+}
+
+function fromCheckboxes() {
+  const c = getChecks();
+  const oct = octalFromChecks(c);
+  const sym = symbolicFromChecks(c);
+  document.getElementById('octalVal').textContent = oct.full;
+  document.getElementById('symbolicVal').textContent = sym;
+  document.getElementById('commandText').textContent = `chmod ${oct.full} filename`;
+  document.getElementById('octalInput').value = oct.full;
+  document.getElementById('symbolicInput').value = sym;
+  updateDescription(oct, sym);
+}
+
+function setOctal(val) {
+  const s = String(val).padStart(3, '0');
+  const [o, g, w] = s.split('').map(Number);
+  document.getElementById('or').checked = !!(o & 4);
+  document.getElementById('ow').checked = !!(o & 2);
+  document.getElementById('ox').checked = !!(o & 1);
+  document.getElementById('gr').checked = !!(g & 4);
+  document.getElementById('gw').checked = !!(g & 2);
+  document.getElementById('gx').checked = !!(g & 1);
+  document.getElementById('wr').checked = !!(w & 4);
+  document.getElementById('ww').checked = !!(w & 2);
+  document.getElementById('wx').checked = !!(w & 1);
+  fromCheckboxes();
+}
+
+function setOctalFromInput() {
+  const val = parseInt(document.getElementById('octalInput').value);
+  if (!isNaN(val) && val >= 0 && val <= 777) setOctal(val);
+}
+
+function setFromSymbolic() {
+  const sym = document.getElementById('symbolicInput').value.toLowerCase();
+  if (sym.length !== 9) return;
+  document.getElementById('or').checked = sym[0] === 'r';
+  document.getElementById('ow').checked = sym[1] === 'w';
+  document.getElementById('ox').checked = sym[2] === 'x';
+  document.getElementById('gr').checked = sym[3] === 'r';
+  document.getElementById('gw').checked = sym[4] === 'w';
+  document.getElementById('gx').checked = sym[5] === 'x';
+  document.getElementById('wr').checked = sym[6] === 'r';
+  document.getElementById('ww').checked = sym[7] === 'w';
+  document.getElementById('wx').checked = sym[8] === 'x';
+  fromCheckboxes();
+}
+
+function describePerms(bits, name) {
+  const perms = [];
+  if (bits & 4) perms.push('read');
+  if (bits & 2) perms.push('write');
+  if (bits & 1) perms.push('execute');
+  return perms.length ? `${name} can ${perms.join(', ')}` : `${name} has no permissions`;
+}
+
+function updateDescription(oct, sym) {
+  const desc = [
+    describePerms(oct.owner, 'Owner'),
+    describePerms(oct.group, 'Group'),
+    describePerms(oct.others, 'Others')
+  ].join(' · ');
+  document.getElementById('descriptionBox').textContent = desc;
+}
+
+function copyCommand() {
+  const cmd = document.getElementById('commandText').textContent;
+  navigator.clipboard.writeText(cmd).then(() => alert('Command copied!'));
+}
+
+// Init
+setOctal(644);
+</script>
+</body>
+</html>

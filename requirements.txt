@@ -6,3 +6,6 @@ qrcode[pil]
 pandas
 openpyxl
 Markdown
+reportlab
+croniter
+sqlparse

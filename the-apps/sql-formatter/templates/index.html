@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Formatter</title>
+<style>
+:root {
+  --primary: #c2410c; --primary-h: #9a3412;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 1100px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+select { padding: 0.45rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.875rem; background: #fff; color: var(--text); outline: none; font-family: inherit; cursor: pointer; }
+select:focus { border-color: var(--primary); }
+textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-family: 'Courier New', monospace; font-size: 0.875rem; background: #fff; color: var(--text); outline: none; resize: vertical; min-height: 300px; line-height: 1.6; }
+textarea:focus { border-color: var(--primary); }
+textarea[readonly] { background: #f8fafc; }
+.editors { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.editor-col { display: flex; flex-direction: column; }
+.editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.editor-header label { margin-bottom: 0; }
+.line-count { font-size: 0.72rem; color: var(--muted); }
+.options-bar { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+.opt-group { display: flex; flex-direction: column; gap: 0.25rem; }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.error-msg { background: var(--error-bg); color: var(--error-fg); border-radius: 0.5rem; padding: 0.65rem 0.9rem; font-size: 0.84rem; margin-top: 0.75rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>SQL Formatter</h1>
+    <p>Format, beautify, and minify SQL queries</p>
+  </header>
+
+  <div class="card">
+    <div class="options-bar">
+      <div class="opt-group">
+        <label>Indent</label>
+        <select id="indent">
+          <option value="2">2 spaces</option>
+          <option value="4">4 spaces</option>
+          <option value="1">Tab (1)</option>
+        </select>
+      </div>
+      <div class="opt-group">
+        <label>Keyword Case</label>
+        <select id="keyword_case">
+          <option value="upper">UPPERCASE</option>
+          <option value="lower">lowercase</option>
+          <option value="capitalize">Capitalize</option>
+        </select>
+      </div>
+      <div class="actions" style="margin-left:auto">
+        <button class="btn btn-primary" onclick="format()">Format</button>
+        <button class="btn btn-ghost" onclick="minify()">Minify</button>
+        <button class="btn btn-ghost" onclick="copyOutput()">Copy Output</button>
+        <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+
+    <div class="editors">
+      <div class="editor-col">
+        <div class="editor-header">
+          <label>Input SQL</label>
+          <span class="line-count" id="inputLines">0 lines</span>
+        </div>
+        <textarea id="sqlInput" placeholder="Paste your SQL here...&#10;&#10;SELECT u.id, u.name, COUNT(o.id) as order_count FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.active = 1 GROUP BY u.id, u.name ORDER BY order_count DESC LIMIT 10;" oninput="updateLineCounts()"></textarea>
+      </div>
+      <div class="editor-col">
+        <div class="editor-header">
+          <label>Formatted SQL</label>
+          <span class="line-count" id="outputLines">0 lines</span>
+        </div>
+        <textarea id="sqlOutput" readonly placeholder="Formatted output will appear here..."></textarea>
+      </div>
+    </div>
+    <div id="errorMsg" class="error-msg" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+function updateLineCounts() {
+  const input = document.getElementById('sqlInput').value;
+  const output = document.getElementById('sqlOutput').value;
+  document.getElementById('inputLines').textContent = input ? input.split('\n').length + ' lines' : '0 lines';
+  document.getElementById('outputLines').textContent = output ? output.split('\n').length + ' lines' : '0 lines';
+}
+
+async function format() {
+  const sql = document.getElementById('sqlInput').value;
+  if (!sql.trim()) return;
+  const indent = parseInt(document.getElementById('indent').value);
+  const keyword_case = document.getElementById('keyword_case').value;
+  try {
+    const res = await fetch('api/format', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({sql, indent, keyword_case})
+    });
+    const data = await res.json();
+    if (data.error) showError(data.error);
+    else { document.getElementById('sqlOutput').value = data.result; hideError(); updateLineCounts(); }
+  } catch(e) { showError(e.message); }
+}
+
+async function minify() {
+  const sql = document.getElementById('sqlInput').value;
+  if (!sql.trim()) return;
+  try {
+    const res = await fetch('api/minify', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({sql})
+    });
+    const data = await res.json();
+    if (data.error) showError(data.error);
+    else { document.getElementById('sqlOutput').value = data.result; hideError(); updateLineCounts(); }
+  } catch(e) { showError(e.message); }
+}
+
+function copyOutput() {
+  const out = document.getElementById('sqlOutput').value;
+  if (!out) return;
+  navigator.clipboard.writeText(out).then(() => alert('Output copied!'));
+}
+
+function clearAll() {
+  document.getElementById('sqlInput').value = '';
+  document.getElementById('sqlOutput').value = '';
+  hideError();
+  updateLineCounts();
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = '';
+}
+function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
+
+// Sample SQL
+document.getElementById('sqlInput').value = `SELECT u.id, u.name, u.email, COUNT(o.id) as order_count, SUM(o.total) as total_spent FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.active = 1 AND u.created_at > '2024-01-01' GROUP BY u.id, u.name, u.email HAVING order_count > 5 ORDER BY total_spent DESC LIMIT 10;`;
+updateLineCounts();
+</script>
+</body>
+</html>

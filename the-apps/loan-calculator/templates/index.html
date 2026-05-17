@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Calculator</title>
+<style>
+:root {
+  --primary: #1d4ed8; --primary-h: #1e40af;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=number], select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: var(--primary); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-grid.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+.result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; text-align: center; }
+.result-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 0.4rem; }
+.result-value { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+.result-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+.breakdown-bar { height: 20px; border-radius: 10px; overflow: hidden; display: flex; margin: 1rem 0 0.5rem; }
+.bar-principal { background: var(--primary); height: 100%; transition: width 0.3s; }
+.bar-interest { background: #fbbf24; height: 100%; transition: width 0.3s; }
+.bar-legend { display: flex; gap: 1.5rem; font-size: 0.8rem; }
+.legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+details summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; color: var(--muted); }
+details summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+details[open] summary::before { transform: rotate(90deg); }
+.amort-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.83rem; }
+.amort-table th { text-align: right; padding: 0.45rem 0.75rem; background: var(--bg); font-size: 0.72rem; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.amort-table th:first-child { text-align: left; }
+.amort-table td { padding: 0.4rem 0.75rem; text-align: right; border-bottom: 1px solid var(--border); }
+.amort-table td:first-child { text-align: left; font-weight: 600; }
+.amort-table tr:last-child td { border-bottom: none; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Loan Calculator</h1>
+    <p>Calculate monthly payments and full amortization schedule</p>
+  </header>
+
+  <div class="card">
+    <div class="section-title">Loan Details</div>
+    <div class="form-grid four">
+      <div>
+        <label>Loan Amount</label>
+        <input type="number" id="loanAmount" value="250000" min="1" step="1000" oninput="calculate()">
+      </div>
+      <div>
+        <label>Annual Interest (%)</label>
+        <input type="number" id="interestRate" value="6.5" min="0" max="100" step="0.1" oninput="calculate()">
+      </div>
+      <div>
+        <label>Loan Term</label>
+        <input type="number" id="loanTerm" value="30" min="1" oninput="calculate()">
+      </div>
+      <div>
+        <label>Term Unit</label>
+        <select id="termUnit" onchange="calculate()">
+          <option value="years">Years</option>
+          <option value="months">Months</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:1rem">
+      <label>Currency Symbol</label>
+      <input type="text" id="currency" value="$" style="width:80px" oninput="calculate()">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Results</div>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-label">Monthly Payment</div>
+        <div class="result-value" id="monthly">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Total Payment</div>
+        <div class="result-value" id="totalPay">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Total Interest</div>
+        <div class="result-value" id="totalInt">—</div>
+        <div class="result-sub" id="intPct">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Interest Rate</div>
+        <div class="result-value" id="rateDisplay">—</div>
+        <div class="result-sub">per year</div>
+      </div>
+    </div>
+    <div class="breakdown-bar">
+      <div class="bar-principal" id="barPrincipal" style="width:50%"></div>
+      <div class="bar-interest" id="barInterest" style="width:50%"></div>
+    </div>
+    <div class="bar-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--primary)"></div><span id="principalPct">—% Principal</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div><span id="interestPctBar">—% Interest</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary>Amortization Schedule (by year)</summary>
+      <div style="overflow-x:auto">
+        <table class="amort-table" id="amortTable">
+          <thead><tr><th>Year</th><th>Balance</th><th>Annual Principal</th><th>Annual Interest</th></tr></thead>
+          <tbody id="amortBody"></tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+function fmt(n, currency) { return (currency || '$') + Number(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function calculate() {
+  const P = parseFloat(document.getElementById('loanAmount').value) || 0;
+  const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+  const termVal = parseFloat(document.getElementById('loanTerm').value) || 0;
+  const unit = document.getElementById('termUnit').value;
+  const currency = document.getElementById('currency').value || '$';
+  const n = unit === 'years' ? termVal * 12 : termVal;
+  const r = annualRate / 100 / 12;
+
+  if (P <= 0 || n <= 0) return;
+
+  let monthly;
+  if (r === 0) { monthly = P / n; }
+  else { monthly = P * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1); }
+
+  const totalPay = monthly * n;
+  const totalInt = totalPay - P;
+  const principalPct = (P / totalPay * 100).toFixed(1);
+  const intPct = (totalInt / totalPay * 100).toFixed(1);
+
+  document.getElementById('monthly').textContent = fmt(monthly, currency);
+  document.getElementById('totalPay').textContent = fmt(totalPay, currency);
+  document.getElementById('totalInt').textContent = fmt(totalInt, currency);
+  document.getElementById('intPct').textContent = intPct + '% of total';
+  document.getElementById('rateDisplay').textContent = annualRate + '%';
+  document.getElementById('barPrincipal').style.width = principalPct + '%';
+  document.getElementById('barInterest').style.width = intPct + '%';
+  document.getElementById('principalPct').textContent = principalPct + '% Principal';
+  document.getElementById('interestPctBar').textContent = intPct + '% Interest';
+
+  // Amortization by year
+  const tbody = document.getElementById('amortBody');
+  tbody.innerHTML = '';
+  let balance = P;
+  const years = Math.ceil(n / 12);
+  for (let y = 1; y <= years; y++) {
+    const months = Math.min(12, n - (y-1)*12);
+    let yearPrincipal = 0, yearInterest = 0;
+    for (let m = 0; m < months; m++) {
+      const intPayment = balance * r;
+      const prinPayment = monthly - intPayment;
+      yearInterest += intPayment;
+      yearPrincipal += Math.min(prinPayment, balance);
+      balance = Math.max(0, balance - prinPayment);
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>Year ${y}</td><td>${fmt(Math.max(0,balance), currency)}</td><td>${fmt(yearPrincipal, currency)}</td><td>${fmt(yearInterest, currency)}</td>`;
+    tbody.appendChild(tr);
+  }
+  // Totals row
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>Total</td><td>—</td><td>${fmt(P, currency)}</td><td>${fmt(totalInt, currency)}</td>`;
+  tbody.appendChild(tr);
+}
+
+calculate();
+</script>
+</body>
+</html>
