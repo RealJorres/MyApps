@@ -9,3 +9,6 @@ Markdown
 reportlab
 croniter
 sqlparse
+cssbeautifier
+requests
+pytesseract

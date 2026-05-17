@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Splitter</title>
+<style>
+:root { --primary: #c2410c; --primary-h: #9a3412; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 900px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-danger { background: var(--error-bg); color: var(--error-fg); border: 1px solid #fecaca; } .btn-danger:hover { background: #fecaca; }
+.btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=text], input[type=number], select { padding: 0.5rem 0.65rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.875rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: var(--primary); }
+
+.section-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+
+.people-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.person-chip { display: flex; align-items: center; gap: 0.4rem; background: var(--bg); border: 1px solid var(--border); border-radius: 2rem; padding: 0.3rem 0.65rem 0.3rem 0.85rem; font-size: 0.85rem; font-weight: 600; }
+.person-chip button { background: none; border: none; cursor: pointer; color: var(--muted); line-height: 1; padding: 0 0.1rem; font-size: 1rem; }
+.person-chip button:hover { color: var(--error-fg); }
+.add-person-form { display: flex; gap: 0.4rem; align-items: center; margin-top: 0.75rem; }
+.add-person-form input { width: 160px; }
+
+.expense-item { border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem; background: var(--bg); }
+.expense-row { display: grid; grid-template-columns: 1fr 100px 120px; gap: 0.5rem; align-items: start; }
+@media (max-width: 600px) { .expense-row { grid-template-columns: 1fr; } }
+.expense-bottom { margin-top: 0.65rem; }
+.split-checks { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+.split-check { display: flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; }
+.split-check input { width: auto; cursor: pointer; }
+.expense-remove { float: right; }
+
+.summary-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.summary-table th { background: var(--bg); padding: 0.5rem 0.75rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+.summary-table td { padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--border); }
+.summary-table tr:last-child td { border-bottom: none; }
+.balance-pos { color: var(--success-fg); font-weight: 700; }
+.balance-neg { color: var(--error-fg); font-weight: 700; }
+.balance-zero { color: var(--muted); }
+
+.settlement-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.settlement-item { background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem 1rem; font-size: 0.875rem; }
+.settlement-item strong { color: var(--primary); }
+
+.currency-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.875rem; color: var(--muted); }
+.currency-row input { width: 60px; }
+.total-chip { background: var(--primary); color: #fff; padding: 0.3rem 0.75rem; border-radius: 2rem; font-size: 0.85rem; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Expense Splitter</h1>
+    <p>Split group expenses fairly and see who owes what.</p>
+  </header>
+
+  <!-- Currency + People -->
+  <div class="card">
+    <div class="currency-row">
+      <label style="margin:0">Currency:</label>
+      <input type="text" id="currSym" value="$" maxlength="3">
+    </div>
+    <div class="section-title">People</div>
+    <div class="people-row" id="peopleRow"></div>
+    <div class="add-person-form">
+      <input type="text" id="personInput" placeholder="Name…" maxlength="30">
+      <button class="btn btn-primary btn-sm" id="addPersonBtn">Add Person</button>
+    </div>
+  </div>
+
+  <!-- Expenses -->
+  <div class="card">
+    <div class="section-title">
+      Expenses
+      <span id="totalBadge" class="total-chip">Total: $0.00</span>
+    </div>
+    <div id="expenseList"></div>
+    <button class="btn btn-ghost" id="addExpenseBtn">+ Add Expense</button>
+  </div>
+
+  <!-- Summary -->
+  <div class="card" id="summaryCard">
+    <div class="section-title">Summary</div>
+    <table class="summary-table" id="summaryTable">
+      <thead><tr><th>Person</th><th>Paid</th><th>Owes</th><th>Balance</th></tr></thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+
+    <div style="margin-top:1.5rem">
+      <div class="section-title">Settlements</div>
+      <ul class="settlement-list" id="settlementList"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+let people = ['Alice', 'Bob'];
+let expenses = [];
+let expenseId = 0;
+
+function getCurrSym() { return document.getElementById('currSym').value || '$'; }
+
+function fmt(n) {
+  const sym = getCurrSym();
+  return sym + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderPeople() {
+  const row = document.getElementById('peopleRow');
+  row.innerHTML = people.map((p, i) => `
+    <div class="person-chip">
+      ${escHtml(p)}
+      <button onclick="removePerson(${i})" title="Remove">&#x2715;</button>
+    </div>
+  `).join('');
+  refreshExpensePeople();
+  calculate();
+}
+
+function removePerson(i) {
+  if (people.length <= 2) { alert('Need at least 2 people.'); return; }
+  people.splice(i, 1);
+  renderPeople();
+}
+
+document.getElementById('addPersonBtn').addEventListener('click', addPerson);
+document.getElementById('personInput').addEventListener('keydown', e => { if (e.key === 'Enter') addPerson(); });
+
+function addPerson() {
+  const name = document.getElementById('personInput').value.trim();
+  if (!name || people.includes(name)) return;
+  people.push(name);
+  document.getElementById('personInput').value = '';
+  renderPeople();
+}
+
+function addExpense() {
+  const id = ++expenseId;
+  expenses.push({ id, desc: '', amount: 0, paidBy: people[0] || '', splitBetween: [...people] });
+  renderExpenses();
+}
+
+document.getElementById('addExpenseBtn').addEventListener('click', addExpense);
+
+function removeExpense(id) {
+  expenses = expenses.filter(e => e.id !== id);
+  renderExpenses();
+}
+
+function refreshExpensePeople() {
+  // Update paidBy and splitBetween when people change
+  expenses.forEach(exp => {
+    exp.splitBetween = exp.splitBetween.filter(p => people.includes(p));
+    if (!people.includes(exp.paidBy)) exp.paidBy = people[0] || '';
+    if (!exp.splitBetween.length) exp.splitBetween = [...people];
+  });
+}
+
+function renderExpenses() {
+  const list = document.getElementById('expenseList');
+  list.innerHTML = '';
+  expenses.forEach(exp => {
+    const div = document.createElement('div');
+    div.className = 'expense-item';
+    div.innerHTML = `
+      <div class="expense-row">
+        <div>
+          <label>Description</label>
+          <input type="text" value="${escHtml(exp.desc)}" placeholder="e.g. Dinner" data-field="desc" data-id="${exp.id}" style="width:100%">
+        </div>
+        <div>
+          <label>Amount</label>
+          <input type="number" value="${exp.amount || ''}" placeholder="0.00" min="0" step="0.01" data-field="amount" data-id="${exp.id}" style="width:100%">
+        </div>
+        <div>
+          <label>Paid By</label>
+          <select data-field="paidBy" data-id="${exp.id}" style="width:100%">
+            ${people.map(p => `<option value="${escHtml(p)}" ${exp.paidBy === p ? 'selected' : ''}>${escHtml(p)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="expense-bottom">
+        <label>Split Between</label>
+        <div class="split-checks">
+          ${people.map(p => `
+            <label class="split-check">
+              <input type="checkbox" data-person="${escHtml(p)}" data-id="${exp.id}" ${exp.splitBetween.includes(p) ? 'checked' : ''}>
+              ${escHtml(p)}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      <div style="margin-top:0.5rem; text-align:right">
+        <button class="btn btn-danger btn-sm" onclick="removeExpense(${exp.id})">Remove</button>
+      </div>
+    `;
+    div.querySelectorAll('[data-field]').forEach(el => {
+      el.addEventListener('change', function() { updateExpense(this); });
+      el.addEventListener('input', function() { updateExpense(this); });
+    });
+    div.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', function() {
+        const id = parseInt(this.dataset.id);
+        const person = this.dataset.person;
+        const exp = expenses.find(e => e.id === id);
+        if (!exp) return;
+        if (this.checked) { if (!exp.splitBetween.includes(person)) exp.splitBetween.push(person); }
+        else { exp.splitBetween = exp.splitBetween.filter(p => p !== person); if (!exp.splitBetween.length) { this.checked = true; exp.splitBetween.push(person); } }
+        calculate();
+      });
+    });
+    list.appendChild(div);
+  });
+  calculate();
+}
+
+function updateExpense(el) {
+  const id = parseInt(el.dataset.id);
+  const field = el.dataset.field;
+  const exp = expenses.find(e => e.id === id);
+  if (!exp) return;
+  if (field === 'amount') exp.amount = parseFloat(el.value) || 0;
+  else exp[field] = el.value;
+  calculate();
+}
+
+function calculate() {
+  const sym = getCurrSym();
+  const total = expenses.reduce((s, e) => s + (e.amount || 0), 0);
+  document.getElementById('totalBadge').textContent = `Total: ${sym}${total.toFixed(2)}`;
+
+  const paid = {}, owes = {};
+  people.forEach(p => { paid[p] = 0; owes[p] = 0; });
+
+  expenses.forEach(exp => {
+    const amt = exp.amount || 0;
+    const splitters = exp.splitBetween.filter(p => people.includes(p));
+    if (!splitters.length) return;
+    const share = amt / splitters.length;
+    if (paid[exp.paidBy] !== undefined) paid[exp.paidBy] += amt;
+    splitters.forEach(p => { if (owes[p] !== undefined) owes[p] += share; });
+  });
+
+  const balances = {};
+  people.forEach(p => { balances[p] = paid[p] - owes[p]; });
+
+  const tbody = document.getElementById('summaryBody');
+  tbody.innerHTML = people.map(p => {
+    const b = balances[p];
+    const cls = b > 0.005 ? 'balance-pos' : b < -0.005 ? 'balance-neg' : 'balance-zero';
+    const sign = b > 0.005 ? '+' : '';
+    return `<tr>
+      <td><strong>${escHtml(p)}</strong></td>
+      <td>${sym}${paid[p].toFixed(2)}</td>
+      <td>${sym}${owes[p].toFixed(2)}</td>
+      <td class="${cls}">${sign}${sym}${Math.abs(b).toFixed(2)} ${b > 0.005 ? '(owed)' : b < -0.005 ? '(owes)' : '(settled)'}</td>
+    </tr>`;
+  }).join('');
+
+  // Minimum transactions settlement
+  const bal = { ...balances };
+  const settlements = [];
+  const debtors = people.filter(p => bal[p] < -0.005).map(p => ({ name: p, amount: -bal[p] }));
+  const creditors = people.filter(p => bal[p] > 0.005).map(p => ({ name: p, amount: bal[p] }));
+
+  let di = 0, ci = 0;
+  while (di < debtors.length && ci < creditors.length) {
+    const d = debtors[di], c = creditors[ci];
+    const transfer = Math.min(d.amount, c.amount);
+    settlements.push(`${d.name} pays ${c.name} ${sym}${transfer.toFixed(2)}`);
+    d.amount -= transfer; c.amount -= transfer;
+    if (d.amount < 0.005) di++;
+    if (c.amount < 0.005) ci++;
+  }
+
+  const settlList = document.getElementById('settlementList');
+  if (!settlements.length) {
+    settlList.innerHTML = '<li style="color:var(--muted); font-size:0.875rem">Everyone is settled up!</li>';
+  } else {
+    settlList.innerHTML = settlements.map(s => `
+      <li class="settlement-item">${s.replace(/(\w+ pays )/, '<strong>$1</strong>')}</li>
+    `).join('');
+  }
+}
+
+document.getElementById('currSym').addEventListener('input', calculate);
+
+renderPeople();
+addExpense();
+addExpense();
+</script>
+</body>
+</html>

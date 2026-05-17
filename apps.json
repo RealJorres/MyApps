@@ -236,5 +236,96 @@
     "description": "Three modes: X% of Y, X is what % of Y, and percentage change from X to Y.",
     "port": 5034, "path": "./the-apps/percentage-calculator", "entry": "app.py",
     "icon": "%", "color": "#d97706", "tags": ["Percentage", "Math"], "category": "Finance / Math"
+  },
+  {
+    "id": "compound-interest",
+    "name": "Compound Interest",
+    "description": "Calculate final balance with compound interest, optional monthly contributions, and a year-by-year table.",
+    "port": 5045, "path": "./the-apps/compound-interest", "entry": "app.py",
+    "icon": "📈", "color": "#1d4ed8", "tags": ["Interest", "Finance", "Math"], "category": "Finance / Math"
+  },
+  {
+    "id": "vat-calculator",
+    "name": "VAT / Tax Calculator",
+    "description": "Add or remove VAT/tax from a price. Supports custom rates and common presets.",
+    "port": 5046, "path": "./the-apps/vat-calculator", "entry": "app.py",
+    "icon": "🧮", "color": "#059669", "tags": ["VAT", "Tax", "Finance"], "category": "Finance / Math"
+  },
+  {
+    "id": "expense-splitter",
+    "name": "Expense Splitter",
+    "description": "Add people and expenses, see who owes whom and the minimum transactions to settle up.",
+    "port": 5047, "path": "./the-apps/expense-splitter", "entry": "app.py",
+    "icon": "🤝", "color": "#c2410c", "tags": ["Expenses", "Split", "Finance"], "category": "Finance / Math"
+  },
+  {
+    "id": "pdf-merger",
+    "name": "PDF Merger",
+    "description": "Upload multiple PDFs, reorder them, and merge into a single downloadable file.",
+    "port": 5035, "path": "./the-apps/pdf-merger", "entry": "app.py",
+    "icon": "🔀", "color": "#4f46e5", "tags": ["PDF", "Merge"], "category": "Document / File"
+  },
+  {
+    "id": "watermark-tool",
+    "name": "Watermark Tool",
+    "description": "Add a custom text watermark to images with control over position, size, and opacity.",
+    "port": 5036, "path": "./the-apps/watermark-tool", "entry": "app.py",
+    "icon": "💧", "color": "#0891b2", "tags": ["Watermark", "Images"], "category": "Document / File"
+  },
+  {
+    "id": "ocr-tool",
+    "name": "OCR — Image to Text",
+    "description": "Extract text from images and scanned documents using Tesseract OCR.",
+    "port": 5037, "path": "./the-apps/ocr-tool", "entry": "app.py",
+    "icon": "🔍", "color": "#7c3aed", "tags": ["OCR", "Text", "Images"], "category": "Document / File"
+  },
+  {
+    "id": "color-contrast",
+    "name": "Color Contrast Checker",
+    "description": "Check WCAG contrast ratio between two colors with AA and AAA pass/fail badges.",
+    "port": 5038, "path": "./the-apps/color-contrast", "entry": "app.py",
+    "icon": "◑", "color": "#059669", "tags": ["Color", "Accessibility", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "css-formatter",
+    "name": "CSS Formatter",
+    "description": "Prettify or minify CSS with configurable indentation.",
+    "port": 5039, "path": "./the-apps/css-formatter", "entry": "app.py",
+    "icon": "#", "color": "#2563eb", "tags": ["CSS", "Formatter", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "api-tester",
+    "name": "API Tester",
+    "description": "Send HTTP requests with custom headers and body. See status, response, and timing.",
+    "port": 5040, "path": "./the-apps/api-tester", "entry": "app.py",
+    "icon": "⚡", "color": "#be185d", "tags": ["API", "HTTP", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "text-case-converter",
+    "name": "Text Case Converter",
+    "description": "Convert text between camelCase, snake_case, PascalCase, kebab-case, and more — live.",
+    "port": 5041, "path": "./the-apps/text-case-converter", "entry": "app.py",
+    "icon": "Tt", "color": "#d97706", "tags": ["Text", "Case", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "random-data-generator",
+    "name": "Random Data Generator",
+    "description": "Generate fake names, emails, addresses, and more for testing. Export as JSON or CSV.",
+    "port": 5042, "path": "./the-apps/random-data-generator", "entry": "app.py",
+    "icon": "🎲", "color": "#0f766e", "tags": ["Random", "Testing", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "cipher-tool",
+    "name": "Cipher Tool",
+    "description": "Encode and decode text with ROT13, Caesar, Atbash, Vigenère, and Morse Code.",
+    "port": 5043, "path": "./the-apps/cipher-tool", "entry": "app.py",
+    "icon": "🔒", "color": "#7c3aed", "tags": ["Cipher", "Encode", "Fun"], "category": "Text / Productivity"
+  },
+  {
+    "id": "habit-tracker",
+    "name": "Habit Tracker",
+    "description": "Track daily habits with streaks, completion rates, and a 30-day heatmap calendar.",
+    "port": 5044, "path": "./the-apps/habit-tracker", "entry": "app.py",
+    "icon": "✅", "color": "#16a34a", "tags": ["Habits", "Productivity", "Tracker"], "category": "Text / Productivity"
   }
 ]

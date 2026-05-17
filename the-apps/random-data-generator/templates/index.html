@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Data Generator</title>
+<style>
+:root { --primary: #0f766e; --primary-h: #0d6b63; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 900px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=number], select { padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: var(--primary); }
+
+.category-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.cat-btn { padding: 0.45rem 0.9rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--bg); cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text); transition: all 0.1s; }
+.cat-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.controls-row { display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: 1rem; }
+.controls-row .field { display: flex; flex-direction: column; gap: 0.3rem; }
+.controls-row input[type=number] { width: 80px; }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.data-table th { background: var(--bg); padding: 0.5rem 0.75rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 0.5rem; }
+.toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+
+.numbers-inputs { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; }
+.numbers-inputs .field label { white-space: nowrap; }
+.numbers-inputs input { width: 100px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Random Data Generator</h1>
+    <p>Generate realistic-looking fake data for testing and prototyping.</p>
+  </header>
+
+  <div class="card">
+    <div class="category-tabs">
+      <button class="cat-btn active" data-cat="person">Person</button>
+      <button class="cat-btn" data-cat="contact">Contact</button>
+      <button class="cat-btn" data-cat="address">Address</button>
+      <button class="cat-btn" data-cat="internet">Internet</button>
+      <button class="cat-btn" data-cat="numbers">Numbers</button>
+      <button class="cat-btn" data-cat="dates">Dates</button>
+    </div>
+
+    <div class="controls-row">
+      <div class="field">
+        <label>Count (1–50)</label>
+        <input type="number" id="countInput" value="5" min="1" max="50">
+      </div>
+      <div id="extraControls"></div>
+      <button class="btn btn-primary" id="generateBtn">Generate</button>
+    </div>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none">
+    <div class="table-wrap">
+      <table class="data-table" id="dataTable">
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-ghost" id="copyJsonBtn">Copy as JSON</button>
+      <button class="btn btn-ghost" id="copyCsvBtn">Copy as CSV</button>
+      <button class="btn btn-ghost" id="downloadCsvBtn">Download CSV</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const FIRST_NAMES = ['James','Oliver','William','Emma','Sophia','Ava','Liam','Noah','Mia','Charlotte','Ethan','Aiden','Chloe','Isabella','Mason','Lucas','Amelia','Harper','Elijah','Logan','Abigail','Emily','Ella','Madison','Avery','Sofia','Scarlett','Victoria','Aria','Grace','Lily','Zoey','Riley','Nora','Hannah','Eleanor','Lillian','Addison','Aubrey','Ellie'];
+const LAST_NAMES = ['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Rodriguez','Martinez','Hernandez','Lopez','Gonzalez','Wilson','Anderson','Thomas','Taylor','Moore','Jackson','Martin','Lee','Perez','Thompson','White','Harris','Sanchez','Clark','Ramirez','Lewis','Robinson','Walker','Young','Allen','King','Wright','Scott','Torres','Nguyen','Hill','Flores'];
+const STREETS = ['Main St','Oak Ave','Maple Dr','Cedar Ln','Pine Rd','Elm St','Park Ave','Lake Dr','Hill Rd','River Rd','Sunset Blvd','Forest Way','Valley Rd','Spring St','Willow Ln'];
+const CITIES = ['New York','Los Angeles','Chicago','Houston','Phoenix','Philadelphia','San Antonio','San Diego','Dallas','San Jose','Austin','Jacksonville','Fort Worth','Columbus','Charlotte','Indianapolis','San Francisco','Seattle','Denver','Boston'];
+const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+const COUNTRIES = ['United States','Canada','United Kingdom','Australia','Germany','France','Japan','Brazil','India','Mexico'];
+const DOMAINS = ['gmail.com','yahoo.com','outlook.com','hotmail.com','protonmail.com','icloud.com','example.com','test.org','mail.net','domain.co'];
+const TLDS = ['.com','.net','.org','.io','.co','.dev','.app'];
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randFloat(min, max, dec) { return parseFloat((Math.random() * (max - min) + min).toFixed(dec)); }
+function randChoice(a, b) { return Math.random() > 0.5 ? a : b; }
+
+function firstName() { return rand(FIRST_NAMES); }
+function lastName() { return rand(LAST_NAMES); }
+function fullName() { return firstName() + ' ' + lastName(); }
+function gender() { return rand(['Male','Female','Non-binary']); }
+function dob() {
+  const y = randInt(1950, 2005);
+  const m = String(randInt(1,12)).padStart(2,'0');
+  const d = String(randInt(1,28)).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+function age(dobStr) {
+  const b = new Date(dobStr);
+  const today = new Date();
+  let a = today.getFullYear() - b.getFullYear();
+  if (today < new Date(today.getFullYear(), b.getMonth(), b.getDate())) a--;
+  return a;
+}
+function email(fn, ln) {
+  const opts = [`${fn.toLowerCase()}.${ln.toLowerCase()}`,`${fn.toLowerCase()}${randInt(1,99)}`,`${fn.toLowerCase()[0]}${ln.toLowerCase()}`];
+  return rand(opts) + '@' + rand(DOMAINS);
+}
+function phone() { return `(${randInt(200,999)}) ${randInt(200,999)}-${String(randInt(1000,9999))}`; }
+function mobile() { return `+1 ${randInt(200,999)}-${randInt(200,999)}-${String(randInt(1000,9999))}`; }
+function street() { return `${randInt(1,9999)} ${rand(STREETS)}`; }
+function city() { return rand(CITIES); }
+function state() { return rand(STATES); }
+function zip() { return String(randInt(10000,99999)); }
+function country() { return rand(COUNTRIES); }
+function username(fn, ln) {
+  const opts = [`${fn.toLowerCase()}${ln.toLowerCase().slice(0,4)}${randInt(1,99)}`,`${fn.toLowerCase()}_${ln.toLowerCase()}`,`${fn[0].toLowerCase()}${ln.toLowerCase()}${randInt(10,999)}`];
+  return rand(opts);
+}
+function password() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
+  return Array.from({length:16}, () => chars[randInt(0, chars.length-1)]).join('');
+}
+function domain() { return rand(['app','shop','tech','web','dev','hub','portal','api']) + '-' + rand(['quick','best','smart','pro','data','cloud','link','core']) + rand(TLDS); }
+function url() { return 'https://' + domain() + '/' + rand(['api','v1','users','items','products','data']); }
+function ipv4() { return [randInt(1,254),randInt(0,255),randInt(0,255),randInt(1,254)].join('.'); }
+function mac() { return Array.from({length:6}, () => randInt(0,255).toString(16).padStart(2,'0')).join(':'); }
+function randDate(startY, endY) {
+  const y = randInt(startY, endY);
+  const m = String(randInt(1,12)).padStart(2,'0');
+  const d = String(randInt(1,28)).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+function futureDate() { return randDate(2025, 2030); }
+function pastDate() { return randDate(2000, 2024); }
+function birthdate() { return randDate(1940, 2005); }
+
+let currentData = [];
+let currentHeaders = [];
+let currentCat = 'person';
+
+function extraControlsHtml(cat) {
+  if (cat === 'numbers') {
+    return `<div class="numbers-inputs">
+      <div class="field"><label>Min</label><input type="number" id="numMin" value="0"></div>
+      <div class="field"><label>Max</label><input type="number" id="numMax" value="1000"></div>
+    </div>`;
+  }
+  if (cat === 'dates') {
+    return `<div class="numbers-inputs">
+      <div class="field"><label>Range Start</label><input type="number" id="dateStartY" value="2000" min="1900" max="2025"></div>
+      <div class="field"><label>Range End</label><input type="number" id="dateEndY" value="2024" min="1900" max="2030"></div>
+    </div>`;
+  }
+  return '';
+}
+
+function generate() {
+  const count = Math.min(50, Math.max(1, parseInt(document.getElementById('countInput').value) || 5));
+  const cat = currentCat;
+  const rows = [];
+  let headers = [];
+
+  for (let i = 0; i < count; i++) {
+    if (cat === 'person') {
+      const fn = firstName(), ln = lastName(), dobStr = dob();
+      headers = ['Full Name','First Name','Last Name','Gender','Date of Birth','Age'];
+      rows.push([fullName(), fn, ln, gender(), dobStr, age(dobStr)]);
+    } else if (cat === 'contact') {
+      const fn = firstName(), ln = lastName();
+      headers = ['Email','Phone','Mobile'];
+      rows.push([email(fn, ln), phone(), mobile()]);
+    } else if (cat === 'address') {
+      const st = street(), c = city(), s = state(), z = zip(), cou = country();
+      headers = ['Street','City','State','ZIP','Country','Full Address'];
+      rows.push([st, c, s, z, cou, `${st}, ${c}, ${s} ${z}, ${cou}`]);
+    } else if (cat === 'internet') {
+      const fn = firstName(), ln = lastName();
+      headers = ['Username','Password','Domain','URL','IPv4','MAC'];
+      rows.push([username(fn,ln), password(), domain(), url(), ipv4(), mac()]);
+    } else if (cat === 'numbers') {
+      const min = parseFloat(document.getElementById('numMin')?.value ?? 0);
+      const max = parseFloat(document.getElementById('numMax')?.value ?? 1000);
+      headers = ['Integer','Float','Percentage','Currency'];
+      rows.push([randInt(min,max), randFloat(min,max,2), randFloat(0,100,1)+'%', '$'+randFloat(1,max,2).toFixed(2)]);
+    } else if (cat === 'dates') {
+      const startY = parseInt(document.getElementById('dateStartY')?.value ?? 2000);
+      const endY = parseInt(document.getElementById('dateEndY')?.value ?? 2024);
+      headers = ['Random Date','Birthdate','Future Date','Past Date'];
+      rows.push([randDate(startY,endY), birthdate(), futureDate(), pastDate()]);
+    }
+  }
+
+  currentHeaders = headers;
+  currentData = rows;
+
+  const thead = document.getElementById('tableHead');
+  const tbody = document.getElementById('tableBody');
+  thead.innerHTML = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
+  tbody.innerHTML = rows.map(r => '<tr>' + r.map(c => `<td>${escHtml(String(c))}</td>`).join('') + '</tr>').join('');
+  document.getElementById('resultCard').style.display = 'block';
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    currentCat = this.dataset.cat;
+    document.getElementById('extraControls').innerHTML = extraControlsHtml(currentCat);
+  });
+});
+
+document.getElementById('generateBtn').addEventListener('click', generate);
+
+document.getElementById('copyJsonBtn').addEventListener('click', () => {
+  const json = JSON.stringify(currentData.map(r => {
+    const obj = {};
+    currentHeaders.forEach((h,i) => obj[h] = r[i]);
+    return obj;
+  }), null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    const btn = document.getElementById('copyJsonBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy as JSON', 1500);
+  });
+});
+
+function toCSV() {
+  const lines = [currentHeaders.join(',')];
+  currentData.forEach(r => lines.push(r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')));
+  return lines.join('\n');
+}
+
+document.getElementById('copyCsvBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(toCSV()).then(() => {
+    const btn = document.getElementById('copyCsvBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy as CSV', 1500);
+  });
+});
+
+document.getElementById('downloadCsvBtn').addEventListener('click', () => {
+  const blob = new Blob([toCSV()], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'random_data.csv'; a.click();
+  URL.revokeObjectURL(url);
+});
+
+generate();
+</script>
+</body>
+</html>

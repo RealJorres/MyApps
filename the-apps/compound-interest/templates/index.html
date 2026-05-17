@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compound Interest Calculator</title>
+<style>
+:root { --primary: #1d4ed8; --primary-h: #1e40af; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn:hover { background: var(--border); }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=number], select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: var(--primary); }
+
+.inputs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+.field { display: flex; flex-direction: column; }
+
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+.result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; text-align: center; }
+.result-card .label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.result-card .value { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+.result-card .sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+.bar-wrap { height: 36px; border-radius: 0.5rem; overflow: hidden; display: flex; margin-bottom: 0.5rem; }
+.bar-principal { background: #1d4ed8; }
+.bar-contributions { background: #0f766e; }
+.bar-interest { background: #16a34a; }
+
+.bar-legend { display: flex; gap: 1.25rem; flex-wrap: wrap; font-size: 0.8rem; }
+.leg-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+.year-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.year-table th { background: var(--bg); padding: 0.45rem 0.75rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.year-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); }
+.year-table tr:last-child td { border-bottom: none; }
+.year-table tr:hover td { background: var(--bg); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 0.5rem; max-height: 400px; overflow-y: auto; }
+
+details summary { cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 0.5rem 0; color: var(--muted); }
+details summary:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Compound Interest Calculator</h1>
+    <p>See how your money grows over time with compound interest.</p>
+  </header>
+
+  <div class="card">
+    <div class="inputs-grid">
+      <div class="field">
+        <label>Principal ($)</label>
+        <input type="number" id="principal" value="10000" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Annual Rate (%)</label>
+        <input type="number" id="rate" value="7" min="0" max="100" step="0.1">
+      </div>
+      <div class="field">
+        <label>Years</label>
+        <input type="number" id="years" value="20" min="1" max="100">
+      </div>
+      <div class="field">
+        <label>Compounding</label>
+        <select id="frequency">
+          <option value="1">Annually</option>
+          <option value="2">Semi-annually</option>
+          <option value="4">Quarterly</option>
+          <option value="12" selected>Monthly</option>
+          <option value="365">Daily</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Monthly Contribution ($)</label>
+        <input type="number" id="contribution" value="200" min="0" step="10">
+      </div>
+    </div>
+  </div>
+
+  <div id="resultsSection">
+    <div class="results-grid" id="resultsGrid"></div>
+
+    <div class="card">
+      <div style="margin-bottom:0.75rem; font-size:0.875rem; font-weight:600">Growth Breakdown</div>
+      <div class="bar-wrap" id="barWrap"></div>
+      <div class="bar-legend" id="barLegend"></div>
+    </div>
+
+    <div class="card">
+      <details id="tableDetails">
+        <summary>Year-by-Year Breakdown</summary>
+        <div class="table-wrap" style="margin-top:0.75rem">
+          <table class="year-table">
+            <thead><tr><th>Year</th><th>Balance</th><th>Interest Earned</th><th>Total Deposited</th></tr></thead>
+            <tbody id="yearTableBody"></tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+function fmt(n) {
+  return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function calculate() {
+  const P = parseFloat(document.getElementById('principal').value) || 0;
+  const r = parseFloat(document.getElementById('rate').value) / 100 || 0;
+  const years = parseInt(document.getElementById('years').value) || 1;
+  const n = parseInt(document.getElementById('frequency').value) || 12;
+  const mc = parseFloat(document.getElementById('contribution').value) || 0;
+
+  let balance = P;
+  const yearData = [];
+  let totalInterest = 0;
+  let totalDeposited = P;
+
+  for (let y = 1; y <= years; y++) {
+    let yearInterest = 0;
+    for (let p = 0; p < n; p++) {
+      const interest = balance * (r / n);
+      yearInterest += interest;
+      balance += interest + mc;
+      totalDeposited += mc;
+    }
+    totalInterest += yearInterest;
+    yearData.push({ year: y, balance, yearInterest, totalDeposited });
+  }
+
+  const finalBalance = balance;
+  const totalContributions = totalDeposited - P;
+  const interestPct = finalBalance > 0 ? (totalInterest / finalBalance * 100) : 0;
+
+  document.getElementById('resultsGrid').innerHTML = `
+    <div class="result-card">
+      <div class="label">Final Balance</div>
+      <div class="value">${fmt(finalBalance)}</div>
+    </div>
+    <div class="result-card">
+      <div class="label">Total Contributions</div>
+      <div class="value" style="color:#0f766e">${fmt(totalContributions + P)}</div>
+      <div class="sub">Principal + monthly</div>
+    </div>
+    <div class="result-card">
+      <div class="label">Interest Earned</div>
+      <div class="value" style="color:#16a34a">${fmt(totalInterest)}</div>
+    </div>
+    <div class="result-card">
+      <div class="label">Interest % of Final</div>
+      <div class="value" style="color:#7c3aed">${interestPct.toFixed(1)}%</div>
+    </div>
+  `;
+
+  const pctP = (P / finalBalance) * 100;
+  const pctC = (totalContributions / finalBalance) * 100;
+  const pctI = (totalInterest / finalBalance) * 100;
+
+  document.getElementById('barWrap').innerHTML = `
+    <div class="bar-principal" style="width:${pctP.toFixed(2)}%"></div>
+    <div class="bar-contributions" style="width:${pctC.toFixed(2)}%"></div>
+    <div class="bar-interest" style="width:${pctI.toFixed(2)}%"></div>
+  `;
+  document.getElementById('barLegend').innerHTML = `
+    <div style="display:flex;align-items:center;gap:0.4rem"><div class="leg-dot" style="background:#1d4ed8"></div><span>Principal (${fmt(P)})</span></div>
+    <div style="display:flex;align-items:center;gap:0.4rem"><div class="leg-dot" style="background:#0f766e"></div><span>Contributions (${fmt(totalContributions)})</span></div>
+    <div style="display:flex;align-items:center;gap:0.4rem"><div class="leg-dot" style="background:#16a34a"></div><span>Interest (${fmt(totalInterest)})</span></div>
+  `;
+
+  const tbody = document.getElementById('yearTableBody');
+  tbody.innerHTML = yearData.map(row => `
+    <tr>
+      <td>${row.year}</td>
+      <td>${fmt(row.balance)}</td>
+      <td>${fmt(row.yearInterest)}</td>
+      <td>${fmt(row.totalDeposited)}</td>
+    </tr>
+  `).join('');
+}
+
+['principal','rate','years','frequency','contribution'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calculate);
+});
+
+calculate();
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Formatter</title>
+<style>
+:root { --primary: #2563eb; --primary-h: #1d4ed8; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 1100px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+select { padding: 0.45rem 0.65rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.875rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+select:focus { border-color: var(--primary); }
+.status { padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; margin-top: 0.75rem; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+
+.editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 700px) { .editor-grid { grid-template-columns: 1fr; } }
+
+.editor-panel { display: flex; flex-direction: column; }
+.editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.editor-header span { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.editor-stats { font-size: 0.75rem; color: var(--muted); }
+textarea {
+  width: 100%; height: 400px; padding: 0.75rem; border: 1px solid var(--border);
+  border-radius: 0.5rem; font-size: 0.82rem; font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  background: #f8fafc; color: var(--text); outline: none; resize: vertical; line-height: 1.5;
+}
+textarea:focus { border-color: var(--primary); background: #fff; }
+
+.toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.toolbar label { margin: 0; }
+
+.divider { width: 1px; height: 28px; background: var(--border); margin: 0 0.25rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>CSS Formatter</h1>
+    <p>Beautify or minify your CSS code instantly.</p>
+  </header>
+
+  <div class="card">
+    <div class="toolbar">
+      <label style="margin:0; display:inline; white-space:nowrap">Indent:</label>
+      <select id="indentSelect">
+        <option value="2">2 Spaces</option>
+        <option value="4">4 Spaces</option>
+      </select>
+      <div class="divider"></div>
+      <button class="btn btn-primary" id="formatBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg>
+        Format (Beautify)
+      </button>
+      <button class="btn btn-ghost" id="minifyBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5"/></svg>
+        Minify
+      </button>
+      <div class="divider"></div>
+      <button class="btn btn-ghost" id="copyBtn">Copy Output</button>
+      <button class="btn btn-ghost" id="clearBtn">Clear</button>
+    </div>
+
+    <div class="editor-grid">
+      <div class="editor-panel">
+        <div class="editor-header">
+          <span>Input CSS</span>
+          <span class="editor-stats" id="inputStats">0 chars, 0 lines</span>
+        </div>
+        <textarea id="inputCss" placeholder="Paste your CSS here..."></textarea>
+      </div>
+      <div class="editor-panel">
+        <div class="editor-header">
+          <span>Output CSS</span>
+          <span class="editor-stats" id="outputStats">0 chars, 0 lines</span>
+        </div>
+        <textarea id="outputCss" readonly placeholder="Formatted CSS will appear here..."></textarea>
+      </div>
+    </div>
+    <div id="status"></div>
+  </div>
+</div>
+
+<script>
+const inputCss = document.getElementById('inputCss');
+const outputCss = document.getElementById('outputCss');
+const statusEl = document.getElementById('status');
+
+function countStats(text) {
+  return `${text.length} chars, ${text.split('\n').length} lines`;
+}
+
+inputCss.addEventListener('input', () => {
+  document.getElementById('inputStats').textContent = countStats(inputCss.value);
+});
+
+outputCss.addEventListener('input', () => {
+  document.getElementById('outputStats').textContent = countStats(outputCss.value);
+});
+
+async function callApi(endpoint) {
+  const css = inputCss.value.trim();
+  if (!css) { statusEl.innerHTML = '<div class="status error">Please enter some CSS first.</div>'; return; }
+  const indent = document.getElementById('indentSelect').value;
+  statusEl.innerHTML = '';
+  try {
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ css, indent })
+    });
+    const data = await resp.json();
+    if (!resp.ok || data.error) throw new Error(data.error || 'Failed');
+    outputCss.value = data.result;
+    document.getElementById('outputStats').textContent = countStats(data.result);
+    statusEl.innerHTML = '<div class="status success">Done!</div>';
+    setTimeout(() => statusEl.innerHTML = '', 2000);
+  } catch (err) {
+    statusEl.innerHTML = `<div class="status error">${err.message}</div>`;
+  }
+}
+
+document.getElementById('formatBtn').addEventListener('click', () => callApi('api/format'));
+document.getElementById('minifyBtn').addEventListener('click', () => callApi('api/minify'));
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  if (!outputCss.value) return;
+  navigator.clipboard.writeText(outputCss.value).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Output', 1500);
+  });
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  inputCss.value = '';
+  outputCss.value = '';
+  statusEl.innerHTML = '';
+  document.getElementById('inputStats').textContent = '0 chars, 0 lines';
+  document.getElementById('outputStats').textContent = '0 chars, 0 lines';
+});
+</script>
+</body>
+</html>

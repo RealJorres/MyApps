@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Case Converter</title>
+<style>
+:root { --primary: #d97706; --primary-h: #b45309; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-copy { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-copy:hover { background: var(--border); }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.95rem; background: #fff; color: var(--text); outline: none; font-family: inherit; resize: vertical; }
+textarea:focus { border-color: var(--primary); }
+
+.stats-bar { display: flex; gap: 1rem; font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; }
+.stats-bar span strong { color: var(--text); }
+
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.875rem; }
+
+.result-box { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+.result-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.result-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--primary); }
+.result-text { font-size: 0.875rem; color: var(--text); word-break: break-all; min-height: 1.5rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Text Case Converter</h1>
+    <p>Convert text to any case format instantly as you type.</p>
+  </header>
+
+  <div class="card">
+    <label>Input Text</label>
+    <textarea id="inputText" rows="5" placeholder="Type or paste your text here..."></textarea>
+    <div class="stats-bar">
+      <span>Characters: <strong id="charCount">0</strong></span>
+      <span>Words: <strong id="wordCount">0</strong></span>
+    </div>
+  </div>
+
+  <div class="results-grid" id="resultsGrid"></div>
+</div>
+
+<script>
+const conversions = [
+  { id: 'lowercase',    label: 'lowercase',           fn: s => s.toLowerCase() },
+  { id: 'uppercase',    label: 'UPPERCASE',            fn: s => s.toUpperCase() },
+  { id: 'titlecase',    label: 'Title Case',           fn: s => s.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()) },
+  { id: 'sentencecase', label: 'Sentence case',        fn: s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() },
+  { id: 'camelcase',    label: 'camelCase',            fn: s => s.replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase()).replace(/^(.)/, c => c.toLowerCase()) },
+  { id: 'pascalcase',   label: 'PascalCase',           fn: s => s.replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase()).replace(/^(.)/, c => c.toUpperCase()) },
+  { id: 'snakecase',    label: 'snake_case',           fn: s => s.trim().replace(/[^a-zA-Z0-9]+/g, '_').replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase() },
+  { id: 'kebabcase',    label: 'kebab-case',           fn: s => s.trim().replace(/[^a-zA-Z0-9]+/g, '-').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase() },
+  { id: 'screamingsnake', label: 'SCREAMING_SNAKE',   fn: s => s.trim().replace(/[^a-zA-Z0-9]+/g, '_').replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase() },
+  { id: 'dotcase',      label: 'dot.case',             fn: s => s.trim().replace(/[^a-zA-Z0-9]+/g, '.').replace(/([a-z])([A-Z])/g, '$1.$2').toLowerCase() },
+];
+
+const grid = document.getElementById('resultsGrid');
+
+function buildGrid() {
+  grid.innerHTML = '';
+  conversions.forEach(conv => {
+    const box = document.createElement('div');
+    box.className = 'result-box';
+    box.innerHTML = `
+      <div class="result-box-header">
+        <span class="result-label">${conv.label}</span>
+        <button class="btn btn-copy" data-id="${conv.id}">Copy</button>
+      </div>
+      <div class="result-text" id="result-${conv.id}"></div>
+    `;
+    box.querySelector('.btn-copy').addEventListener('click', function() {
+      const text = document.getElementById('result-' + this.dataset.id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = this.textContent;
+        this.textContent = 'Copied!';
+        setTimeout(() => this.textContent = orig, 1200);
+      });
+    });
+    grid.appendChild(box);
+  });
+}
+
+function updateAll() {
+  const input = document.getElementById('inputText').value;
+  document.getElementById('charCount').textContent = input.length;
+  document.getElementById('wordCount').textContent = input.trim() ? input.trim().split(/\s+/).length : 0;
+  conversions.forEach(conv => {
+    const el = document.getElementById('result-' + conv.id);
+    if (el) el.textContent = input ? conv.fn(input) : '';
+  });
+}
+
+document.getElementById('inputText').addEventListener('input', updateAll);
+
+buildGrid();
+updateAll();
+</script>
+</body>
+</html>

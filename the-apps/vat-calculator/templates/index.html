@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAT Calculator</title>
+<style>
+:root { --primary: #059669; --primary-h: #047857; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 600px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=number], input[type=text] { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus { border-color: var(--primary); }
+
+.mode-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+.mode-tab { flex: 1; padding: 0.6rem; border: none; background: none; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; text-align: center; transition: color 0.1s, border-color 0.1s; }
+.mode-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.field { margin-bottom: 1rem; }
+.preset-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.preset-btn { padding: 0.3rem 0.6rem; border: 1px solid var(--border); border-radius: 0.375rem; background: var(--bg); cursor: pointer; font-size: 0.78rem; font-weight: 600; color: var(--text); transition: all 0.1s; }
+.preset-btn:hover, .preset-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.amount-row { display: flex; gap: 0.5rem; }
+.amount-row input[type=text] { width: 60px; flex-shrink: 0; text-align: center; font-weight: 700; }
+.amount-row input[type=number] { flex: 1; }
+
+.results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
+.res-card { background: var(--bg); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; text-align: center; }
+.res-card .res-label { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.res-card .res-value { font-size: 1.3rem; font-weight: 800; }
+.res-card.highlight { background: var(--success-bg); border-color: #86efac; }
+.res-card.highlight .res-value { color: var(--success-fg); }
+
+.formula-box { background: var(--bg); border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.85rem; text-align: center; color: var(--muted); }
+.formula-box strong { color: var(--text); }
+.formula-box .plus { color: var(--primary); font-weight: 800; margin: 0 0.35rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>VAT Calculator</h1>
+    <p>Add or remove tax from any amount instantly.</p>
+  </header>
+
+  <div class="card">
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="add">Add Tax</button>
+      <button class="mode-tab" data-mode="remove">Remove Tax</button>
+    </div>
+
+    <div class="field">
+      <label id="amountLabel">Net Amount (before tax)</label>
+      <div class="amount-row">
+        <input type="text" id="currencySymbol" value="$" maxlength="3">
+        <input type="number" id="amount" value="100" min="0" step="0.01">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Tax Rate (%)</label>
+      <input type="number" id="taxRate" value="20" min="0" max="100" step="0.1">
+      <div class="preset-row" id="presetRow">
+        <button class="preset-btn" data-rate="5">5%</button>
+        <button class="preset-btn" data-rate="10">10%</button>
+        <button class="preset-btn" data-rate="15">15%</button>
+        <button class="preset-btn active" data-rate="20">20%</button>
+        <button class="preset-btn" data-rate="21">21%</button>
+        <button class="preset-btn" data-rate="23">23%</button>
+        <button class="preset-btn" data-rate="25">25%</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-grid" id="resultsGrid"></div>
+  <div class="card" style="padding:1rem">
+    <div class="formula-box" id="formulaBox"></div>
+  </div>
+</div>
+
+<script>
+let mode = 'add';
+
+document.querySelectorAll('.mode-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    mode = this.dataset.mode;
+    document.getElementById('amountLabel').textContent = mode === 'add' ? 'Net Amount (before tax)' : 'Gross Amount (with tax)';
+    calculate();
+  });
+});
+
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('taxRate').value = this.dataset.rate;
+    calculate();
+  });
+});
+
+document.getElementById('taxRate').addEventListener('input', function() {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  const matching = document.querySelector(`.preset-btn[data-rate="${this.value}"]`);
+  if (matching) matching.classList.add('active');
+  calculate();
+});
+
+['amount', 'currencySymbol'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calculate);
+});
+
+function fmt(sym, n) {
+  return sym + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function calculate() {
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const rate = parseFloat(document.getElementById('taxRate').value) || 0;
+  const sym = document.getElementById('currencySymbol').value || '$';
+
+  let net, tax, gross;
+  if (mode === 'add') {
+    net = amount;
+    tax = net * (rate / 100);
+    gross = net + tax;
+  } else {
+    gross = amount;
+    net = gross / (1 + rate / 100);
+    tax = gross - net;
+  }
+
+  const grid = document.getElementById('resultsGrid');
+  if (mode === 'add') {
+    grid.innerHTML = `
+      <div class="res-card"><div class="res-label">Net (ex-tax)</div><div class="res-value">${fmt(sym, net)}</div></div>
+      <div class="res-card"><div class="res-label">Tax Amount</div><div class="res-value" style="color:var(--primary)">${fmt(sym, tax)}</div></div>
+      <div class="res-card highlight"><div class="res-label">Gross (with tax)</div><div class="res-value">${fmt(sym, gross)}</div></div>
+    `;
+    document.getElementById('formulaBox').innerHTML = `<strong>${fmt(sym, net)}</strong> <span class="plus">+</span> <strong>${fmt(sym, tax)}</strong> <span class="plus">=</span> <strong>${fmt(sym, gross)}</strong><br><span style="font-size:0.78rem">Net + Tax (${rate}%) = Gross</span>`;
+  } else {
+    grid.innerHTML = `
+      <div class="res-card highlight"><div class="res-label">Net (ex-tax)</div><div class="res-value">${fmt(sym, net)}</div></div>
+      <div class="res-card"><div class="res-label">Tax Amount</div><div class="res-value" style="color:var(--primary)">${fmt(sym, tax)}</div></div>
+      <div class="res-card"><div class="res-label">Gross (with tax)</div><div class="res-value">${fmt(sym, gross)}</div></div>
+    `;
+    document.getElementById('formulaBox').innerHTML = `<strong>${fmt(sym, net)}</strong> <span class="plus">+</span> <strong>${fmt(sym, tax)}</strong> <span class="plus">=</span> <strong>${fmt(sym, gross)}</strong><br><span style="font-size:0.78rem">Net + Tax (${rate}%) = Gross</span>`;
+  }
+}
+
+calculate();
+</script>
+</body>
+</html>

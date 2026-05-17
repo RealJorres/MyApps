@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cipher Tool</title>
+<style>
+:root { --primary: #7c3aed; --primary-h: #6d28d9; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+.btn-teal { background: #0f766e; color: #fff; } .btn-teal:hover { background: #0d6b63; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=text], input[type=number], textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus { border-color: var(--primary); }
+textarea { resize: vertical; min-height: 90px; font-family: monospace; }
+
+.cipher-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
+.cipher-tab { padding: 0.6rem 1.1rem; border: none; background: none; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; transition: color 0.1s, border-color 0.1s; }
+.cipher-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.cipher-panel { display: none; }
+.cipher-panel.active { display: block; }
+
+.cipher-io { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+@media (max-width: 600px) { .cipher-io { grid-template-columns: 1fr; } }
+
+.io-box { display: flex; flex-direction: column; gap: 0.4rem; }
+.io-header { display: flex; justify-content: space-between; align-items: center; }
+.io-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+
+.cipher-option { margin-bottom: 0.75rem; }
+.cipher-option label { margin-bottom: 0.3rem; }
+
+.morse-char { display: inline-block; font-family: monospace; }
+.audio-btn { background: var(--primary); color: #fff; border: none; border-radius: 0.375rem; padding: 0.4rem 0.75rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; }
+.audio-btn:hover { background: var(--primary-h); }
+.audio-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Cipher Tool</h1>
+    <p>Encode and decode classic ciphers. All conversions happen instantly in your browser.</p>
+  </header>
+
+  <div class="card">
+    <div class="cipher-tabs">
+      <button class="cipher-tab active" data-tab="rot13">ROT13</button>
+      <button class="cipher-tab" data-tab="caesar">Caesar</button>
+      <button class="cipher-tab" data-tab="atbash">Atbash</button>
+      <button class="cipher-tab" data-tab="vigenere">Vigenere</button>
+      <button class="cipher-tab" data-tab="morse">Morse Code</button>
+    </div>
+
+    <!-- ROT13 -->
+    <div class="cipher-panel active" id="panel-rot13">
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem">ROT13 shifts each letter 13 places. It is its own inverse — apply again to decode.</p>
+      <div class="cipher-io">
+        <div class="io-box">
+          <div class="io-header"><span class="io-label">Input</span></div>
+          <textarea id="rot13-input" placeholder="Type here…" rows="5"></textarea>
+        </div>
+        <div class="io-box">
+          <div class="io-header">
+            <span class="io-label">Output</span>
+            <button class="btn btn-ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem" onclick="copyText('rot13-output')">Copy</button>
+          </div>
+          <textarea id="rot13-output" readonly rows="5"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Caesar -->
+    <div class="cipher-panel" id="panel-caesar">
+      <div class="cipher-option">
+        <label>Shift (0–25): <strong id="caesarShiftVal">3</strong></label>
+        <input type="range" id="caesarShift" min="0" max="25" value="3" style="width:200px">
+      </div>
+      <div class="cipher-io">
+        <div class="io-box">
+          <div class="io-header"><span class="io-label">Input</span></div>
+          <textarea id="caesar-input" placeholder="Type here…" rows="5"></textarea>
+        </div>
+        <div class="io-box">
+          <div class="io-header">
+            <span class="io-label">Output</span>
+            <button class="btn btn-ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem" onclick="copyText('caesar-output')">Copy</button>
+          </div>
+          <textarea id="caesar-output" readonly rows="5"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="caesarApply(1)">Encode</button>
+        <button class="btn btn-ghost" onclick="caesarApply(-1)">Decode</button>
+      </div>
+    </div>
+
+    <!-- Atbash -->
+    <div class="cipher-panel" id="panel-atbash">
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem">Atbash reverses the alphabet: A becomes Z, B becomes Y, etc. Symmetric — same operation for encode/decode.</p>
+      <div class="cipher-io">
+        <div class="io-box">
+          <div class="io-header"><span class="io-label">Input</span></div>
+          <textarea id="atbash-input" placeholder="Type here…" rows="5"></textarea>
+        </div>
+        <div class="io-box">
+          <div class="io-header">
+            <span class="io-label">Output</span>
+            <button class="btn btn-ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem" onclick="copyText('atbash-output')">Copy</button>
+          </div>
+          <textarea id="atbash-output" readonly rows="5"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vigenere -->
+    <div class="cipher-panel" id="panel-vigenere">
+      <div class="cipher-option" style="max-width:300px">
+        <label>Keyword</label>
+        <input type="text" id="vigKeyword" placeholder="e.g. SECRET" value="KEY">
+      </div>
+      <div class="cipher-io">
+        <div class="io-box">
+          <div class="io-header"><span class="io-label">Input</span></div>
+          <textarea id="vig-input" placeholder="Type here…" rows="5"></textarea>
+        </div>
+        <div class="io-box">
+          <div class="io-header">
+            <span class="io-label">Output</span>
+            <button class="btn btn-ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem" onclick="copyText('vig-output')">Copy</button>
+          </div>
+          <textarea id="vig-output" readonly rows="5"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="vigApply(1)">Encode</button>
+        <button class="btn btn-ghost" onclick="vigApply(-1)">Decode</button>
+      </div>
+    </div>
+
+    <!-- Morse -->
+    <div class="cipher-panel" id="panel-morse">
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem">Convert between text and Morse code. Use the audio button to hear the Morse beeps.</p>
+      <div class="cipher-io">
+        <div class="io-box">
+          <div class="io-header"><span class="io-label">Text</span></div>
+          <textarea id="morse-text" placeholder="Type text here…" rows="5"></textarea>
+        </div>
+        <div class="io-box">
+          <div class="io-header">
+            <span class="io-label">Morse Code</span>
+            <button class="btn btn-ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem" onclick="copyText('morse-code')">Copy</button>
+          </div>
+          <textarea id="morse-code" placeholder="Or type Morse here (dots/dashes, space between letters, / between words)…" rows="5"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="morseEncode()">Text to Morse</button>
+        <button class="btn btn-ghost" onclick="morseDecode()">Morse to Text</button>
+        <button class="audio-btn" id="morsePlayBtn" onclick="playMorse()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Play Morse
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Tab switching ---
+document.querySelectorAll('.cipher-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.cipher-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.cipher-panel').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+  });
+});
+
+function copyText(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.value);
+}
+
+// --- ROT13 ---
+function rot13(s) {
+  return s.replace(/[a-zA-Z]/g, c => {
+    const base = c <= 'Z' ? 65 : 97;
+    return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+  });
+}
+document.getElementById('rot13-input').addEventListener('input', function() {
+  document.getElementById('rot13-output').value = rot13(this.value);
+});
+
+// --- Caesar ---
+let caesarDirection = 1;
+function caesarApply(dir) {
+  caesarDirection = dir;
+  const input = document.getElementById('caesar-input').value;
+  const shift = parseInt(document.getElementById('caesarShift').value);
+  document.getElementById('caesar-output').value = caesarShift(input, shift * dir);
+}
+function caesarShift(s, n) {
+  return s.replace(/[a-zA-Z]/g, c => {
+    const base = c <= 'Z' ? 65 : 97;
+    return String.fromCharCode(((c.charCodeAt(0) - base + n + 260) % 26) + base);
+  });
+}
+document.getElementById('caesarShift').addEventListener('input', function() {
+  document.getElementById('caesarShiftVal').textContent = this.value;
+  const input = document.getElementById('caesar-input').value;
+  if (input) document.getElementById('caesar-output').value = caesarShift(input, parseInt(this.value) * caesarDirection);
+});
+document.getElementById('caesar-input').addEventListener('input', function() {
+  const shift = parseInt(document.getElementById('caesarShift').value);
+  document.getElementById('caesar-output').value = caesarShift(this.value, shift * caesarDirection);
+});
+
+// --- Atbash ---
+function atbash(s) {
+  return s.replace(/[a-zA-Z]/g, c => {
+    const base = c <= 'Z' ? 65 : 97;
+    return String.fromCharCode(base + (25 - (c.charCodeAt(0) - base)));
+  });
+}
+document.getElementById('atbash-input').addEventListener('input', function() {
+  document.getElementById('atbash-output').value = atbash(this.value);
+});
+
+// --- Vigenere ---
+function vigenere(text, key, encode) {
+  if (!key.trim()) return text;
+  key = key.toUpperCase().replace(/[^A-Z]/g,'');
+  if (!key) return text;
+  let ki = 0;
+  return text.replace(/[a-zA-Z]/g, c => {
+    const base = c <= 'Z' ? 65 : 97;
+    const k = key.charCodeAt(ki % key.length) - 65;
+    ki++;
+    const shift = encode ? k : (26 - k);
+    return String.fromCharCode(((c.charCodeAt(0) - base + shift) % 26) + base);
+  });
+}
+function vigApply(dir) {
+  const text = document.getElementById('vig-input').value;
+  const key = document.getElementById('vigKeyword').value;
+  document.getElementById('vig-output').value = vigenere(text, key, dir === 1);
+}
+document.getElementById('vig-input').addEventListener('input', () => vigApply(1));
+document.getElementById('vigKeyword').addEventListener('input', () => vigApply(1));
+
+// --- Morse ---
+const MORSE_MAP = {
+  'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..',
+  '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.',
+  ' ':'/',' ':'/','.'.'.-.-.-',',':'--..--','?':'..--..','!':'-.-.--',':':'---...',';':'-.-.-.','(':'-.--.',')':'-.--.-','-':'-....-','_':'..--.-','"':'.-..-.','@':'.--.-.','&':'.-...','=':'-...-','+':'.-.-.',"'":'----.','/':'-..-.','$':'...-..-'
+};
+const REVERSE_MORSE = {};
+Object.entries(MORSE_MAP).forEach(([k,v]) => { if (!REVERSE_MORSE[v]) REVERSE_MORSE[v] = k; });
+
+function morseEncode() {
+  const text = document.getElementById('morse-text').value.toUpperCase();
+  const result = text.split('').map(c => MORSE_MAP[c] || (c === ' ' ? '/' : '')).filter(Boolean).join(' ');
+  document.getElementById('morse-code').value = result;
+}
+function morseDecode() {
+  const morse = document.getElementById('morse-code').value.trim();
+  const words = morse.split(' / ');
+  const result = words.map(word => {
+    return word.split(' ').map(code => REVERSE_MORSE[code] || '?').join('');
+  }).join(' ');
+  document.getElementById('morse-text').value = result.toLowerCase();
+}
+
+// --- Morse Audio ---
+let audioCtx = null;
+let morseStop = false;
+
+async function playMorse() {
+  const btn = document.getElementById('morsePlayBtn');
+  if (audioCtx) { morseStop = true; btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Play Morse'; audioCtx = null; return; }
+
+  const morse = document.getElementById('morse-code').value.trim();
+  if (!morse) { morseEncode(); }
+  const code = document.getElementById('morse-code').value.trim();
+  if (!code) return;
+
+  morseStop = false;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Stop';
+  btn.disabled = false;
+
+  const dotDur = 0.08;
+  const freq = 600;
+  let time = audioCtx.currentTime + 0.05;
+
+  function beep(dur) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.4, time);
+    gain.gain.setValueAtTime(0, time + dur);
+    osc.start(time); osc.stop(time + dur);
+    time += dur + dotDur;
+  }
+
+  const symbols = code.split(' ');
+  symbols.forEach(sym => {
+    if (sym === '/') { time += dotDur * 4; return; }
+    sym.split('').forEach(ch => {
+      if (ch === '.') { beep(dotDur); }
+      else if (ch === '-') { beep(dotDur * 3); }
+    });
+    time += dotDur * 3;
+  });
+
+  const totalDur = (time - audioCtx.currentTime) * 1000 + 200;
+  setTimeout(() => {
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Play Morse';
+    audioCtx = null;
+  }, totalDur);
+}
+</script>
+</body>
+</html>

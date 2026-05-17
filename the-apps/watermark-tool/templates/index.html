@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watermark Tool</title>
+<style>
+:root { --primary: #0891b2; --primary-h: #0e7490; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=text], input[type=number], input[type=url], input[type=email], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+.status { padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; margin-top: 0.75rem; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+
+.drop-zone {
+  border: 2px dashed var(--border); border-radius: 0.75rem; padding: 2rem;
+  text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--bg);
+}
+.drop-zone.drag-over { border-color: var(--primary); background: #e0f7fa; }
+.drop-zone svg { width: 40px; height: 40px; margin-bottom: 0.5rem; color: var(--muted); }
+.drop-zone h3 { font-size: 0.95rem; font-weight: 600; }
+.drop-zone p { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+.field { margin-bottom: 1rem; }
+.slider-row { display: flex; align-items: center; gap: 0.75rem; }
+.slider-row input[type=range] { flex: 1; }
+.slider-val { min-width: 2.5rem; text-align: right; font-size: 0.875rem; font-weight: 600; color: var(--text); }
+
+.position-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+.pos-btn {
+  padding: 0.45rem; border: 1px solid var(--border); border-radius: 0.375rem;
+  background: var(--bg); cursor: pointer; font-size: 0.7rem; text-align: center;
+  transition: background 0.1s, border-color 0.1s; color: var(--text);
+}
+.pos-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.preview-wrap { position: relative; display: inline-block; max-width: 100%; }
+.preview-wrap img { max-width: 100%; max-height: 300px; border-radius: 0.5rem; display: block; }
+.wm-overlay {
+  position: absolute; pointer-events: none;
+  font-weight: bold; white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+.format-tabs { display: flex; gap: 0.4rem; }
+.fmt-btn { padding: 0.35rem 0.75rem; border: 1px solid var(--border); border-radius: 0.375rem; background: var(--bg); cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.fmt-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Watermark Tool</h1>
+    <p>Add a text watermark to any image. Customize position, opacity, and style.</p>
+  </header>
+
+  <div class="card">
+    <div class="drop-zone" id="dropZone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+      </svg>
+      <h3>Drop image here or click to browse</h3>
+      <p>PNG, JPG, WEBP supported</p>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div id="previewSection" style="display:none; margin-top:1rem; text-align:center">
+      <div class="preview-wrap" id="previewWrap">
+        <img id="previewImg" src="" alt="Preview">
+        <div class="wm-overlay" id="wmOverlay">WATERMARK</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="optionsCard" style="display:none">
+    <div class="two-col">
+      <div>
+        <div class="field">
+          <label>Watermark Text</label>
+          <input type="text" id="wmText" value="WATERMARK" placeholder="Enter watermark text">
+        </div>
+        <div class="field">
+          <label>Font Size — <span id="sizeVal">48</span>px</label>
+          <div class="slider-row">
+            <input type="range" id="sizeSlider" min="10" max="200" value="48">
+          </div>
+        </div>
+        <div class="field">
+          <label>Opacity — <span id="opacityVal">40</span>%</label>
+          <div class="slider-row">
+            <input type="range" id="opacitySlider" min="10" max="100" value="40">
+          </div>
+        </div>
+        <div class="field">
+          <label>Text Color</label>
+          <div style="display:flex; gap:0.5rem; align-items:center">
+            <input type="color" id="colorPicker" value="#ffffff" style="width:48px;height:36px;padding:2px;border-radius:0.375rem;border:1px solid var(--border);cursor:pointer;background:#fff">
+            <input type="text" id="colorHex" value="#ffffff" style="flex:1">
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label>Position</label>
+          <div class="position-grid" id="posGrid">
+            <button class="pos-btn" data-pos="top-left">↖ Top Left</button>
+            <button class="pos-btn" data-pos="top-center">↑ Top Center</button>
+            <button class="pos-btn" data-pos="top-right">↗ Top Right</button>
+            <button class="pos-btn" data-pos="left" style="display:none"></button>
+            <button class="pos-btn active" data-pos="center">✦ Center</button>
+            <button class="pos-btn" data-pos="right" style="display:none"></button>
+            <button class="pos-btn" data-pos="bottom-left">↙ Bottom Left</button>
+            <button class="pos-btn" data-pos="bottom-center">↓ Bottom Center</button>
+            <button class="pos-btn" data-pos="bottom-right">↘ Bottom Right</button>
+          </div>
+        </div>
+        <div class="field" style="margin-top:1rem">
+          <label>Output Format</label>
+          <div class="format-tabs">
+            <button class="fmt-btn active" data-fmt="PNG">PNG</button>
+            <button class="fmt-btn" data-fmt="JPEG">JPEG</button>
+            <button class="fmt-btn" data-fmt="WEBP">WEBP</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:0.75rem; margin-top:0.5rem; flex-wrap:wrap">
+      <button class="btn btn-primary" id="applyBtn">Apply Watermark &amp; Download</button>
+      <button class="btn btn-ghost" id="resetBtn">Clear</button>
+    </div>
+    <div id="status"></div>
+  </div>
+</div>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const previewSection = document.getElementById('previewSection');
+const optionsCard = document.getElementById('optionsCard');
+const previewImg = document.getElementById('previewImg');
+const wmOverlay = document.getElementById('wmOverlay');
+const previewWrap = document.getElementById('previewWrap');
+const statusEl = document.getElementById('status');
+
+let selectedFile = null;
+let selectedPos = 'center';
+let selectedFmt = 'PNG';
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) loadFile(f);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+
+function loadFile(f) {
+  selectedFile = f;
+  const reader = new FileReader();
+  reader.onload = e => {
+    previewImg.src = e.target.result;
+    previewSection.style.display = 'block';
+    optionsCard.style.display = 'block';
+    updateOverlay();
+  };
+  reader.readAsDataURL(f);
+}
+
+function updateOverlay() {
+  const text = document.getElementById('wmText').value || 'WATERMARK';
+  const size = document.getElementById('sizeSlider').value;
+  const opacity = document.getElementById('opacitySlider').value / 100;
+  const color = document.getElementById('colorPicker').value;
+
+  wmOverlay.textContent = text;
+  wmOverlay.style.fontSize = Math.max(10, Math.round(size * previewImg.clientWidth / (previewImg.naturalWidth || 800))) + 'px';
+  wmOverlay.style.color = color;
+  wmOverlay.style.opacity = opacity;
+
+  const positions = {
+    'center':        { top: '50%', left: '50%', transform: 'translate(-50%,-50%)' },
+    'top-left':      { top: '5%', left: '3%', transform: 'none' },
+    'top-center':    { top: '5%', left: '50%', transform: 'translateX(-50%)' },
+    'top-right':     { top: '5%', right: '3%', left: 'auto', transform: 'none' },
+    'bottom-left':   { bottom: '5%', top: 'auto', left: '3%', transform: 'none' },
+    'bottom-center': { bottom: '5%', top: 'auto', left: '50%', transform: 'translateX(-50%)' },
+    'bottom-right':  { bottom: '5%', top: 'auto', right: '3%', left: 'auto', transform: 'none' },
+  };
+  const p = positions[selectedPos] || positions['center'];
+  wmOverlay.style.top = p.top || 'auto';
+  wmOverlay.style.bottom = p.bottom || 'auto';
+  wmOverlay.style.left = p.left || 'auto';
+  wmOverlay.style.right = p.right || 'auto';
+  wmOverlay.style.transform = p.transform || 'none';
+}
+
+document.getElementById('wmText').addEventListener('input', updateOverlay);
+document.getElementById('sizeSlider').addEventListener('input', function() {
+  document.getElementById('sizeVal').textContent = this.value;
+  updateOverlay();
+});
+document.getElementById('opacitySlider').addEventListener('input', function() {
+  document.getElementById('opacityVal').textContent = this.value;
+  updateOverlay();
+});
+document.getElementById('colorPicker').addEventListener('input', function() {
+  document.getElementById('colorHex').value = this.value;
+  updateOverlay();
+});
+document.getElementById('colorHex').addEventListener('input', function() {
+  if (/^#[0-9a-fA-F]{6}$/.test(this.value)) {
+    document.getElementById('colorPicker').value = this.value;
+    updateOverlay();
+  }
+});
+
+document.querySelectorAll('.pos-btn').forEach(btn => {
+  if (btn.dataset.pos && !['left','right'].includes(btn.dataset.pos)) {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedPos = btn.dataset.pos;
+      updateOverlay();
+    });
+  }
+});
+
+document.querySelectorAll('.fmt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedFmt = btn.dataset.fmt;
+  });
+});
+
+previewImg.addEventListener('load', updateOverlay);
+
+document.getElementById('applyBtn').addEventListener('click', async () => {
+  if (!selectedFile) return;
+  const btn = document.getElementById('applyBtn');
+  btn.disabled = true; btn.textContent = 'Processing…';
+  statusEl.innerHTML = '';
+  const fd = new FormData();
+  fd.append('image', selectedFile);
+  fd.append('text', document.getElementById('wmText').value || 'WATERMARK');
+  fd.append('position', selectedPos);
+  fd.append('opacity', document.getElementById('opacitySlider').value);
+  fd.append('size', document.getElementById('sizeSlider').value);
+  fd.append('color', document.getElementById('colorPicker').value);
+  fd.append('format', selectedFmt);
+  try {
+    const resp = await fetch('api/watermark', { method: 'POST', body: fd });
+    if (!resp.ok) {
+      const j = await resp.json();
+      throw new Error(j.error || 'Failed');
+    }
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const ext = selectedFmt === 'JPEG' ? 'jpg' : selectedFmt.toLowerCase();
+    a.download = 'watermarked.' + ext;
+    a.click();
+    URL.revokeObjectURL(url);
+    statusEl.innerHTML = '<div class="status success">Watermarked image downloaded!</div>';
+  } catch (err) {
+    statusEl.innerHTML = `<div class="status error">${err.message}</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Apply Watermark & Download';
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  selectedFile = null;
+  previewSection.style.display = 'none';
+  optionsCard.style.display = 'none';
+  statusEl.innerHTML = '';
+  fileInput.value = '';
+});
+</script>
+</body>
+</html>

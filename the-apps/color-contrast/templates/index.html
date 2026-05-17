@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Contrast Checker</title>
+<style>
+:root { --primary: #059669; --primary-h: #047857; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=text] { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus { border-color: var(--primary); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+.color-picker-group { display: flex; gap: 0.5rem; align-items: center; }
+.color-picker-group input[type=color] { width: 52px; height: 40px; padding: 2px; border-radius: 0.375rem; border: 1px solid var(--border); cursor: pointer; }
+.color-picker-group input[type=text] { flex: 1; }
+
+.ratio-display { text-align: center; padding: 1.5rem; }
+.ratio-number { font-size: 3.5rem; font-weight: 900; line-height: 1; }
+.ratio-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
+
+.preview-box { border-radius: 0.75rem; padding: 1.5rem; text-align: center; border: 1px solid var(--border); }
+.preview-normal { font-size: 1rem; margin-bottom: 0.5rem; }
+.preview-large { font-size: 1.5rem; font-weight: 700; }
+
+.wcag-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+@media (max-width: 500px) { .wcag-grid { grid-template-columns: repeat(2, 1fr); } }
+.wcag-badge {
+  border-radius: 0.5rem; padding: 0.65rem 0.5rem;
+  text-align: center; border: 1px solid var(--border);
+}
+.wcag-badge .badge-level { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 0.2rem; }
+.wcag-badge .badge-result { font-size: 1.1rem; font-weight: 800; }
+.wcag-badge.pass { background: var(--success-bg); border-color: #bbf7d0; }
+.wcag-badge.fail { background: var(--error-bg); border-color: #fecaca; }
+.wcag-badge.pass .badge-result { color: var(--success-fg); }
+.wcag-badge.fail .badge-result { color: var(--error-fg); }
+
+.luminance-row { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--muted); padding-top: 0.5rem; }
+.luminance-row span strong { color: var(--text); }
+
+.preset-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.preset-btn {
+  padding: 0.3rem 0.65rem; border-radius: 0.375rem; border: 1px solid var(--border);
+  font-size: 0.78rem; cursor: pointer; background: var(--bg); color: var(--text);
+  transition: background 0.1s;
+}
+.preset-btn:hover { background: var(--border); }
+
+.suggestion-box { background: var(--bg); border-radius: 0.5rem; padding: 0.75rem; font-size: 0.85rem; margin-top: 0.75rem; }
+.suggestion-box strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Color Contrast Checker</h1>
+    <p>Check WCAG accessibility compliance for foreground/background color pairs.</p>
+  </header>
+
+  <div class="card">
+    <div class="two-col">
+      <div>
+        <label>Foreground Color</label>
+        <div class="color-picker-group">
+          <input type="color" id="fgPicker" value="#1e293b">
+          <input type="text" id="fgHex" value="#1e293b" maxlength="7" placeholder="#000000">
+        </div>
+      </div>
+      <div>
+        <label>Background Color</label>
+        <div class="color-picker-group">
+          <input type="color" id="bgPicker" value="#ffffff">
+          <input type="text" id="bgHex" value="#ffffff" maxlength="7" placeholder="#ffffff">
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin: 0.75rem 0">
+      <button class="btn btn-ghost" id="swapBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+        Swap Colors
+      </button>
+    </div>
+
+    <div style="margin-top: 0.5rem">
+      <label>Presets</label>
+      <div class="preset-row">
+        <button class="preset-btn" data-fg="#000000" data-bg="#ffffff">Black / White</button>
+        <button class="preset-btn" data-fg="#ffffff" data-bg="#000000">White / Black</button>
+        <button class="preset-btn" data-fg="#6b7280" data-bg="#ffffff">Gray / White</button>
+        <button class="preset-btn" data-fg="#94a3b8" data-bg="#f1f5f9">Slate / Light</button>
+        <button class="preset-btn" data-fg="#1d4ed8" data-bg="#dbeafe">Blue / Light Blue</button>
+        <button class="preset-btn" data-fg="#dc2626" data-bg="#fef2f2">Red / Light Red</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="two-col" style="align-items:center">
+      <div class="ratio-display">
+        <div class="ratio-number" id="ratioDisplay">—</div>
+        <div class="ratio-label">Contrast Ratio</div>
+        <div class="luminance-row" style="justify-content:center">
+          <span>FG lum: <strong id="fgLum">—</strong></span>
+          <span>BG lum: <strong id="bgLum">—</strong></span>
+        </div>
+      </div>
+      <div class="preview-box" id="previewBox">
+        <div class="preview-normal" id="previewNormal">The quick brown fox jumps over the lazy dog</div>
+        <div class="preview-large" id="previewLarge">Large Bold Text</div>
+      </div>
+    </div>
+
+    <div class="wcag-grid" style="margin-top:1.25rem" id="wcagGrid">
+      <div class="wcag-badge" id="badge-aa-normal">
+        <div class="badge-level">AA Normal</div>
+        <div class="badge-result">—</div>
+      </div>
+      <div class="wcag-badge" id="badge-aa-large">
+        <div class="badge-level">AA Large</div>
+        <div class="badge-result">—</div>
+      </div>
+      <div class="wcag-badge" id="badge-aaa-normal">
+        <div class="badge-level">AAA Normal</div>
+        <div class="badge-result">—</div>
+      </div>
+      <div class="wcag-badge" id="badge-aaa-large">
+        <div class="badge-level">AAA Large</div>
+        <div class="badge-result">—</div>
+      </div>
+    </div>
+
+    <div class="suggestion-box" id="suggestionBox" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  if (hex.length !== 6) return null;
+  const n = parseInt(hex, 16);
+  if (isNaN(n)) return null;
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function relativeLuminance(r, g, b) {
+  const chan = [r, g, b].map(c => {
+    c = c / 255;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * chan[0] + 0.7152 * chan[1] + 0.0722 * chan[2];
+}
+
+function contrastRatio(l1, l2) {
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function update() {
+  const fg = hexToRgb(document.getElementById('fgHex').value);
+  const bg = hexToRgb(document.getElementById('bgHex').value);
+  if (!fg || !bg) return;
+
+  const fgL = relativeLuminance(fg.r, fg.g, fg.b);
+  const bgL = relativeLuminance(bg.r, bg.g, bg.b);
+  const ratio = contrastRatio(fgL, bgL);
+
+  document.getElementById('ratioDisplay').textContent = ratio.toFixed(2) + ':1';
+  document.getElementById('fgLum').textContent = fgL.toFixed(4);
+  document.getElementById('bgLum').textContent = bgL.toFixed(4);
+
+  const fgHex = document.getElementById('fgHex').value;
+  const bgHex = document.getElementById('bgHex').value;
+  const previewBox = document.getElementById('previewBox');
+  previewBox.style.backgroundColor = bgHex;
+  document.getElementById('previewNormal').style.color = fgHex;
+  document.getElementById('previewLarge').style.color = fgHex;
+
+  const thresholds = [
+    { id: 'badge-aa-normal', label: 'AA Normal', min: 4.5 },
+    { id: 'badge-aa-large', label: 'AA Large', min: 3.0 },
+    { id: 'badge-aaa-normal', label: 'AAA Normal', min: 7.0 },
+    { id: 'badge-aaa-large', label: 'AAA Large', min: 4.5 },
+  ];
+
+  let anyFail = false;
+  thresholds.forEach(t => {
+    const pass = ratio >= t.min;
+    if (!pass) anyFail = true;
+    const el = document.getElementById(t.id);
+    el.className = 'wcag-badge ' + (pass ? 'pass' : 'fail');
+    el.querySelector('.badge-result').textContent = pass ? '✓ Pass' : '✗ Fail';
+  });
+
+  const suggBox = document.getElementById('suggestionBox');
+  if (anyFail && ratio < 4.5) {
+    const needed = 4.5;
+    const currentL = bgL;
+    const minFgL = needed * (currentL + 0.05) - 0.05;
+    const maxFgL = (currentL + 0.05) / needed - 0.05;
+    let hint = '';
+    if (minFgL >= 0 && minFgL <= 1) {
+      hint = `For AA Normal (4.5:1), darken foreground to reach luminance ≥ ${minFgL.toFixed(3)}.`;
+    } else if (maxFgL >= 0 && maxFgL <= 1) {
+      hint = `For AA Normal (4.5:1), lighten foreground to reach luminance ≤ ${maxFgL.toFixed(3)}.`;
+    } else {
+      hint = 'Try using black (#000000) or white (#ffffff) for maximum contrast.';
+    }
+    suggBox.style.display = 'block';
+    suggBox.innerHTML = `<strong>Suggestion:</strong> ${hint} Current ratio is ${ratio.toFixed(2)}:1, need 4.5:1 for AA.`;
+  } else {
+    suggBox.style.display = 'none';
+  }
+}
+
+function syncPicker(pickerId, hexId) {
+  document.getElementById(pickerId).addEventListener('input', function() {
+    document.getElementById(hexId).value = this.value;
+    update();
+  });
+  document.getElementById(hexId).addEventListener('input', function() {
+    if (/^#[0-9a-fA-F]{6}$/.test(this.value)) {
+      document.getElementById(pickerId).value = this.value;
+    }
+    update();
+  });
+}
+syncPicker('fgPicker', 'fgHex');
+syncPicker('bgPicker', 'bgHex');
+
+document.getElementById('swapBtn').addEventListener('click', () => {
+  const fg = document.getElementById('fgHex').value;
+  const bg = document.getElementById('bgHex').value;
+  document.getElementById('fgHex').value = bg;
+  document.getElementById('fgPicker').value = bg;
+  document.getElementById('bgHex').value = fg;
+  document.getElementById('bgPicker').value = fg;
+  update();
+});
+
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const fg = btn.dataset.fg, bg = btn.dataset.bg;
+    document.getElementById('fgHex').value = fg;
+    document.getElementById('fgPicker').value = fg;
+    document.getElementById('bgHex').value = bg;
+    document.getElementById('bgPicker').value = bg;
+    update();
+  });
+});
+
+update();
+</script>
+</body>
+</html>
