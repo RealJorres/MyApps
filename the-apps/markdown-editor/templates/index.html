@@ -141,6 +141,94 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .preview-content tr:nth-child(even) td { background: #f8fafc; }
 .preview-content hr { border: none; border-top: 2px solid var(--border); margin: 1.5em 0; }
 .preview-content img { max-width: 100%; border-radius: 0.5rem; }
+
+/* ── Help modal ── */
+.modal-backdrop {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--card);
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.modal-header h2 { font-size: 1rem; font-weight: 800; }
+.modal-close {
+  background: none; border: none; font-size: 1.3rem;
+  cursor: pointer; color: var(--muted); line-height: 1;
+  padding: 0.1rem 0.3rem; border-radius: 4px;
+}
+.modal-close:hover { background: var(--border); color: var(--text); }
+.modal-body {
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+}
+.cheat-section { margin-bottom: 1.5rem; }
+.cheat-section h3 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+  margin-bottom: 0.6rem;
+}
+.cheat-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.cheat-table tr + tr td { border-top: 1px solid var(--border); }
+.cheat-table td { padding: 0.45rem 0.5rem; vertical-align: middle; }
+.cheat-table td:first-child { width: 52%; }
+.cheat-table code {
+  font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+  background: #f1f5f9;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  white-space: pre;
+  color: var(--text);
+}
+.cheat-table td:last-child { color: var(--muted); font-size: 0.82rem; }
+.cheat-table td:last-child strong { color: var(--text); font-weight: 700; }
+.cheat-table td:last-child em { font-style: italic; color: var(--text); }
+.cheat-table td:last-child del { color: var(--muted); }
+.cheat-table td:last-child a { color: var(--primary); text-decoration: underline; }
+.cheat-table td:last-child code {
+  background: #f1f5f9; color: #be185d;
+  padding: 0.1em 0.35em; border-radius: 3px;
+}
+.btn-help {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.12s, color 0.12s;
+}
+.btn-help:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 </style>
 </head>
 <body>
@@ -153,6 +241,92 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   </div>
   <button class="btn btn-ghost" onclick="copyHTML()">Copy HTML</button>
   <button class="btn btn-ghost" onclick="downloadHTML()">Download HTML</button>
+  <button class="btn-help" onclick="openHelp()" title="Markdown cheatsheet">?</button>
+</div>
+
+<!-- Help modal -->
+<div class="modal-backdrop" id="helpModal" onclick="closeHelpOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Markdown Cheatsheet</h2>
+      <button class="modal-close" onclick="closeHelp()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="cheat-section">
+        <h3>Headings</h3>
+        <table class="cheat-table">
+          <tr><td><code># Heading 1</code></td><td><strong style="font-size:1.2em">Heading 1</strong></td></tr>
+          <tr><td><code>## Heading 2</code></td><td><strong>Heading 2</strong></td></tr>
+          <tr><td><code>### Heading 3</code></td><td>Heading 3</td></tr>
+        </table>
+      </div>
+
+      <div class="cheat-section">
+        <h3>Emphasis</h3>
+        <table class="cheat-table">
+          <tr><td><code>**bold text**</code></td><td><strong>bold text</strong></td></tr>
+          <tr><td><code>*italic text*</code></td><td><em>italic text</em></td></tr>
+          <tr><td><code>**_bold and italic_**</code></td><td><strong><em>bold and italic</em></strong></td></tr>
+          <tr><td><code>~~strikethrough~~</code></td><td><del>strikethrough</del></td></tr>
+        </table>
+      </div>
+
+      <div class="cheat-section">
+        <h3>Lists</h3>
+        <table class="cheat-table">
+          <tr><td><code>- Item one</code></td><td>• Unordered item</td></tr>
+          <tr><td><code>- Item two</code></td><td>• Unordered item</td></tr>
+          <tr><td><code>1. First</code></td><td>1. Ordered item</td></tr>
+          <tr><td><code>2. Second</code></td><td>2. Ordered item</td></tr>
+          <tr><td><code>&nbsp;&nbsp;- Nested</code></td><td>&nbsp;&nbsp;↳ Nested item (2-space indent)</td></tr>
+        </table>
+      </div>
+
+      <div class="cheat-section">
+        <h3>Links &amp; Images</h3>
+        <table class="cheat-table">
+          <tr><td><code>[label](https://url.com)</code></td><td><a href="#">label</a></td></tr>
+          <tr><td><code>![alt text](image.png)</code></td><td>Inline image</td></tr>
+          <tr><td><code>[label](url "tooltip")</code></td><td><a href="#" title="tooltip">label</a> with tooltip</td></tr>
+        </table>
+      </div>
+
+      <div class="cheat-section">
+        <h3>Code</h3>
+        <table class="cheat-table">
+          <tr><td><code>`inline code`</code></td><td><code>inline code</code></td></tr>
+          <tr><td><code>```python</code><br><code>print("hi")</code><br><code>```</code></td><td>Fenced code block with language</td></tr>
+        </table>
+      </div>
+
+      <div class="cheat-section">
+        <h3>Blockquote &amp; Rule</h3>
+        <table class="cheat-table">
+          <tr><td><code>&gt; quoted text</code></td><td>❝ Blockquote</td></tr>
+          <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
+        </table>
+      </div>
+
+      <div class="cheat-section">
+        <h3>Table</h3>
+        <table class="cheat-table">
+          <tr>
+            <td>
+              <code>| Col 1 | Col 2 |</code><br>
+              <code>|-------|-------|</code><br>
+              <code>| A     | B     |</code>
+            </td>
+            <td>Renders as a formatted table</td>
+          </tr>
+          <tr><td><code>| :--- |</code></td><td>Left-align column</td></tr>
+          <tr><td><code>| ---: |</code></td><td>Right-align column</td></tr>
+          <tr><td><code>| :---: |</code></td><td>Center-align column</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <div class="editor-area" id="editorArea_wrapper">
@@ -263,9 +437,12 @@ ${currentHTML}
 
 setView('split');
 document.getElementById('btnSplit').classList.add('active');
-
-// Render default placeholder on load
 setTimeout(renderPreview, 100);
+
+function openHelp() { document.getElementById('helpModal').classList.add('open'); }
+function closeHelp() { document.getElementById('helpModal').classList.remove('open'); }
+function closeHelpOutside(e) { if (e.target === document.getElementById('helpModal')) closeHelp(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelp(); });
 </script>
 </body>
 </html>
