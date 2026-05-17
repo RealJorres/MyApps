@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lorem Ipsum Generator</title>
+<style>
+:root{--primary:#6d28d9;--primary-h:#5b21b6;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.controls{display:flex;gap:1.25rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.25rem}
+.ctrl-group{display:flex;flex-direction:column;gap:.35rem}
+select,input[type=number]{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit;min-width:140px}
+select:focus,input:focus{border-color:var(--primary)}
+input[type=number]{width:90px}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.25rem;border-radius:.5rem;border:none;font-size:.875rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-h)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
+.format-toggle{display:flex;gap:.25rem}
+.fmt-btn{padding:.4rem .85rem;border:1px solid var(--border);background:var(--bg);border-radius:.4rem;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit}
+.fmt-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+textarea{width:100%;padding:.75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.88rem;line-height:1.75;background:#fff;color:var(--text);outline:none;resize:vertical;font-family:inherit}
+textarea:focus{border-color:var(--primary)}
+.actions{display:flex;gap:.5rem;margin-top:.75rem;align-items:center;flex-wrap:wrap}
+.meta{font-size:.78rem;color:var(--muted);margin-left:auto}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>¶ Lorem Ipsum</h1>
+    <p>Generate placeholder text in seconds</p>
+  </header>
+  <div class="card">
+    <div class="controls">
+      <div class="ctrl-group">
+        <label>Type</label>
+        <select id="genType" onchange="generate()">
+          <option value="paragraphs">Paragraphs</option>
+          <option value="sentences">Sentences</option>
+          <option value="words">Words</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Count</label>
+        <input type="number" id="genCount" value="3" min="1" max="50" onchange="generate()">
+      </div>
+      <div class="ctrl-group">
+        <label>Format</label>
+        <div class="format-toggle">
+          <button class="fmt-btn active" id="fmtPlain" onclick="setFmt('plain')">Plain</button>
+          <button class="fmt-btn" id="fmtHtml" onclick="setFmt('html')">HTML</button>
+        </div>
+      </div>
+      <div class="ctrl-group" style="justify-content:flex-end">
+        <button class="btn btn-primary" onclick="generate()">Generate</button>
+      </div>
+    </div>
+    <textarea id="output" rows="14" readonly placeholder="Your Lorem Ipsum will appear here…"></textarea>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="generate()">↺ Regenerate</button>
+      <button class="btn btn-ghost" onclick="copyOutput()">Copy</button>
+      <button class="btn btn-ghost" onclick="downloadTxt()">Download .txt</button>
+      <span class="meta" id="meta"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+const WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum pellentesque habitant morbi tristique senectus netus malesuada fames turpis egestas volutpat wisi enim blandit varius ultricies augue diam vulputate metus nisl aliquam erat volutpat ante primis faucibus orci luctus ultrices posuere cubilia curae proin viverra nam libero justo laoreet sit porta eleifend congue'.split(' ');
+
+let fmt = 'plain';
+
+function rnd(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+
+function randWord() { return WORDS[Math.floor(Math.random()*WORDS.length)]; }
+
+function makeSentence() {
+  const len = rnd(8,20);
+  const words = Array.from({length:len},(_,i)=>i===0?randWord().charAt(0).toUpperCase()+randWord().slice(1):randWord());
+  return words.join(' ')+'.';
+}
+
+function makeParagraph() {
+  const count = rnd(3,7);
+  return Array.from({length:count},makeSentence).join(' ');
+}
+
+function setFmt(f) {
+  fmt = f;
+  document.getElementById('fmtPlain').classList.toggle('active', f==='plain');
+  document.getElementById('fmtHtml').classList.toggle('active', f==='html');
+  generate();
+}
+
+function generate() {
+  const type = document.getElementById('genType').value;
+  const count = Math.max(1, Math.min(50, +document.getElementById('genCount').value));
+  let parts = [];
+
+  if (type==='paragraphs') {
+    parts = Array.from({length:count}, makeParagraph);
+  } else if (type==='sentences') {
+    parts = Array.from({length:count}, makeSentence);
+  } else {
+    parts = [Array.from({length:count},randWord).join(' ')];
+  }
+
+  let output;
+  if (fmt==='html' && type==='paragraphs') {
+    output = parts.map(p=>`<p>${p}</p>`).join('\n');
+  } else if (fmt==='html' && type==='sentences') {
+    output = '<p>'+parts.join(' ')+'</p>';
+  } else {
+    output = parts.join('\n\n');
+  }
+
+  document.getElementById('output').value = output;
+  const words = output.replace(/<[^>]+>/g,'').trim().split(/\s+/).length;
+  const chars = output.replace(/<[^>]+>/g,'').length;
+  document.getElementById('meta').textContent = `${words.toLocaleString()} words · ${chars.toLocaleString()} chars`;
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output').value);
+}
+
+function downloadTxt() {
+  const text = document.getElementById('output').value;
+  const blob = new Blob([text],{type:'text/plain'});
+  const a = document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='lorem-ipsum.txt'; a.click();
+}
+
+generate();
+</script>
+</body>
+</html>

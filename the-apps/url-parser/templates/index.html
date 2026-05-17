@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Parser</title>
+<style>
+:root { --primary:#be185d; --primary-h:#9d174d; --bg:#f1f5f9; --card:#ffffff; --border:#e2e8f0; --text:#1e293b; --muted:#64748b; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:860px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:.85rem;padding:.3rem;margin-bottom:1.5rem;gap:.3rem}
+.tab{flex:1;padding:.6rem 1rem;border:none;background:none;border-radius:.6rem;font-size:.9rem;font-weight:600;cursor:pointer;color:var(--muted);transition:background .15s,color .15s;font-family:inherit}
+.tab.active{background:var(--primary);color:#fff}
+.tab:not(.active):hover{background:var(--bg);color:var(--text)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+input[type=text],textarea{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus,textarea:focus{border-color:var(--primary)}
+textarea{resize:vertical;font-family:'Courier New',monospace;font-size:.85rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.25rem;border-radius:.5rem;border:none;font-size:.875rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-h)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
+.btn-sm{padding:.35rem .75rem;font-size:.78rem}
+.parse-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.875rem}
+.parse-table tr+tr td{border-top:1px solid var(--border)}
+.parse-table td{padding:.5rem .75rem;vertical-align:top}
+.parse-table td:first-child{font-weight:700;color:var(--muted);width:120px;white-space:nowrap}
+.parse-table td:last-child{font-family:'Courier New',monospace;word-break:break-all}
+.params-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.875rem}
+.params-table th{background:#f8fafc;font-weight:700;text-align:left;padding:.45rem .75rem;border:1px solid var(--border)}
+.params-table td{padding:.45rem .75rem;border:1px solid var(--border);font-family:'Courier New',monospace;font-size:.82rem;word-break:break-all}
+.row{display:flex;gap:.75rem;align-items:flex-start}
+.row .field{flex:1}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.encode-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;padding-top:1.5rem}
+.param-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem}
+.param-row input{flex:1}
+.param-row button{flex-shrink:0}
+.tag{display:inline-block;font-size:.72rem;padding:.1rem .4rem;border-radius:3px;background:#fce7f3;color:var(--primary);font-weight:600}
+.copy-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:.35rem;padding:.2rem .5rem;font-size:.75rem;cursor:pointer;white-space:nowrap}
+.copy-btn:hover{background:var(--border);color:var(--text)}
+.empty{color:var(--muted);font-size:.875rem;font-style:italic;padding:.5rem 0}
+.result-url{font-family:'Courier New',monospace;word-break:break-all;background:#f8fafc;border:1px solid var(--border);border-radius:.5rem;padding:.75rem 1rem;font-size:.875rem;margin-top:1rem}
+.toolbar{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🔗 URL Parser</h1>
+    <p>Parse, encode, decode, and build URLs</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('parse')">Parse</button>
+    <button class="tab" onclick="switchTab('encode')">Encode / Decode</button>
+    <button class="tab" onclick="switchTab('build')">Build</button>
+  </div>
+
+  <!-- Parse -->
+  <div id="tab-parse" class="panel active">
+    <div class="card">
+      <label>URL</label>
+      <input type="text" id="parseInput" placeholder="https://example.com/path?foo=bar&baz=qux#section" oninput="parseURL()">
+      <div id="parseError" style="color:var(--error-fg,#dc2626);font-size:.8rem;margin-top:.4rem;display:none"></div>
+      <table class="parse-table" id="parseTable" style="display:none">
+        <tbody id="parseBody"></tbody>
+      </table>
+      <div id="parseParams" style="margin-top:1rem;display:none">
+        <label>Query Parameters</label>
+        <table class="params-table">
+          <thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
+          <tbody id="paramsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Encode/Decode -->
+  <div id="tab-encode" class="panel">
+    <div class="card">
+      <div class="split">
+        <div>
+          <label>Raw Text</label>
+          <textarea id="rawText" rows="8" placeholder="Hello World / path?key=value" oninput="encodeFromRaw()"></textarea>
+          <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="copyText('rawText')">Copy</button>
+        </div>
+        <div>
+          <label>URL Encoded</label>
+          <textarea id="encodedText" rows="8" placeholder="Hello%20World%20%2F%20path%3Fkey%3Dvalue" oninput="decodeFromEncoded()"></textarea>
+          <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="copyText('encodedText')">Copy</button>
+        </div>
+      </div>
+      <div style="margin-top:1rem;display:flex;gap:.5rem">
+        <button class="btn btn-ghost" onclick="swapEncode()">↕ Swap</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('rawText').value='';document.getElementById('encodedText').value=''">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Build -->
+  <div id="tab-build" class="panel">
+    <div class="card">
+      <div class="row" style="margin-bottom:1rem">
+        <div class="field" style="max-width:120px">
+          <label>Scheme</label>
+          <select id="bScheme" onchange="buildURL()" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;outline:none">
+            <option>https</option><option>http</option><option>ftp</option><option>mailto</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Host</label>
+          <input type="text" id="bHost" placeholder="example.com" oninput="buildURL()">
+        </div>
+        <div class="field" style="max-width:100px">
+          <label>Port</label>
+          <input type="text" id="bPort" placeholder="8080" oninput="buildURL()">
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <label>Path</label>
+        <input type="text" id="bPath" placeholder="/api/v1/resource" oninput="buildURL()">
+      </div>
+      <div style="margin-bottom:1rem">
+        <label>Hash / Fragment</label>
+        <input type="text" id="bHash" placeholder="section-id" oninput="buildURL()">
+      </div>
+      <div style="margin-bottom:1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+          <label style="margin:0">Query Parameters</label>
+          <button class="btn btn-ghost btn-sm" onclick="addParam()">+ Add</button>
+        </div>
+        <div id="paramRows"></div>
+      </div>
+      <label>Result</label>
+      <div class="result-url" id="builtURL">https://example.com/</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="copyBuilt()">Copy URL</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let encLock = false;
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('active', ['parse','encode','build'][i]===t));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id==='tab-'+t));
+}
+
+/* ── Parse ── */
+function parseURL() {
+  const raw = document.getElementById('parseInput').value.trim();
+  const err = document.getElementById('parseError');
+  const tbl = document.getElementById('parseTable');
+  const prm = document.getElementById('parseParams');
+  err.style.display = 'none';
+  if (!raw) { tbl.style.display='none'; prm.style.display='none'; return; }
+  try {
+    const u = new URL(raw);
+    const fields = [
+      ['Protocol', u.protocol],
+      ['Host', u.host],
+      ['Hostname', u.hostname],
+      ['Port', u.port || '(default)'],
+      ['Pathname', u.pathname],
+      ['Search', u.search || '(none)'],
+      ['Hash', u.hash || '(none)'],
+      ['Origin', u.origin],
+    ];
+    document.getElementById('parseBody').innerHTML = fields.map(([k,v]) =>
+      `<tr><td>${k}</td><td>${esc(v)}</td></tr>`).join('');
+    tbl.style.display = 'table';
+    const params = [...u.searchParams.entries()];
+    if (params.length) {
+      document.getElementById('paramsBody').innerHTML = params.map(([k,v]) =>
+        `<tr><td>${esc(k)}</td><td>${esc(v)}</td><td><button class="copy-btn" onclick="navigator.clipboard.writeText('${esc(v)}')">Copy</button></td></tr>`).join('');
+      prm.style.display = 'block';
+    } else { prm.style.display = 'none'; }
+  } catch(e) {
+    err.textContent = 'Invalid URL: ' + e.message;
+    err.style.display = 'block';
+    tbl.style.display='none'; prm.style.display='none';
+  }
+}
+
+/* ── Encode/Decode ── */
+function encodeFromRaw() {
+  if (encLock) return; encLock=true;
+  document.getElementById('encodedText').value = encodeURIComponent(document.getElementById('rawText').value);
+  encLock=false;
+}
+function decodeFromEncoded() {
+  if (encLock) return; encLock=true;
+  try { document.getElementById('rawText').value = decodeURIComponent(document.getElementById('encodedText').value); }
+  catch(e) { /* invalid sequence */ }
+  encLock=false;
+}
+function swapEncode() {
+  const r = document.getElementById('rawText').value;
+  const e = document.getElementById('encodedText').value;
+  document.getElementById('rawText').value = e;
+  document.getElementById('encodedText').value = r;
+}
+function copyText(id) {
+  navigator.clipboard.writeText(document.getElementById(id).value);
+}
+
+/* ── Build ── */
+let paramCount = 0;
+function addParam(k='', v='') {
+  const id = ++paramCount;
+  const row = document.createElement('div');
+  row.className = 'param-row'; row.id = 'pr'+id;
+  row.innerHTML = `<input type="text" placeholder="key" value="${esc(k)}" oninput="buildURL()">
+    <input type="text" placeholder="value" value="${esc(v)}" oninput="buildURL()">
+    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('pr${id}').remove();buildURL()">✕</button>`;
+  document.getElementById('paramRows').appendChild(row);
+  buildURL();
+}
+function buildURL() {
+  const scheme = document.getElementById('bScheme').value;
+  const host = document.getElementById('bHost').value.trim() || 'example.com';
+  const port = document.getElementById('bPort').value.trim();
+  const path = document.getElementById('bPath').value.trim();
+  const hash = document.getElementById('bHash').value.trim();
+  const rows = document.querySelectorAll('#paramRows .param-row');
+  const params = [];
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll('input');
+    if (inputs[0].value) params.push([inputs[0].value, inputs[1].value]);
+  });
+  let url = scheme + '://' + host;
+  if (port) url += ':' + port;
+  url += path || '/';
+  if (params.length) url += '?' + params.map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
+  if (hash) url += '#' + hash;
+  document.getElementById('builtURL').textContent = url;
+}
+function copyBuilt() {
+  navigator.clipboard.writeText(document.getElementById('builtURL').textContent);
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+buildURL();
+</script>
+</body>
+</html>

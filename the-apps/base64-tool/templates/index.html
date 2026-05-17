@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 Tool</title>
+<style>
+:root{--primary:#c2410c;--primary-h:#9a3412;--bg:#f1f5f9;--card:#ffffff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--error-bg:#fef2f2;--error-fg:#dc2626}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:860px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:.85rem;padding:.3rem;margin-bottom:1.5rem;gap:.3rem}
+.tab{flex:1;padding:.6rem 1rem;border:none;background:none;border-radius:.6rem;font-size:.9rem;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;transition:background .15s,color .15s}
+.tab.active{background:var(--primary);color:#fff}
+.tab:not(.active):hover{background:var(--bg);color:var(--text)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+textarea{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.82rem;font-family:'Courier New',monospace;background:#fff;color:var(--text);outline:none;resize:vertical;line-height:1.6}
+textarea:focus{border-color:var(--primary)}
+input[type=text]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus{border-color:var(--primary)}
+select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.875rem;background:#fff;color:var(--text);outline:none}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.25rem;border-radius:.5rem;border:none;font-size:.875rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-h)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
+.btn-sm{padding:.35rem .75rem;font-size:.78rem}
+.actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;align-items:center}
+.between{display:flex;gap:.5rem;justify-content:center;padding:1rem 0}
+.drop-zone{border:2px dashed var(--border);border-radius:.75rem;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
+.drop-zone:hover,.drop-zone.over{border-color:var(--primary);background:#fff3ed}
+.drop-zone .icon{font-size:2rem;margin-bottom:.5rem}
+.drop-zone p{color:var(--muted);font-size:.875rem}
+.drop-zone strong{color:var(--primary)}
+.char-count{font-size:.75rem;color:var(--muted);margin-left:auto}
+.status{padding:.65rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:500;margin-top:.75rem}
+.status.error{background:var(--error-bg);color:var(--error-fg)}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Base64 Tool</h1>
+    <p>Encode and decode text or files to and from Base64</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('text')">Text</button>
+    <button class="tab" onclick="switchTab('file')">File</button>
+  </div>
+
+  <!-- Text tab -->
+  <div id="tab-text" class="panel active">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">
+        <label style="margin:0">Plain Text</label>
+        <select id="encoding" onchange="">
+          <option value="utf-8">UTF-8</option>
+          <option value="latin-1">Latin-1</option>
+        </select>
+      </div>
+      <textarea id="plainText" rows="7" placeholder="Type or paste text to encode…" oninput="updateCount('plainText','countPlain')"></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="encodeText()">Encode →</button>
+        <button class="btn btn-ghost" onclick="copyTA('plainText')">Copy</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearBoth()">Clear</button>
+        <span class="char-count" id="countPlain">0 chars</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">
+        <label style="margin:0">Base64</label>
+      </div>
+      <textarea id="b64Text" rows="7" placeholder="Paste Base64 to decode, or encode from above…" oninput="updateCount('b64Text','countB64')"></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="decodeText()">← Decode</button>
+        <button class="btn btn-ghost" onclick="copyTA('b64Text')">Copy</button>
+        <span class="char-count" id="countB64">0 chars</span>
+      </div>
+      <div id="textStatus"></div>
+    </div>
+  </div>
+
+  <!-- File tab -->
+  <div id="tab-file" class="panel">
+    <div class="card">
+      <label>Encode File → Base64</label>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="icon">📁</div>
+        <p><strong>Click to choose</strong> or drag &amp; drop a file</p>
+        <p style="margin-top:.25rem;font-size:.8rem">Any file type, up to 50 MB</p>
+      </div>
+      <input type="file" id="fileInput" style="display:none" onchange="encodeFile(this)">
+      <div id="encodeResult" style="display:none;margin-top:1rem">
+        <label>Base64 Output</label>
+        <textarea id="fileB64Out" rows="8" readonly></textarea>
+        <div class="actions">
+          <button class="btn btn-ghost" onclick="copyTA('fileB64Out')">Copy</button>
+          <button class="btn btn-ghost" onclick="downloadB64Text()">Download .txt</button>
+          <span class="char-count" id="countFileB64"></span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <label>Decode Base64 → File</label>
+      <textarea id="decodeB64Input" rows="6" placeholder="Paste Base64 here…"></textarea>
+      <div style="margin-top:.75rem">
+        <label>Output Filename</label>
+        <input type="text" id="decodeFilename" placeholder="output.bin">
+      </div>
+      <div class="actions" style="margin-top:.75rem">
+        <button class="btn btn-primary" onclick="decodeFile()">Decode &amp; Download</button>
+      </div>
+      <div id="decodeStatus"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['text','file'][i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+t));
+}
+
+function updateCount(taId, countId) {
+  const len = document.getElementById(taId).value.length;
+  document.getElementById(countId).textContent = len.toLocaleString() + ' chars';
+}
+
+async function encodeText() {
+  const text = document.getElementById('plainText').value;
+  const enc = document.getElementById('encoding').value;
+  const res = await fetch('api/encode-text',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,encoding:enc})});
+  const d = await res.json();
+  if (d.error) showStatus('textStatus',d.error,true);
+  else { document.getElementById('b64Text').value=d.result; updateCount('b64Text','countB64'); }
+}
+
+async function decodeText() {
+  const text = document.getElementById('b64Text').value;
+  const enc = document.getElementById('encoding').value;
+  const res = await fetch('api/decode-text',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,encoding:enc})});
+  const d = await res.json();
+  if (d.error) showStatus('textStatus',d.error,true);
+  else { document.getElementById('plainText').value=d.result; updateCount('plainText','countPlain'); }
+}
+
+function clearBoth() {
+  document.getElementById('plainText').value='';
+  document.getElementById('b64Text').value='';
+  document.getElementById('countPlain').textContent='0 chars';
+  document.getElementById('countB64').textContent='0 chars';
+  document.getElementById('textStatus').innerHTML='';
+}
+
+function copyTA(id) {
+  const t = document.getElementById(id).value;
+  navigator.clipboard.writeText(t).then(()=>{});
+}
+
+async function encodeFile(input) {
+  const f = input.files[0]; if (!f) return;
+  const fd = new FormData(); fd.append('file',f);
+  const res = await fetch('api/encode-file',{method:'POST',body:fd});
+  const d = await res.json();
+  if (d.error) { alert(d.error); return; }
+  document.getElementById('fileB64Out').value = d.result;
+  document.getElementById('encodeResult').style.display='block';
+  document.getElementById('countFileB64').textContent = d.result.length.toLocaleString()+' chars';
+  document.getElementById('decodeFilename').value = f.name + '.txt';
+}
+
+function downloadB64Text() {
+  const text = document.getElementById('fileB64Out').value;
+  const blob = new Blob([text],{type:'text/plain'});
+  const a = document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='encoded.txt'; a.click();
+}
+
+async function decodeFile() {
+  const text = document.getElementById('decodeB64Input').value.trim();
+  const filename = document.getElementById('decodeFilename').value.trim() || 'output.bin';
+  if (!text) { showStatus('decodeStatus','Please paste Base64 content.',true); return; }
+  const res = await fetch('api/decode-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,filename})});
+  if (!res.ok) { const d=await res.json(); showStatus('decodeStatus',d.error,true); return; }
+  const blob = await res.blob();
+  const a = document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+  showStatus('decodeStatus','File decoded and downloaded.',false);
+}
+
+function showStatus(id,msg,err) {
+  document.getElementById(id).innerHTML=`<div class="status ${err?'error':'success'}">${msg}</div>`;
+}
+
+// Drag-drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{
+  e.preventDefault();dz.classList.remove('over');
+  const f=e.dataTransfer.files[0];
+  if(f){document.getElementById('fileInput').files=e.dataTransfer.files;encodeFile(document.getElementById('fileInput'));}
+});
+</script>
+</body>
+</html>

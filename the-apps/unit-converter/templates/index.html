@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit Converter</title>
+<style>
+:root{--primary:#15803d;--primary-h:#166534;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:700px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.cat-tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.5rem;justify-content:center}
+.cat-btn{padding:.4rem .9rem;border:1px solid var(--border);background:var(--card);border-radius:2rem;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;transition:all .15s}
+.cat-btn:hover{border-color:var(--primary);color:var(--primary)}
+.cat-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:2rem;margin-bottom:1.25rem}
+.conv-row{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:end;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+input[type=number]{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:1.05rem;background:#fff;color:var(--text);outline:none;font-family:inherit;-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]:focus{border-color:var(--primary)}
+select{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+select:focus{border-color:var(--primary)}
+.swap-btn{background:var(--bg);border:1px solid var(--border);border-radius:.5rem;padding:.65rem .9rem;font-size:1.1rem;cursor:pointer;transition:background .15s;color:var(--text);align-self:end;margin-bottom:.05rem}
+.swap-btn:hover{background:var(--border)}
+.formula{text-align:center;color:var(--muted);font-size:.82rem;margin-top:.5rem}
+.all-conversions{margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.25rem}
+.all-conversions h3{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+.conv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.4rem}
+.conv-item{display:flex;justify-content:space-between;align-items:center;padding:.4rem .65rem;background:var(--bg);border-radius:.4rem;font-size:.82rem}
+.conv-item .unit-label{color:var(--muted)}
+.conv-item .unit-val{font-weight:600;font-family:'Courier New',monospace}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>⇆ Unit Converter</h1>
+    <p>Convert between common units instantly</p>
+  </header>
+
+  <div class="cat-tabs" id="catTabs"></div>
+
+  <div class="card">
+    <div class="conv-row">
+      <div>
+        <label id="fromLabel">From</label>
+        <input type="number" id="fromVal" value="1" oninput="convertFrom()">
+        <select id="fromUnit" onchange="convertFrom()" style="margin-top:.5rem"></select>
+      </div>
+      <button class="swap-btn" onclick="swapUnits()" title="Swap units">⇅</button>
+      <div>
+        <label id="toLabel">To</label>
+        <input type="number" id="toVal" oninput="convertTo()">
+        <select id="toUnit" onchange="convertFrom()" style="margin-top:.5rem"></select>
+      </div>
+    </div>
+    <div class="formula" id="formula"></div>
+    <div class="all-conversions">
+      <h3>All conversions</h3>
+      <div class="conv-grid" id="allConv"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS = {
+  Length: {
+    units: ['mm','cm','m','km','in','ft','yd','mi'],
+    labels: ['Millimeter','Centimeter','Meter','Kilometer','Inch','Foot','Yard','Mile'],
+    toBase: [0.001, 0.01, 1, 1000, 0.0254, 0.3048, 0.9144, 1609.344],
+  },
+  Weight: {
+    units: ['mg','g','kg','t','oz','lb','st'],
+    labels: ['Milligram','Gram','Kilogram','Tonne','Ounce','Pound','Stone'],
+    toBase: [1e-6, 0.001, 1, 1000, 0.0283495, 0.453592, 6.35029],
+  },
+  Temperature: {
+    units: ['°C','°F','K'],
+    labels: ['Celsius','Fahrenheit','Kelvin'],
+    toBase: null, // special
+  },
+  Volume: {
+    units: ['ml','l','tsp','tbsp','fl oz','cup','pt','qt','gal'],
+    labels: ['Milliliter','Liter','Teaspoon','Tablespoon','Fl. Ounce','Cup','Pint','Quart','Gallon'],
+    toBase: [0.001, 1, 0.00492892, 0.0147868, 0.0295735, 0.236588, 0.473176, 0.946353, 3.78541],
+  },
+  Area: {
+    units: ['mm²','cm²','m²','km²','in²','ft²','ac','ha'],
+    labels: ['Sq. Millimeter','Sq. Centimeter','Sq. Meter','Sq. Kilometer','Sq. Inch','Sq. Foot','Acre','Hectare'],
+    toBase: [1e-6, 0.0001, 1, 1e6, 0.00064516, 0.092903, 4046.86, 10000],
+  },
+  Speed: {
+    units: ['m/s','km/h','mph','knot','ft/s'],
+    labels: ['Meter/sec','Km/hour','Mile/hour','Knot','Foot/sec'],
+    toBase: [1, 0.277778, 0.44704, 0.514444, 0.3048],
+  },
+  Time: {
+    units: ['ms','s','min','h','day','week','month','year'],
+    labels: ['Millisecond','Second','Minute','Hour','Day','Week','Month','Year'],
+    toBase: [0.001, 1, 60, 3600, 86400, 604800, 2628000, 31536000],
+  },
+};
+
+let currentCat = 'Length';
+let converting = false;
+
+function toBaseTemp(val, unit) {
+  if (unit==='°C') return val;
+  if (unit==='°F') return (val - 32) * 5/9;
+  if (unit==='K')  return val - 273.15;
+}
+function fromBaseTemp(val, unit) {
+  if (unit==='°C') return val;
+  if (unit==='°F') return val * 9/5 + 32;
+  if (unit==='K')  return val + 273.15;
+}
+
+function buildCatTabs() {
+  const el = document.getElementById('catTabs');
+  el.innerHTML = Object.keys(CATS).map(c =>
+    `<button class="cat-btn${c===currentCat?' active':''}" onclick="selectCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function selectCat(cat) {
+  currentCat = cat;
+  buildCatTabs();
+  buildUnitSelects();
+  convertFrom();
+}
+
+function buildUnitSelects() {
+  const cat = CATS[currentCat];
+  ['fromUnit','toUnit'].forEach((id, i) => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = cat.units.map((u,j) =>
+      `<option value="${j}">${u} — ${cat.labels[j]}</option>`).join('');
+    sel.value = i === 1 ? Math.min(1, cat.units.length-1) : 0;
+  });
+}
+
+function convertFrom() {
+  if (converting) return; converting = true;
+  const cat = CATS[currentCat];
+  const fromIdx = +document.getElementById('fromUnit').value;
+  const toIdx = +document.getElementById('toUnit').value;
+  const val = parseFloat(document.getElementById('fromVal').value);
+  if (isNaN(val)) { converting=false; return; }
+  let result;
+  if (cat.toBase === null) {
+    result = fromBaseTemp(toBaseTemp(val, cat.units[fromIdx]), cat.units[toIdx]);
+  } else {
+    result = val * cat.toBase[fromIdx] / cat.toBase[toIdx];
+  }
+  document.getElementById('toVal').value = +result.toPrecision(8);
+  document.getElementById('formula').textContent =
+    `${val} ${cat.units[fromIdx]} = ${+result.toPrecision(8)} ${cat.units[toIdx]}`;
+  renderAll(val, fromIdx, cat);
+  converting = false;
+}
+
+function convertTo() {
+  if (converting) return; converting = true;
+  const cat = CATS[currentCat];
+  const fromIdx = +document.getElementById('fromUnit').value;
+  const toIdx = +document.getElementById('toUnit').value;
+  const val = parseFloat(document.getElementById('toVal').value);
+  if (isNaN(val)) { converting=false; return; }
+  let result;
+  if (cat.toBase === null) {
+    result = fromBaseTemp(toBaseTemp(val, cat.units[toIdx]), cat.units[fromIdx]);
+  } else {
+    result = val * cat.toBase[toIdx] / cat.toBase[fromIdx];
+  }
+  document.getElementById('fromVal').value = +result.toPrecision(8);
+  renderAll(+result.toPrecision(8), fromIdx, cat);
+  converting = false;
+}
+
+function renderAll(fromVal, fromIdx, cat) {
+  let baseVal;
+  if (cat.toBase === null) {
+    baseVal = toBaseTemp(fromVal, cat.units[fromIdx]);
+  } else {
+    baseVal = fromVal * cat.toBase[fromIdx];
+  }
+  const html = cat.units.map((u,i) => {
+    let v;
+    if (cat.toBase === null) {
+      v = fromBaseTemp(baseVal, u);
+    } else {
+      v = baseVal / cat.toBase[i];
+    }
+    return `<div class="conv-item"><span class="unit-label">${u}</span><span class="unit-val">${+v.toPrecision(6)}</span></div>`;
+  }).join('');
+  document.getElementById('allConv').innerHTML = html;
+}
+
+function swapUnits() {
+  const fv = document.getElementById('fromVal').value;
+  const tv = document.getElementById('toVal').value;
+  const fu = document.getElementById('fromUnit').value;
+  const tu = document.getElementById('toUnit').value;
+  document.getElementById('fromUnit').value = tu;
+  document.getElementById('toUnit').value = fu;
+  document.getElementById('fromVal').value = tv;
+  convertFrom();
+}
+
+buildCatTabs();
+buildUnitSelects();
+convertFrom();
+</script>
+</body>
+</html>
