@@ -48,6 +48,30 @@
     "category": "Document / File"
   },
   {
+    "id": "text-diff",
+    "name": "Text Diff",
+    "description": "Compare two blocks of text side-by-side with highlighted added and removed lines.",
+    "port": 5016,
+    "path": "./the-apps/text-diff",
+    "entry": "app.py",
+    "icon": "⇄",
+    "color": "#4f46e5",
+    "tags": ["Diff", "Compare", "Text"],
+    "category": "Document / File"
+  },
+  {
+    "id": "base64-tool",
+    "name": "Base64 Tool",
+    "description": "Encode and decode text or files to and from Base64.",
+    "port": 5017,
+    "path": "./the-apps/base64-tool",
+    "entry": "app.py",
+    "icon": "64",
+    "color": "#c2410c",
+    "tags": ["Base64", "Encode", "Decode"],
+    "category": "Document / File"
+  },
+  {
     "id": "json-formatter",
     "name": "JSON Formatter",
     "description": "Prettify, minify, and validate JSON. Spot errors instantly.",
@@ -84,6 +108,66 @@
     "category": "Developer Utilities"
   },
   {
+    "id": "color-picker",
+    "name": "Color Picker",
+    "description": "Pick colors and convert between HEX, RGB, and HSL. Generate tints and shades.",
+    "port": 5011,
+    "path": "./the-apps/color-picker",
+    "entry": "app.py",
+    "icon": "🎨",
+    "color": "#7c3aed",
+    "tags": ["Color", "Design", "Dev"],
+    "category": "Developer Utilities"
+  },
+  {
+    "id": "jwt-decoder",
+    "name": "JWT Decoder",
+    "description": "Paste a JWT to decode the header and payload. Shows expiry status instantly.",
+    "port": 5012,
+    "path": "./the-apps/jwt-decoder",
+    "entry": "app.py",
+    "icon": "🔓",
+    "color": "#0891b2",
+    "tags": ["JWT", "Auth", "Dev"],
+    "category": "Developer Utilities"
+  },
+  {
+    "id": "timestamp-converter",
+    "name": "Timestamp Converter",
+    "description": "Convert Unix timestamps to human-readable dates and back, with a live clock.",
+    "port": 5013,
+    "path": "./the-apps/timestamp-converter",
+    "entry": "app.py",
+    "icon": "⏱",
+    "color": "#d97706",
+    "tags": ["Timestamp", "Date", "Dev"],
+    "category": "Developer Utilities"
+  },
+  {
+    "id": "base-converter",
+    "name": "Number Base Converter",
+    "description": "Convert numbers between binary, octal, decimal, and hexadecimal in real time.",
+    "port": 5014,
+    "path": "./the-apps/base-converter",
+    "entry": "app.py",
+    "icon": "01",
+    "color": "#059669",
+    "tags": ["Binary", "Hex", "Dev"],
+    "category": "Developer Utilities"
+  },
+  {
+    "id": "url-parser",
+    "name": "URL Parser",
+    "description": "Parse URLs into components, encode/decode query strings, and build URLs visually.",
+    "port": 5015,
+    "path": "./the-apps/url-parser",
+    "entry": "app.py",
+    "icon": "🔗",
+    "color": "#be185d",
+    "tags": ["URL", "Encode", "Dev"],
+    "category": "Developer Utilities"
+  },
+  {
     "id": "markdown-editor",
     "name": "Markdown Editor",
     "description": "Write Markdown with a live preview side-by-side. Download as HTML.",
@@ -117,6 +201,42 @@
     "icon": "🔑",
     "color": "#15803d",
     "tags": ["Password", "Security"],
+    "category": "Text / Productivity"
+  },
+  {
+    "id": "unit-converter",
+    "name": "Unit Converter",
+    "description": "Convert length, weight, temperature, volume, area, speed, and time units.",
+    "port": 5018,
+    "path": "./the-apps/unit-converter",
+    "entry": "app.py",
+    "icon": "⇆",
+    "color": "#15803d",
+    "tags": ["Units", "Convert", "Math"],
+    "category": "Text / Productivity"
+  },
+  {
+    "id": "lorem-ipsum",
+    "name": "Lorem Ipsum Generator",
+    "description": "Generate placeholder text by paragraphs, sentences, or words. Copy or download.",
+    "port": 5019,
+    "path": "./the-apps/lorem-ipsum",
+    "entry": "app.py",
+    "icon": "¶",
+    "color": "#6d28d9",
+    "tags": ["Lorem", "Placeholder", "Text"],
+    "category": "Text / Productivity"
+  },
+  {
+    "id": "notepad",
+    "name": "Notepad",
+    "description": "A simple persistent scratchpad. Auto-saves to your browser as you type.",
+    "port": 5020,
+    "path": "./the-apps/notepad",
+    "entry": "app.py",
+    "icon": "📝",
+    "color": "#1d4ed8",
+    "tags": ["Notes", "Productivity"],
     "category": "Text / Productivity"
   }
 ]

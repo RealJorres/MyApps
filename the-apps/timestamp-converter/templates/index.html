@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timestamp Converter</title>
+<style>
+:root {
+  --primary: #d97706; --primary-h: #b45309;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2; --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+input[type=text], input[type=number], input[type=datetime-local], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent); }
+.status { margin-top: 0.75rem; padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+
+/* App-specific */
+.live-clock { text-align: center; background: #0f172a; border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.25rem; }
+.clock-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 0.5rem; }
+.clock-value { font-family: monospace; font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: 0.05em; }
+.clock-sub { font-size: 0.8rem; color: #64748b; margin-top: 0.35rem; font-family: monospace; }
+
+.input-row { display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap; }
+.input-row > div { flex: 1; min-width: 200px; }
+
+.result-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+.result-table tr { border-bottom: 1px solid var(--border); }
+.result-table tr:last-child { border-bottom: none; }
+.result-table td { padding: 0.65rem 0.5rem; font-size: 0.875rem; }
+.result-table td:first-child { color: var(--muted); font-weight: 600; font-size: 0.8rem; width: 40%; }
+.result-table td:last-child { font-family: monospace; font-weight: 500; }
+.copy-cell { text-align: right; padding: 0.4rem; }
+.copy-cell button { padding: 0.2rem 0.6rem; font-size: 0.7rem; }
+
+.section-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 1.25rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Timestamp Converter</h1>
+    <p>Convert Unix timestamps to human-readable dates and back</p>
+  </header>
+
+  <div class="card live-clock">
+    <div class="clock-label">Current Unix Timestamp</div>
+    <div class="clock-value" id="liveClock">—</div>
+    <div class="clock-sub" id="liveUtc">—</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Unix Timestamp → Human Date</div>
+    <div class="input-row">
+      <div>
+        <label for="tsInput">Unix Timestamp</label>
+        <input type="text" id="tsInput" placeholder="e.g. 1700000000 or 1700000000000" oninput="tsToHuman()">
+      </div>
+      <button class="btn btn-primary" onclick="fillNow()" style="margin-bottom:0;">Now</button>
+    </div>
+    <div id="tsError" class="status error" style="display:none;"></div>
+    <table class="result-table" id="tsResults" style="display:none;">
+      <tr><td>Local DateTime</td><td id="r-local">—</td><td class="copy-cell"><button class="btn btn-ghost" onclick="copyEl('r-local')">Copy</button></td></tr>
+      <tr><td>UTC DateTime</td><td id="r-utc">—</td><td class="copy-cell"><button class="btn btn-ghost" onclick="copyEl('r-utc')">Copy</button></td></tr>
+      <tr><td>ISO 8601</td><td id="r-iso">—</td><td class="copy-cell"><button class="btn btn-ghost" onclick="copyEl('r-iso')">Copy</button></td></tr>
+      <tr><td>Relative</td><td id="r-rel">—</td><td class="copy-cell"><button class="btn btn-ghost" onclick="copyEl('r-rel')">Copy</button></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Human Date → Unix Timestamp</div>
+    <label for="dtInput">Date &amp; Time (local timezone)</label>
+    <input type="datetime-local" id="dtInput" oninput="humanToTs()">
+    <table class="result-table" id="dtResults" style="display:none; margin-top:1rem;">
+      <tr><td>Seconds (s)</td><td id="d-sec">—</td><td class="copy-cell"><button class="btn btn-ghost" onclick="copyEl('d-sec')">Copy</button></td></tr>
+      <tr><td>Milliseconds (ms)</td><td id="d-ms">—</td><td class="copy-cell"><button class="btn btn-ghost" onclick="copyEl('d-ms')">Copy</button></td></tr>
+    </table>
+  </div>
+</div>
+
+<div id="copyToast" style="position:fixed;bottom:2rem;right:2rem;background:#1e293b;color:#fff;padding:0.6rem 1.2rem;border-radius:0.5rem;font-size:0.85rem;font-weight:600;opacity:0;transition:opacity 0.2s;pointer-events:none;">Copied!</div>
+
+<script>
+function updateClock() {
+  const now = Date.now();
+  const s = Math.floor(now/1000);
+  document.getElementById('liveClock').textContent = s;
+  document.getElementById('liveUtc').textContent = new Date(now).toUTCString();
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+function fillNow() {
+  document.getElementById('tsInput').value = Math.floor(Date.now()/1000);
+  tsToHuman();
+}
+
+function tsToHuman() {
+  const raw = document.getElementById('tsInput').value.trim();
+  const errEl = document.getElementById('tsError');
+  const res = document.getElementById('tsResults');
+  if(!raw) { errEl.style.display='none'; res.style.display='none'; return; }
+
+  let ms;
+  const n = parseInt(raw);
+  if(isNaN(n)) { errEl.textContent='Invalid timestamp'; errEl.style.display='block'; res.style.display='none'; return; }
+  // Auto-detect: if >1e12, treat as ms
+  ms = (raw.length >= 13 || n > 1e12) ? n : n * 1000;
+  const d = new Date(ms);
+  if(isNaN(d.getTime())) { errEl.textContent='Invalid timestamp'; errEl.style.display='block'; res.style.display='none'; return; }
+
+  errEl.style.display='none';
+  document.getElementById('r-local').textContent = d.toLocaleString();
+  document.getElementById('r-utc').textContent = d.toUTCString();
+  document.getElementById('r-iso').textContent = d.toISOString();
+  document.getElementById('r-rel').textContent = relativeTime(ms);
+  res.style.display='table';
+}
+
+function relativeTime(ms) {
+  const diff = Date.now() - ms;
+  const abs = Math.abs(diff);
+  const future = diff < 0;
+  const s = Math.floor(abs/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24), w=Math.floor(d/7), mo=Math.floor(d/30), y=Math.floor(d/365);
+  let str;
+  if(y>0) str=y+'y';
+  else if(mo>0) str=mo+' month'+(mo>1?'s':'');
+  else if(w>0) str=w+' week'+(w>1?'s':'');
+  else if(d>0) str=d+' day'+(d>1?'s':'');
+  else if(h>0) str=h+' hour'+(h>1?'s':'');
+  else if(m>0) str=m+' minute'+(m>1?'s':'');
+  else str=s+' second'+(s!==1?'s':'');
+  return future ? 'in '+str : str+' ago';
+}
+
+function humanToTs() {
+  const val = document.getElementById('dtInput').value;
+  const res = document.getElementById('dtResults');
+  if(!val) { res.style.display='none'; return; }
+  const d = new Date(val);
+  if(isNaN(d.getTime())) { res.style.display='none'; return; }
+  const ms = d.getTime();
+  document.getElementById('d-sec').textContent = Math.floor(ms/1000);
+  document.getElementById('d-ms').textContent = ms;
+  res.style.display='table';
+}
+
+// Set datetime-local default to now
+const now = new Date();
+const local = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+document.getElementById('dtInput').value = local;
+humanToTs();
+
+function copyEl(id) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(showToast);
+}
+let toastTimer;
+function showToast() {
+  const t=document.getElementById('copyToast');
+  t.style.opacity='1';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.style.opacity='0',1500);
+}
+</script>
+</body>
+</html>
