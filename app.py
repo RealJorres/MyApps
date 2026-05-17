@@ -5,7 +5,7 @@ import os
 import importlib.util
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
-app = Flask(__name__)
+flask_app = Flask(__name__)
 LAUNCHER_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -56,18 +56,19 @@ def _slash_redirect(wsgi_app, prefixes):
     return middleware
 
 
-application = _slash_redirect(
-    DispatcherMiddleware(app, mounts),
+# 'app' is the full WSGI stack imported by wsgi.py and gunicorn
+app = _slash_redirect(
+    DispatcherMiddleware(flask_app, mounts),
     set(mounts.keys()),
 )
 
 
-@app.route('/')
+@flask_app.route('/')
 def index():
     return render_template('index.html')
 
 
-@app.route('/api/apps')
+@flask_app.route('/api/apps')
 def list_apps():
     result = []
     for a in REGISTRY:
@@ -88,4 +89,4 @@ def list_apps():
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
     print('\n  App Library — http://localhost:5000\n')
-    run_simple('0.0.0.0', 5000, application, use_reloader=False)
+    run_simple('0.0.0.0', 5000, app, use_reloader=False)
