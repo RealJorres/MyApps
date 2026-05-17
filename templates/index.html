@@ -147,6 +147,20 @@
       gap: 1.1rem;
     }
 
+    /* ── Category header ── */
+    .category-header {
+      grid-column: 1 / -1;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-top: 0.6rem;
+    }
+    .category-header:first-child { margin-top: 0; }
+
     /* ── Card ── */
     .card {
       background: var(--surface);
@@ -377,7 +391,17 @@ function renderGrid(apps) {
     return;
   }
 
-  grid.innerHTML = apps.map(cardHTML).join('');
+  const order = [];
+  const groups = {};
+  apps.forEach(a => {
+    const cat = a.category || 'Other';
+    if (!groups[cat]) { groups[cat] = []; order.push(cat); }
+    groups[cat].push(a);
+  });
+
+  grid.innerHTML = order.map(cat =>
+    `<div class="category-header">${esc(cat)}</div>` + groups[cat].map(cardHTML).join('')
+  ).join('');
 }
 
 function cardHTML(a) {

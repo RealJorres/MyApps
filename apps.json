@@ -8,6 +8,115 @@
     "entry": "app.py",
     "icon": "📄",
     "color": "#4f46e5",
-    "tags": ["PDF", "Images", "Converter"]
+    "tags": ["PDF", "Images", "Converter"],
+    "category": "Document / File"
+  },
+  {
+    "id": "image-tools",
+    "name": "Image Tools",
+    "description": "Resize, compress, and convert images between PNG, JPEG, WEBP, and BMP.",
+    "port": 5002,
+    "path": "./the-apps/image-tools",
+    "entry": "app.py",
+    "icon": "🖼️",
+    "color": "#0891b2",
+    "tags": ["Images", "Resize", "Convert"],
+    "category": "Document / File"
+  },
+  {
+    "id": "qr-generator",
+    "name": "QR Code Generator",
+    "description": "Generate QR codes for URLs, text, or anything. Download as PNG.",
+    "port": 5003,
+    "path": "./the-apps/qr-generator",
+    "entry": "app.py",
+    "icon": "▦",
+    "color": "#1d4ed8",
+    "tags": ["QR", "Generator"],
+    "category": "Document / File"
+  },
+  {
+    "id": "csv-viewer",
+    "name": "CSV / Excel Viewer",
+    "description": "Upload and browse CSV or Excel files as a searchable, paginated table.",
+    "port": 5004,
+    "path": "./the-apps/csv-viewer",
+    "entry": "app.py",
+    "icon": "📊",
+    "color": "#059669",
+    "tags": ["CSV", "Excel", "Data"],
+    "category": "Document / File"
+  },
+  {
+    "id": "json-formatter",
+    "name": "JSON Formatter",
+    "description": "Prettify, minify, and validate JSON. Spot errors instantly.",
+    "port": 5005,
+    "path": "./the-apps/json-formatter",
+    "entry": "app.py",
+    "icon": "{ }",
+    "color": "#d97706",
+    "tags": ["JSON", "Formatter", "Dev"],
+    "category": "Developer Utilities"
+  },
+  {
+    "id": "hash-generator",
+    "name": "Hash Generator",
+    "description": "Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text or uploaded files.",
+    "port": 5006,
+    "path": "./the-apps/hash-generator",
+    "entry": "app.py",
+    "icon": "#",
+    "color": "#7c3aed",
+    "tags": ["Hash", "Security", "Dev"],
+    "category": "Developer Utilities"
+  },
+  {
+    "id": "regex-tester",
+    "name": "Regex Tester",
+    "description": "Test Python regular expressions with live match highlighting and group capture.",
+    "port": 5007,
+    "path": "./the-apps/regex-tester",
+    "entry": "app.py",
+    "icon": ".*",
+    "color": "#be185d",
+    "tags": ["Regex", "Dev", "Python"],
+    "category": "Developer Utilities"
+  },
+  {
+    "id": "markdown-editor",
+    "name": "Markdown Editor",
+    "description": "Write Markdown with a live preview side-by-side. Download as HTML.",
+    "port": 5008,
+    "path": "./the-apps/markdown-editor",
+    "entry": "app.py",
+    "icon": "M↓",
+    "color": "#0f766e",
+    "tags": ["Markdown", "Editor", "Writing"],
+    "category": "Text / Productivity"
+  },
+  {
+    "id": "word-counter",
+    "name": "Word Counter",
+    "description": "Count words, characters, sentences and get reading time and word frequency stats.",
+    "port": 5009,
+    "path": "./the-apps/word-counter",
+    "entry": "app.py",
+    "icon": "Aa",
+    "color": "#c2410c",
+    "tags": ["Text", "Writing", "Stats"],
+    "category": "Text / Productivity"
+  },
+  {
+    "id": "password-generator",
+    "name": "Password Generator",
+    "description": "Generate secure passwords with configurable length and character sets.",
+    "port": 5010,
+    "path": "./the-apps/password-generator",
+    "entry": "app.py",
+    "icon": "🔑",
+    "color": "#15803d",
+    "tags": ["Password", "Security"],
+    "category": "Text / Productivity"
   }
 ]

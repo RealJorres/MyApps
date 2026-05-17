@@ -80,6 +80,7 @@ def list_apps():
             'icon':        a['icon'],
             'color':       a['color'],
             'tags':        a.get('tags', []),
+            'category':    a.get('category', 'Other'),
             'status':      'running' if loaded else 'error',
             'url':         f"/{a['id']}/",
         })

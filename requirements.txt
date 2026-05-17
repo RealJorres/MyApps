@@ -2,3 +2,7 @@ flask
 gunicorn
 PyMuPDF
 Pillow
+qrcode[pil]
+pandas
+openpyxl
+Markdown
