@@ -339,12 +339,6 @@ function launchApp(url) {
   window.open(url, '_blank');
 }
 
-async function stopApp(id) {
-  const btn = document.querySelector(`#card-${id} .btn-stop`);
-  if (btn) { btn.disabled = true; btn.textContent = 'Stopping…'; }
-  await fetch(`/api/apps/${id}/stop`, { method: 'POST' });
-  await fetchApps();
-}
 
 /* ── Filters ── */
 function setFilter(el) {
@@ -392,10 +386,7 @@ function cardHTML(a) {
 
   const tags = a.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('');
 
-  const actions = running
-    ? `<a  class="btn btn-open"   href="${a.url}" target="_blank">↗ Open</a>
-       <button class="btn btn-stop"  onclick="stopApp('${esc(a.id)}')">■ Stop</button>`
-    : `<button class="btn btn-launch" onclick="launchApp('${esc(a.url)}')">▶ Launch</button>`;
+  const actions = `<a class="btn btn-open" href="${a.url}" target="_blank">↗ Open</a>`;
 
   return `
     <div class="card" id="card-${esc(a.id)}">
