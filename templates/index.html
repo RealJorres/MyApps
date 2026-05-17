@@ -238,20 +238,6 @@
       border-top: 1px solid var(--border);
     }
 
-    .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .status-dot.running { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
-    .status-dot.stopped { background: var(--muted); }
-
-    .status-text {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-    .status-text.running { color: var(--green); }
-
     .card-actions { margin-left: auto; display: flex; gap: 0.35rem; }
 
     .btn {
@@ -320,18 +306,11 @@
 </header>
 
 <main>
-  <div class="toolbar">
-    <button class="filter-btn active" data-f="all"     onclick="setFilter(this)">All</button>
-    <button class="filter-btn"        data-f="running" onclick="setFilter(this)">Running</button>
-<span class="app-count" id="appCount"></span>
-  </div>
-
   <div class="grid" id="grid"></div>
 </main>
 
 <script>
 let allApps = [];
-let activeFilter = 'all';
 
 /* ── colour helpers ── */
 function darken(hex, by = 55) {
@@ -355,27 +334,12 @@ function launchApp(url) {
 
 
 /* ── Filters ── */
-function setFilter(el) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  activeFilter = el.dataset.f;
-  applyFilters();
-}
-
 function applyFilters() {
   const q = document.getElementById('searchInput').value.toLowerCase();
-  const visible = allApps.filter(a => {
-    if (activeFilter === 'running' && a.status !== 'running') return false;
-    if (activeFilter === 'stopped' && a.status !== 'stopped') return false;
-    if (q) {
-      const hay = [a.name, a.description, ...a.tags].join(' ').toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    return true;
-  });
+  const visible = q
+    ? allApps.filter(a => [a.name, a.description, ...a.tags].join(' ').toLowerCase().includes(q))
+    : allApps;
   renderGrid(visible);
-  document.getElementById('appCount').textContent =
-    `${visible.length} app${visible.length !== 1 ? 's' : ''}`;
 }
 
 /* ── Render ── */
@@ -405,12 +369,8 @@ function renderGrid(apps) {
 }
 
 function cardHTML(a) {
-  const running = a.status === 'running';
   const grad = `linear-gradient(140deg, ${darken(a.color)}, ${a.color})`;
-
   const tags = a.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('');
-
-  const actions = `<a class="btn btn-open" href="${a.url}" target="_blank">↗ Open</a>`;
 
   return `
     <div class="card" id="card-${esc(a.id)}">
@@ -420,9 +380,7 @@ function cardHTML(a) {
         <div class="card-desc">${esc(a.description)}</div>
         <div class="card-tags">${tags}</div>
         <div class="card-footer">
-          <span class="status-dot ${a.status}"></span>
-          <span class="status-text ${a.status}">${running ? 'Running' : 'Stopped'}</span>
-          <div class="card-actions">${actions}</div>
+          <div class="card-actions"><a class="btn btn-open" href="${a.url}" target="_blank">↗ Open</a></div>
         </div>
       </div>
     </div>`;
