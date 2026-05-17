@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator</title>
+<style>
+:root {
+  --primary: #1d4ed8;
+  --primary-h: #1e40af;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2;   --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 960px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.status { margin-top: 1rem; padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+
+textarea#textInput { min-height: 100px; resize: vertical; }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.field { display: flex; flex-direction: column; }
+
+.color-row { display: flex; align-items: center; gap: 0.5rem; }
+.color-row input[type=color] { width: 2.5rem; height: 2.2rem; border: 1px solid var(--border); border-radius: 0.4rem; cursor: pointer; padding: 0.15rem; background: #fff; }
+.color-row input[type=text] { flex: 1; }
+
+.slider-row { display: flex; align-items: center; gap: 0.6rem; }
+.slider-row input[type=range] { flex: 1; accent-color: var(--primary); }
+.slider-val { font-weight: 700; color: var(--primary); min-width: 1.5rem; }
+
+.actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+
+.preview-card { text-align: center; display: none; }
+.preview-card.show { display: block; }
+.qr-preview { max-width: 300px; margin: 0 auto 1rem; display: block; border: 1px solid var(--border); border-radius: 0.5rem; image-rendering: pixelated; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>QR Code Generator</h1>
+    <p>Generate QR codes from any text or URL</p>
+  </header>
+
+  <div class="card">
+    <label for="textInput">Text or URL</label>
+    <textarea id="textInput" placeholder="https://example.com or any text…"></textarea>
+
+    <div class="options-grid">
+      <div class="field">
+        <label>Error Correction</label>
+        <select id="ec">
+          <option value="L">L — Low (7%)</option>
+          <option value="M" selected>M — Medium (15%)</option>
+          <option value="Q">Q — Quartile (25%)</option>
+          <option value="H">H — High (30%)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Box Size — <span id="sizeVal">10</span></label>
+        <div class="slider-row">
+          <input type="range" id="sizeSlider" min="1" max="20" value="10" oninput="document.getElementById('sizeVal').textContent=this.value">
+        </div>
+      </div>
+      <div class="field">
+        <label>Foreground Color</label>
+        <div class="color-row">
+          <input type="color" id="fgPicker" value="#000000" oninput="document.getElementById('fgText').value=this.value">
+          <input type="text" id="fgText" value="#000000" oninput="syncColor('fg')">
+        </div>
+      </div>
+      <div class="field">
+        <label>Background Color</label>
+        <div class="color-row">
+          <input type="color" id="bgPicker" value="#ffffff" oninput="document.getElementById('bgText').value=this.value">
+          <input type="text" id="bgText" value="#ffffff" oninput="syncColor('bg')">
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="generateBtn" onclick="generateQR()">Generate QR Code</button>
+    </div>
+    <div id="statusDiv"></div>
+  </div>
+
+  <div class="card preview-card" id="previewCard">
+    <img id="qrImage" class="qr-preview" src="" alt="QR Code">
+    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="downloadQR()">Download PNG</button>
+      <button class="btn btn-ghost" onclick="copyQR()">Copy Image</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let debounceTimer = null;
+
+function syncColor(which) {
+  const text = document.getElementById(which + 'Text').value;
+  if (/^#[0-9a-fA-F]{6}$/.test(text)) {
+    document.getElementById(which + 'Picker').value = text;
+  }
+}
+
+function getParams() {
+  return {
+    text: document.getElementById('textInput').value,
+    ec: document.getElementById('ec').value,
+    size: parseInt(document.getElementById('sizeSlider').value),
+    fg: document.getElementById('fgText').value,
+    bg: document.getElementById('bgText').value
+  };
+}
+
+document.getElementById('textInput').addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    if (document.getElementById('textInput').value.trim()) generateQR();
+  }, 600);
+});
+
+function generateQR() {
+  const btn = document.getElementById('generateBtn');
+  const statusDiv = document.getElementById('statusDiv');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+  statusDiv.innerHTML = '';
+
+  fetch('api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(getParams())
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.error) {
+      statusDiv.innerHTML = '<div class="status error">' + d.error + '</div>';
+      document.getElementById('previewCard').classList.remove('show');
+    } else {
+      document.getElementById('qrImage').src = 'data:image/png;base64,' + d.image;
+      document.getElementById('previewCard').classList.add('show');
+    }
+  })
+  .catch(err => {
+    statusDiv.innerHTML = '<div class="status error">Request failed: ' + err.message + '</div>';
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = 'Generate QR Code';
+  });
+}
+
+function downloadQR() {
+  fetch('api/download', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(getParams())
+  })
+  .then(r => r.blob())
+  .then(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'qrcode.png';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+function copyQR() {
+  const img = document.getElementById('qrImage');
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  canvas.getContext('2d').drawImage(img, 0, 0);
+  canvas.toBlob(blob => {
+    navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy Image', 1500);
+    });
+  });
+}
+</script>
+</body>
+</html>

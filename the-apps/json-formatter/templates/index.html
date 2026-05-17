@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Formatter</title>
+<style>
+:root {
+  --primary: #d97706;
+  --primary-h: #b45309;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2;   --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 1200px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.status { padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.toolbar .spacer { flex: 1; }
+
+.editors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 700px) { .editors { grid-template-columns: 1fr; } }
+
+.editor-pane { display: flex; flex-direction: column; gap: 0.5rem; }
+.editor-pane label { font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+.json-textarea {
+  width: 100%;
+  min-height: 420px;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  background: #1e293b;
+  color: #e2e8f0;
+  outline: none;
+  resize: vertical;
+  tab-size: 2;
+}
+.json-textarea:focus { border-color: var(--primary); }
+
+.output-pane {
+  min-height: 420px;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  background: #1e293b;
+  color: #e2e8f0;
+  overflow: auto;
+  white-space: pre;
+  word-break: break-all;
+}
+
+/* Syntax highlight colors */
+.j-key    { color: #93c5fd; }
+.j-str    { color: #86efac; }
+.j-num    { color: #fbbf24; }
+.j-bool   { color: #f472b6; }
+.j-null   { color: #f472b6; }
+.j-punct  { color: #94a3b8; }
+
+.status-row { margin-top: 0.75rem; min-height: 2rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>JSON Formatter</h1>
+    <p>Format, minify, validate, and explore JSON data</p>
+  </header>
+
+  <div class="card">
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="formatJSON()">Format</button>
+      <button class="btn btn-ghost" onclick="minifyJSON()">Minify</button>
+      <button class="btn btn-ghost" onclick="validateJSON()">Validate</button>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" onclick="copyOutput()">Copy Output</button>
+      <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div class="editors">
+      <div class="editor-pane">
+        <label>Input JSON</label>
+        <textarea class="json-textarea" id="inputArea" placeholder='Paste your JSON here…&#10;&#10;{"name":"example","value":42}'
+          spellcheck="false"></textarea>
+      </div>
+      <div class="editor-pane">
+        <label>Output</label>
+        <div class="output-pane" id="outputPane"></div>
+      </div>
+    </div>
+
+    <div class="status-row" id="statusRow"></div>
+  </div>
+</div>
+
+<script>
+function getInput() { return document.getElementById('inputArea').value; }
+
+function setStatus(msg, type) {
+  const el = document.getElementById('statusRow');
+  el.innerHTML = msg ? `<div class="status ${type}">${msg}</div>` : '';
+}
+
+function syntaxHighlight(json) {
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc(json).replace(
+    /("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?|[{}\[\]:,])/g,
+    match => {
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) return `<span class="j-key">${match}</span>`;
+        return `<span class="j-str">${match}</span>`;
+      }
+      if (/true|false/.test(match)) return `<span class="j-bool">${match}</span>`;
+      if (/null/.test(match)) return `<span class="j-null">${match}</span>`;
+      if (/[{}\[\]:,]/.test(match)) return `<span class="j-punct">${match}</span>`;
+      return `<span class="j-num">${match}</span>`;
+    }
+  );
+}
+
+function formatJSON() {
+  const text = getInput().trim();
+  if (!text) { setStatus('Input is empty.', 'error'); return; }
+  try {
+    const parsed = JSON.parse(text);
+    const pretty = JSON.stringify(parsed, null, 2);
+    document.getElementById('outputPane').innerHTML = syntaxHighlight(pretty);
+    setStatus('Valid JSON — formatted successfully.', 'success');
+  } catch(e) {
+    const msg = e.message;
+    document.getElementById('outputPane').innerHTML = '';
+    setStatus('Invalid JSON: ' + msg, 'error');
+  }
+}
+
+function minifyJSON() {
+  const text = getInput().trim();
+  if (!text) { setStatus('Input is empty.', 'error'); return; }
+  try {
+    const parsed = JSON.parse(text);
+    const mini = JSON.stringify(parsed);
+    document.getElementById('outputPane').innerHTML = syntaxHighlight(mini);
+    setStatus('Minified — ' + mini.length + ' characters.', 'success');
+  } catch(e) {
+    document.getElementById('outputPane').innerHTML = '';
+    setStatus('Invalid JSON: ' + e.message, 'error');
+  }
+}
+
+function validateJSON() {
+  const text = getInput().trim();
+  if (!text) { setStatus('Input is empty.', 'error'); return; }
+  try {
+    const parsed = JSON.parse(text);
+    const type = Array.isArray(parsed) ? 'array' : typeof parsed;
+    let info = `Valid JSON. Type: ${type}`;
+    if (type === 'object' && parsed !== null) info += `, ${Object.keys(parsed).length} keys`;
+    if (type === 'array') info += `, ${parsed.length} items`;
+    setStatus(info, 'success');
+  } catch(e) {
+    const pos = e.message.match(/position (\d+)/);
+    const posStr = pos ? ` at position ${pos[1]}` : '';
+    setStatus('Invalid JSON' + posStr + ': ' + e.message, 'error');
+  }
+}
+
+function copyOutput() {
+  const text = document.getElementById('outputPane').innerText;
+  if (!text) { setStatus('Nothing to copy.', 'error'); return; }
+  navigator.clipboard.writeText(text).then(() => setStatus('Copied to clipboard!', 'success'));
+}
+
+function clearAll() {
+  document.getElementById('inputArea').value = '';
+  document.getElementById('outputPane').innerHTML = '';
+  setStatus('', '');
+}
+
+document.getElementById('inputArea').addEventListener('keydown', e => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const s = e.target.selectionStart, en = e.target.selectionEnd;
+    e.target.value = e.target.value.substring(0, s) + '  ' + e.target.value.substring(en);
+    e.target.selectionStart = e.target.selectionEnd = s + 2;
+  }
+});
+</script>
+</body>
+</html>

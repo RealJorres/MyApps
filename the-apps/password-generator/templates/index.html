@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Password Generator</title>
+<style>
+:root {
+  --primary: #15803d;
+  --primary-h: #166534;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2;   --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 720px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus { border-color: var(--primary); }
+
+.slider-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
+.slider-row input[type=range] { flex: 1; accent-color: var(--primary); }
+.slider-val { font-size: 1.1rem; font-weight: 800; color: var(--primary); min-width: 3rem; text-align: center; }
+
+.checkboxes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1.25rem; }
+.check-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
+.check-item input[type=checkbox] { accent-color: var(--primary); width: 1.1rem; height: 1.1rem; }
+
+.count-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
+.count-row label { margin-bottom: 0; white-space: nowrap; }
+.count-row input[type=number] { width: 80px; }
+
+.strength-bar-bg { background: var(--bg); border-radius: 2rem; height: 0.5rem; margin-bottom: 0.4rem; overflow: hidden; }
+.strength-bar-fill { height: 100%; border-radius: 2rem; transition: width 0.3s, background 0.3s; }
+.strength-label { font-size: 0.8rem; font-weight: 600; }
+
+.actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+.results-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.pw-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.75rem;
+}
+.pw-text {
+  flex: 1;
+  font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.9rem;
+  word-break: break-all;
+  color: var(--text);
+  user-select: all;
+}
+.pw-copy { flex-shrink: 0; }
+
+.error-msg { background: var(--error-bg); color: var(--error-fg); padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Password Generator</h1>
+    <p>Generate secure passwords using your browser's crypto API</p>
+  </header>
+
+  <div class="card">
+    <div>
+      <label>Length — <span id="lengthDisplay">16</span> characters</label>
+      <div class="slider-row">
+        <span style="font-size:0.75rem;color:var(--muted);">8</span>
+        <input type="range" id="lengthSlider" min="8" max="128" value="16" oninput="onLengthChange()">
+        <span style="font-size:0.75rem;color:var(--muted);">128</span>
+        <span class="slider-val" id="lengthVal">16</span>
+      </div>
+    </div>
+
+    <div>
+      <label style="margin-bottom:0.6rem;">Character Sets</label>
+      <div class="checkboxes">
+        <label class="check-item"><input type="checkbox" id="chkUpper" checked onchange="updateStrength()"> Uppercase (A–Z)</label>
+        <label class="check-item"><input type="checkbox" id="chkLower" checked onchange="updateStrength()"> Lowercase (a–z)</label>
+        <label class="check-item"><input type="checkbox" id="chkNumbers" checked onchange="updateStrength()"> Numbers (0–9)</label>
+        <label class="check-item"><input type="checkbox" id="chkSymbols" checked onchange="updateStrength()"> Symbols (!@#$…)</label>
+      </div>
+    </div>
+
+    <div class="count-row">
+      <label for="countInput">Count</label>
+      <input type="number" id="countInput" value="5" min="1" max="20">
+    </div>
+
+    <div style="margin-bottom:1.25rem;">
+      <div class="strength-bar-bg"><div class="strength-bar-fill" id="strengthFill" style="width:0%;background:#dc2626;"></div></div>
+      <div class="strength-label" id="strengthLabel" style="color:var(--muted);">Select character sets to see strength</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="generateBtn" onclick="generate()">Generate Passwords</button>
+      <button class="btn btn-ghost" id="regenBtn" onclick="generate()" style="display:none;">Regenerate</button>
+    </div>
+    <div id="errorMsg"></div>
+  </div>
+
+  <div class="card" id="resultsCard" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+      <strong style="font-size:1rem;">Generated Passwords</strong>
+      <button class="btn btn-ghost" style="font-size:0.8rem;padding:0.35rem 0.85rem;" onclick="copyAll()">Copy All</button>
+    </div>
+    <div class="results-list" id="resultsList"></div>
+  </div>
+</div>
+
+<script>
+const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+const NUMS  = '0123456789';
+const SYMS  = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+function onLengthChange() {
+  const v = document.getElementById('lengthSlider').value;
+  document.getElementById('lengthDisplay').textContent = v;
+  document.getElementById('lengthVal').textContent = v;
+  updateStrength();
+}
+
+function getCharset() {
+  let cs = '';
+  if (document.getElementById('chkUpper').checked) cs += UPPER;
+  if (document.getElementById('chkLower').checked) cs += LOWER;
+  if (document.getElementById('chkNumbers').checked) cs += NUMS;
+  if (document.getElementById('chkSymbols').checked) cs += SYMS;
+  return cs;
+}
+
+function getEntropy() {
+  const len = parseInt(document.getElementById('lengthSlider').value);
+  const cs = getCharset();
+  if (!cs) return 0;
+  return len * Math.log2(cs.length);
+}
+
+function updateStrength() {
+  const entropy = getEntropy();
+  const fill = document.getElementById('strengthFill');
+  const label = document.getElementById('strengthLabel');
+  if (entropy === 0) {
+    fill.style.width = '0%';
+    fill.style.background = '#dc2626';
+    label.textContent = 'Select at least one character set';
+    label.style.color = 'var(--muted)';
+    return;
+  }
+  let pct, color, text;
+  if (entropy < 40) { pct = 15; color = '#dc2626'; text = 'Very Weak'; }
+  else if (entropy < 60) { pct = 35; color = '#f97316'; text = 'Weak'; }
+  else if (entropy < 80) { pct = 55; color = '#eab308'; text = 'Fair'; }
+  else if (entropy < 100) { pct = 75; color = '#22c55e'; text = 'Strong'; }
+  else { pct = 100; color = '#15803d'; text = 'Very Strong'; }
+  fill.style.width = pct + '%';
+  fill.style.background = color;
+  label.textContent = `${text} — ~${Math.round(entropy)} bits of entropy`;
+  label.style.color = color;
+}
+
+function generateOne(cs, len) {
+  const arr = new Uint32Array(len);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(n => cs[n % cs.length]).join('');
+}
+
+function generate() {
+  const errorEl = document.getElementById('errorMsg');
+  errorEl.innerHTML = '';
+  const cs = getCharset();
+  if (!cs) {
+    errorEl.innerHTML = '<div class="error-msg">Please select at least one character set.</div>';
+    return;
+  }
+  const len = parseInt(document.getElementById('lengthSlider').value);
+  const count = Math.max(1, Math.min(20, parseInt(document.getElementById('countInput').value) || 5));
+  const passwords = Array.from({ length: count }, () => generateOne(cs, len));
+
+  const list = document.getElementById('resultsList');
+  list.innerHTML = passwords.map((pw, i) => `
+    <div class="pw-row" id="pwrow${i}">
+      <span class="pw-text" id="pw${i}">${pw}</span>
+      <button class="btn btn-ghost pw-copy" style="padding:0.35rem 0.75rem;font-size:0.8rem;" onclick="copyPw(${i})">Copy</button>
+    </div>
+  `).join('');
+
+  document.getElementById('resultsCard').style.display = 'block';
+  document.getElementById('regenBtn').style.display = 'inline-flex';
+}
+
+function copyPw(i) {
+  const text = document.getElementById('pw' + i).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector(`#pwrow${i} .pw-copy`);
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+
+function copyAll() {
+  const texts = Array.from(document.querySelectorAll('.pw-text')).map(el => el.textContent);
+  navigator.clipboard.writeText(texts.join('\n')).then(() => {
+    const btn = event.target;
+    btn.textContent = 'All Copied!';
+    setTimeout(() => btn.textContent = 'Copy All', 1500);
+  });
+}
+
+updateStrength();
+</script>
+</body>
+</html>

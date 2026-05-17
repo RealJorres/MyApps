@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regex Tester</title>
+<style>
+:root {
+  --primary: #be185d;
+  --primary-h: #9d174d;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2;   --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 960px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.status { margin-top: 1rem; padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+
+.pattern-row { display: flex; gap: 0.75rem; align-items: flex-end; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.pattern-wrap { flex: 1; min-width: 200px; }
+.pattern-input {
+  font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+}
+.flags-row { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.flag-check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
+.flag-check input[type=checkbox] { accent-color: var(--primary); width: 1rem; height: 1rem; }
+.flag-badge { background: #fce7f3; color: var(--primary); border-radius: 0.3rem; padding: 0.1rem 0.4rem; font-size: 0.75rem; font-weight: 700; font-family: monospace; }
+
+textarea#testText { min-height: 150px; resize: vertical; font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace; font-size: 0.85rem; }
+
+.actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+.match-badge { display: inline-flex; align-items: center; background: #fce7f3; color: var(--primary); border-radius: 2rem; padding: 0.3rem 0.85rem; font-size: 0.85rem; font-weight: 700; }
+
+.section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
+
+.match-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.match-table th { text-align: left; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.45rem 0.65rem; border-bottom: 2px solid var(--border); }
+.match-table td { padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--border); font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace; font-size: 0.8rem; }
+.match-table tr:last-child td { border-bottom: none; }
+.match-num { background: #fce7f3; color: var(--primary); border-radius: 0.3rem; padding: 0.15rem 0.45rem; font-size: 0.75rem; font-weight: 700; }
+
+.highlight-box {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 80px;
+}
+.highlight-box mark {
+  background: #fbbf24;
+  color: #1e293b;
+  border-radius: 0.15rem;
+  padding: 0.05rem 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Regex Tester</h1>
+    <p>Test regular expressions against your text in real time</p>
+  </header>
+
+  <div class="card">
+    <div class="pattern-row">
+      <div class="pattern-wrap">
+        <label for="patternInput">Pattern</label>
+        <input type="text" id="patternInput" class="pattern-input" placeholder="\b\w+@\w+\.\w+\b" spellcheck="false">
+      </div>
+      <button class="btn btn-primary" id="testBtn" onclick="runTest()">Test</button>
+    </div>
+
+    <div style="margin-bottom:0.5rem;"><label>Flags</label></div>
+    <div class="flags-row">
+      <label class="flag-check"><input type="checkbox" id="flagI" value="i"> <span class="flag-badge">i</span> Case insensitive</label>
+      <label class="flag-check"><input type="checkbox" id="flagM" value="m"> <span class="flag-badge">m</span> Multiline</label>
+      <label class="flag-check"><input type="checkbox" id="flagS" value="s"> <span class="flag-badge">s</span> Dot matches all</label>
+    </div>
+
+    <div style="margin-bottom:1.25rem;">
+      <label for="testText">Test String <small style="font-size:0.75rem;color:var(--muted);font-weight:400;">(Ctrl+Enter to test)</small></label>
+      <textarea id="testText" placeholder="Paste the text you want to test against…"></textarea>
+    </div>
+
+    <div id="statusDiv"></div>
+  </div>
+
+  <div class="card" id="resultsCard" style="display:none;">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <div class="section-title" style="margin-bottom:0;">Matches</div>
+      <span class="match-badge" id="countBadge">0 matches</span>
+    </div>
+
+    <div id="noMatches" style="color:var(--muted);font-size:0.9rem;display:none;">No matches found.</div>
+
+    <div id="matchTableWrap" style="display:none;">
+      <table class="match-table">
+        <thead><tr><th>#</th><th>Span</th><th>Match</th><th>Groups</th></tr></thead>
+        <tbody id="matchBody"></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <label>Highlighted Preview</label>
+      <div class="highlight-box" id="highlightBox"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function getFlags() {
+  const f = [];
+  if (document.getElementById('flagI').checked) f.push('i');
+  if (document.getElementById('flagM').checked) f.push('m');
+  if (document.getElementById('flagS').checked) f.push('s');
+  return f;
+}
+
+function runTest() {
+  const btn = document.getElementById('testBtn');
+  const statusDiv = document.getElementById('statusDiv');
+  btn.disabled = true;
+  statusDiv.innerHTML = '';
+
+  const payload = {
+    pattern: document.getElementById('patternInput').value,
+    text: document.getElementById('testText').value,
+    flags: getFlags()
+  };
+
+  fetch('api/test', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.error) {
+      statusDiv.innerHTML = '<div class="status error">Regex error: ' + escHtml(d.error) + '</div>';
+      document.getElementById('resultsCard').style.display = 'none';
+      return;
+    }
+
+    const resultsCard = document.getElementById('resultsCard');
+    resultsCard.style.display = 'block';
+
+    const count = d.count;
+    document.getElementById('countBadge').textContent = count + (count === 1 ? ' match' : ' matches');
+
+    document.getElementById('noMatches').style.display = count === 0 ? 'block' : 'none';
+    document.getElementById('matchTableWrap').style.display = count > 0 ? 'block' : 'none';
+
+    if (count > 0) {
+      const body = document.getElementById('matchBody');
+      body.innerHTML = d.matches.slice(0, 200).map((m, i) => `
+        <tr>
+          <td><span class="match-num">${i+1}</span></td>
+          <td>${escHtml(m.span)}</td>
+          <td>${escHtml(m.match)}</td>
+          <td>${m.groups.length ? m.groups.map(g => escHtml(g || '∅')).join(', ') : '—'}</td>
+        </tr>
+      `).join('');
+    }
+
+    buildHighlight(payload.text, d.matches);
+  })
+  .catch(e => { statusDiv.innerHTML = '<div class="status error">' + e.message + '</div>'; })
+  .finally(() => { btn.disabled = false; });
+}
+
+function buildHighlight(text, matches) {
+  const box = document.getElementById('highlightBox');
+  if (!matches || matches.length === 0) {
+    box.innerHTML = escHtml(text);
+    return;
+  }
+  let html = '';
+  let pos = 0;
+  for (const m of matches) {
+    if (m.start > pos) html += escHtml(text.slice(pos, m.start));
+    html += '<mark>' + escHtml(text.slice(m.start, m.end)) + '</mark>';
+    pos = m.end;
+  }
+  if (pos < text.length) html += escHtml(text.slice(pos));
+  box.innerHTML = html;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.getElementById('testText').addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); runTest(); }
+});
+document.getElementById('patternInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); runTest(); }
+});
+</script>
+</body>
+</html>

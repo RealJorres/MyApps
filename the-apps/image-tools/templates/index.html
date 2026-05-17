@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Tools</title>
+<style>
+:root {
+  --primary: #0891b2;
+  --primary-h: #0e7490;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2;   --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 960px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.status { margin-top: 1rem; padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--primary);
+  background: #f0f9ff;
+}
+.drop-zone input[type=file] { display: none; }
+.drop-zone-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.drop-zone p { color: var(--muted); font-size: 0.9rem; }
+.drop-zone strong { color: var(--primary); cursor: pointer; }
+
+.preview-area {
+  display: none;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 1.25rem;
+}
+.preview-area.show { display: flex; }
+.preview-img {
+  width: 220px;
+  height: 160px;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  flex-shrink: 0;
+}
+.img-meta { flex: 1; }
+.img-meta h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 1rem; }
+.meta-item { font-size: 0.85rem; }
+.meta-item span { color: var(--muted); }
+
+.radio-group { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.radio-group label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 500; color: var(--text); text-transform: none; letter-spacing: 0; cursor: pointer; }
+.radio-group input[type=radio] { accent-color: var(--primary); width: 1rem; height: 1rem; }
+
+.section-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+.op-section { display: none; }
+.op-section.active { display: block; }
+
+.row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.row .field { flex: 1; min-width: 120px; }
+
+.resize-mode-row { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+.resize-mode-row label { display: flex; align-items: center; gap: 0.35rem; font-size: 0.875rem; font-weight: 500; color: var(--text); text-transform: none; letter-spacing: 0; cursor: pointer; }
+.resize-mode-row input[type=radio] { accent-color: var(--primary); }
+.resize-inputs { display: none; }
+.resize-inputs.show { display: block; }
+
+.quality-row { display: flex; align-items: center; gap: 0.75rem; }
+.quality-row input[type=range] { flex: 1; accent-color: var(--primary); }
+.quality-val { font-size: 0.9rem; font-weight: 700; color: var(--primary); min-width: 2.5rem; text-align: right; }
+
+.actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Image Tools</h1>
+    <p>Resize, convert, and compress images in the browser</p>
+  </header>
+
+  <div class="card">
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*">
+      <div class="drop-zone-icon">🖼️</div>
+      <p>Drag &amp; drop an image here, or <strong onclick="document.getElementById('fileInput').click()">browse</strong></p>
+      <p style="margin-top:0.3rem;font-size:0.8rem;">PNG, JPEG, WEBP, BMP — up to 50 MB</p>
+    </div>
+    <div class="preview-area" id="previewArea">
+      <img class="preview-img" id="previewImg" src="" alt="preview">
+      <div class="img-meta">
+        <h3 id="fileName">filename.png</h3>
+        <div class="meta-grid">
+          <div class="meta-item"><span>Dimensions: </span><strong id="metaDims">—</strong></div>
+          <div class="meta-item"><span>Format: </span><strong id="metaFmt">—</strong></div>
+          <div class="meta-item"><span>Mode: </span><strong id="metaMode">—</strong></div>
+          <div class="meta-item"><span>File size: </span><strong id="metaSize">—</strong></div>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:0.85rem;font-size:0.8rem;" onclick="resetFile()">Change image</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="opsCard" style="display:none;">
+    <div class="section-title">Operation</div>
+    <div class="radio-group">
+      <label><input type="radio" name="op" value="resize" id="opResize"> Resize</label>
+      <label><input type="radio" name="op" value="convert" id="opConvert" checked> Convert / Compress</label>
+    </div>
+
+    <div class="op-section" id="sectionResize">
+      <div class="resize-mode-row">
+        <label><input type="radio" name="resize_mode" value="percent" checked onchange="toggleResizeMode()"> Percentage</label>
+        <label><input type="radio" name="resize_mode" value="px" onchange="toggleResizeMode()"> Exact pixels</label>
+      </div>
+      <div class="resize-inputs show" id="resizePercent">
+        <label>Scale (%)</label>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <input type="range" id="percentSlider" min="1" max="300" value="100" oninput="document.getElementById('percentVal').textContent=this.value+'%'" style="flex:1;accent-color:var(--primary);">
+          <span id="percentVal" style="font-weight:700;color:var(--primary);min-width:3rem;">100%</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:0.4rem;">Aspect ratio is preserved automatically.</p>
+      </div>
+      <div class="resize-inputs" id="resizePx">
+        <div class="row">
+          <div class="field">
+            <label>Width (px)</label>
+            <input type="number" id="rWidth" placeholder="e.g. 800" min="1">
+          </div>
+          <div class="field">
+            <label>Height (px)</label>
+            <input type="number" id="rHeight" placeholder="e.g. 600" min="1">
+          </div>
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:0.4rem;">Leave one blank to auto-scale and preserve aspect ratio.</p>
+      </div>
+    </div>
+
+    <div class="op-section active" id="sectionConvert">
+      <div class="row">
+        <div class="field">
+          <label>Output Format</label>
+          <select id="fmt" onchange="toggleQuality()">
+            <option value="PNG">PNG</option>
+            <option value="JPEG">JPEG</option>
+            <option value="WEBP">WEBP</option>
+            <option value="BMP">BMP</option>
+          </select>
+        </div>
+        <div class="field" id="qualityField" style="display:none;">
+          <label>Quality — <span id="qualityVal">85</span>%</label>
+          <div class="quality-row">
+            <input type="range" id="qualitySlider" min="1" max="100" value="85" oninput="document.getElementById('qualityVal').textContent=this.value">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="processBtn" onclick="processImage()">Process &amp; Download</button>
+      <span id="statusMsg"></span>
+    </div>
+    <div id="statusDiv"></div>
+  </div>
+</div>
+
+<script>
+let currentFile = null;
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadFile(file);
+});
+dropZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+
+function loadFile(file) {
+  currentFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('previewImg').src = ev.target.result;
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('metaSize').textContent = formatBytes(file.size);
+    document.getElementById('dropZone').style.display = 'none';
+    document.getElementById('previewArea').classList.add('show');
+    document.getElementById('opsCard').style.display = 'block';
+    getImageInfo(file);
+  };
+  reader.readAsDataURL(file);
+}
+
+function getImageInfo(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fetch('api/info', { method: 'POST', body: fd })
+    .then(r => r.json())
+    .then(d => {
+      if (d.error) return;
+      document.getElementById('metaDims').textContent = d.width + ' × ' + d.height + ' px';
+      document.getElementById('metaFmt').textContent = d.format;
+      document.getElementById('metaMode').textContent = d.mode;
+    });
+}
+
+function resetFile() {
+  currentFile = null;
+  document.getElementById('previewImg').src = '';
+  document.getElementById('previewArea').classList.remove('show');
+  document.getElementById('dropZone').style.display = '';
+  document.getElementById('opsCard').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  document.getElementById('statusDiv').innerHTML = '';
+}
+
+document.querySelectorAll('input[name=op]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('sectionResize').classList.toggle('active', r.value === 'resize' && r.checked);
+    document.getElementById('sectionConvert').classList.toggle('active', r.value === 'convert' && r.checked);
+  });
+});
+
+function toggleResizeMode() {
+  const isPct = document.querySelector('input[name=resize_mode]:checked').value === 'percent';
+  document.getElementById('resizePercent').classList.toggle('show', isPct);
+  document.getElementById('resizePx').classList.toggle('show', !isPct);
+}
+
+function toggleQuality() {
+  const fmt = document.getElementById('fmt').value;
+  document.getElementById('qualityField').style.display = (fmt === 'JPEG' || fmt === 'WEBP') ? '' : 'none';
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/(1024*1024)).toFixed(2) + ' MB';
+}
+
+function processImage() {
+  if (!currentFile) return;
+  const btn = document.getElementById('processBtn');
+  const statusDiv = document.getElementById('statusDiv');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+  statusDiv.innerHTML = '';
+
+  const op = document.querySelector('input[name=op]:checked').value;
+  const fd = new FormData();
+  fd.append('file', currentFile);
+  fd.append('op', op);
+
+  if (op === 'resize') {
+    const mode = document.querySelector('input[name=resize_mode]:checked').value;
+    fd.append('resize_mode', mode);
+    if (mode === 'percent') {
+      fd.append('percent', document.getElementById('percentSlider').value);
+    } else {
+      fd.append('width', document.getElementById('rWidth').value);
+      fd.append('height', document.getElementById('rHeight').value);
+    }
+  }
+
+  const fmt = document.getElementById('fmt').value;
+  fd.append('format', fmt);
+  fd.append('quality', document.getElementById('qualitySlider').value);
+
+  fetch('api/process', { method: 'POST', body: fd })
+    .then(r => {
+      if (!r.ok) return r.json().then(d => { throw new Error(d.error || 'Server error'); });
+      return r.blob();
+    })
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'output.' + (fmt === 'JPEG' ? 'jpg' : fmt.toLowerCase());
+      a.click();
+      URL.revokeObjectURL(url);
+      statusDiv.innerHTML = '<div class="status success">Download started!</div>';
+    })
+    .catch(err => {
+      statusDiv.innerHTML = '<div class="status error">' + err.message + '</div>';
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = 'Process & Download';
+    });
+}
+</script>
+</body>
+</html>

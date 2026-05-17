@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hash Generator</title>
+<style>
+:root {
+  --primary: #7c3aed;
+  --primary-h: #6d28d9;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2;   --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 960px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.status { margin-top: 1rem; padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+.status.error { background: var(--error-bg); color: var(--error-fg); }
+.status.success { background: var(--success-bg); color: var(--success-fg); }
+label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+
+.tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
+.tab-btn { background: none; border: none; padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color 0.15s, border-color 0.15s; font-family: inherit; }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-btn:hover:not(.active) { color: var(--text); }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+.row .field { flex: 1; min-width: 140px; }
+
+textarea#textInput { min-height: 120px; resize: vertical; }
+
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: 0.75rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 1rem;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: #f5f3ff; }
+.drop-zone input[type=file] { display: none; }
+.drop-zone p { color: var(--muted); font-size: 0.9rem; }
+.drop-zone strong { color: var(--primary); }
+.drop-zone .file-name { font-weight: 700; color: var(--text); margin-top: 0.3rem; }
+
+.results-card { display: none; }
+.results-card.show { display: block; }
+.results-table { width: 100%; border-collapse: collapse; }
+.results-table th { text-align: left; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); }
+.results-table td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.results-table tr:last-child td { border-bottom: none; }
+.algo-badge { display: inline-block; background: #ede9fe; color: var(--primary); border-radius: 0.35rem; padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; }
+.hash-val { font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace; font-size: 0.78rem; color: #334155; word-break: break-all; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Hash Generator</h1>
+    <p>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes</p>
+  </header>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('text')">Text</button>
+      <button class="tab-btn" onclick="switchTab('file')">File</button>
+    </div>
+
+    <div class="tab-panel active" id="panelText">
+      <div style="margin-bottom:1rem;">
+        <label for="textInput">Input Text</label>
+        <textarea id="textInput" placeholder="Enter text to hash…" spellcheck="false"></textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="encoding">Encoding</label>
+          <select id="encoding">
+            <option value="utf-8">UTF-8</option>
+            <option value="ascii">ASCII</option>
+            <option value="latin-1">Latin-1</option>
+          </select>
+        </div>
+        <div style="flex-shrink:0;">
+          <button class="btn btn-primary" id="hashTextBtn" onclick="hashText()">Compute Hashes</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panelFile">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">📁</div>
+        <p>Drag &amp; drop any file here, or <strong onclick="document.getElementById('fileInput').click()">browse</strong></p>
+        <p class="file-name" id="dropFileName" style="display:none;"></p>
+      </div>
+      <button class="btn btn-primary" id="hashFileBtn" onclick="hashFile()">Compute Hashes</button>
+    </div>
+
+    <div id="statusDiv"></div>
+  </div>
+
+  <div class="card results-card" id="resultsCard">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <strong style="font-size:1rem;">Hash Results</strong>
+      <span id="sourceLabel" style="font-size:0.8rem;color:var(--muted);"></span>
+    </div>
+    <table class="results-table" id="resultsTable">
+      <thead><tr><th>Algorithm</th><th>Hash</th><th></th></tr></thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let selectedFile = null;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='text')||(i===1&&tab==='file')));
+  document.getElementById('panelText').classList.toggle('active', tab === 'text');
+  document.getElementById('panelFile').classList.toggle('active', tab === 'file');
+}
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) setFile(file);
+});
+dropZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
+
+function setFile(file) {
+  selectedFile = file;
+  const el = document.getElementById('dropFileName');
+  el.textContent = file.name + ' (' + formatBytes(file.size) + ')';
+  el.style.display = 'block';
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/(1024*1024)).toFixed(2) + ' MB';
+}
+
+function showResults(data, source) {
+  const algos = ['md5', 'sha1', 'sha256', 'sha512'];
+  const body = document.getElementById('resultsBody');
+  body.innerHTML = algos.map(a => `
+    <tr>
+      <td><span class="algo-badge">${a.toUpperCase()}</span></td>
+      <td><span class="hash-val">${data[a] || '—'}</span></td>
+      <td><button class="btn btn-ghost" style="padding:0.3rem 0.7rem;font-size:0.78rem;" onclick="copyHash('${data[a]}', this)">Copy</button></td>
+    </tr>
+  `).join('');
+  document.getElementById('sourceLabel').textContent = source;
+  document.getElementById('resultsCard').classList.add('show');
+}
+
+function copyHash(hash, btn) {
+  navigator.clipboard.writeText(hash).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+
+function hashText() {
+  const btn = document.getElementById('hashTextBtn');
+  const statusDiv = document.getElementById('statusDiv');
+  btn.disabled = true;
+  btn.textContent = 'Computing…';
+  statusDiv.innerHTML = '';
+  fetch('api/hash-text', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: document.getElementById('textInput').value, encoding: document.getElementById('encoding').value })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.error) statusDiv.innerHTML = '<div class="status error">' + d.error + '</div>';
+    else showResults(d, 'Text input');
+  })
+  .catch(e => { statusDiv.innerHTML = '<div class="status error">' + e.message + '</div>'; })
+  .finally(() => { btn.disabled = false; btn.textContent = 'Compute Hashes'; });
+}
+
+function hashFile() {
+  if (!selectedFile) { document.getElementById('statusDiv').innerHTML = '<div class="status error">Please select a file first.</div>'; return; }
+  const btn = document.getElementById('hashFileBtn');
+  const statusDiv = document.getElementById('statusDiv');
+  btn.disabled = true;
+  btn.textContent = 'Computing…';
+  statusDiv.innerHTML = '';
+  const fd = new FormData();
+  fd.append('file', selectedFile);
+  fetch('api/hash-file', { method: 'POST', body: fd })
+  .then(r => r.json())
+  .then(d => {
+    if (d.error) statusDiv.innerHTML = '<div class="status error">' + d.error + '</div>';
+    else showResults(d, selectedFile.name);
+  })
+  .catch(e => { statusDiv.innerHTML = '<div class="status error">' + e.message + '</div>'; })
+  .finally(() => { btn.disabled = false; btn.textContent = 'Compute Hashes'; });
+}
+</script>
+</body>
+</html>

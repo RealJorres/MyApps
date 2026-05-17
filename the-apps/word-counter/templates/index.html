@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Counter</title>
+<style>
+:root {
+  --primary: #c2410c;
+  --primary-h: #9a3412;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b;
+  --success-bg: #f0fdf4; --success-fg: #16a34a;
+  --error-bg: #fef2f2;   --error-fg: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.container { max-width: 960px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; }
+header p { color: var(--muted); margin-top: 0.4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+input[type=text], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+input:focus, textarea:focus { border-color: var(--primary); }
+
+#mainTextarea {
+  min-height: 280px;
+  resize: vertical;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+}
+.stat-card .stat-val {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-card .stat-lbl {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.freq-table { width: 100%; border-collapse: collapse; }
+.freq-table th { text-align: left; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.45rem 0.65rem; border-bottom: 2px solid var(--border); }
+.freq-table td { padding: 0.45rem 0.65rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; }
+.freq-table tr:last-child td { border-bottom: none; }
+.freq-bar-cell { width: 40%; }
+.freq-bar-bg { background: var(--bg); border-radius: 2rem; height: 0.45rem; overflow: hidden; }
+.freq-bar-fill { background: var(--primary); height: 100%; border-radius: 2rem; transition: width 0.3s; }
+
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.card-header h2 { font-size: 1rem; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Word Counter</h1>
+    <p>Real-time text statistics and word frequency analysis</p>
+  </header>
+
+  <div class="card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;">
+      <label for="mainTextarea" style="margin-bottom:0;">Your Text</label>
+      <button class="btn btn-ghost" onclick="clearText()" style="font-size:0.8rem;padding:0.35rem 0.85rem;">Clear</button>
+    </div>
+    <textarea id="mainTextarea" placeholder="Start typing or paste your text here…"></textarea>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="statWords">0</div><div class="stat-lbl">Words</div></div>
+    <div class="stat-card"><div class="stat-val" id="statCharsS">0</div><div class="stat-lbl">Chars (with spaces)</div></div>
+    <div class="stat-card"><div class="stat-val" id="statCharsNo">0</div><div class="stat-lbl">Chars (no spaces)</div></div>
+    <div class="stat-card"><div class="stat-val" id="statSents">0</div><div class="stat-lbl">Sentences</div></div>
+    <div class="stat-card"><div class="stat-val" id="statParas">0</div><div class="stat-lbl">Paragraphs</div></div>
+    <div class="stat-card"><div class="stat-val" id="statRead">0m</div><div class="stat-lbl">Reading time</div></div>
+  </div>
+
+  <div class="card" id="freqCard">
+    <div class="card-header">
+      <h2>Top 10 Words</h2>
+      <span style="font-size:0.8rem;color:var(--muted);">By frequency</span>
+    </div>
+    <table class="freq-table">
+      <thead><tr><th>#</th><th>Word</th><th>Count</th><th class="freq-bar-cell">Frequency</th></tr></thead>
+      <tbody id="freqBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const textarea = document.getElementById('mainTextarea');
+textarea.addEventListener('input', updateStats);
+
+function clearText() {
+  textarea.value = '';
+  updateStats();
+}
+
+function updateStats() {
+  const text = textarea.value;
+
+  const words = text.trim() === '' ? [] : text.trim().split(/\s+/).filter(w => w.length > 0);
+  const wordCount = words.length;
+
+  const charsWithSpaces = text.length;
+  const charsNoSpaces = text.replace(/\s/g, '').length;
+
+  const sentences = text.trim() === '' ? 0 : (text.match(/[^.!?]*[.!?]+/g) || []).length || (text.trim().length > 0 ? 1 : 0);
+
+  const paragraphs = text.trim() === '' ? 0 : text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length || (text.trim().length > 0 ? 1 : 0);
+
+  const readMins = wordCount / 200;
+  let readStr;
+  if (wordCount === 0) readStr = '0m';
+  else if (readMins < 1) readStr = Math.ceil(readMins * 60) + 's';
+  else readStr = Math.ceil(readMins) + 'm';
+
+  document.getElementById('statWords').textContent = wordCount.toLocaleString();
+  document.getElementById('statCharsS').textContent = charsWithSpaces.toLocaleString();
+  document.getElementById('statCharsNo').textContent = charsNoSpaces.toLocaleString();
+  document.getElementById('statSents').textContent = sentences.toLocaleString();
+  document.getElementById('statParas').textContent = paragraphs.toLocaleString();
+  document.getElementById('statRead').textContent = readStr;
+
+  updateFrequency(words);
+}
+
+function updateFrequency(words) {
+  const stopWords = new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','by','is','it','as','be','was','are','that','this','his','her','he','she','they','we','you','i','not','from','if','have','had','has','do','did','will','would','can','could','should','may','might','also','which','when','where','who','what']);
+  const freq = {};
+  for (const w of words) {
+    const clean = w.toLowerCase().replace(/[^a-z0-9']/g, '');
+    if (clean.length < 2 || stopWords.has(clean)) continue;
+    freq[clean] = (freq[clean] || 0) + 1;
+  }
+  const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,10);
+  const maxCount = sorted.length > 0 ? sorted[0][1] : 1;
+  const tbody = document.getElementById('freqBody');
+  if (sorted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:1rem;">No words yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = sorted.map(([word, count], i) => `
+    <tr>
+      <td style="color:var(--muted);font-size:0.8rem;">${i+1}</td>
+      <td><strong>${word}</strong></td>
+      <td>${count}</td>
+      <td class="freq-bar-cell">
+        <div class="freq-bar-bg"><div class="freq-bar-fill" style="width:${(count/maxCount*100).toFixed(1)}%"></div></div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+updateStats();
+</script>
+</body>
+</html>
