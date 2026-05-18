@@ -72,19 +72,23 @@
   .timer-value {
     color: var(--primary) !important;
   }
-  .text-display {
+  .typing-box {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 1.5rem;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+  .text-display {
+    padding: 1.5rem 1.5rem 1.25rem;
     font-size: 1.15rem;
     line-height: 1.9;
     font-family: 'Courier New', Courier, monospace;
     letter-spacing: 0.02em;
-    margin-bottom: 1.25rem;
     min-height: 120px;
     position: relative;
     user-select: none;
+    border-bottom: 1px solid var(--border);
   }
   .char {
     color: var(--muted);
@@ -104,25 +108,20 @@
   }
   .typing-area-wrapper {
     position: relative;
-    margin-bottom: 1.25rem;
   }
   .typing-area {
     width: 100%;
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 1rem 1.5rem;
     font-size: 1.05rem;
     font-family: 'Courier New', Courier, monospace;
     color: var(--text);
     resize: none;
-    outline: none;
-    height: 80px;
-    transition: border-color 0.2s;
+    height: 72px;
     caret-color: var(--accent);
-  }
-  .typing-area:focus {
-    border-color: var(--primary);
+    display: block;
   }
   .typing-area::placeholder {
     color: var(--muted);
@@ -281,21 +280,22 @@
     <div class="progress-bar-fill" id="progress-bar"></div>
   </div>
 
-  <div class="text-display" id="text-display"></div>
-
-  <p class="status-msg" id="status-msg">Click the box below and start typing to begin!</p>
-
-  <div class="typing-area-wrapper">
-    <textarea
-      class="typing-area"
-      id="typing-area"
-      placeholder="Start typing here..."
-      autocomplete="off"
-      autocorrect="off"
-      autocapitalize="off"
-      spellcheck="false"
-    ></textarea>
+  <div class="typing-box">
+    <div class="text-display" id="text-display"></div>
+    <div class="typing-area-wrapper">
+      <textarea
+        class="typing-area"
+        id="typing-area"
+        placeholder="Start typing here…"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+      ></textarea>
+    </div>
   </div>
+
+  <p class="status-msg" id="status-msg">Click inside the box and start typing to begin!</p>
 
   <div class="btn-row">
     <button class="btn" onclick="resetTest()">New Test</button>
