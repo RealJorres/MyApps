@@ -433,39 +433,33 @@ function buildGrid() {
   const grid = document.getElementById('ptGrid');
   grid.innerHTML = '';
 
-  // map element -> display row/col
-  const placement = {};
+  // Build cell map: "row,col" -> element object
+  const cellMap = {};
 
-  // Place all standard elements
+  // Place all non-lanthanide/non-actinide elements in main table
   ELEMENTS.forEach(e => {
     if (e.cat === 'Lanthanide' || e.cat === 'Actinide') return;
     if (e.group == null) return;
-    placement[e.num] = { row: e.period, col: e.group };
+    cellMap[`${e.period},${e.group}`] = e;
   });
 
-  // Lanthanides (57-71): display row 9, cols 3-17
-  let lanCol = 3;
-  for (let n = 57; n <= 71; n++) {
-    placement[n] = { row: 9, col: lanCol++ };
-  }
-  // Actinides (89-103): display row 10, cols 3-17
-  let actCol = 3;
-  for (let n = 89; n <= 103; n++) {
-    placement[n] = { row: 10, col: actCol++ };
-  }
+  // La (57) and Ac (89) appear in the main table at group 3
+  cellMap['6,3'] = elByNum[57];
+  cellMap['7,3'] = elByNum[89];
 
-  // Build a 2D grid map
-  const cellMap = {};
-  ELEMENTS.forEach(e => {
-    const p = placement[e.num];
-    if (p) cellMap[`${p.row},${p.col}`] = e.num;
-  });
+  // Lanthanides (57-71) in row 9, cols 3-17 — La appears here too
+  for (let n = 57, col = 3; n <= 71; n++, col++) {
+    cellMap[`9,${col}`] = elByNum[n];
+  }
+  // Actinides (89-103) in row 10, cols 3-17 — Ac appears here too
+  for (let n = 89, col = 3; n <= 103; n++, col++) {
+    cellMap[`10,${col}`] = elByNum[n];
+  }
 
   const totalRows = 10;
   const totalCols = 18;
 
   for (let r = 1; r <= totalRows; r++) {
-    // Insert gap row between row 7 and row 9 (lanthanide/actinide separator)
     if (r === 8) {
       const gap = document.createElement('div');
       gap.className = 'gap-row';
@@ -473,13 +467,9 @@ function buildGrid() {
       grid.appendChild(gap);
       continue;
     }
-
     for (let c = 1; c <= totalCols; c++) {
-      const num = cellMap[`${r},${c}`];
-      const el = num ? elByNum[num] : null;
-
+      const el = cellMap[`${r},${c}`];
       const cell = document.createElement('div');
-
       if (el) {
         const color = CAT_COLORS[el.cat] || CAT_COLORS['Unknown'];
         cell.className = 'el-cell';
@@ -494,16 +484,7 @@ function buildGrid() {
         cell.addEventListener('click', () => openModal(el));
       } else {
         cell.className = 'el-cell spacer';
-        // Show "La-Lu" and "Ac-Lr" label in the gap spots (col 3, rows 6 and 7)
-        if ((r === 6 && c === 3) || (r === 7 && c === 3)) {
-          const label = r === 6 ? 'La-Lu' : 'Ac-Lr';
-          cell.className = 'label-cell';
-          cell.textContent = label;
-          cell.style.fontSize = '0.6rem';
-          cell.style.color = r === 6 ? CAT_COLORS['Lanthanide'] : CAT_COLORS['Actinide'];
-        }
       }
-
       grid.appendChild(cell);
     }
   }
