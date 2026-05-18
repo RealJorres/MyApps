@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, make_response
 import sys
 import json
 import os
@@ -94,6 +94,41 @@ app = SecurityHeadersMiddleware(
 @flask_app.route('/')
 def index():
     return render_template('index.html')
+
+
+BASE_URL = 'https://jorresapps.onrender.com'
+
+
+@flask_app.route('/googleff8e8f6157da6a96.html')
+def google_verification():
+    resp = make_response('google-site-verification: googleff8e8f6157da6a96.html')
+    resp.headers['Content-Type'] = 'text/html'
+    return resp
+
+
+@flask_app.route('/robots.txt')
+def robots():
+    body = f'User-agent: *\nAllow: /\n\nSitemap: {BASE_URL}/sitemap.xml\n'
+    resp = make_response(body)
+    resp.headers['Content-Type'] = 'text/plain'
+    return resp
+
+
+@flask_app.route('/sitemap.xml')
+def sitemap():
+    urls = [f'  <url><loc>{BASE_URL}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>']
+    for a in REGISTRY:
+        urls.append(
+            f'  <url><loc>{BASE_URL}/{a["id"]}/</loc>'
+            f'<changefreq>monthly</changefreq><priority>0.8</priority></url>'
+        )
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+           + '\n'.join(urls)
+           + '\n</urlset>')
+    resp = make_response(xml)
+    resp.headers['Content-Type'] = 'application/xml'
+    return resp
 
 
 @flask_app.route('/api/apps')
