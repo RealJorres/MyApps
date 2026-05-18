@@ -154,7 +154,7 @@ async function downloadPDF() {
   const title = document.getElementById('doc-title').value || 'Document';
   const font_size = parseInt(document.getElementById('font-size').value) || 11;
   try {
-    const r = await fetch('/api/convert', {
+    const r = await fetch('api/convert', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({text, title, font_size})
