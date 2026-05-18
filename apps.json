@@ -327,5 +327,33 @@
     "description": "Track daily habits with streaks, completion rates, and a 30-day heatmap calendar.",
     "port": 5044, "path": "./the-apps/habit-tracker", "entry": "app.py",
     "icon": "✅", "color": "#16a34a", "tags": ["Habits", "Productivity", "Tracker"], "category": "Text / Productivity"
+  },
+  {
+    "id": "bmi-calculator",
+    "name": "BMI Calculator",
+    "description": "Calculate your BMI with category, healthy weight range, and a visual BMI scale. Metric and imperial.",
+    "port": 5048, "path": "./the-apps/bmi-calculator", "entry": "app.py",
+    "icon": "⚖️", "color": "#0891b2", "tags": ["BMI", "Health", "Fitness"], "category": "Health & Wellness"
+  },
+  {
+    "id": "tdee-calculator",
+    "name": "TDEE Calculator",
+    "description": "Calculate your daily calorie needs and macro breakdown based on your stats and activity level.",
+    "port": 5049, "path": "./the-apps/tdee-calculator", "entry": "app.py",
+    "icon": "🔥", "color": "#dc2626", "tags": ["Calories", "TDEE", "Health"], "category": "Health & Wellness"
+  },
+  {
+    "id": "age-calculator",
+    "name": "Age Calculator",
+    "description": "Exact age in years, months, and days. Birthday countdown, zodiac sign, and fun life stats.",
+    "port": 5050, "path": "./the-apps/age-calculator", "entry": "app.py",
+    "icon": "🎂", "color": "#7c3aed", "tags": ["Age", "Birthday", "Date"], "category": "Health & Wellness"
+  },
+  {
+    "id": "water-tracker",
+    "name": "Water Intake Tracker",
+    "description": "Track your daily water intake with a goal, progress ring, and history log. Resets each day.",
+    "port": 5051, "path": "./the-apps/water-tracker", "entry": "app.py",
+    "icon": "💧", "color": "#0284c7", "tags": ["Water", "Hydration", "Health"], "category": "Health & Wellness"
   }
 ]

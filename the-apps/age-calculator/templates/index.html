@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator</title>
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-h: #6d28d9;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --muted: #64748b;
+      --success-bg: #f0fdf4;
+      --success-fg: #16a34a;
+      --error-bg: #fef2f2;
+      --error-fg: #dc2626;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+    .container { max-width: 680px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 2rem; }
+    header h1 { font-size: 2rem; font-weight: 800; }
+    header p { color: var(--muted); margin-top: 0.4rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+    label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+    input[type=number], input[type=date], select { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.95rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+    input:focus { border-color: var(--primary); }
+    .result-card { background: var(--primary); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+    .result-value { font-size: 3rem; font-weight: 800; line-height: 1; }
+    .result-label { font-size: 0.85rem; opacity: 0.85; margin-top: 0.35rem; }
+
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field { display: flex; flex-direction: column; }
+    .section-gap { margin-top: 1.25rem; }
+
+    .result-section { display: none; }
+    .result-section.visible { display: block; }
+
+    .exact-age-card { background: var(--primary); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+    .exact-age-value { font-size: 1.6rem; font-weight: 800; line-height: 1.3; }
+    .exact-age-label { font-size: 0.85rem; opacity: 0.75; margin-top: 0.4rem; }
+
+    .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+    .fun-card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .fun-value { font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+    .fun-label { font-size: 0.78rem; color: var(--muted); font-weight: 600; margin-top: 0.25rem; }
+
+    .birthday-card { border-radius: 1rem; padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; border: 2px solid var(--primary); background: var(--card); }
+    .birthday-title { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .birthday-main { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .birthday-sub { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+
+    .signs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+    .sign-card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; text-align: center; }
+    .sign-icon { font-size: 2rem; }
+    .sign-name { font-size: 1rem; font-weight: 700; color: var(--text); margin-top: 0.3rem; }
+    .sign-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-top: 0.15rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Age Calculator</h1>
+    <p>Find out your exact age, fun life stats, and more</p>
+  </header>
+
+  <div class="card">
+    <div class="input-row">
+      <div class="field">
+        <label>Date of Birth</label>
+        <input type="date" id="dob" oninput="calculate()" />
+      </div>
+      <div class="field">
+        <label>Calculate Age As Of</label>
+        <input type="date" id="asOf" oninput="calculate()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="result-section" id="resultSection">
+
+    <div class="exact-age-card">
+      <div class="exact-age-value" id="exactAge">--</div>
+      <div class="exact-age-label">Exact Age</div>
+    </div>
+
+    <div class="fun-grid">
+      <div class="fun-card">
+        <div class="fun-value" id="totalDays">--</div>
+        <div class="fun-label">Total Days Lived</div>
+      </div>
+      <div class="fun-card">
+        <div class="fun-value" id="totalHours">--</div>
+        <div class="fun-label">Total Hours Lived</div>
+      </div>
+      <div class="fun-card">
+        <div class="fun-value" id="birthDay">--</div>
+        <div class="fun-label">Day You Were Born</div>
+      </div>
+      <div class="fun-card">
+        <div class="fun-value" id="heartbeats">--</div>
+        <div class="fun-label">Approximate Heartbeats</div>
+      </div>
+    </div>
+
+    <div class="birthday-card" id="birthdayCard">
+      <div class="birthday-title">Next Birthday</div>
+      <div class="birthday-main" id="birthdayMain">--</div>
+      <div class="birthday-sub" id="birthdaySub"></div>
+    </div>
+
+    <div class="signs-row">
+      <div class="sign-card">
+        <div class="sign-icon" id="zodiacIcon">--</div>
+        <div class="sign-name" id="zodiacName">--</div>
+        <div class="sign-label">Western Zodiac</div>
+      </div>
+      <div class="sign-card">
+        <div class="sign-icon" id="chineseIcon">--</div>
+        <div class="sign-name" id="chineseName">--</div>
+        <div class="sign-label">Chinese Zodiac</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* Set default dates */
+  (function() {
+    var today = new Date();
+    var todayStr = today.toISOString().split('T')[0];
+    document.getElementById('dob').max = todayStr;
+    document.getElementById('asOf').value = todayStr;
+    document.getElementById('asOf').max = '2099-12-31';
+  })();
+
+  var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  var ZODIAC = [
+    { name: 'Capricorn', icon: '♑', start: [12,22], end: [1,19] },
+    { name: 'Aquarius',  icon: '♒', start: [1,20],  end: [2,18] },
+    { name: 'Pisces',    icon: '♓', start: [2,19],  end: [3,20] },
+    { name: 'Aries',     icon: '♈', start: [3,21],  end: [4,19] },
+    { name: 'Taurus',    icon: '♉', start: [4,20],  end: [5,20] },
+    { name: 'Gemini',    icon: '♊', start: [5,21],  end: [6,20] },
+    { name: 'Cancer',    icon: '♋', start: [6,21],  end: [7,22] },
+    { name: 'Leo',       icon: '♌', start: [7,23],  end: [8,22] },
+    { name: 'Virgo',     icon: '♍', start: [8,23],  end: [9,22] },
+    { name: 'Libra',     icon: '♎', start: [9,23],  end: [10,22] },
+    { name: 'Scorpio',   icon: '♏', start: [10,23], end: [11,21] },
+    { name: 'Sagittarius',icon:'♐', start: [11,22], end: [12,21] }
+  ];
+
+  var CHINESE = ['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+  var CHINESE_ICONS = ['🐀','🐂','🐯','🐰','🐲','🐍','🐴','🐑','🐒','🐓','🐕','🐷'];
+
+  function getZodiac(month, day) {
+    var m = month, d = day;
+    if ((m === 12 && d >= 22) || (m === 1 && d <= 19)) return ZODIAC[0];
+    for (var i = 1; i < ZODIAC.length; i++) {
+      var s = ZODIAC[i].start, e = ZODIAC[i].end;
+      if ((m === s[0] && d >= s[1]) || (m === e[0] && d <= e[1])) return ZODIAC[i];
+    }
+    return ZODIAC[0];
+  }
+
+  function getChineseZodiac(year) {
+    /* 1900 = Rat (index 0) */
+    var idx = (year - 1900) % 12;
+    if (idx < 0) idx += 12;
+    return { name: CHINESE[idx], icon: CHINESE_ICONS[idx] };
+  }
+
+  function fmt(n) {
+    return n.toLocaleString();
+  }
+
+  function calculate() {
+    var dobVal  = document.getElementById('dob').value;
+    var asOfVal = document.getElementById('asOf').value;
+
+    if (!dobVal || !asOfVal) { hide(); return; }
+
+    var dob  = new Date(dobVal + 'T00:00:00');
+    var asOf = new Date(asOfVal + 'T00:00:00');
+
+    if (dob > asOf) { hide(); return; }
+
+    /* Exact age in years/months/days */
+    var years  = asOf.getFullYear() - dob.getFullYear();
+    var months = asOf.getMonth() - dob.getMonth();
+    var days   = asOf.getDate() - dob.getDate();
+
+    if (days < 0) {
+      months--;
+      var prevMonth = new Date(asOf.getFullYear(), asOf.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    /* Total days */
+    var ms        = asOf - dob;
+    var totalDays = Math.floor(ms / (1000 * 60 * 60 * 24));
+    var totalHours = totalDays * 24;
+
+    /* Heartbeats: ~72 bpm average */
+    var totalSecs   = totalDays * 86400;
+    var heartbeats  = Math.round(totalSecs * 1.2);
+
+    /* Day of week born */
+    var dobDay = DAYS[dob.getDay()];
+
+    /* Next birthday */
+    var thisYear = asOf.getFullYear();
+    var nextBd   = new Date(thisYear, dob.getMonth(), dob.getDate());
+    var isBirthday = (asOf.getMonth() === dob.getMonth() && asOf.getDate() === dob.getDate());
+    var daysUntil = 0;
+    if (!isBirthday) {
+      if (nextBd <= asOf) {
+        nextBd = new Date(thisYear + 1, dob.getMonth(), dob.getDate());
+      }
+      daysUntil = Math.round((nextBd - asOf) / (1000 * 60 * 60 * 24));
+    }
+
+    var bdMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var bdDateStr = bdMonths[dob.getMonth()] + ' ' + dob.getDate();
+
+    /* Zodiac */
+    var zodiac  = getZodiac(dob.getMonth() + 1, dob.getDate());
+    var chinese = getChineseZodiac(dob.getFullYear());
+
+    /* Update DOM */
+    document.getElementById('exactAge').textContent =
+      years + ' years, ' + months + ' month' + (months !== 1 ? 's' : '') + ', ' + days + ' day' + (days !== 1 ? 's' : '');
+
+    document.getElementById('totalDays').textContent   = fmt(totalDays);
+    document.getElementById('totalHours').textContent  = fmt(totalHours);
+    document.getElementById('birthDay').textContent    = dobDay;
+    document.getElementById('heartbeats').textContent  = fmt(heartbeats);
+
+    if (isBirthday) {
+      document.getElementById('birthdayMain').textContent = 'Happy Birthday! 🎂';
+      document.getElementById('birthdaySub').textContent  = 'Today is your birthday!';
+    } else {
+      document.getElementById('birthdayMain').textContent = 'In ' + daysUntil + ' day' + (daysUntil !== 1 ? 's' : '');
+      document.getElementById('birthdaySub').textContent  = bdDateStr;
+    }
+
+    document.getElementById('zodiacIcon').textContent  = zodiac.icon;
+    document.getElementById('zodiacName').textContent  = zodiac.name;
+    document.getElementById('chineseIcon').textContent = chinese.icon;
+    document.getElementById('chineseName').textContent = chinese.name + ' Year';
+
+    document.getElementById('resultSection').classList.add('visible');
+  }
+
+  function hide() {
+    document.getElementById('resultSection').classList.remove('visible');
+  }
+
+  /* Run on load with default asOf = today */
+  document.addEventListener('DOMContentLoaded', function() {
+    var dob = document.getElementById('dob');
+    dob.addEventListener('change', calculate);
+    var asOf = document.getElementById('asOf');
+    asOf.addEventListener('change', calculate);
+  });
+</script>
+</body>
+</html>
