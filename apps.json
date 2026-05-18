@@ -593,5 +593,89 @@
     "description": "Guess the hidden word letter by letter across 6 categories. Classic SVG hangman.",
     "port": 5085, "path": "./the-apps/hangman", "entry": "app.py",
     "icon": "🪢", "color": "#7c3aed", "tags": ["Hangman", "Word", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "pdf-splitter",
+    "name": "PDF Splitter",
+    "description": "Split a PDF into individual pages or custom ranges. Download as a ZIP file.",
+    "port": 5086, "path": "./the-apps/pdf-splitter", "entry": "app.py",
+    "icon": "✂️", "color": "#4f46e5", "tags": ["PDF", "Split"], "category": "Document / File"
+  },
+  {
+    "id": "markdown-table-generator",
+    "name": "Markdown Table Generator",
+    "description": "Fill in a visual grid and generate Markdown table syntax instantly.",
+    "port": 5087, "path": "./the-apps/markdown-table-generator", "entry": "app.py",
+    "icon": "⊞", "color": "#0891b2", "tags": ["Markdown", "Table", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "jwt-generator",
+    "name": "JWT Generator",
+    "description": "Generate and sign JWTs with custom payload and secret. Decode any token too.",
+    "port": 5088, "path": "./the-apps/jwt-generator", "entry": "app.py",
+    "icon": "🔏", "color": "#be185d", "tags": ["JWT", "Auth", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "code-beautifier",
+    "name": "Code Beautifier",
+    "description": "Format and beautify JSON, Python, JavaScript, CSS, and HTML code.",
+    "port": 5089, "path": "./the-apps/code-beautifier", "entry": "app.py",
+    "icon": "✨", "color": "#d97706", "tags": ["Format", "Code", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "sticky-notes",
+    "name": "Sticky Notes",
+    "description": "Colorful draggable sticky notes board. Everything saves automatically in your browser.",
+    "port": 5090, "path": "./the-apps/sticky-notes", "entry": "app.py",
+    "icon": "🗒️", "color": "#d97706", "tags": ["Notes", "Sticky", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "reading-list",
+    "name": "Reading List",
+    "description": "Save URLs with titles, tags, and notes. Filter by read/unread status.",
+    "port": 5091, "path": "./the-apps/reading-list", "entry": "app.py",
+    "icon": "📚", "color": "#0f766e", "tags": ["Reading", "Bookmarks", "Links"], "category": "Text / Productivity"
+  },
+  {
+    "id": "whois-lookup",
+    "name": "Whois Lookup",
+    "description": "Look up domain registration info: registrar, creation date, expiry, and nameservers.",
+    "port": 5092, "path": "./the-apps/whois-lookup", "entry": "app.py",
+    "icon": "🌍", "color": "#059669", "tags": ["Whois", "Domain", "Network"], "category": "Network / Security"
+  },
+  {
+    "id": "ssl-checker",
+    "name": "SSL Certificate Checker",
+    "description": "Check any domain's SSL certificate — issuer, expiry date, and days remaining.",
+    "port": 5093, "path": "./the-apps/ssl-checker", "entry": "app.py",
+    "icon": "🔒", "color": "#16a34a", "tags": ["SSL", "HTTPS", "Security"], "category": "Network / Security"
+  },
+  {
+    "id": "calorie-tracker",
+    "name": "Calorie Tracker",
+    "description": "Log meals and track daily calorie intake against your goal. Resets each day.",
+    "port": 5094, "path": "./the-apps/calorie-tracker", "entry": "app.py",
+    "icon": "🥗", "color": "#dc2626", "tags": ["Calories", "Food", "Health"], "category": "Health & Wellness"
+  },
+  {
+    "id": "tetris",
+    "name": "Tetris",
+    "description": "Classic falling block puzzle. Arrow keys to move, Up to rotate, Space to drop.",
+    "port": 5095, "path": "./the-apps/tetris", "entry": "app.py",
+    "icon": "🟦", "color": "#4f46e5", "tags": ["Tetris", "Puzzle", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "connect-four",
+    "name": "Connect Four",
+    "description": "Drop discs to get 4 in a row. Play vs a friend or vs a minimax AI.",
+    "port": 5096, "path": "./the-apps/connect-four", "entry": "app.py",
+    "icon": "🔴", "color": "#0891b2", "tags": ["Connect Four", "Strategy", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "simon-says",
+    "name": "Simon Says",
+    "description": "Repeat the color and sound sequence before it gets too long. Classic memory game.",
+    "port": 5097, "path": "./the-apps/simon-says", "entry": "app.py",
+    "icon": "🟢", "color": "#16a34a", "tags": ["Simon", "Memory", "Game"], "category": "Games / Fun"
   }
 ]

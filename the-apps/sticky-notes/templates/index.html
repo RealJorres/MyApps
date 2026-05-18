@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sticky Notes</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #1e293b; min-height: 100vh; overflow: hidden; }
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: #0f172a; color: #fff; padding: 0.6rem 1rem;
+    display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  header h1 { font-size: 1.1rem; font-weight: 700; color: #fbbf24; flex: 1; min-width: 120px; }
+  .btn {
+    padding: 0.45rem 0.9rem; border-radius: 8px; border: none;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-add { background: #fbbf24; color: #0f172a; }
+  .btn-add:hover { background: #f59e0b; }
+  .btn-clear { background: #374151; color: #f87171; }
+  .btn-clear:hover { background: #4b5563; }
+  .btn-export { background: #374151; color: #93c5fd; }
+  .btn-export:hover { background: #4b5563; }
+  #board {
+    position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+  }
+  .note {
+    position: absolute; width: 200px; min-height: 160px;
+    border-radius: 10px; box-shadow: 4px 4px 12px rgba(0,0,0,0.35);
+    display: flex; flex-direction: column; user-select: none;
+    transition: box-shadow 0.15s;
+  }
+  .note:hover { box-shadow: 6px 6px 18px rgba(0,0,0,0.45); }
+  .note.dragging { box-shadow: 10px 10px 24px rgba(0,0,0,0.5); opacity: 0.95; z-index: 999 !important; }
+  .note-header {
+    padding: 0.4rem 0.6rem; border-radius: 10px 10px 0 0;
+    cursor: grab; display: flex; align-items: center; justify-content: space-between;
+    background: rgba(0,0,0,0.12);
+  }
+  .note-header:active { cursor: grabbing; }
+  .color-dots { display: flex; gap: 4px; }
+  .color-dot {
+    width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.5);
+    transition: transform 0.1s;
+  }
+  .color-dot:hover { transform: scale(1.2); }
+  .note-delete {
+    background: none; border: none; cursor: pointer; font-size: 1rem;
+    color: rgba(0,0,0,0.4); padding: 0 0.2rem; line-height: 1;
+  }
+  .note-delete:hover { color: rgba(0,0,0,0.75); }
+  .note-body {
+    flex: 1; padding: 0.6rem 0.75rem; outline: none;
+    font-size: 0.9rem; line-height: 1.55; color: rgba(0,0,0,0.75);
+    overflow-y: auto; word-break: break-word; white-space: pre-wrap;
+    cursor: text; min-height: 110px;
+  }
+  .note-resize {
+    position: absolute; bottom: 0; right: 0; width: 16px; height: 16px;
+    cursor: se-resize; background: rgba(0,0,0,0.12); border-radius: 0 0 10px 0;
+  }
+
+  /* Color palette */
+  .c-yellow { background: #fef08a; }
+  .c-pink { background: #fbcfe8; }
+  .c-blue { background: #bfdbfe; }
+  .c-green { background: #bbf7d0; }
+  .c-purple { background: #e9d5ff; }
+  .c-orange { background: #fed7aa; }
+
+  /* Mobile: grid layout instead of freeform */
+  @media (max-width: 640px) {
+    body { overflow: auto; }
+    #board {
+      position: static; top: auto; overflow: visible;
+      padding: 1rem; padding-top: 0.5rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem; align-content: start;
+    }
+    .note {
+      position: static !important; width: auto !important;
+      min-height: 140px;
+    }
+    .note-header { cursor: default; }
+    .note-resize { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sticky Notes</h1>
+  <button class="btn btn-add" onclick="addNote()">+ Add Note</button>
+  <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
+</header>
+<div id="board"></div>
+
+<script>
+const COLORS = ['c-yellow','c-pink','c-blue','c-green','c-purple','c-orange'];
+const COLOR_DOTS = ['#fef08a','#fbcfe8','#bfdbfe','#bbf7d0','#e9d5ff','#fed7aa'];
+let notes = [];
+let zCounter = 10;
+let saveTimer = null;
+
+function loadNotes() {
+  try { notes = JSON.parse(localStorage.getItem('sticky_notes') || '[]'); } catch(e) { notes = []; }
+  notes.forEach(n => renderNote(n));
+}
+
+function saveNotes() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    localStorage.setItem('sticky_notes', JSON.stringify(notes));
+  }, 500);
+}
+
+function addNote() {
+  const board = document.getElementById('board');
+  const bw = board.offsetWidth || 800, bh = board.offsetHeight || 600;
+  const x = Math.max(10, Math.min(bw - 220, Math.random() * (bw - 240) + 10));
+  const y = Math.max(10, Math.min(bh - 180, Math.random() * (bh - 200) + 10));
+  const note = {
+    id: Date.now().toString(),
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    text: '',
+    x: Math.round(x), y: Math.round(y),
+    w: 200, h: 160, z: ++zCounter
+  };
+  notes.push(note);
+  renderNote(note);
+  saveNotes();
+}
+
+function renderNote(note) {
+  const el = document.createElement('div');
+  el.className = 'note ' + note.color;
+  el.id = 'note-' + note.id;
+  el.style.cssText = `left:${note.x}px;top:${note.y}px;width:${note.w}px;min-height:${note.h}px;z-index:${note.z}`;
+
+  const dotsHtml = COLORS.map((c,i) =>
+    `<div class="color-dot" style="background:${COLOR_DOTS[i]}" onclick="changeColor('${note.id}','${c}',this)" title="${c}"></div>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="note-header">
+      <div class="color-dots">${dotsHtml}</div>
+      <button class="note-delete" onclick="deleteNote('${note.id}')" title="Delete">&#10005;</button>
+    </div>
+    <div class="note-body" contenteditable="true" spellcheck="false">${escHtml(note.text)}</div>
+    <div class="note-resize"></div>
+  `;
+
+  const body = el.querySelector('.note-body');
+  body.addEventListener('input', () => {
+    const n = findNote(note.id);
+    if (n) { n.text = body.innerText; saveNotes(); }
+  });
+
+  const header = el.querySelector('.note-header');
+  setupDrag(el, header, note);
+  setupResize(el, el.querySelector('.note-resize'), note);
+
+  el.addEventListener('mousedown', () => bringToFront(el, note));
+  document.getElementById('board').appendChild(el);
+}
+
+function findNote(id) { return notes.find(n => n.id === id); }
+
+function bringToFront(el, note) {
+  note.z = ++zCounter;
+  el.style.zIndex = note.z;
+  saveNotes();
+}
+
+function changeColor(id, color, dotEl) {
+  const note = findNote(id);
+  if (!note) return;
+  const el = document.getElementById('note-' + id);
+  COLORS.forEach(c => el.classList.remove(c));
+  el.classList.add(color);
+  note.color = color;
+  saveNotes();
+}
+
+function deleteNote(id) {
+  const el = document.getElementById('note-' + id);
+  if (el) el.remove();
+  notes = notes.filter(n => n.id !== id);
+  saveNotes();
+}
+
+function clearAll() {
+  if (!confirm('Delete all notes?')) return;
+  notes = [];
+  document.getElementById('board').innerHTML = '';
+  saveNotes();
+}
+
+function setupDrag(el, handle, note) {
+  let startX, startY, startLeft, startTop, dragging = false;
+
+  handle.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('color-dot') || e.target.classList.contains('note-delete')) return;
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    startLeft = parseInt(el.style.left) || 0;
+    startTop = parseInt(el.style.top) || 0;
+    el.classList.add('dragging');
+    bringToFront(el, note);
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    const newLeft = Math.max(0, startLeft + dx);
+    const newTop = Math.max(0, startTop + dy);
+    el.style.left = newLeft + 'px';
+    el.style.top = newTop + 'px';
+    note.x = newLeft; note.y = newTop;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    el.classList.remove('dragging');
+    saveNotes();
+  });
+}
+
+function setupResize(el, handle, note) {
+  let startX, startY, startW, startH, resizing = false;
+
+  handle.addEventListener('mousedown', e => {
+    resizing = true;
+    startX = e.clientX; startY = e.clientY;
+    startW = el.offsetWidth; startH = el.offsetHeight;
+    e.preventDefault(); e.stopPropagation();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!resizing) return;
+    const newW = Math.max(150, startW + (e.clientX - startX));
+    const newH = Math.max(120, startH + (e.clientY - startY));
+    el.style.width = newW + 'px';
+    el.style.minHeight = newH + 'px';
+    note.w = newW; note.h = newH;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!resizing) return;
+    resizing = false;
+    saveNotes();
+  });
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+loadNotes();
+</script>
+</body>
+</html>

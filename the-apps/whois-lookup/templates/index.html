@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHOIS Lookup</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f0fdf4; min-height: 100vh; color: #0f172a; }
+  header { background: #059669; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 700px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .domain-input {
+    flex: 1; min-width: 0; padding: 0.7rem 0.9rem;
+    border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;
+  }
+  .domain-input:focus { outline: none; border-color: #059669; }
+  .btn {
+    padding: 0.7rem 1.3rem; border-radius: 10px; border: none;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-primary { background: #059669; color: #fff; }
+  .btn-primary:hover { background: #047857; }
+  .btn-primary:disabled { background: #6ee7b7; cursor: not-allowed; }
+  .quick-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+  .quick-btn {
+    padding: 0.3rem 0.7rem; border-radius: 99px; border: 1.5px solid #a7f3d0;
+    background: #f0fdf4; color: #059669; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .quick-btn:hover { background: #d1fae5; }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem; color: #dc2626; font-size: 0.88rem; }
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 0.4rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+  .result-header { background: #059669; color: #fff; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .result-domain { font-size: 1.2rem; font-weight: 800; }
+  .copy-btn { padding: 0.35rem 0.8rem; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.5); background: transparent; color: #fff; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+  .copy-btn:hover { background: rgba(255,255,255,0.15); }
+  .info-table { width: 100%; border-collapse: collapse; }
+  .info-table tr { border-bottom: 1px solid #f1f5f9; }
+  .info-table tr:last-child { border-bottom: none; }
+  .info-table td { padding: 0.7rem 1.25rem; font-size: 0.9rem; }
+  .info-table td:first-child { font-weight: 700; color: #475569; width: 38%; }
+  .info-table td:last-child { color: #1e293b; word-break: break-word; }
+  .expiry-warning { font-weight: 700; }
+  .expiry-red { color: #dc2626; }
+  .expiry-orange { color: #ea580c; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>WHOIS Lookup</h1>
+  <p>Get domain registration information</p>
+</header>
+<main>
+  <div class="card">
+    <div class="input-row">
+      <input type="text" class="domain-input" id="domainInput" placeholder="example.com" onkeydown="if(event.key==='Enter')doLookup()">
+      <button class="btn btn-primary" id="lookupBtn" onclick="doLookup()">Lookup</button>
+    </div>
+    <div class="quick-btns">
+      <span style="font-size:0.8rem;color:#94a3b8;align-self:center;">Quick:</span>
+      <button class="quick-btn" onclick="setDomain('google.com')">google.com</button>
+      <button class="quick-btn" onclick="setDomain('github.com')">github.com</button>
+      <button class="quick-btn" onclick="setDomain('example.com')">example.com</button>
+      <button class="quick-btn" onclick="setDomain('wikipedia.org')">wikipedia.org</button>
+    </div>
+  </div>
+
+  <div class="error-box hidden" id="errorBox"></div>
+
+  <div class="result-card hidden" id="resultCard">
+    <div class="result-header">
+      <span class="result-domain" id="resDomain"></span>
+      <button class="copy-btn" onclick="copyResults()">Copy Results</button>
+    </div>
+    <table class="info-table" id="infoTable"></table>
+  </div>
+</main>
+
+<script>
+let lastResult = null;
+
+function setDomain(d) {
+  document.getElementById('domainInput').value = d;
+  doLookup();
+}
+
+async function doLookup() {
+  const domain = document.getElementById('domainInput').value.trim();
+  if (!domain) return;
+  const btn = document.getElementById('lookupBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Looking up...';
+  document.getElementById('errorBox').classList.add('hidden');
+  document.getElementById('resultCard').classList.add('hidden');
+
+  try {
+    const res = await fetch('api/lookup', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({domain})
+    });
+    const data = await res.json();
+    if (data.error) { showError(data.error); return; }
+    lastResult = data;
+    renderResult(data);
+  } catch(e) { showError('Request failed: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Lookup'; }
+}
+
+function parseExpiry(str) {
+  if (!str || str === 'N/A') return null;
+  const d = new Date(str.split(',')[0]);
+  return isNaN(d) ? null : d;
+}
+
+function daysUntil(d) {
+  return Math.round((d - new Date()) / (1000 * 86400));
+}
+
+function renderResult(data) {
+  document.getElementById('resDomain').textContent = data.domain;
+  const exp = parseExpiry(data.expiration_date);
+  let expiryClass = '';
+  if (exp) {
+    const days = daysUntil(exp);
+    if (days < 30) expiryClass = 'expiry-red expiry-warning';
+    else if (days < 90) expiryClass = 'expiry-orange expiry-warning';
+  }
+
+  const rows = [
+    ['Registrar', data.registrar],
+    ['Created', data.creation_date],
+    ['Expires', `<span class="${expiryClass}">${data.expiration_date}</span>`],
+    ['Updated', data.updated_date],
+    ['Name Servers', data.name_servers],
+    ['Status', data.status],
+    ['Organization', data.org],
+    ['Country', data.country],
+    ['Emails', data.emails],
+  ];
+
+  document.getElementById('infoTable').innerHTML = rows.map(([k,v]) =>
+    `<tr><td>${k}</td><td>${v}</td></tr>`
+  ).join('');
+
+  document.getElementById('resultCard').classList.remove('hidden');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  el.textContent = 'Error: ' + msg;
+  el.classList.remove('hidden');
+}
+
+function copyResults() {
+  if (!lastResult) return;
+  const lines = [
+    `Domain: ${lastResult.domain}`,
+    `Registrar: ${lastResult.registrar}`,
+    `Created: ${lastResult.creation_date}`,
+    `Expires: ${lastResult.expiration_date}`,
+    `Updated: ${lastResult.updated_date}`,
+    `Name Servers: ${lastResult.name_servers}`,
+    `Status: ${lastResult.status}`,
+    `Org: ${lastResult.org}`,
+    `Country: ${lastResult.country}`,
+    `Emails: ${lastResult.emails}`,
+  ];
+  navigator.clipboard.writeText(lines.join('\n'));
+}
+</script>
+</body>
+</html>

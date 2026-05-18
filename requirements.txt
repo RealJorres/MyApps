@@ -12,3 +12,7 @@ sqlparse
 cssbeautifier
 requests
 dnspython
+PyJWT
+autopep8
+jsbeautifier
+python-whois

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calorie Tracker</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #fff5f5; min-height: 100vh; color: #1e293b; }
+  header { background: #dc2626; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 750px; margin: 1.5rem auto; padding: 0 1rem 3rem; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.25rem; margin-bottom: 1.25rem; }
+  .date-nav { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .date-btn { background: #fef2f2; border: none; border-radius: 8px; padding: 0.45rem 0.9rem; font-size: 1.1rem; cursor: pointer; color: #dc2626; font-weight: 700; }
+  .date-btn:hover { background: #fee2e2; }
+  .date-label { font-size: 1.05rem; font-weight: 700; color: #0f172a; min-width: 160px; text-align: center; }
+  .today-btn { font-size: 0.78rem; padding: 0.3rem 0.7rem; border-radius: 99px; border: 1.5px solid #fca5a5; background: #fff5f5; color: #dc2626; font-weight: 600; cursor: pointer; }
+
+  /* Ring + Stats */
+  .summary-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: center; }
+  .ring-wrap { flex-shrink: 0; position: relative; width: 140px; height: 140px; }
+  .ring-svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: #fecaca; stroke-width: 14; }
+  .ring-fill { fill: none; stroke: #dc2626; stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+  .ring-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+  .ring-label .cal-num { font-size: 1.5rem; font-weight: 800; color: #dc2626; }
+  .ring-label .cal-sub { font-size: 0.7rem; color: #94a3b8; }
+  .stat-cards { display: flex; flex-wrap: wrap; gap: 0.6rem; flex: 1; min-width: 0; }
+  .stat-card { flex: 1; min-width: 80px; background: #fff5f5; border-radius: 10px; padding: 0.75rem; text-align: center; }
+  .stat-card .sv { font-size: 1.3rem; font-weight: 800; color: #dc2626; }
+  .stat-card .sl { font-size: 0.72rem; color: #64748b; margin-top: 0.2rem; }
+  .goal-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .goal-row label { font-size: 0.82rem; font-weight: 700; color: #475569; white-space: nowrap; }
+  .goal-row input { width: 90px; padding: 0.45rem 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; min-width: 0; }
+  .goal-row input:focus { outline: none; border-color: #dc2626; }
+  .goal-row button { padding: 0.45rem 0.9rem; border-radius: 8px; border: none; background: #dc2626; color: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+
+  /* Add food */
+  h3 { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 0.75rem; }
+  .add-form { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .add-form input, .add-form select {
+    padding: 0.5rem 0.65rem; border: 2px solid #e2e8f0; border-radius: 8px;
+    font-size: 0.88rem; min-width: 0; font-family: inherit;
+  }
+  .add-form input:focus, .add-form select:focus { outline: none; border-color: #dc2626; }
+  .add-form .fn { flex: 2; min-width: 100px; }
+  .add-form .fc { flex: 1; min-width: 70px; }
+  .add-form .fm { flex: 1; min-width: 100px; }
+  .btn-add-food { padding: 0.5rem 1rem; border-radius: 8px; border: none; background: #dc2626; color: #fff; font-size: 0.88rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .btn-add-food:hover { background: #b91c1c; }
+
+  /* Quick add */
+  .quick-foods { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  .qf-btn { padding: 0.28rem 0.6rem; border-radius: 99px; border: 1.5px solid #fecaca; background: #fff5f5; color: #dc2626; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .qf-btn:hover { background: #fee2e2; }
+
+  /* Meals */
+  .meal-group { margin-bottom: 1rem; }
+  .meal-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 0.4rem; }
+  .food-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid #f8fafc; flex-wrap: wrap; }
+  .food-item:last-child { border-bottom: none; }
+  .food-name { flex: 1; min-width: 0; font-size: 0.9rem; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .food-cal { font-size: 0.88rem; font-weight: 700; color: #dc2626; white-space: nowrap; }
+  .del-btn { background: none; border: none; cursor: pointer; color: #fca5a5; font-size: 1rem; padding: 0 0.2rem; }
+  .del-btn:hover { color: #dc2626; }
+  .no-food { color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 1rem 0; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Calorie Tracker</h1>
+  <p>Track your daily food intake</p>
+</header>
+<main>
+  <!-- Date nav -->
+  <div class="card">
+    <div class="date-nav">
+      <button class="date-btn" onclick="changeDay(-1)">&#8592;</button>
+      <div>
+        <div class="date-label" id="dateLabel"></div>
+        <div style="text-align:center;margin-top:0.3rem"><button class="today-btn" onclick="goToday()">Today</button></div>
+      </div>
+      <button class="date-btn" onclick="changeDay(1)">&#8594;</button>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="card">
+    <div class="summary-row">
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 140 140">
+          <circle class="ring-bg" cx="70" cy="70" r="56"/>
+          <circle class="ring-fill" id="ringFill" cx="70" cy="70" r="56" stroke-dasharray="351.86" stroke-dashoffset="351.86"/>
+        </svg>
+        <div class="ring-label">
+          <div class="cal-num" id="consumedNum">0</div>
+          <div class="cal-sub">kcal</div>
+        </div>
+      </div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="sv" id="statConsumed">0</div><div class="sl">Consumed</div></div>
+        <div class="stat-card"><div class="sv" id="statRemaining">0</div><div class="sl">Remaining</div></div>
+        <div class="stat-card"><div class="sv" id="statGoal">2000</div><div class="sl">Goal</div></div>
+      </div>
+    </div>
+    <div class="goal-row" style="margin-top:1rem;">
+      <label for="goalInput">Daily Goal (kcal):</label>
+      <input type="number" id="goalInput" value="2000" min="500" max="9999">
+      <button onclick="saveGoal()">Set Goal</button>
+    </div>
+  </div>
+
+  <!-- Add food -->
+  <div class="card">
+    <h3>Add Food</h3>
+    <div class="add-form">
+      <input class="fn" type="text" id="foodName" placeholder="Food name">
+      <input class="fc" type="number" id="foodCal" placeholder="kcal" min="0">
+      <select class="fm" id="mealType">
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Dinner">Dinner</option>
+        <option value="Snack">Snack</option>
+      </select>
+      <button class="btn-add-food" onclick="addFood()">Add</button>
+    </div>
+    <div style="margin-top:0.75rem;font-size:0.8rem;font-weight:700;color:#94a3b8;">QUICK ADD</div>
+    <div class="quick-foods" id="quickFoods"></div>
+  </div>
+
+  <!-- Food log -->
+  <div class="card">
+    <h3>Today's Log</h3>
+    <div id="mealLog"></div>
+  </div>
+</main>
+
+<script>
+const QUICK_FOODS = [
+  {name:'Rice (cup)', cal:206}, {name:'Egg', cal:78}, {name:'Banana', cal:89},
+  {name:'Chicken breast 100g', cal:165}, {name:'Apple', cal:95}, {name:'Bread slice', cal:79},
+  {name:'Milk (cup)', cal:149}, {name:'Oatmeal (cup)', cal:154}, {name:'Orange', cal:62},
+  {name:'Almonds 28g', cal:164}, {name:'Greek yogurt', cal:100}, {name:'Salmon 100g', cal:208},
+  {name:'Broccoli (cup)', cal:55}, {name:'Sweet potato', cal:103}, {name:'Pasta (cup)', cal:220},
+  {name:'Avocado', cal:234}, {name:'Beef 100g', cal:250}, {name:'Cheese slice', cal:113},
+  {name:'Coffee (black)', cal:2}, {name:'Orange juice (cup)', cal:112},
+];
+const MEALS = ['Breakfast','Lunch','Dinner','Snack'];
+
+let currentDate = todayStr();
+let goal = parseInt(localStorage.getItem('cal_goal') || '2000');
+let dayData = {};
+
+function todayStr() {
+  const d = new Date(); return d.toISOString().slice(0,10);
+}
+
+function loadDay() {
+  const raw = localStorage.getItem('calories_' + currentDate);
+  dayData = raw ? JSON.parse(raw) : { items: [] };
+}
+
+function saveDay() {
+  localStorage.setItem('calories_' + currentDate, JSON.stringify(dayData));
+}
+
+function changeDay(delta) {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  currentDate = d.toISOString().slice(0,10);
+  loadDay(); render();
+}
+
+function goToday() {
+  currentDate = todayStr(); loadDay(); render();
+}
+
+function saveGoal() {
+  goal = parseInt(document.getElementById('goalInput').value) || 2000;
+  localStorage.setItem('cal_goal', goal);
+  render();
+}
+
+function addFood() {
+  const name = document.getElementById('foodName').value.trim();
+  const cal = parseInt(document.getElementById('foodCal').value) || 0;
+  const meal = document.getElementById('mealType').value;
+  if (!name || cal <= 0) return;
+  if (!dayData.items) dayData.items = [];
+  dayData.items.push({id: Date.now().toString(), name, cal, meal});
+  saveDay(); render();
+  document.getElementById('foodName').value = '';
+  document.getElementById('foodCal').value = '';
+}
+
+function quickAdd(food) {
+  if (!dayData.items) dayData.items = [];
+  const meal = document.getElementById('mealType').value;
+  dayData.items.push({id: Date.now().toString(), name: food.name, cal: food.cal, meal});
+  saveDay(); render();
+}
+
+function deleteFood(id) {
+  dayData.items = (dayData.items || []).filter(i => i.id !== id);
+  saveDay(); render();
+}
+
+function render() {
+  // Date label
+  const d = new Date(currentDate + 'T12:00:00');
+  const isToday = currentDate === todayStr();
+  const opts = {weekday:'long', month:'long', day:'numeric'};
+  document.getElementById('dateLabel').textContent = isToday ? 'Today — ' + d.toLocaleDateString(undefined, {month:'short',day:'numeric'}) : d.toLocaleDateString(undefined, opts);
+
+  // Goal input
+  document.getElementById('goalInput').value = goal;
+
+  // Stats
+  const items = dayData.items || [];
+  const consumed = items.reduce((s,i) => s + i.cal, 0);
+  const remaining = Math.max(0, goal - consumed);
+  const pct = Math.min(1, consumed / goal);
+  const circ = 2 * Math.PI * 56;
+  document.getElementById('ringFill').style.strokeDashoffset = circ * (1 - pct);
+  document.getElementById('consumedNum').textContent = consumed;
+  document.getElementById('statConsumed').textContent = consumed;
+  document.getElementById('statRemaining').textContent = remaining;
+  document.getElementById('statGoal').textContent = goal;
+
+  // Quick foods
+  document.getElementById('quickFoods').innerHTML = QUICK_FOODS.map(f =>
+    `<button class="qf-btn" onclick="quickAdd({name:'${f.name.replace(/'/g,"\\'")}',cal:${f.cal}})">${f.name} <span style="opacity:0.65">${f.cal}</span></button>`
+  ).join('');
+
+  // Meal log
+  const log = document.getElementById('mealLog');
+  if (!items.length) { log.innerHTML = '<div class="no-food">No food logged yet — add something above!</div>'; return; }
+  log.innerHTML = MEALS.map(meal => {
+    const mealItems = items.filter(i => i.meal === meal);
+    if (!mealItems.length) return '';
+    const mTotal = mealItems.reduce((s,i) => s + i.cal, 0);
+    return `<div class="meal-group">
+      <div class="meal-label">${meal} &mdash; ${mTotal} kcal</div>
+      ${mealItems.map(item => `
+        <div class="food-item">
+          <span class="food-name">${escHtml(item.name)}</span>
+          <span class="food-cal">${item.cal} kcal</span>
+          <button class="del-btn" onclick="deleteFood('${item.id}')" title="Remove">&#10005;</button>
+        </div>
+      `).join('')}
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+loadDay();
+render();
+</script>
+</body>
+</html>

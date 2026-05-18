@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JWT Generator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #fdf2f8; min-height: 100vh; color: #1e293b; }
+  header { background: #be185d; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 800px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-radius: 10px; overflow: hidden; border: 2px solid #fce7f3; }
+  .tab-btn {
+    flex: 1; padding: 0.75rem; border: none; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; background: #fff; color: #9d174d; transition: all 0.15s;
+  }
+  .tab-btn.active { background: #be185d; color: #fff; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
+  label { display: block; font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 0.35rem; margin-top: 1rem; }
+  label:first-child { margin-top: 0; }
+  select, input[type="text"], input[type="password"] {
+    width: 100%; padding: 0.6rem 0.75rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-size: 0.9rem; min-width: 0; font-family: inherit;
+  }
+  select:focus, input:focus, textarea:focus { outline: none; border-color: #be185d; }
+  .secret-wrap { position: relative; display: flex; }
+  .secret-wrap input { border-radius: 8px 0 0 8px; flex: 1; min-width: 0; }
+  .secret-toggle {
+    padding: 0 0.75rem; border: 2px solid #e2e8f0; border-left: none;
+    border-radius: 0 8px 8px 0; background: #f8fafc; cursor: pointer;
+    font-size: 0.85rem; color: #64748b;
+  }
+  textarea {
+    width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85rem;
+    resize: vertical; min-height: 130px; min-width: 0;
+  }
+  .helper-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  .helper-btn {
+    padding: 0.35rem 0.7rem; border-radius: 6px; border: 1px solid #fce7f3;
+    background: #fdf2f8; color: #be185d; font-size: 0.78rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .helper-btn:hover { background: #fce7f3; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.7rem 1.4rem; border-radius: 8px; border: none;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary { background: #be185d; color: #fff; width: 100%; justify-content: center; margin-top: 1rem; }
+  .btn-primary:hover { background: #9d174d; }
+  .result-box { background: #f8fafc; border-radius: 8px; padding: 1rem; margin-top: 1rem; word-break: break-all; font-family: 'Courier New', monospace; font-size: 0.82rem; line-height: 1.7; }
+  .jwt-header { color: #2563eb; }
+  .jwt-dot { color: #64748b; }
+  .jwt-payload { color: #16a34a; }
+  .jwt-sig { color: #dc2626; }
+  .result-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+  .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.82rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
+  .btn-copy { background: #e2e8f0; color: #475569; }
+  .btn-copy:hover { background: #cbd5e1; }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem; color: #dc2626; font-size: 0.85rem; margin-top: 0.75rem; }
+  .success-badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 99px; font-size: 0.78rem; font-weight: 700; }
+  .success-badge.ok { background: #dcfce7; color: #166534; }
+  .success-badge.unverified { background: #fef9c3; color: #854d0e; }
+  .decode-result { background: #f8fafc; border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+  .decode-section-title { font-size: 0.78rem; font-weight: 700; color: #be185d; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  pre { font-family: 'Courier New', monospace; font-size: 0.82rem; white-space: pre-wrap; word-break: break-all; color: #1e293b; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>JWT Generator & Decoder</h1>
+  <p>Generate signed JWTs and decode/verify existing tokens</p>
+</header>
+<main>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('generate')">Generate</button>
+    <button class="tab-btn" onclick="switchTab('decode')">Decode / Verify</button>
+  </div>
+
+  <!-- Generate Tab -->
+  <div class="tab-content active" id="tab-generate">
+    <div class="card">
+      <label for="algorithm">Algorithm</label>
+      <select id="algorithm">
+        <option value="HS256">HS256</option>
+        <option value="HS384">HS384</option>
+        <option value="HS512">HS512</option>
+      </select>
+
+      <label>Secret Key</label>
+      <div class="secret-wrap">
+        <input type="password" id="secretKey" value="your-secret-key">
+        <button class="secret-toggle" onclick="toggleSecret('secretKey', this)">Show</button>
+      </div>
+
+      <label for="payloadInput">Payload (JSON)</label>
+      <textarea id="payloadInput"></textarea>
+      <div class="helper-btns">
+        <button class="helper-btn" onclick="addClaim('exp')">+ exp (+1h)</button>
+        <button class="helper-btn" onclick="addClaim('iat')">+ iat (now)</button>
+        <button class="helper-btn" onclick="addClaim('iss')">+ iss</button>
+        <button class="helper-btn" onclick="addClaim('sub')">+ sub</button>
+        <button class="helper-btn" onclick="addClaim('nbf')">+ nbf</button>
+      </div>
+
+      <button class="btn btn-primary" onclick="generateToken()">Generate Token</button>
+
+      <div id="genError" class="error-box hidden"></div>
+      <div id="genResult" class="hidden">
+        <div style="margin-top:1rem;font-size:0.82rem;font-weight:700;color:#475569;">Generated JWT</div>
+        <div class="result-box" id="tokenDisplay"></div>
+        <div class="result-actions">
+          <button class="btn-sm btn-copy" onclick="copyToken()">Copy Token</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decode Tab -->
+  <div class="tab-content" id="tab-decode">
+    <div class="card">
+      <label for="decodeToken">JWT Token</label>
+      <textarea id="decodeToken" placeholder="Paste your JWT here..." style="min-height:100px;"></textarea>
+
+      <label>Secret Key (optional — leave blank to decode without verification)</label>
+      <div class="secret-wrap">
+        <input type="password" id="decodeSecret" placeholder="For signature verification">
+        <button class="secret-toggle" onclick="toggleSecret('decodeSecret', this)">Show</button>
+      </div>
+
+      <button class="btn btn-primary" onclick="decodeToken()">Decode Token</button>
+
+      <div id="decodeError" class="error-box hidden"></div>
+      <div id="decodeResult" class="hidden">
+        <div class="decode-result">
+          <div id="verifyBadge" style="margin-bottom:0.75rem;"></div>
+          <div class="decode-section-title">Header</div>
+          <pre id="decodedHeader"></pre>
+          <div class="decode-section-title" style="margin-top:0.75rem;">Payload</div>
+          <pre id="decodedPayload"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0) === (name==='generate')));
+  document.getElementById('tab-generate').classList.toggle('active', name==='generate');
+  document.getElementById('tab-decode').classList.toggle('active', name==='decode');
+}
+
+function toggleSecret(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'Hide'; }
+  else { inp.type = 'password'; btn.textContent = 'Show'; }
+}
+
+// Init payload
+const now = Math.floor(Date.now()/1000);
+document.getElementById('payloadInput').value = JSON.stringify({
+  sub: 'user123',
+  iat: now,
+  exp: now + 3600
+}, null, 2);
+
+function addClaim(claim) {
+  let payload = {};
+  try { payload = JSON.parse(document.getElementById('payloadInput').value); } catch(e) {}
+  const now = Math.floor(Date.now()/1000);
+  if (claim === 'exp') payload.exp = now + 3600;
+  else if (claim === 'iat') payload.iat = now;
+  else if (claim === 'iss') payload.iss = 'my-app';
+  else if (claim === 'sub') payload.sub = 'user123';
+  else if (claim === 'nbf') payload.nbf = now;
+  document.getElementById('payloadInput').value = JSON.stringify(payload, null, 2);
+}
+
+async function generateToken() {
+  document.getElementById('genError').classList.add('hidden');
+  document.getElementById('genResult').classList.add('hidden');
+  let payload;
+  try { payload = JSON.parse(document.getElementById('payloadInput').value); }
+  catch(e) { showGenError('Invalid JSON payload: ' + e.message); return; }
+
+  try {
+    const res = await fetch('api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        secret: document.getElementById('secretKey').value,
+        algorithm: document.getElementById('algorithm').value,
+        payload
+      })
+    });
+    const data = await res.json();
+    if (data.error) { showGenError(data.error); return; }
+    displayToken(data.token);
+  } catch(e) { showGenError('Request failed: ' + e.message); }
+}
+
+function displayToken(token) {
+  const parts = token.split('.');
+  const display = document.getElementById('tokenDisplay');
+  display.innerHTML = parts.length === 3
+    ? `<span class="jwt-header">${parts[0]}</span><span class="jwt-dot">.</span><span class="jwt-payload">${parts[1]}</span><span class="jwt-dot">.</span><span class="jwt-sig">${parts[2]}</span>`
+    : token;
+  document.getElementById('genResult').classList.remove('hidden');
+  document.getElementById('genResult').dataset.token = token;
+}
+
+function copyToken() {
+  const token = document.getElementById('genResult').dataset.token;
+  navigator.clipboard.writeText(token);
+}
+
+function showGenError(msg) {
+  const el = document.getElementById('genError');
+  el.textContent = msg; el.classList.remove('hidden');
+}
+
+async function decodeToken() {
+  document.getElementById('decodeError').classList.add('hidden');
+  document.getElementById('decodeResult').classList.add('hidden');
+  const token = document.getElementById('decodeToken').value.trim();
+  if (!token) { showDecodeError('Please paste a JWT token.'); return; }
+
+  try {
+    const res = await fetch('api/decode', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        token,
+        secret: document.getElementById('decodeSecret').value
+      })
+    });
+    const data = await res.json();
+    if (data.error) { showDecodeError(data.error); return; }
+
+    // Decode header from token
+    let header = {};
+    try { header = JSON.parse(atob(token.split('.')[0].replace(/-/g,'+').replace(/_/g,'/'))); } catch(e) {}
+
+    document.getElementById('decodedHeader').textContent = JSON.stringify(header, null, 2);
+    document.getElementById('decodedPayload').textContent = JSON.stringify(data.payload, null, 2);
+    document.getElementById('verifyBadge').innerHTML = data.verified
+      ? '<span class="success-badge ok">Signature Verified</span>'
+      : '<span class="success-badge unverified">Not Verified (no secret provided)</span>';
+    document.getElementById('decodeResult').classList.remove('hidden');
+  } catch(e) { showDecodeError('Request failed: ' + e.message); }
+}
+
+function showDecodeError(msg) {
+  const el = document.getElementById('decodeError');
+  el.textContent = msg; el.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

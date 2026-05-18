@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Splitter</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f1f5f9; min-height: 100vh; color: #1e293b; }
+  header { background: #4f46e5; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 700px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .drop-zone {
+    border: 2px dashed #c7d2fe; border-radius: 10px; padding: 2.5rem 1rem;
+    text-align: center; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { background: #eef2ff; border-color: #4f46e5; }
+  .drop-zone input { display: none; }
+  .drop-zone .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .drop-zone p { color: #64748b; font-size: 0.9rem; }
+  .drop-zone strong { color: #4f46e5; cursor: pointer; }
+  .file-info { background: #eef2ff; border-radius: 8px; padding: 1rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .file-info .file-icon { font-size: 1.8rem; }
+  .file-info .file-details { flex: 1; min-width: 0; }
+  .file-info .file-name { font-weight: 600; color: #4f46e5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-info .file-meta { font-size: 0.82rem; color: #64748b; margin-top: 0.2rem; }
+  .mode-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .mode-tab {
+    flex: 1; min-width: 120px; padding: 0.6rem 1rem; border-radius: 8px;
+    border: 2px solid #e2e8f0; background: #fff; cursor: pointer;
+    font-size: 0.9rem; font-weight: 600; color: #64748b; transition: all 0.15s;
+  }
+  .mode-tab.active { border-color: #4f46e5; background: #4f46e5; color: #fff; }
+  .range-section { margin-top: 0.75rem; }
+  .range-section label { font-size: 0.85rem; font-weight: 600; color: #475569; display: block; margin-bottom: 0.4rem; }
+  .range-section input {
+    width: 100%; padding: 0.6rem 0.75rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-size: 0.9rem; min-width: 0;
+  }
+  .range-section input:focus { outline: none; border-color: #4f46e5; }
+  .range-hint { font-size: 0.78rem; color: #94a3b8; margin-top: 0.3rem; }
+  .estimate { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.88rem; color: #166534; margin-top: 0.75rem; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.75rem 1.5rem; border-radius: 8px; border: none;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary { background: #4f46e5; color: #fff; width: 100%; justify-content: center; font-size: 1rem; }
+  .btn-primary:hover { background: #4338ca; }
+  .btn-primary:disabled { background: #a5b4fc; cursor: not-allowed; }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem 1rem; color: #dc2626; font-size: 0.88rem; margin-top: 0.75rem; }
+  .progress-bar { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 1rem; overflow: hidden; display: none; }
+  .progress-bar-inner { height: 100%; background: #4f46e5; border-radius: 3px; animation: progress 1.5s ease-in-out infinite; }
+  @keyframes progress { 0% { width: 0; } 60% { width: 80%; } 100% { width: 100%; } }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PDF Splitter</h1>
+  <p>Split a PDF into individual pages or custom page ranges</p>
+</header>
+<main>
+  <div class="card">
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".pdf">
+      <div class="icon">📄</div>
+      <p>Drag & drop your PDF here, or <strong onclick="document.getElementById('fileInput').click()">browse</strong></p>
+      <p style="margin-top:0.4rem;font-size:0.78rem;color:#94a3b8">Max file size: 100 MB</p>
+    </div>
+    <div class="file-info hidden" id="fileInfo">
+      <span class="file-icon">📄</span>
+      <div class="file-details">
+        <div class="file-name" id="fileName"></div>
+        <div class="file-meta" id="fileMeta"></div>
+      </div>
+      <button class="btn" style="background:#fee2e2;color:#dc2626;padding:0.4rem 0.8rem;font-size:0.82rem;" onclick="resetFile()">Remove</button>
+    </div>
+  </div>
+
+  <div class="card" id="splitCard" style="display:none">
+    <h2 style="font-size:1.05rem;font-weight:700;margin-bottom:1rem;color:#1e293b">Split Options</h2>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tabAll" onclick="setMode('all')">All Pages</button>
+      <button class="mode-tab" id="tabRange" onclick="setMode('range')">Custom Range</button>
+    </div>
+    <div class="range-section hidden" id="rangeSection">
+      <label for="rangeInput">Page Ranges</label>
+      <input type="text" id="rangeInput" placeholder="e.g. 1-3, 5, 7-9" oninput="updateEstimate()">
+      <div class="range-hint">Enter page numbers or ranges separated by commas</div>
+    </div>
+    <div class="estimate" id="estimate"></div>
+    <div class="error-box hidden" id="errorBox"></div>
+    <div class="progress-bar" id="progressBar"><div class="progress-bar-inner"></div></div>
+    <button class="btn btn-primary" id="splitBtn" onclick="doSplit()" style="margin-top:1rem">
+      Split & Download ZIP
+    </button>
+  </div>
+</main>
+
+<script>
+let currentFile = null;
+let pageCount = 0;
+let currentMode = 'all';
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') handleFile(file);
+  else showError('Please drop a valid PDF file.');
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+async function handleFile(file) {
+  currentFile = file;
+  const fd = new FormData();
+  fd.append('file', file);
+  try {
+    const res = await fetch('api/info', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.error) { showError(data.error); return; }
+    pageCount = data.pages;
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileMeta').textContent = `${pageCount} pages · ${(file.size/1024/1024).toFixed(2)} MB${data.title ? ' · ' + data.title : ''}`;
+    document.getElementById('dropZone').classList.add('hidden');
+    document.getElementById('fileInfo').classList.remove('hidden');
+    document.getElementById('splitCard').style.display = 'block';
+    updateEstimate();
+  } catch(e) { showError('Failed to read PDF: ' + e.message); }
+}
+
+function resetFile() {
+  currentFile = null; pageCount = 0;
+  document.getElementById('dropZone').classList.remove('hidden');
+  document.getElementById('fileInfo').classList.add('hidden');
+  document.getElementById('splitCard').style.display = 'none';
+  document.getElementById('errorBox').classList.add('hidden');
+  fileInput.value = '';
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('tabAll').classList.toggle('active', mode === 'all');
+  document.getElementById('tabRange').classList.toggle('active', mode === 'range');
+  document.getElementById('rangeSection').classList.toggle('hidden', mode !== 'range');
+  updateEstimate();
+}
+
+function parseRanges(str, total) {
+  const pages = new Set();
+  if (!str.trim()) return [];
+  for (let part of str.split(',')) {
+    part = part.trim();
+    if (/^\d+-\d+$/.test(part)) {
+      const [a, b] = part.split('-').map(Number);
+      for (let i = a; i <= Math.min(b, total); i++) if (i >= 1) pages.add(i);
+    } else if (/^\d+$/.test(part)) {
+      const n = parseInt(part);
+      if (n >= 1 && n <= total) pages.add(n);
+    }
+  }
+  return [...pages].sort((a,b) => a-b);
+}
+
+function updateEstimate() {
+  const el = document.getElementById('estimate');
+  if (!pageCount) return;
+  if (currentMode === 'all') {
+    el.textContent = `Will create ${pageCount} PDF file${pageCount !== 1 ? 's' : ''} (one per page)`;
+  } else {
+    const pages = parseRanges(document.getElementById('rangeInput').value, pageCount);
+    el.textContent = pages.length > 0
+      ? `Will create ${pages.length} PDF file${pages.length !== 1 ? 's' : ''} — pages: ${pages.join(', ')}`
+      : 'Enter page ranges above';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+async function doSplit() {
+  if (!currentFile) return;
+  document.getElementById('errorBox').classList.add('hidden');
+  if (currentMode === 'range') {
+    const pages = parseRanges(document.getElementById('rangeInput').value, pageCount);
+    if (!pages.length) { showError('No valid pages in your range.'); return; }
+  }
+  const btn = document.getElementById('splitBtn');
+  btn.disabled = true; btn.textContent = 'Splitting...';
+  document.getElementById('progressBar').style.display = 'block';
+  const fd = new FormData();
+  fd.append('file', currentFile);
+  fd.append('mode', currentMode);
+  if (currentMode === 'range') fd.append('ranges', document.getElementById('rangeInput').value);
+  try {
+    const res = await fetch('api/split', { method: 'POST', body: fd });
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'split_pages.zip'; a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const data = await res.json();
+      showError(data.error || 'Split failed');
+    }
+  } catch(e) { showError('Error: ' + e.message); }
+  finally {
+    btn.disabled = false; btn.textContent = 'Split & Download ZIP';
+    document.getElementById('progressBar').style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>

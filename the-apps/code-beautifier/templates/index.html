@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Beautifier</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #fffbeb; min-height: 100vh; color: #1e293b; }
+  header { background: #d97706; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem 3rem; }
+  .lang-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+  .lang-tab {
+    padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid #fde68a;
+    background: #fff; color: #92400e; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .lang-tab.active { background: #d97706; border-color: #d97706; color: #fff; }
+  .lang-tab:hover:not(.active) { background: #fef3c7; }
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
+  .indent-group { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: #64748b; font-weight: 600; }
+  .indent-group select { padding: 0.35rem 0.6rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.85rem; min-width: 0; }
+  .btn {
+    padding: 0.5rem 1rem; border-radius: 8px; border: none;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+  }
+  .btn-primary { background: #d97706; color: #fff; }
+  .btn-primary:hover { background: #b45309; }
+  .btn-secondary { background: #e2e8f0; color: #475569; }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-swap { background: #fef3c7; color: #92400e; }
+  .btn-swap:hover { background: #fde68a; }
+  .editors { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .editor-pane { flex: 1; min-width: 280px; display: flex; flex-direction: column; }
+  .editor-label { font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  textarea {
+    flex: 1; width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.83rem;
+    resize: vertical; min-height: 380px; line-height: 1.6; min-width: 0;
+    background: #fafafa; color: #1e293b;
+  }
+  textarea:focus { outline: none; border-color: #d97706; }
+  .output-ta { background: #f8fafc; }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem; color: #dc2626; font-size: 0.85rem; margin-top: 0.75rem; }
+  .hidden { display: none !important; }
+  @media (max-width: 600px) {
+    .editors { flex-direction: column; }
+    .editor-pane { min-width: 0; }
+    textarea { min-height: 220px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Code Beautifier</h1>
+  <p>Format and beautify JSON, Python, JavaScript, CSS, and HTML</p>
+</header>
+<main>
+  <div class="lang-tabs">
+    <button class="lang-tab active" onclick="setLang('json',this)">JSON</button>
+    <button class="lang-tab" onclick="setLang('python',this)">Python</button>
+    <button class="lang-tab" onclick="setLang('javascript',this)">JavaScript</button>
+    <button class="lang-tab" onclick="setLang('css',this)">CSS</button>
+    <button class="lang-tab" onclick="setLang('html',this)">HTML</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="indent-group">
+      <label for="indentSize">Indent:</label>
+      <select id="indentSize">
+        <option value="2">2 spaces</option>
+        <option value="4">4 spaces</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="formatCode()">Format</button>
+    <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+    <button class="btn btn-swap" onclick="swapIO()">Swap</button>
+    <button class="btn btn-secondary" onclick="copyOutput()">Copy Output</button>
+  </div>
+
+  <div class="editors">
+    <div class="editor-pane">
+      <div class="editor-label">Input</div>
+      <textarea id="inputCode" placeholder="Paste your code here..."></textarea>
+    </div>
+    <div class="editor-pane">
+      <div class="editor-label">Output</div>
+      <textarea id="outputCode" readonly class="output-ta" placeholder="Formatted output will appear here..."></textarea>
+    </div>
+  </div>
+
+  <div class="error-box hidden" id="errorBox"></div>
+</main>
+
+<script>
+let currentLang = 'json';
+
+const examples = {
+  json: '{"name":"John","age":30,"hobbies":["reading","coding"],"address":{"city":"NY","zip":"10001"}}',
+  python: 'def hello(name,age):\n    x=1+2\n    if x>2:\n        print("hi "+name)\n    return x',
+  javascript: 'function greet(name){if(name){return "Hello "+name;}else{return "Hello world";}}',
+  css: 'body{margin:0;padding:0;font-family:sans-serif;}.container{max-width:1200px;margin:0 auto;}',
+  html: '<html><head><title>Test</title></head><body><div class="wrap"><p>Hello</p></div></body></html>'
+};
+
+function setLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (!document.getElementById('inputCode').value) {
+    document.getElementById('inputCode').value = examples[lang] || '';
+  }
+}
+
+document.getElementById('inputCode').value = examples.json;
+
+async function formatCode() {
+  const code = document.getElementById('inputCode').value;
+  const indent = parseInt(document.getElementById('indentSize').value);
+  document.getElementById('errorBox').classList.add('hidden');
+
+  try {
+    const res = await fetch('api/format', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, lang: currentLang, indent })
+    });
+    const data = await res.json();
+    if (data.error) {
+      document.getElementById('errorBox').textContent = 'Error: ' + data.error;
+      document.getElementById('errorBox').classList.remove('hidden');
+    } else {
+      document.getElementById('outputCode').value = data.result;
+    }
+  } catch(e) {
+    document.getElementById('errorBox').textContent = 'Request failed: ' + e.message;
+    document.getElementById('errorBox').classList.remove('hidden');
+  }
+}
+
+function clearAll() {
+  document.getElementById('inputCode').value = '';
+  document.getElementById('outputCode').value = '';
+  document.getElementById('errorBox').classList.add('hidden');
+}
+
+function swapIO() {
+  const out = document.getElementById('outputCode').value;
+  if (!out) return;
+  document.getElementById('inputCode').value = out;
+  document.getElementById('outputCode').value = '';
+}
+
+function copyOutput() {
+  const text = document.getElementById('outputCode').value;
+  if (text) navigator.clipboard.writeText(text);
+}
+</script>
+</body>
+</html>

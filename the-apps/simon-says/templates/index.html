@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simon Says</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1b2a; color: #fff; font-family: system-ui, sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start;
+  }
+  header { width: 100%; background: #16a34a; padding: 0.75rem 1rem; text-align: center; }
+  header h1 { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.05em; }
+  .game-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; padding: 1.25rem 1rem; width: 100%; max-width: 420px; }
+  .info-row { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+  .info-box { text-align: center; }
+  .info-box .label { font-size: 0.72rem; text-transform: uppercase; color: #6b7280; font-weight: 700; }
+  .info-box .val { font-size: 1.8rem; font-weight: 900; color: #fff; }
+  .status-msg { font-size: 1rem; font-weight: 700; min-height: 1.5em; color: #d1fae5; text-align: center; }
+  .simon-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; width: 100%; max-width: 360px; aspect-ratio: 1;
+  }
+  .simon-btn {
+    border-radius: 16px; border: none; cursor: pointer;
+    transition: filter 0.08s, transform 0.08s;
+    outline: none; -webkit-tap-highlight-color: transparent;
+    user-select: none; -webkit-user-select: none;
+  }
+  .simon-btn:active { transform: scale(0.95); }
+  .simon-btn.lit { filter: brightness(2) saturate(1.5); transform: scale(1.04); }
+  .simon-btn.wrong { filter: brightness(3) saturate(0); animation: shake 0.4s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  .btn-green { background: #16a34a; }
+  .btn-red { background: #dc2626; }
+  .btn-blue { background: #2563eb; }
+  .btn-yellow { background: #ca8a04; }
+  .btn-green.lit { box-shadow: 0 0 32px #4ade80; }
+  .btn-red.lit { box-shadow: 0 0 32px #f87171; }
+  .btn-blue.lit { box-shadow: 0 0 32px #60a5fa; }
+  .btn-yellow.lit { box-shadow: 0 0 32px #facc15; }
+  .start-btn {
+    padding: 0.8rem 2rem; border-radius: 10px; border: none;
+    background: #16a34a; color: #fff; font-size: 1.1rem; font-weight: 800;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .start-btn:hover { background: #15803d; }
+  .overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.75);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-radius: 16px; gap: 0.75rem;
+  }
+  .game-over-text { font-size: 1.6rem; font-weight: 900; color: #ef4444; }
+  .score-text { font-size: 1rem; color: #d1fae5; }
+  .grid-wrap { position: relative; width: 100%; max-width: 360px; aspect-ratio: 1; }
+</style>
+</head>
+<body>
+<header><h1>Simon Says</h1></header>
+<div class="game-wrap">
+  <div class="info-row">
+    <div class="info-box"><div class="label">Round</div><div class="val" id="roundDisplay">0</div></div>
+    <div class="info-box"><div class="label">Best</div><div class="val" id="highDisplay">0</div></div>
+  </div>
+  <div class="status-msg" id="statusMsg">Press Start to play!</div>
+
+  <div class="grid-wrap">
+    <div class="simon-grid" id="simonGrid">
+      <div class="simon-btn btn-green" id="btn0"></div>
+      <div class="simon-btn btn-red" id="btn1"></div>
+      <div class="simon-btn btn-blue" id="btn2"></div>
+      <div class="simon-btn btn-yellow" id="btn3"></div>
+    </div>
+    <div class="overlay" id="overlay">
+      <div id="overlayTitle" style="font-size:1.6rem;font-weight:900;color:#16a34a;">Simon Says</div>
+      <div id="overlayScore" class="score-text"></div>
+      <button class="start-btn" onclick="startGame()">Start</button>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startGame()" id="startBtn">New Game</button>
+</div>
+
+<script>
+const FREQS = [392, 330, 262, 440]; // G4, E4, C4, A4 (green, red, blue, yellow)
+const COLORS = ['btn-green','btn-red','btn-blue','btn-yellow'];
+const COLOR_NAMES = ['Green','Red','Blue','Yellow'];
+
+let sequence = [], userInput = [], round = 0, accepting = false;
+let highScore = parseInt(localStorage.getItem('simon_hs') || '0');
+let isPlaying = false;
+let audioCtx = null;
+
+document.getElementById('highDisplay').textContent = highScore;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(index, duration = 300) {
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.frequency.value = FREQS[index];
+  osc.type = 'sine';
+  gain.gain.setValueAtTime(0.4, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration/1000);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + duration/1000);
+}
+
+function playErrorTone() {
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.frequency.value = 120;
+  osc.type = 'sawtooth';
+  gain.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.6);
+}
+
+function lightUp(index, duration = 300) {
+  return new Promise(resolve => {
+    const btn = document.getElementById('btn' + index);
+    btn.classList.add('lit');
+    playTone(index, duration);
+    setTimeout(() => { btn.classList.remove('lit'); resolve(); }, duration + 50);
+  });
+}
+
+function getSpeed() {
+  if (round <= 5) return 500;
+  if (round <= 10) return 400;
+  if (round <= 15) return 300;
+  return 220;
+}
+
+async function playSequence() {
+  accepting = false;
+  setStatus('Watch the sequence...');
+  await sleep(600);
+  const speed = getSpeed();
+  for (const idx of sequence) {
+    await lightUp(idx, speed * 0.7);
+    await sleep(speed * 0.35);
+  }
+  accepting = true;
+  userInput = [];
+  setStatus('Your turn! (' + sequence.length + ' steps)');
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function setStatus(msg) { document.getElementById('statusMsg').textContent = msg; }
+
+function startGame() {
+  sequence = []; userInput = []; round = 0; isPlaying = true;
+  document.getElementById('overlay').style.display = 'none';
+  nextRound();
+}
+
+async function nextRound() {
+  round++;
+  document.getElementById('roundDisplay').textContent = round;
+  sequence.push(Math.floor(Math.random() * 4));
+  await playSequence();
+}
+
+function handleInput(index) {
+  if (!accepting || !isPlaying) return;
+  userInput.push(index);
+  lightUp(index, 200);
+
+  const pos = userInput.length - 1;
+  if (userInput[pos] !== sequence[pos]) {
+    // Wrong!
+    accepting = false;
+    const btn = document.getElementById('btn' + index);
+    btn.classList.add('wrong');
+    playErrorTone();
+    setTimeout(() => { btn.classList.remove('wrong'); }, 500);
+    const best = Math.max(round - 1, parseInt(localStorage.getItem('simon_hs') || '0'));
+    localStorage.setItem('simon_hs', best);
+    highScore = best;
+    document.getElementById('highDisplay').textContent = highScore;
+    isPlaying = false;
+    setTimeout(() => {
+      setStatus('Wrong! Game Over');
+      document.getElementById('overlayTitle').textContent = 'Game Over';
+      document.getElementById('overlayTitle').style.color = '#ef4444';
+      document.getElementById('overlayScore').textContent = 'Score: ' + (round-1) + ' | Best: ' + highScore;
+      document.getElementById('overlay').style.display = 'flex';
+    }, 700);
+    return;
+  }
+
+  if (userInput.length === sequence.length) {
+    accepting = false;
+    setStatus('Correct!');
+    setTimeout(() => nextRound(), 700);
+  }
+}
+
+// Button listeners
+for (let i = 0; i < 4; i++) {
+  const btn = document.getElementById('btn' + i);
+  btn.addEventListener('click', () => handleInput(i));
+  btn.addEventListener('touchstart', e => { e.preventDefault(); handleInput(i); }, {passive:false});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSL Checker</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f0fdf4; min-height: 100vh; color: #0f172a; }
+  header { background: #16a34a; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 680px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .domain-input {
+    flex: 1; min-width: 0; padding: 0.7rem 0.9rem;
+    border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;
+  }
+  .domain-input:focus { outline: none; border-color: #16a34a; }
+  .btn {
+    padding: 0.7rem 1.3rem; border-radius: 10px; border: none;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-primary { background: #16a34a; color: #fff; }
+  .btn-primary:hover { background: #15803d; }
+  .btn-primary:disabled { background: #86efac; cursor: not-allowed; }
+  .quick-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+  .quick-btn {
+    padding: 0.3rem 0.7rem; border-radius: 99px; border: 1.5px solid #bbf7d0;
+    background: #f0fdf4; color: #16a34a; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer;
+  }
+  .quick-btn:hover { background: #dcfce7; }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem; color: #dc2626; font-size: 0.88rem; }
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 0.4rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .validity-badge {
+    display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem;
+    border-radius: 10px; margin-bottom: 1.25rem;
+  }
+  .validity-badge.valid { background: #dcfce7; border: 2px solid #86efac; }
+  .validity-badge.invalid { background: #fef2f2; border: 2px solid #fecaca; }
+  .badge-icon { font-size: 2rem; }
+  .badge-text .big { font-size: 1.3rem; font-weight: 800; }
+  .badge-text .big.valid-text { color: #16a34a; }
+  .badge-text .big.invalid-text { color: #dc2626; }
+  .badge-text .sub { font-size: 0.85rem; color: #64748b; margin-top: 0.1rem; }
+  .info-table { width: 100%; border-collapse: collapse; }
+  .info-table tr { border-bottom: 1px solid #f1f5f9; }
+  .info-table tr:last-child { border-bottom: none; }
+  .info-table td { padding: 0.65rem 0; font-size: 0.9rem; vertical-align: top; }
+  .info-table td:first-child { font-weight: 700; color: #475569; width: 40%; }
+  .days-green { color: #16a34a; font-weight: 700; }
+  .days-orange { color: #ea580c; font-weight: 700; }
+  .days-red { color: #dc2626; font-weight: 700; }
+  .progress-wrap { margin-top: 0.4rem; background: #e2e8f0; border-radius: 99px; height: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+  .san-list { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.25rem; }
+  .san-tag { padding: 0.15rem 0.55rem; background: #f1f5f9; border-radius: 99px; font-size: 0.78rem; color: #475569; font-family: monospace; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SSL Certificate Checker</h1>
+  <p>Verify SSL/TLS certificates for any domain</p>
+</header>
+<main>
+  <div class="card">
+    <div class="input-row">
+      <input type="text" class="domain-input" id="domainInput" placeholder="github.com" onkeydown="if(event.key==='Enter')doCheck()">
+      <button class="btn btn-primary" id="checkBtn" onclick="doCheck()">Check</button>
+    </div>
+    <div class="quick-btns">
+      <span style="font-size:0.8rem;color:#94a3b8;align-self:center;">Quick:</span>
+      <button class="quick-btn" onclick="setDomain('github.com')">github.com</button>
+      <button class="quick-btn" onclick="setDomain('google.com')">google.com</button>
+      <button class="quick-btn" onclick="setDomain('cloudflare.com')">cloudflare.com</button>
+      <button class="quick-btn" onclick="setDomain('letsencrypt.org')">letsencrypt.org</button>
+    </div>
+  </div>
+
+  <div class="error-box hidden" id="errorBox"></div>
+
+  <div class="card hidden" id="resultCard">
+    <div class="validity-badge hidden" id="validBadge">
+      <span class="badge-icon">&#10003;</span>
+      <div class="badge-text">
+        <div class="big valid-text">Valid Certificate</div>
+        <div class="sub" id="validSub"></div>
+      </div>
+    </div>
+    <div class="validity-badge invalid hidden" id="invalidBadge">
+      <span class="badge-icon">&#10007;</span>
+      <div class="badge-text">
+        <div class="big invalid-text">Invalid Certificate</div>
+        <div class="sub" id="invalidSub"></div>
+      </div>
+    </div>
+    <table class="info-table" id="infoTable"></table>
+  </div>
+</main>
+
+<script>
+function setDomain(d) {
+  document.getElementById('domainInput').value = d;
+  doCheck();
+}
+
+async function doCheck() {
+  const domain = document.getElementById('domainInput').value.trim();
+  if (!domain) return;
+  const btn = document.getElementById('checkBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Checking...';
+  document.getElementById('errorBox').classList.add('hidden');
+  document.getElementById('resultCard').classList.add('hidden');
+
+  try {
+    const res = await fetch('api/check', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({domain})
+    });
+    const data = await res.json();
+    if (!res.ok && !data.valid) { showError(data.error || 'Check failed'); return; }
+    renderResult(data);
+  } catch(e) { showError('Request failed: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Check'; }
+}
+
+function renderResult(data) {
+  document.getElementById('validBadge').classList.add('hidden');
+  document.getElementById('invalidBadge').classList.add('hidden');
+
+  if (data.valid) {
+    document.getElementById('validSub').textContent = data.domain;
+    document.getElementById('validBadge').classList.remove('hidden');
+  } else {
+    document.getElementById('invalidSub').textContent = data.error || 'Certificate validation failed';
+    document.getElementById('invalidBadge').classList.remove('hidden');
+  }
+
+  let daysHtml = '';
+  let progressHtml = '';
+  if (data.valid && data.days_left !== undefined) {
+    const d = data.days_left;
+    const cls = d < 30 ? 'days-red' : d < 90 ? 'days-orange' : 'days-green';
+    const pct = Math.max(0, Math.min(100, (d / 365) * 100));
+    const barColor = d < 30 ? '#dc2626' : d < 90 ? '#ea580c' : '#16a34a';
+    daysHtml = `<span class="${cls}">${d} days remaining</span>`;
+    progressHtml = `<div class="progress-wrap"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>`;
+  }
+
+  let sanHtml = '';
+  if (data.san && data.san.length) {
+    sanHtml = '<div class="san-list">' + data.san.map(s => `<span class="san-tag">${s}</span>`).join('') + '</div>';
+  }
+
+  const rows = data.valid ? [
+    ['Subject (CN)', data.subject || 'N/A'],
+    ['Issuer', data.issuer || 'N/A'],
+    ['Valid From', data.not_before || 'N/A'],
+    ['Valid Until', data.not_after || 'N/A'],
+    ['Days Remaining', daysHtml + progressHtml],
+    ['Alt Names (SAN)', sanHtml || 'N/A'],
+  ] : [];
+
+  document.getElementById('infoTable').innerHTML = rows.map(([k,v]) =>
+    `<tr><td>${k}</td><td>${v}</td></tr>`
+  ).join('');
+
+  document.getElementById('resultCard').classList.remove('hidden');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  el.textContent = 'Error: ' + msg;
+  el.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

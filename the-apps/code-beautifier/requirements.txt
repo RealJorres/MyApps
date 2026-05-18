@@ -1,0 +1,4 @@
+flask
+autopep8
+jsbeautifier
+cssbeautifier

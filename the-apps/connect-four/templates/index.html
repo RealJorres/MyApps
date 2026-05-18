@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect Four</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0c1929; color: #fff; font-family: system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  header { width: 100%; background: #0891b2; padding: 0.75rem 1rem; text-align: center; }
+  header h1 { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.05em; }
+  .game-wrapper { padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 520px; }
+  .mode-bar, .ai-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+  .mode-btn, .ai-btn {
+    padding: 0.45rem 1rem; border-radius: 8px; border: 2px solid #1e3a5f;
+    background: #0c1929; color: #93c5fd; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  }
+  .mode-btn.active { background: #0891b2; border-color: #0891b2; color: #fff; }
+  .ai-btn.active { background: #1e3a5f; border-color: #3b82f6; color: #fff; }
+  .score-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .score-card { background: #1a2a3e; border-radius: 10px; padding: 0.6rem 1.1rem; text-align: center; min-width: 80px; }
+  .score-card .label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; }
+  .score-card .val { font-size: 1.5rem; font-weight: 800; }
+  .score-card.p1 .val { color: #ef4444; }
+  .score-card.draw .val { color: #94a3b8; }
+  .score-card.p2 .val { color: #fbbf24; }
+  .status-bar { font-size: 1rem; font-weight: 700; min-height: 1.5em; text-align: center; color: #e2e8f0; }
+  .board-outer { position: relative; }
+  .col-arrows { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 4px; }
+  .arrow-btn {
+    background: none; border: none; color: #0891b2; font-size: 1.1rem;
+    cursor: pointer; padding: 0.2rem; transition: color 0.15s;
+    text-align: center;
+  }
+  .arrow-btn:hover { color: #38bdf8; }
+  .board {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 5px; background: #1560bd; padding: 8px; border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+  }
+  .cell {
+    width: 100%; aspect-ratio: 1; border-radius: 50%;
+    background: #0c1929; cursor: pointer; transition: background 0.12s;
+    position: relative; overflow: hidden;
+  }
+  .cell:hover:not(.filled) { background: #1a2a3e; }
+  .cell.p1 { background: #ef4444; }
+  .cell.p2 { background: #fbbf24; }
+  .cell.win-cell { outline: 3px solid #fff; outline-offset: 2px; animation: pulse 0.6s infinite alternate; }
+  @keyframes pulse { from { filter: brightness(1); } to { filter: brightness(1.4); } }
+  .cell.drop-anim { animation: dropIn 0.18s ease-in; }
+  @keyframes dropIn { from { transform: translateY(-200%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .btn-new { padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: #0891b2; color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+  .btn-new:hover { background: #0e7490; }
+  .thinking { color: #fbbf24; animation: blink 0.8s infinite; }
+  @keyframes blink { 50% { opacity: 0.4; } }
+  @media (max-width: 420px) {
+    .board { gap: 3px; padding: 5px; }
+    .cell { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+<header><h1>Connect Four</h1></header>
+<div class="game-wrapper">
+  <div class="mode-bar">
+    <button class="mode-btn active" id="modeVsBtn" onclick="setMode('friend')">vs Friend</button>
+    <button class="mode-btn" id="modeAiBtn" onclick="setMode('ai')">vs AI</button>
+  </div>
+  <div class="ai-bar" id="aiBar" style="display:none">
+    <button class="ai-btn active" id="easyBtn" onclick="setDiff('easy')">Easy</button>
+    <button class="ai-btn" id="hardBtn" onclick="setDiff('hard')">Hard</button>
+  </div>
+  <div class="score-row">
+    <div class="score-card p1"><div class="label" id="p1Label">Player 1</div><div class="val" id="p1Score">0</div></div>
+    <div class="score-card draw"><div class="label">Draws</div><div class="val" id="drawScore">0</div></div>
+    <div class="score-card p2"><div class="label" id="p2Label">Player 2</div><div class="val" id="p2Score">0</div></div>
+  </div>
+  <div class="status-bar" id="statusBar">Click New Game to start</div>
+  <div class="board-outer">
+    <div class="col-arrows" id="colArrows"></div>
+    <div class="board" id="board"></div>
+  </div>
+  <button class="btn-new" onclick="newGame()">New Game</button>
+</div>
+
+<script>
+const ROWS = 6, COLS = 7;
+let board, currentPlayer, gameActive, mode = 'friend', diff = 'easy';
+let scores = {p1:0, draw:0, p2:0};
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeVsBtn').classList.toggle('active', m==='friend');
+  document.getElementById('modeAiBtn').classList.toggle('active', m==='ai');
+  document.getElementById('aiBar').style.display = m==='ai' ? 'flex' : 'none';
+  document.getElementById('p2Label').textContent = m==='ai' ? 'AI' : 'Player 2';
+  newGame();
+}
+
+function setDiff(d) {
+  diff = d;
+  document.getElementById('easyBtn').classList.toggle('active', d==='easy');
+  document.getElementById('hardBtn').classList.toggle('active', d==='hard');
+  newGame();
+}
+
+function newGame() {
+  board = Array.from({length:ROWS}, () => Array(COLS).fill(0));
+  currentPlayer = 1; gameActive = true;
+  renderBoard(); updateStatus();
+}
+
+function renderBoard() {
+  const boardEl = document.getElementById('board');
+  const arrowsEl = document.getElementById('colArrows');
+  arrowsEl.innerHTML = Array.from({length:COLS}, (_,c) =>
+    `<button class="arrow-btn" onclick="dropDisc(${c})">&#9660;</button>`
+  ).join('');
+  boardEl.innerHTML = '';
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell' + (board[r][c] === 1 ? ' p1' : board[r][c] === 2 ? ' p2' : '');
+      cell.dataset.r = r; cell.dataset.c = c;
+      cell.addEventListener('click', () => dropDisc(c));
+      boardEl.appendChild(cell);
+    }
+  }
+}
+
+function dropDisc(col) {
+  if (!gameActive) return;
+  if (mode === 'ai' && currentPlayer === 2) return;
+  makeMove(col);
+  if (gameActive && mode === 'ai' && currentPlayer === 2) {
+    setTimeout(aiMove, 350);
+  }
+}
+
+function makeMove(col) {
+  const row = getEmptyRow(board, col);
+  if (row === -1) return;
+  board[row][col] = currentPlayer;
+  renderBoard();
+  animateCell(row, col);
+  const win = checkWin(board, currentPlayer);
+  if (win) {
+    gameActive = false;
+    win.forEach(([r,c]) => {
+      const cells = document.querySelectorAll('.cell');
+      cells[r*COLS+c].classList.add('win-cell');
+    });
+    scores[currentPlayer === 1 ? 'p1' : 'p2']++;
+    updateScores();
+    setStatus(currentPlayer === 1 ? '&#128308; Player 1 wins!' : (mode==='ai' ? '&#129352; AI wins!' : '&#128993; Player 2 wins!'));
+    return;
+  }
+  if (board[0].every(c => c !== 0)) {
+    gameActive = false; scores.draw++;
+    updateScores(); setStatus("It's a draw!");
+    return;
+  }
+  currentPlayer = currentPlayer === 1 ? 2 : 1;
+  updateStatus();
+}
+
+function animateCell(r, c) {
+  const cells = document.querySelectorAll('.cell');
+  const cell = cells[r*COLS+c];
+  cell.classList.remove('drop-anim');
+  void cell.offsetWidth;
+  cell.classList.add('drop-anim');
+}
+
+function getEmptyRow(b, col) {
+  for (let r = ROWS-1; r >= 0; r--) if (!b[r][col]) return r;
+  return -1;
+}
+
+function checkWin(b, player) {
+  // Horizontal
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c <= COLS-4; c++)
+      if ([0,1,2,3].every(i => b[r][c+i] === player))
+        return [[r,c],[r,c+1],[r,c+2],[r,c+3]];
+  // Vertical
+  for (let r = 0; r <= ROWS-4; r++)
+    for (let c = 0; c < COLS; c++)
+      if ([0,1,2,3].every(i => b[r+i][c] === player))
+        return [[r,c],[r+1,c],[r+2,c],[r+3,c]];
+  // Diagonal down-right
+  for (let r = 0; r <= ROWS-4; r++)
+    for (let c = 0; c <= COLS-4; c++)
+      if ([0,1,2,3].every(i => b[r+i][c+i] === player))
+        return [[r,c],[r+1,c+1],[r+2,c+2],[r+3,c+3]];
+  // Diagonal up-right
+  for (let r = 3; r < ROWS; r++)
+    for (let c = 0; c <= COLS-4; c++)
+      if ([0,1,2,3].every(i => b[r-i][c+i] === player))
+        return [[r,c],[r-1,c+1],[r-2,c+2],[r-3,c+3]];
+  return null;
+}
+
+function updateStatus() {
+  const who = currentPlayer === 1 ? '&#128308; Player 1' : (mode==='ai' ? '&#129352; AI' : '&#128993; Player 2');
+  setStatus(`${who}'s turn`);
+}
+
+function setStatus(msg) { document.getElementById('statusBar').innerHTML = msg; }
+
+function updateScores() {
+  document.getElementById('p1Score').textContent = scores.p1;
+  document.getElementById('drawScore').textContent = scores.draw;
+  document.getElementById('p2Score').textContent = scores.p2;
+}
+
+// AI
+function aiMove() {
+  if (!gameActive) return;
+  let col;
+  if (diff === 'easy') {
+    const valid = Array.from({length:COLS},(_,i)=>i).filter(c=>getEmptyRow(board,c)!==-1);
+    col = valid[Math.floor(Math.random()*valid.length)];
+  } else {
+    col = bestMove();
+  }
+  setStatus('<span class="thinking">AI thinking...</span>');
+  makeMove(col);
+}
+
+function bestMove() {
+  let best = -Infinity, bestCol = 0;
+  const valid = Array.from({length:COLS},(_,i)=>i).filter(c=>getEmptyRow(board,c)!==-1);
+  for (const col of valid) {
+    const b = cloneBoard(board);
+    const row = getEmptyRow(b, col);
+    b[row][col] = 2;
+    const score = minimax(b, 5, -Infinity, Infinity, false);
+    if (score > best) { best = score; bestCol = col; }
+  }
+  return bestCol;
+}
+
+function minimax(b, depth, alpha, beta, maximizing) {
+  if (checkWin(b, 2)) return 100000 + depth;
+  if (checkWin(b, 1)) return -(100000 + depth);
+  if (depth === 0 || b[0].every(c => c !== 0)) return evalBoard(b);
+  const valid = Array.from({length:COLS},(_,i)=>i).filter(c=>getEmptyRow(b,c)!==-1);
+  if (maximizing) {
+    let v = -Infinity;
+    for (const col of valid) {
+      const nb = cloneBoard(b); const row = getEmptyRow(nb,col); nb[row][col]=2;
+      v = Math.max(v, minimax(nb,depth-1,alpha,beta,false));
+      alpha = Math.max(alpha,v); if (beta<=alpha) break;
+    }
+    return v;
+  } else {
+    let v = Infinity;
+    for (const col of valid) {
+      const nb = cloneBoard(b); const row = getEmptyRow(nb,col); nb[row][col]=1;
+      v = Math.min(v, minimax(nb,depth-1,alpha,beta,true));
+      beta = Math.min(beta,v); if (beta<=alpha) break;
+    }
+    return v;
+  }
+}
+
+function evalBoard(b) {
+  let score = 0;
+  // Center column preference
+  for (let r = 0; r < ROWS; r++) { if (b[r][3]===2) score+=3; if (b[r][3]===1) score-=3; }
+  // Windows of 4
+  const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+  for (const [dr,dc] of dirs)
+    for (let r=0;r<ROWS;r++) for (let c=0;c<COLS;c++) {
+      let p2=0,p1=0,empty=0;
+      for (let i=0;i<4;i++) {
+        const nr=r+i*dr, nc=c+i*dc;
+        if (nr<0||nr>=ROWS||nc<0||nc>=COLS) { p2=-10;break; }
+        if (b[nr][nc]===2) p2++;
+        else if (b[nr][nc]===1) p1++;
+        else empty++;
+      }
+      if (p1===0) { if(p2===3&&empty===1)score+=50; else if(p2===2&&empty===2)score+=10; else if(p2===1&&empty===3)score+=1; }
+      if (p2===0) { if(p1===3&&empty===1)score-=80; else if(p1===2&&empty===2)score-=15; }
+    }
+  return score;
+}
+
+function cloneBoard(b) { return b.map(r=>[...r]); }
+
+newGame();
+</script>
+</body>
+</html>

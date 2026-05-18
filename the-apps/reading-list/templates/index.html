@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading List</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f0fdf4; min-height: 100vh; color: #0f172a; }
+  header { background: #0f766e; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 800px; margin: 1.5rem auto; padding: 0 1rem 3rem; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.25rem; margin-bottom: 1.25rem; }
+  .form-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+  .form-group.full { flex: 1 1 100%; }
+  .form-group.half { flex: 1 1 180px; }
+  label { font-size: 0.78rem; font-weight: 700; color: #475569; }
+  input, textarea {
+    padding: 0.55rem 0.75rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-size: 0.9rem; font-family: inherit; min-width: 0; width: 100%;
+  }
+  input:focus, textarea:focus { outline: none; border-color: #0f766e; }
+  textarea { resize: vertical; min-height: 60px; }
+  .btn {
+    padding: 0.55rem 1.1rem; border-radius: 8px; border: none;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary { background: #0f766e; color: #fff; }
+  .btn-primary:hover { background: #0d6b64; }
+  .btn-secondary { background: #e2e8f0; color: #475569; }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .filter-btn {
+    padding: 0.35rem 0.8rem; border-radius: 99px; border: 2px solid #e2e8f0;
+    background: #fff; font-size: 0.82rem; font-weight: 600; cursor: pointer; color: #64748b;
+    transition: all 0.15s;
+  }
+  .filter-btn.active { background: #0f766e; border-color: #0f766e; color: #fff; }
+  .search-input { flex: 1; min-width: 140px; padding: 0.45rem 0.75rem; border: 2px solid #e2e8f0; border-radius: 99px; font-size: 0.88rem; }
+  .search-input:focus { outline: none; border-color: #0f766e; }
+  .sort-select { padding: 0.4rem 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem; min-width: 0; }
+  .sort-select:focus { outline: none; border-color: #0f766e; }
+  .item-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .item-card {
+    background: #fff; border-radius: 10px; padding: 0.85rem 1rem;
+    border: 1.5px solid #e2e8f0; display: flex; gap: 0.75rem; align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .item-card.read { border-left: 4px solid #0f766e; }
+  .item-card.unread { border-left: 4px solid #94a3b8; }
+  .favicon { width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .item-content { flex: 1; min-width: 0; }
+  .item-title { font-weight: 700; font-size: 0.95rem; color: #0f766e; text-decoration: none; }
+  .item-title:hover { text-decoration: underline; }
+  .item-url { font-size: 0.78rem; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-notes { font-size: 0.82rem; color: #475569; margin-top: 0.3rem; }
+  .item-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; align-items: center; }
+  .tag-pill {
+    padding: 0.15rem 0.55rem; border-radius: 99px; font-size: 0.72rem; font-weight: 700;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .tag-pill:hover { opacity: 0.75; }
+  .item-date { font-size: 0.72rem; color: #94a3b8; }
+  .item-actions { display: flex; gap: 0.4rem; flex-shrink: 0; flex-wrap: wrap; }
+  .action-btn {
+    padding: 0.3rem 0.65rem; border-radius: 6px; border: none;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  }
+  .btn-read { background: #dcfce7; color: #166534; }
+  .btn-read:hover { background: #bbf7d0; }
+  .btn-unread { background: #f1f5f9; color: #64748b; }
+  .btn-unread:hover { background: #e2e8f0; }
+  .btn-del { background: #fee2e2; color: #dc2626; }
+  .btn-del:hover { background: #fecaca; }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: #94a3b8; }
+  .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+  .stats-row { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.82rem; color: #64748b; align-items: center; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Reading List</h1>
+  <p>Save and organize links for later reading</p>
+</header>
+<main>
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-group full">
+        <label for="itemUrl">URL *</label>
+        <input type="url" id="itemUrl" placeholder="https://example.com/article">
+      </div>
+      <div class="form-group half">
+        <label for="itemTitle">Title *</label>
+        <input type="text" id="itemTitle" placeholder="Article title">
+      </div>
+      <div class="form-group half">
+        <label for="itemTags">Tags (comma-separated)</label>
+        <input type="text" id="itemTags" placeholder="tech, design, news">
+      </div>
+      <div class="form-group full">
+        <label for="itemNotes">Notes (optional)</label>
+        <textarea id="itemNotes" placeholder="Add a note..."></textarea>
+      </div>
+      <div class="form-group full" style="flex-direction:row;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+        <button class="btn btn-primary" onclick="addItem()">Save to List</button>
+      </div>
+    </div>
+    <div id="addError" style="color:#dc2626;font-size:0.83rem;margin-top:0.5rem;" class="hidden"></div>
+  </div>
+
+  <div class="card">
+    <div class="filter-bar" style="margin-bottom:0.75rem;">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" data-filter="unread" onclick="setFilter('unread',this)">Unread</button>
+      <button class="filter-btn" data-filter="read" onclick="setFilter('read',this)">Read</button>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search..." oninput="renderList()">
+      <select class="sort-select" id="sortSelect" onchange="renderList()">
+        <option value="date">Date Added</option>
+        <option value="title">Title</option>
+        <option value="unread">Unread First</option>
+      </select>
+    </div>
+    <div class="filter-bar" style="margin-bottom:0.75rem;gap:0.35rem;" id="tagFilterBar"></div>
+    <div class="stats-row" id="statsRow">
+      <span id="statsText"></span>
+      <span style="flex:1"></span>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.3rem 0.7rem;" onclick="markAllRead()">Mark All Read</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.3rem 0.7rem;" onclick="exportJSON()">Export JSON</button>
+    </div>
+    <div class="item-list" id="itemList"></div>
+    <div class="empty-state hidden" id="emptyState">
+      <div class="empty-icon">📚</div>
+      <div style="font-weight:700;color:#475569;margin-bottom:0.25rem;">No items yet</div>
+      <div>Add a link above to start your reading list</div>
+    </div>
+  </div>
+</main>
+
+<script>
+const TAG_COLORS = ['#bfdbfe','#bbf7d0','#fde68a','#fbcfe8','#e9d5ff','#fed7aa','#fca5a5','#a5f3fc'];
+const TAG_TEXT = ['#1e40af','#166534','#92400e','#9d174d','#6b21a8','#9a3412','#991b1b','#164e63'];
+let items = [];
+let currentFilter = 'all';
+let activeTag = null;
+let tagColorMap = {};
+let tagColorIdx = 0;
+
+function load() {
+  try { items = JSON.parse(localStorage.getItem('reading_list') || '[]'); } catch(e) { items = []; }
+  renderList();
+}
+
+function save() { localStorage.setItem('reading_list', JSON.stringify(items)); }
+
+function getTagColor(tag) {
+  if (!tagColorMap[tag]) {
+    tagColorMap[tag] = { bg: TAG_COLORS[tagColorIdx % TAG_COLORS.length], text: TAG_TEXT[tagColorIdx % TAG_TEXT.length] };
+    tagColorIdx++;
+  }
+  return tagColorMap[tag];
+}
+
+function addItem() {
+  const url = document.getElementById('itemUrl').value.trim();
+  const title = document.getElementById('itemTitle').value.trim();
+  const notes = document.getElementById('itemNotes').value.trim();
+  const tags = document.getElementById('itemTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const errEl = document.getElementById('addError');
+  errEl.classList.add('hidden');
+  if (!url) { errEl.textContent = 'URL is required'; errEl.classList.remove('hidden'); return; }
+  if (!title) { errEl.textContent = 'Title is required'; errEl.classList.remove('hidden'); return; }
+  items.unshift({ id: Date.now().toString(), url, title, notes, tags, read: false, date: new Date().toISOString() });
+  save(); clearForm(); renderList();
+}
+
+function clearForm() {
+  ['itemUrl','itemTitle','itemNotes','itemTags'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('addError').classList.add('hidden');
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+function renderList() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortSelect').value;
+  let filtered = items.filter(item => {
+    if (currentFilter === 'read' && !item.read) return false;
+    if (currentFilter === 'unread' && item.read) return false;
+    if (activeTag && !item.tags.includes(activeTag)) return false;
+    if (search) {
+      const haystack = (item.title + ' ' + item.url + ' ' + item.notes).toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+
+  if (sort === 'title') filtered.sort((a,b) => a.title.localeCompare(b.title));
+  else if (sort === 'unread') filtered.sort((a,b) => (a.read ? 1:0) - (b.read ? 1:0));
+  else filtered.sort((a,b) => b.date.localeCompare(a.date));
+
+  // Stats
+  const total = items.length, unread = items.filter(i=>!i.read).length;
+  document.getElementById('statsText').textContent = `${total} saved · ${unread} unread`;
+
+  // Tag filter bar
+  const allTags = [...new Set(items.flatMap(i=>i.tags))].sort();
+  const tagBar = document.getElementById('tagFilterBar');
+  tagBar.innerHTML = allTags.map(tag => {
+    const c = getTagColor(tag);
+    const isActive = activeTag === tag;
+    return `<span class="tag-pill" style="background:${isActive?c.text:c.bg};color:${isActive?'#fff':c.text};border:2px solid ${c.text}" onclick="toggleTag('${tag}')">${tag}</span>`;
+  }).join('');
+
+  const list = document.getElementById('itemList');
+  const empty = document.getElementById('emptyState');
+  if (!filtered.length) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+
+  let domain = '';
+  list.innerHTML = filtered.map(item => {
+    try { domain = new URL(item.url).hostname; } catch(e) { domain = ''; }
+    const tagPills = item.tags.map(tag => {
+      const c = getTagColor(tag);
+      return `<span class="tag-pill" style="background:${c.bg};color:${c.text}" onclick="toggleTag('${tag}')">${tag}</span>`;
+    }).join('');
+    const dateStr = new Date(item.date).toLocaleDateString();
+    return `<div class="item-card ${item.read?'read':'unread'}" id="ic-${item.id}">
+      ${domain ? `<img class="favicon" src="https://www.google.com/s2/favicons?domain=${domain}" onerror="this.style.display='none'" alt="">` : ''}
+      <div class="item-content">
+        <a class="item-title" href="${escHtml(item.url)}" target="_blank" rel="noopener">${escHtml(item.title)}</a>
+        <div class="item-url">${escHtml(item.url)}</div>
+        ${item.notes ? `<div class="item-notes">${escHtml(item.notes.slice(0,120))}${item.notes.length>120?'…':''}</div>` : ''}
+        <div class="item-meta">${tagPills}<span class="item-date">${dateStr}</span></div>
+      </div>
+      <div class="item-actions">
+        <button class="action-btn ${item.read?'btn-unread':'btn-read'}" onclick="toggleRead('${item.id}')">${item.read?'Unread':'Read'}</button>
+        <button class="action-btn btn-del" onclick="deleteItem('${item.id}')">Del</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRead(id) {
+  const item = items.find(i=>i.id===id);
+  if (item) { item.read = !item.read; save(); renderList(); }
+}
+
+function deleteItem(id) {
+  items = items.filter(i=>i.id!==id);
+  save(); renderList();
+}
+
+function toggleTag(tag) {
+  activeTag = activeTag === tag ? null : tag;
+  renderList();
+}
+
+function markAllRead() {
+  items.forEach(i => i.read = true);
+  save(); renderList();
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(items, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'reading_list.json'; a.click();
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+load();
+</script>
+</body>
+</html>

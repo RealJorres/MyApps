@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Table Generator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f0f9ff; min-height: 100vh; color: #0f172a; }
+  header { background: #0891b2; color: #fff; padding: 1rem 1.5rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
+  main { max-width: 900px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .controls-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
+  .control-group { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .control-group label { font-size: 0.8rem; font-weight: 600; color: #475569; }
+  .control-group input[type="number"] {
+    width: 80px; padding: 0.5rem 0.6rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-size: 0.9rem; min-width: 0;
+  }
+  .control-group input:focus { outline: none; border-color: #0891b2; }
+  .btn {
+    padding: 0.55rem 1.1rem; border-radius: 8px; border: none;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+  }
+  .btn-primary { background: #0891b2; color: #fff; }
+  .btn-primary:hover { background: #0e7490; }
+  .btn-secondary { background: #e2e8f0; color: #475569; }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: #fee2e2; color: #dc2626; }
+  .btn-danger:hover { background: #fecaca; }
+  .btn-success { background: #dcfce7; color: #166534; }
+  .btn-success:hover { background: #bbf7d0; }
+  h2 { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 1rem; }
+  .table-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; min-width: 300px; }
+  th, td {
+    border: 2px solid #e2e8f0; padding: 0; min-width: 80px;
+  }
+  th { background: #f8fafc; position: relative; }
+  .th-inner { display: flex; flex-direction: column; }
+  .align-btn {
+    font-size: 0.7rem; padding: 0.15rem 0.4rem; border: none;
+    background: #e0f2fe; color: #0891b2; cursor: pointer;
+    border-bottom: 1px solid #e2e8f0; font-weight: 700;
+    white-space: nowrap;
+  }
+  .align-btn:hover { background: #bae6fd; }
+  .cell-input {
+    width: 100%; padding: 0.45rem 0.6rem; border: none; outline: none;
+    font-family: inherit; font-size: 0.88rem; background: transparent;
+    min-width: 0;
+  }
+  .output-area { position: relative; }
+  textarea {
+    width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 8px;
+    font-family: 'Courier New', monospace; font-size: 0.85rem; resize: vertical;
+    min-height: 160px; color: #1e293b; background: #f8fafc;
+    min-width: 0;
+  }
+  textarea:focus { outline: none; border-color: #0891b2; }
+  .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; }
+  .preview-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .preview-table { border-collapse: collapse; font-size: 0.88rem; }
+  .preview-table th, .preview-table td {
+    border: 1px solid #e2e8f0; padding: 0.5rem 0.75rem;
+    background: #fff;
+  }
+  .preview-table th { background: #f0f9ff; font-weight: 700; }
+  .section-label { font-size: 0.88rem; font-weight: 700; color: #475569; margin-bottom: 0.6rem; }
+  .copied { background: #dcfce7 !important; color: #166534 !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Markdown Table Generator</h1>
+  <p>Build Markdown tables visually — click cells to edit</p>
+</header>
+<main>
+  <div class="card">
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="rowCount">Rows</label>
+        <input type="number" id="rowCount" value="3" min="1" max="10">
+      </div>
+      <div class="control-group">
+        <label for="colCount">Columns</label>
+        <input type="number" id="colCount" value="3" min="1" max="10">
+      </div>
+      <button class="btn btn-primary" onclick="resize()">Resize</button>
+      <div style="flex:1;min-width:0;"></div>
+      <div class="table-controls">
+        <button class="btn btn-secondary" onclick="addRow()">+ Row</button>
+        <button class="btn btn-secondary" onclick="addCol()">+ Col</button>
+        <button class="btn btn-danger" onclick="removeRow()">- Row</button>
+        <button class="btn btn-danger" onclick="removeCol()">- Col</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Edit Table</h2>
+    <div class="table-wrap">
+      <table id="editTable"></table>
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="generate()">Generate Markdown</button>
+      <button class="btn btn-secondary" onclick="clearTable()">Clear All</button>
+    </div>
+  </div>
+
+  <div class="card" id="outputCard" style="display:none">
+    <h2>Markdown Output</h2>
+    <div class="output-area">
+      <textarea id="mdOutput" readonly></textarea>
+      <button class="btn btn-secondary copy-btn" id="copyBtn" onclick="copyMd()">Copy</button>
+    </div>
+    <div style="margin-top:1.5rem;">
+      <div class="section-label">Live Preview</div>
+      <div class="preview-table-wrap">
+        <table class="preview-table" id="previewTable"></table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let rows = 3, cols = 3;
+let alignments = [];
+
+function initTable() {
+  alignments = Array.from({length: cols}, () => 'left');
+  renderTable();
+}
+
+function getData() {
+  const table = document.getElementById('editTable');
+  const headers = [];
+  const headerInputs = table.querySelectorAll('thead input');
+  headerInputs.forEach(inp => headers.push(inp.value));
+  const bodyRows = [];
+  const trs = table.querySelectorAll('tbody tr');
+  trs.forEach(tr => {
+    const rowData = [];
+    tr.querySelectorAll('input').forEach(inp => rowData.push(inp.value));
+    bodyRows.push(rowData);
+  });
+  return { headers, bodyRows };
+}
+
+function renderTable() {
+  const table = document.getElementById('editTable');
+  const existingData = table.innerHTML ? getData() : null;
+
+  let thead = '<thead><tr>';
+  for (let c = 0; c < cols; c++) {
+    const al = alignments[c] || 'left';
+    const alLabel = al === 'left' ? '⬅ Left' : al === 'center' ? '↔ Center' : '➡ Right';
+    const existVal = existingData && existingData.headers[c] !== undefined ? existingData.headers[c] : (c === 0 ? 'Column ' + (c+1) : 'Column ' + (c+1));
+    thead += `<th><div class="th-inner">
+      <button class="align-btn" onclick="cycleAlign(${c})" title="Alignment">${alLabel}</button>
+      <input class="cell-input" value="${escHtml(existVal)}" placeholder="Header ${c+1}">
+    </div></th>`;
+  }
+  thead += '</tr></thead>';
+
+  let tbody = '<tbody>';
+  for (let r = 0; r < rows; r++) {
+    tbody += '<tr>';
+    for (let c = 0; c < cols; c++) {
+      const existVal = existingData && existingData.bodyRows[r] && existingData.bodyRows[r][c] !== undefined ? existingData.bodyRows[r][c] : '';
+      tbody += `<td><input class="cell-input" value="${escHtml(existVal)}" placeholder="Cell"></td>`;
+    }
+    tbody += '</tr>';
+  }
+  tbody += '</tbody>';
+  table.innerHTML = thead + tbody;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function cycleAlign(col) {
+  const order = ['left','center','right'];
+  const cur = alignments[col] || 'left';
+  alignments[col] = order[(order.indexOf(cur)+1) % 3];
+  renderTable();
+}
+
+function resize() {
+  rows = Math.max(1, Math.min(10, parseInt(document.getElementById('rowCount').value) || 3));
+  cols = Math.max(1, Math.min(10, parseInt(document.getElementById('colCount').value) || 3));
+  while (alignments.length < cols) alignments.push('left');
+  alignments = alignments.slice(0, cols);
+  renderTable();
+}
+
+function addRow() {
+  rows = Math.min(10, rows + 1);
+  document.getElementById('rowCount').value = rows;
+  renderTable();
+}
+
+function addCol() {
+  cols = Math.min(10, cols + 1);
+  alignments.push('left');
+  document.getElementById('colCount').value = cols;
+  renderTable();
+}
+
+function removeRow() {
+  if (rows <= 1) return;
+  rows--;
+  document.getElementById('rowCount').value = rows;
+  renderTable();
+}
+
+function removeCol() {
+  if (cols <= 1) return;
+  cols--;
+  alignments = alignments.slice(0, cols);
+  document.getElementById('colCount').value = cols;
+  renderTable();
+}
+
+function clearTable() {
+  document.getElementById('editTable').querySelectorAll('input').forEach(inp => inp.value = '');
+}
+
+function generate() {
+  const { headers, bodyRows } = getData();
+  const colWidths = headers.map((h, i) => {
+    let max = h.length || 3;
+    bodyRows.forEach(r => { if (r[i] && r[i].length > max) max = r[i].length; });
+    return Math.max(max, 3);
+  });
+
+  const pad = (s, w, al) => {
+    if (al === 'center') {
+      const total = w - s.length;
+      const left = Math.floor(total/2), right = total - left;
+      return ' '.repeat(left) + s + ' '.repeat(right);
+    }
+    if (al === 'right') return s.padStart(w);
+    return s.padEnd(w);
+  };
+
+  const headerLine = '| ' + headers.map((h,i) => pad(h, colWidths[i], alignments[i])).join(' | ') + ' |';
+  const sepLine = '| ' + alignments.map((al,i) => {
+    const w = colWidths[i];
+    if (al === 'center') return ':' + '-'.repeat(w-2) + ':';
+    if (al === 'right') return '-'.repeat(w-1) + ':';
+    return ':' + '-'.repeat(w-1);
+  }).join(' | ') + ' |';
+  const dataLines = bodyRows.map(r =>
+    '| ' + r.map((c,i) => pad(c||'', colWidths[i], alignments[i])).join(' | ') + ' |'
+  );
+
+  const md = [headerLine, sepLine, ...dataLines].join('\n');
+  document.getElementById('mdOutput').value = md;
+  document.getElementById('outputCard').style.display = 'block';
+  renderPreview(headers, bodyRows);
+}
+
+function renderPreview(headers, bodyRows) {
+  const table = document.getElementById('previewTable');
+  let html = '<thead><tr>' + headers.map(h => `<th>${h || '&nbsp;'}</th>`).join('') + '</tr></thead>';
+  html += '<tbody>' + bodyRows.map(r =>
+    '<tr>' + r.map(c => `<td>${c || '&nbsp;'}</td>`).join('') + '</tr>'
+  ).join('') + '</tbody>';
+  table.innerHTML = html;
+}
+
+function copyMd() {
+  const text = document.getElementById('mdOutput').value;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+initTable();
+</script>
+</body>
+</html>
