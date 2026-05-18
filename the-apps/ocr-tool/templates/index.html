@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OCR Tool</title>
 <style>
 :root { --primary: #7c3aed; --primary-h: #6d28d9; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
@@ -13,58 +12,54 @@ header { text-align: center; margin-bottom: 2rem; }
 header h1 { font-size: 2rem; font-weight: 800; }
 header p { color: var(--muted); margin-top: 0.4rem; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; }
+select:focus { border-color: var(--primary); }
+textarea { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.85rem; font-family: monospace; background: #fff; color: var(--text); outline: none; resize: vertical; }
+textarea:focus { border-color: var(--primary); }
 .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
 .btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
 .btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
-label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
-input[type=text], select, textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 .status { padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; margin-top: 0.75rem; }
 .status.error { background: var(--error-bg); color: var(--error-fg); }
 .status.success { background: var(--success-bg); color: var(--success-fg); }
 
-.drop-zone {
-  border: 2px dashed var(--border); border-radius: 0.75rem; padding: 2rem;
-  text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--bg);
-}
-.drop-zone.drag-over { border-color: var(--primary); background: #f5f3ff; }
-.drop-zone svg { width: 40px; height: 40px; margin-bottom: 0.5rem; color: var(--muted); }
+.drop-zone { border: 2px dashed var(--border); border-radius: 0.75rem; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; user-select: none; }
+.drop-zone:hover, .drop-zone.over { border-color: var(--primary); background: #f5f3ff; }
+.drop-zone .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
 .drop-zone h3 { font-size: 0.95rem; font-weight: 600; }
-.drop-zone p { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; }
+.drop-zone p { color: var(--muted); font-size: 0.82rem; margin-top: 0.25rem; }
 
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
 @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.preview-img { max-width: 100%; max-height: 260px; border-radius: 0.5rem; display: block; margin-top: 0.5rem; border: 1px solid var(--border); object-fit: contain; background: #f8fafc; }
 
-.preview-img { max-width: 100%; max-height: 250px; border-radius: 0.5rem; display: block; margin-top: 0.75rem; border: 1px solid var(--border); }
+.progress-bar-wrap { background: var(--border); border-radius: 4px; height: 6px; margin-top: 0.6rem; overflow: hidden; display: none; }
+.progress-bar { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.3s; width: 0%; }
 
-.stats-row { display: flex; gap: 1rem; margin-top: 0.5rem; }
-.stat-chip { background: var(--bg); border: 1px solid var(--border); border-radius: 0.375rem; padding: 0.35rem 0.65rem; font-size: 0.8rem; color: var(--muted); }
+.stats-row { display: flex; gap: 0.75rem; margin-top: 0.65rem; flex-wrap: wrap; }
+.stat-chip { background: var(--bg); border: 1px solid var(--border); border-radius: .35rem; padding: 0.3rem 0.65rem; font-size: 0.8rem; color: var(--muted); }
 .stat-chip strong { color: var(--text); }
-
-.result-toolbar { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
-
-.install-note { background: #fef9c3; border: 1px solid #fde047; border-radius: 0.5rem; padding: 1rem; font-size: 0.875rem; color: #713f12; margin-top: 0.75rem; }
-.install-note code { background: rgba(0,0,0,0.08); padding: 0.1rem 0.3rem; border-radius: 0.25rem; font-family: monospace; }
+.toolbar { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>OCR Tool</h1>
-    <p>Extract text from images — no system dependencies required.</p>
+    <h1>🔍 OCR Tool</h1>
+    <p>Extract text from images — runs entirely in your browser, no uploads needed.</p>
   </header>
 
   <div class="card">
-    <div class="drop-zone" id="dropZone">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-      </svg>
-      <h3>Drop image here or click to browse</h3>
-      <p>PNG, JPG, TIFF, BMP, WebP supported</p>
-      <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.tiff,.tif,.bmp,.webp,image/*" style="display:none">
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <div class="icon">🖼️</div>
+      <h3>Drop an image here or click to browse</h3>
+      <p>PNG, JPG, TIFF, BMP, WebP — processed locally in your browser</p>
     </div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
 
-    <div id="previewSection" style="display:none; margin-top:0.75rem">
+    <div id="previewSection" style="display:none; margin-top:1.25rem">
       <div class="two-col">
         <div>
           <label>Image Preview</label>
@@ -72,24 +67,24 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
         </div>
         <div>
           <div style="margin-bottom:1rem">
-            <label>OCR Language</label>
+            <label>Language</label>
             <select id="langSelect">
               <option value="eng">English</option>
               <option value="spa">Spanish</option>
               <option value="fra">French</option>
               <option value="deu">German</option>
-              <option value="chi_sim">Chinese (Simplified)</option>
-              <option value="jpn">Japanese</option>
               <option value="por">Portuguese</option>
               <option value="ita">Italian</option>
+              <option value="chi_sim">Chinese (Simplified)</option>
+              <option value="jpn">Japanese</option>
               <option value="ara">Arabic</option>
             </select>
           </div>
-          <button class="btn btn-primary" id="extractBtn" style="width:100%">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Extract Text
-          </button>
-          <p style="font-size:0.78rem; color:var(--muted); margin-top:0.5rem">Models download automatically on first use.</p>
+          <button class="btn btn-primary" id="extractBtn" style="width:100%">Extract Text</button>
+          <div class="progress-bar-wrap" id="progressWrap">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <p id="progressLabel" style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem"></p>
         </div>
       </div>
     </div>
@@ -98,101 +93,121 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 
   <div class="card" id="resultCard" style="display:none">
     <label>Extracted Text</label>
-    <textarea id="resultText" rows="12" readonly style="font-family:monospace; font-size:0.85rem; resize:vertical"></textarea>
+    <textarea id="resultText" rows="12" readonly></textarea>
     <div class="stats-row">
       <div class="stat-chip">Words: <strong id="wordCount">0</strong></div>
       <div class="stat-chip">Characters: <strong id="charCount">0</strong></div>
     </div>
-    <div class="result-toolbar">
-      <button class="btn btn-ghost" id="copyBtn">Copy Text</button>
-      <button class="btn btn-ghost" id="downloadBtn">Download .txt</button>
-      <button class="btn btn-ghost" id="clearBtn">Clear</button>
+    <div class="toolbar">
+      <button class="btn btn-ghost" onclick="copyText()">Copy Text</button>
+      <button class="btn btn-ghost" onclick="downloadText()">Download .txt</button>
+      <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-const previewSection = document.getElementById('previewSection');
-const previewImg = document.getElementById('previewImg');
-const statusMsg = document.getElementById('statusMsg');
-const resultCard = document.getElementById('resultCard');
 let selectedFile = null;
 
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
 dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
+  e.preventDefault(); dropZone.classList.remove('over');
   const f = e.dataTransfer.files[0];
-  if (f) loadFile(f);
+  if (f && f.type.startsWith('image/')) loadFile(f);
 });
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
 
 function loadFile(f) {
   selectedFile = f;
   const reader = new FileReader();
-  reader.onload = e => { previewImg.src = e.target.result; };
+  reader.onload = e => { document.getElementById('previewImg').src = e.target.result; };
   reader.readAsDataURL(f);
-  previewSection.style.display = 'block';
-  resultCard.style.display = 'none';
-  statusMsg.innerHTML = '';
+  document.getElementById('previewSection').style.display = 'block';
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('statusMsg').innerHTML = '';
+  document.getElementById('progressLabel').textContent = '';
 }
 
 document.getElementById('extractBtn').addEventListener('click', async () => {
   if (!selectedFile) return;
   const btn = document.getElementById('extractBtn');
-  btn.disabled = true; btn.textContent = 'Extracting…';
+  const progressWrap = document.getElementById('progressWrap');
+  const progressBar = document.getElementById('progressBar');
+  const progressLabel = document.getElementById('progressLabel');
+  const statusMsg = document.getElementById('statusMsg');
+
+  btn.disabled = true;
+  btn.textContent = 'Recognizing…';
+  progressWrap.style.display = 'block';
+  progressBar.style.width = '0%';
+  progressLabel.textContent = 'Loading OCR engine…';
   statusMsg.innerHTML = '';
-  const fd = new FormData();
-  fd.append('file', selectedFile);
-  fd.append('lang', document.getElementById('langSelect').value);
+
   try {
-    const resp = await fetch('api/extract', { method: 'POST', body: fd });
-    const data = await resp.json();
-    if (!resp.ok || data.error) {
-      statusMsg.innerHTML = `<div class="status error">${data.error || 'Extraction failed'}</div>`;
-      return;
-    }
-    document.getElementById('resultText').value = data.text;
-    document.getElementById('wordCount').textContent = data.word_count;
-    document.getElementById('charCount').textContent = data.char_count;
-    resultCard.style.display = 'block';
+    const lang = document.getElementById('langSelect').value;
+    const result = await Tesseract.recognize(selectedFile, lang, {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          const pct = Math.round(m.progress * 100);
+          progressBar.style.width = pct + '%';
+          progressLabel.textContent = `Recognizing… ${pct}%`;
+        } else if (m.status === 'loading tesseract core') {
+          progressLabel.textContent = 'Loading OCR core…';
+        } else if (m.status === 'loading language traineddata') {
+          progressLabel.textContent = 'Loading language data…';
+        } else if (m.status === 'initializing api') {
+          progressLabel.textContent = 'Initializing…';
+        }
+      }
+    });
+
+    const text = result.data.text.trim();
+    document.getElementById('resultText').value = text;
+    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+    document.getElementById('wordCount').textContent = words;
+    document.getElementById('charCount').textContent = text.length;
+    document.getElementById('resultCard').style.display = 'block';
     statusMsg.innerHTML = '<div class="status success">Text extracted successfully!</div>';
+    progressWrap.style.display = 'none';
+    progressLabel.textContent = '';
   } catch (err) {
     statusMsg.innerHTML = `<div class="status error">${err.message}</div>`;
+    progressWrap.style.display = 'none';
+    progressLabel.textContent = '';
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Extract Text';
+    btn.textContent = 'Extract Text';
   }
 });
 
-document.getElementById('copyBtn').addEventListener('click', () => {
-  const text = document.getElementById('resultText').value;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
+function copyText() {
+  navigator.clipboard.writeText(document.getElementById('resultText').value).then(() => {
+    const btn = event.target;
     btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = 'Copy Text', 1500);
   });
-});
+}
 
-document.getElementById('downloadBtn').addEventListener('click', () => {
+function downloadText() {
   const text = document.getElementById('resultText').value;
   const blob = new Blob([text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'extracted_text.txt'; a.click();
-  URL.revokeObjectURL(url);
-});
+  a.href = URL.createObjectURL(blob);
+  a.download = 'extracted_text.txt';
+  a.click();
+}
 
-document.getElementById('clearBtn').addEventListener('click', () => {
-  resultCard.style.display = 'none';
-  previewSection.style.display = 'none';
+function clearAll() {
   selectedFile = null;
-  statusMsg.innerHTML = '';
   fileInput.value = '';
-});
+  document.getElementById('previewSection').style.display = 'none';
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('statusMsg').innerHTML = '';
+}
 </script>
 </body>
 </html>

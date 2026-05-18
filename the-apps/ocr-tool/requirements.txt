@@ -1,4 +1,1 @@
 flask
-rapidocr-onnxruntime
-Pillow
-numpy
