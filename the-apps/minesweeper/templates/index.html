@@ -18,9 +18,9 @@
   .smiley { font-size: 1.6rem; cursor: pointer; transition: transform 0.1s; background: none; border: none; }
   .smiley:hover { transform: scale(1.15); }
   .timer { font-size: 1.4rem; font-weight: 700; color: #ef4444; min-width: 48px; text-align: center; }
-  .board-wrap { overflow: auto; padding: 1.25rem; }
-  .board { display: inline-grid; gap: 2px; background: #64748b; padding: 4px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-  .cell { width: 32px; height: 32px; background: #cbd5e1; border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; font-weight: 800; transition: background 0.08s; user-select: none; border: none; }
+  .board-wrap { overflow-x: auto; padding: 1.25rem; display: flex; justify-content: center; }
+  .board { display: inline-grid; gap: 2px; background: #64748b; padding: 4px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); flex-shrink: 0; }
+  .cell { background: #cbd5e1; border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; transition: background 0.08s; user-select: none; border: none; }
   .cell:hover:not(.revealed):not(.flagged) { background: #e2e8f0; }
   .cell:active:not(.revealed) { background: #94a3b8; }
   .cell.revealed { background: #f1f5f9; cursor: default; }
@@ -161,20 +161,30 @@ function startTimer() {
 function updateTimer(t) { document.getElementById('timer').textContent = String(Math.min(t,999)).padStart(3,'0'); }
 function updateCounter(n) { document.getElementById('mine-counter').textContent = String(Math.max(-99,n)).padStart(3,'0'); }
 
+function getCellSize() {
+  const maxSize = 32;
+  const minSize = 16;
+  const available = window.innerWidth - 40; // 40px for page padding
+  const fit = Math.floor(available / cfg.cols);
+  return Math.max(minSize, Math.min(maxSize, fit));
+}
+
 function renderBoard() {
   const board = document.getElementById('board');
-  board.style.gridTemplateColumns = `repeat(${cfg.cols},32px)`;
+  const cs = getCellSize();
+  const fs = Math.max(9, Math.round(cs * 0.45));
+  board.style.gridTemplateColumns = `repeat(${cfg.cols},${cs}px)`;
   board.innerHTML = '';
   for (let i=0; i<cfg.rows*cfg.cols; i++) {
     const el = document.createElement('div');
     el.className = 'cell'; el.id = 'c'+i;
+    el.style.width = cs+'px'; el.style.height = cs+'px'; el.style.fontSize = fs+'px';
     if (revealed.has(i)) {
       el.classList.add('revealed');
       if (cells[i]>0) { el.textContent=cells[i]; el.classList.add('n'+cells[i]); }
     } else if (flagged.has(i)) { el.classList.add('flagged'); el.textContent='🚩'; }
     el.addEventListener('click', e => { if(gameState==='over'||gameState==='won')return; reveal(i); });
     el.addEventListener('contextmenu', e => { e.preventDefault(); if(gameState==='over'||gameState==='won')return; toggleFlag(i); });
-    // long press for mobile
     let pressTimer;
     el.addEventListener('touchstart', e => { pressTimer = setTimeout(()=>{e.preventDefault();toggleFlag(i);},500); },{passive:true});
     el.addEventListener('touchend', () => clearTimeout(pressTimer));
@@ -199,6 +209,7 @@ function renderBestTimes() {
 }
 
 newGame();
+window.addEventListener('resize', () => { if (gameState !== 'playing') renderBoard(); });
 </script>
 </body>
 </html>
