@@ -323,6 +323,138 @@
         font-size: 0.9rem;
       }
 
+      /* ── Favorites section ── */
+      .fav-section {
+        padding: 1.5rem 1.75rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .fav-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+      }
+      .fav-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #f59e0b;
+      }
+      .fav-count {
+        background: #f59e0b22;
+        border: 1px solid #f59e0b44;
+        color: #f59e0b;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.1rem 0.45rem;
+        border-radius: 10px;
+      }
+      .fav-clear {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-family: inherit;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        transition: color 0.15s, background 0.15s;
+      }
+      .fav-clear:hover { color: var(--text); background: var(--surface2); }
+      .fav-strip {
+        display: flex;
+        gap: 0.85rem;
+        overflow-x: auto;
+        padding-bottom: 0.4rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+      .fav-strip::-webkit-scrollbar { height: 4px; }
+      .fav-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+      .fav-card {
+        flex-shrink: 0;
+        width: 150px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        transition: border-color 0.15s, transform 0.15s;
+      }
+      .fav-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+      .fav-cover {
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        position: relative;
+      }
+      .fav-cover::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.35));
+      }
+      .fav-body { padding: 0.55rem 0.6rem; }
+      .fav-name {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.4rem;
+      }
+      .fav-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.3rem;
+      }
+      .fav-open {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.22rem 0.5rem;
+        background: var(--green);
+        color: #fff;
+        border-radius: 3px;
+        text-decoration: none;
+        transition: background 0.12s;
+        flex: 1;
+        text-align: center;
+      }
+      .fav-open:hover { background: #6dc435; }
+      .fav-remove {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 0.85rem;
+        padding: 0.15rem 0.25rem;
+        border-radius: 3px;
+        line-height: 1;
+        transition: color 0.12s, background 0.12s;
+      }
+      .fav-remove:hover { color: #f87171; background: rgba(248,113,113,0.1); }
+
+      /* Star button on cards */
+      .btn-star {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 0.9rem;
+        padding: 0.1rem 0.2rem;
+        transition: color 0.15s, transform 0.15s;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .btn-star:hover { transform: scale(1.25); }
+      .btn-star.active { color: #f59e0b; }
+
       /* ── Donate modal ── */
       .modal-backdrop {
         display: none;
@@ -489,12 +621,70 @@
       </div>
     </div>
 
+    <!-- Favorites -->
+    <section class="fav-section" id="favSection" style="display:none">
+      <div class="fav-header">
+        <span class="fav-title">★ Favorites</span>
+        <span class="fav-count" id="favCount">0</span>
+        <button class="fav-clear" onclick="clearFavorites()">Clear all</button>
+      </div>
+      <div class="fav-strip" id="favStrip"></div>
+    </section>
+
     <main>
       <div class="grid" id="grid"></div>
     </main>
 
     <script>
       let allApps = [];
+      let favorites = new Set(JSON.parse(localStorage.getItem('jorres_favs') || '[]'));
+
+      function saveFavs() {
+        localStorage.setItem('jorres_favs', JSON.stringify([...favorites]));
+      }
+
+      function toggleFavorite(id) {
+        if (favorites.has(id)) favorites.delete(id);
+        else favorites.add(id);
+        saveFavs();
+        // Update star buttons
+        document.querySelectorAll(`.btn-star[data-id="${id}"]`).forEach(b => {
+          b.classList.toggle('active', favorites.has(id));
+          b.title = favorites.has(id) ? 'Remove from favorites' : 'Add to favorites';
+        });
+        renderFavorites();
+      }
+
+      function clearFavorites() {
+        favorites.clear();
+        saveFavs();
+        document.querySelectorAll('.btn-star').forEach(b => b.classList.remove('active'));
+        renderFavorites();
+      }
+
+      function renderFavorites() {
+        const section = document.getElementById('favSection');
+        const strip = document.getElementById('favStrip');
+        const count = document.getElementById('favCount');
+        const favApps = allApps.filter(a => favorites.has(a.id));
+        if (!favApps.length) { section.style.display = 'none'; return; }
+        section.style.display = 'block';
+        count.textContent = favApps.length;
+        strip.innerHTML = favApps.map(a => {
+          const grad = `linear-gradient(140deg, ${darken(a.color)}, ${a.color})`;
+          return `
+          <div class="fav-card">
+            <div class="fav-cover" style="background:${grad}">${a.icon}</div>
+            <div class="fav-body">
+              <div class="fav-name" title="${esc(a.name)}">${esc(a.name)}</div>
+              <div class="fav-footer">
+                <a class="fav-open" href="${a.url}" target="_blank">↗ Open</a>
+                <button class="fav-remove" onclick="toggleFavorite('${esc(a.id)}')" title="Remove">✕</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      }
 
       function darken(hex, by = 55) {
         const n = parseInt(hex.replace("#", ""), 16);
@@ -513,6 +703,7 @@
           document.getElementById("statApps").textContent = allApps.length;
           document.getElementById("statCats").textContent = cats.size;
           applyFilters();
+          renderFavorites();
         } catch {
           /* retry */
         }
@@ -569,6 +760,7 @@
           <div class="card-desc">${esc(a.description)}</div>
           <div class="card-tags">${tags}</div>
           <div class="card-footer">
+            <button class="btn-star ${favorites.has(a.id) ? 'active' : ''}" data-id="${esc(a.id)}" onclick="toggleFavorite('${esc(a.id)}')" title="${favorites.has(a.id) ? 'Remove from favorites' : 'Add to favorites'}">★</button>
             <div class="card-actions"><a class="btn-open" href="${a.url}" target="_blank">↗ Open</a></div>
           </div>
         </div>
