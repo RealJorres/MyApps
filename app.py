@@ -5,6 +5,32 @@ import os
 import importlib.util
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
+
+class SecurityHeadersMiddleware:
+    """Adds security headers to every response across all mounted sub-apps."""
+    HEADERS = [
+        ('X-Content-Type-Options',  'nosniff'),
+        ('X-Frame-Options',         'SAMEORIGIN'),
+        ('Referrer-Policy',         'strict-origin-when-cross-origin'),
+        ('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'),
+        ('Permissions-Policy',
+         'camera=(), microphone=(), geolocation=(), payment=(), usb=()'),
+        ('X-XSS-Protection',        '1; mode=block'),
+    ]
+
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        def add_security_headers(status, headers, exc_info=None):
+            existing = {h[0].lower() for h in headers}
+            patched = list(headers)
+            for name, value in self.HEADERS:
+                if name.lower() not in existing:
+                    patched.append((name, value))
+            return start_response(status, patched, exc_info)
+        return self.wsgi_app(environ, add_security_headers)
+
 flask_app = Flask(__name__)
 LAUNCHER_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -57,9 +83,11 @@ def _slash_redirect(wsgi_app, prefixes):
 
 
 # 'app' is the full WSGI stack imported by wsgi.py and gunicorn
-app = _slash_redirect(
-    DispatcherMiddleware(flask_app, mounts),
-    set(mounts.keys()),
+app = SecurityHeadersMiddleware(
+    _slash_redirect(
+        DispatcherMiddleware(flask_app, mounts),
+        set(mounts.keys()),
+    )
 )
 
 
