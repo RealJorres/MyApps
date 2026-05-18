@@ -105,6 +105,131 @@
     }
     .live-label { font-size: 0.75rem; color: var(--muted); }
 
+    /* ── Donate button ── */
+    .btn-donate {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.32rem 0.75rem;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s, transform 0.15s;
+      font-family: inherit;
+    }
+    .btn-donate:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── Donate modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+    .donate-modal {
+      background: #16202d;
+      border: 1px solid #2a475e;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    .donate-header {
+      background: linear-gradient(135deg, #1d3148, #2a475e);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid #2a475e;
+    }
+    .donate-header .icon { font-size: 2rem; margin-bottom: 0.4rem; }
+    .donate-header h2 { font-size: 1.05rem; font-weight: 800; color: #fff; }
+    .donate-header p { font-size: 0.8rem; color: #7a8a97; margin-top: 0.25rem; }
+    .donate-body { padding: 1.5rem; }
+    .bank-card {
+      background: linear-gradient(135deg, #1a5276, #1d6a3a);
+      border-radius: 10px;
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .bank-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 0.75rem;
+    }
+    .bank-acc-label {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 0.2rem;
+    }
+    .bank-acc-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .bank-acc-number {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.08em;
+      font-family: 'Courier New', monospace;
+    }
+    .copy-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    .btn-copy-acc {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      border-radius: 6px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-copy-acc:hover { background: rgba(255,255,255,0.25); }
+    .donate-note {
+      font-size: 0.78rem;
+      color: #7a8a97;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .donate-close {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.6rem;
+      background: #1d3148;
+      border: 1px solid #2a475e;
+      color: #c6d4df;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .donate-close:hover { background: #2a475e; }
+
     /* ── Main ── */
     main { padding: 1.5rem 1.75rem 3rem; }
 
@@ -300,10 +425,36 @@
   </div>
 
   <div class="header-right">
+    <button class="btn-donate" onclick="openDonate()">☕ Support</button>
     <span class="live-dot"></span>
     <span class="live-label">live</span>
   </div>
 </header>
+
+<!-- Donate modal -->
+<div class="modal-backdrop" id="donateModal" onclick="closeDonateOutside(event)">
+  <div class="donate-modal">
+    <div class="donate-header">
+      <div class="icon">☕</div>
+      <h2>Support this project</h2>
+      <p>If this saved you time, a coffee would mean a lot!</p>
+    </div>
+    <div class="donate-body">
+      <div class="bank-card">
+        <div class="bank-name">🏦 Land Bank of the Philippines</div>
+        <div class="bank-acc-label">Account Name</div>
+        <div class="bank-acc-name">Joshua M. Relatorres</div>
+        <div class="bank-acc-label">Savings Account No.</div>
+        <div class="copy-row">
+          <div class="bank-acc-number">1156352027</div>
+          <button class="btn-copy-acc" onclick="copyAccNumber()">Copy</button>
+        </div>
+      </div>
+      <p class="donate-note">Send any amount via bank transfer or over-the-counter deposit. Every contribution is deeply appreciated. 🙏</p>
+      <button class="donate-close" onclick="closeDonate()">Maybe next time</button>
+    </div>
+  </div>
+</div>
 
 <main>
   <div class="grid" id="grid"></div>
@@ -397,6 +548,19 @@ function esc(s) {
 /* ── Boot ── */
 fetchApps();
 setInterval(fetchApps, 3000);
+
+/* ── Donate modal ── */
+function openDonate() { document.getElementById('donateModal').classList.add('open'); }
+function closeDonate() { document.getElementById('donateModal').classList.remove('open'); }
+function closeDonateOutside(e) { if (e.target === document.getElementById('donateModal')) closeDonate(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDonate(); });
+function copyAccNumber() {
+  navigator.clipboard.writeText('1156352027').then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
 </script>
 </body>
 </html>
