@@ -12,11 +12,15 @@
   header p { font-size: .85rem; opacity: .85; }
   main { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
   .card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
-  .input-row { display: flex; gap: .75rem; margin-bottom: 1rem; }
-  .input-row input { flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: .65rem 1rem; font-size: .9rem; color: #1e293b; }
+  .input-row { display: flex; gap: .75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .input-row input { flex: 1; min-width: 0; border: 1px solid #e2e8f0; border-radius: 8px; padding: .65rem 1rem; font-size: .9rem; color: #1e293b; }
   .input-row input:focus { outline: none; border-color: #7c3aed; }
-  .btn { padding: .65rem 1.4rem; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .btn { padding: .65rem 1.4rem; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
   .btn:hover { background: #6d28d9; }
+  @media (max-width: 480px) {
+    .input-row { flex-direction: column; }
+    .input-row .btn { width: 100%; }
+  }
   .btn-all { background: #6d28d9; }
   .btn-outline { background: #ede9fe; color: #7c3aed; border: 1.5px solid #ddd6fe; }
   .btn-outline:hover { background: #ddd6fe; }

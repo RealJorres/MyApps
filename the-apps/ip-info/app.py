@@ -23,8 +23,12 @@ def lookup():
 
 @app.route('/api/myip', methods=['GET'])
 def my_ip():
+    # Read the real client IP — behind Render's proxy it's in X-Forwarded-For
+    forwarded = request.headers.get('X-Forwarded-For', '')
+    client_ip = forwarded.split(',')[0].strip() if forwarded else request.remote_addr
     try:
-        resp = req_lib.get('http://ip-api.com/json/?fields=status,country,countryCode,regionName,city,zip,lat,lon,timezone,isp,org,as,query', timeout=8)
+        url = f'http://ip-api.com/json/{client_ip}?fields=status,country,countryCode,regionName,city,zip,lat,lon,timezone,isp,org,as,query'
+        resp = req_lib.get(url, timeout=8)
         return jsonify(resp.json())
     except Exception as e:
         return jsonify({'error': str(e)}), 500
