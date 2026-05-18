@@ -29,10 +29,10 @@ canvas { border: 3px solid #334155; border-radius: 8px; display: block; max-widt
 </div>
 <script>
 const c=document.getElementById('c'),ctx=c.getContext('2d');
-const W=360,H=540,GRAV=0.16,FLAP=-4.8,PIPE_W=52,GAP=165,PIPE_SPEED=1.2;
+const W=360,H=540,GRAV=0.13,FLAP=-4.2,PIPE_W=48,GAP=190,PIPE_SPEED=1.0;
 let bird,pipes,score,best=0,state,frame;
 
-const BIRD_R=14;
+const BIRD_R=10;
 
 function reset(){
   bird={x:80,y:H/2,vy:0};
@@ -64,7 +64,7 @@ function loop(){
 function update(){
   frame++;
   bird.vy+=GRAV; bird.y+=bird.vy;
-  if(frame%120===0) spawnPipe();
+  if(frame%140===0) spawnPipe();
   for(const p of pipes){ p.x-=PIPE_SPEED; }
   pipes=pipes.filter(p=>p.x>-PIPE_W);
   // score
