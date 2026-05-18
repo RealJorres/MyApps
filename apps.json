@@ -357,6 +357,34 @@
     "icon": "💧", "color": "#0284c7", "tags": ["Water", "Hydration", "Health"], "category": "Health & Wellness"
   },
   {
+    "id": "sleep-calculator",
+    "name": "Sleep Calculator",
+    "description": "Find your ideal bedtime or wake-up time based on 90-minute sleep cycles.",
+    "port": 5058, "path": "./the-apps/sleep-calculator", "entry": "app.py",
+    "icon": "🌙", "color": "#4f46e5", "tags": ["Sleep", "Health", "Wellness"], "category": "Health & Wellness"
+  },
+  {
+    "id": "color-palette-extractor",
+    "name": "Color Palette Extractor",
+    "description": "Upload a photo and extract its dominant colors as HEX and RGB swatches.",
+    "port": 5055, "path": "./the-apps/color-palette-extractor", "entry": "app.py",
+    "icon": "🎨", "color": "#7c3aed", "tags": ["Color", "Palette", "Images"], "category": "Image / Media"
+  },
+  {
+    "id": "password-strength",
+    "name": "Password Strength Checker",
+    "description": "Live entropy score, crack time estimate, and tips on what makes your password weak.",
+    "port": 5056, "path": "./the-apps/password-strength", "entry": "app.py",
+    "icon": "🛡️", "color": "#dc2626", "tags": ["Password", "Security"], "category": "Network / Security"
+  },
+  {
+    "id": "periodic-table",
+    "name": "Periodic Table",
+    "description": "Interactive periodic table with all 118 elements. Click any element for full details.",
+    "port": 5057, "path": "./the-apps/periodic-table", "entry": "app.py",
+    "icon": "⚗️", "color": "#0891b2", "tags": ["Chemistry", "Science", "Education"], "category": "Science / Education"
+  },
+  {
     "id": "typing-speed-test",
     "name": "Typing Speed Test",
     "description": "60-second WPM typing test with accuracy score and a personal results history.",

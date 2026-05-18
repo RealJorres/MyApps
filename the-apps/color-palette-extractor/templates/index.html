@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Palette Extractor</title>
+<style>
+  :root {
+    --primary: #7c3aed;
+    --primary-h: #6d28d9;
+    --bg: #f8f7ff;
+    --surface: #ffffff;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-h));
+    color: #fff;
+    padding: 2rem;
+    text-align: center;
+  }
+  header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+  header p { opacity: 0.85; margin-top: 0.4rem; font-size: 1rem; }
+  main { max-width: 860px; margin: 2.5rem auto; padding: 0 1.5rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .drop-zone {
+    border: 2.5px dashed var(--primary);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    background: #faf5ff;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    background: #ede9fe;
+    border-color: var(--primary-h);
+  }
+  .drop-zone .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+  .drop-zone p { color: var(--muted); margin-bottom: 0.5rem; }
+  .drop-zone strong { color: var(--primary); }
+  .drop-zone input[type="file"] { display: none; }
+
+  .preview-wrap {
+    display: none;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  .preview-wrap img {
+    max-width: 100%;
+    max-height: 280px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    object-fit: contain;
+  }
+  .preview-wrap .change-btn {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .preview-wrap .change-btn:hover { color: var(--primary-h); }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .slider-group { display: flex; align-items: center; gap: 0.75rem; flex: 1; }
+  .slider-group label { font-weight: 600; white-space: nowrap; color: var(--text); min-width: 120px; }
+  .slider-group input[type="range"] {
+    flex: 1;
+    accent-color: var(--primary);
+    height: 4px;
+    cursor: pointer;
+  }
+  .slider-group .count-badge {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.1rem 0.65rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  .btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-h));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.8rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .results-section { display: none; }
+  .swatches-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .swatch-card {
+    flex: 1;
+    min-width: 100px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.15s;
+  }
+  .swatch-card:hover { transform: translateY(-3px); }
+  .swatch-color {
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .swatch-info {
+    padding: 0.7rem;
+    background: var(--surface);
+    text-align: center;
+  }
+  .swatch-hex {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .swatch-rgb {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin: 0.2rem 0 0.5rem;
+  }
+  .copy-btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    font-weight: 600;
+  }
+  .copy-btn:hover { background: var(--primary-h); }
+  .copy-btn.copied { background: #059669; }
+
+  .gradient-bar {
+    height: 48px;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    border: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .error-msg {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .spinner {
+    display: none;
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 2rem;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Color Palette Extractor</h1>
+  <p>Upload an image to extract its dominant color palette</p>
+</header>
+<main>
+  <div class="card">
+    <div class="drop-zone" id="dropZone">
+      <span class="icon">🎨</span>
+      <p><strong>Drop an image here</strong> or click to browse</p>
+      <p>Supports PNG, JPG, WEBP &mdash; max 20MB</p>
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/*">
+    </div>
+
+    <div class="preview-wrap" id="previewWrap">
+      <img id="previewImg" src="" alt="Preview">
+      <br>
+      <button class="change-btn" id="changeBtn">Change image</button>
+    </div>
+
+    <div class="controls">
+      <div class="slider-group">
+        <label for="countSlider">Extract <span class="count-badge" id="countBadge">6</span> colors</label>
+        <input type="range" id="countSlider" min="3" max="10" value="6">
+      </div>
+      <button class="btn" id="extractBtn" disabled>
+        <span class="spinner" id="spinner"></span>Extract Palette
+      </button>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="results-section" id="resultsSection">
+    <div class="card">
+      <div class="section-label">Dominant Colors</div>
+      <div class="swatches-row" id="swatchesRow"></div>
+      <div class="section-label" style="margin-top:1rem;">Palette Gradient</div>
+      <div class="gradient-bar" id="gradientBar"></div>
+    </div>
+  </div>
+</main>
+<footer>Color Palette Extractor &mdash; powered by Pillow</footer>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const previewWrap = document.getElementById('previewWrap');
+const previewImg = document.getElementById('previewImg');
+const changeBtn = document.getElementById('changeBtn');
+const countSlider = document.getElementById('countSlider');
+const countBadge = document.getElementById('countBadge');
+const extractBtn = document.getElementById('extractBtn');
+const spinner = document.getElementById('spinner');
+const errorMsg = document.getElementById('errorMsg');
+const resultsSection = document.getElementById('resultsSection');
+const swatchesRow = document.getElementById('swatchesRow');
+const gradientBar = document.getElementById('gradientBar');
+
+let selectedFile = null;
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) handleFile(file);
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+changeBtn.addEventListener('click', () => {
+  selectedFile = null;
+  extractBtn.disabled = true;
+  previewWrap.style.display = 'none';
+  dropZone.style.display = 'block';
+  resultsSection.style.display = 'none';
+  errorMsg.style.display = 'none';
+  fileInput.value = '';
+});
+
+countSlider.addEventListener('input', () => {
+  countBadge.textContent = countSlider.value;
+});
+
+function handleFile(file) {
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    previewImg.src = e.target.result;
+    previewWrap.style.display = 'block';
+    dropZone.style.display = 'none';
+    extractBtn.disabled = false;
+    errorMsg.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+extractBtn.addEventListener('click', async () => {
+  if (!selectedFile) return;
+  extractBtn.disabled = true;
+  spinner.style.display = 'inline-block';
+  errorMsg.style.display = 'none';
+  resultsSection.style.display = 'none';
+
+  const fd = new FormData();
+  fd.append('image', selectedFile);
+  fd.append('count', countSlider.value);
+
+  try {
+    const res = await fetch('api/extract', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    renderResults(data.colors);
+  } catch (err) {
+    errorMsg.textContent = 'Error: ' + err.message;
+    errorMsg.style.display = 'block';
+  } finally {
+    extractBtn.disabled = false;
+    spinner.style.display = 'none';
+  }
+});
+
+function renderResults(colors) {
+  swatchesRow.innerHTML = '';
+  colors.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'swatch-card';
+    card.innerHTML = `
+      <div class="swatch-color" style="background:${c.hex};">
+      </div>
+      <div class="swatch-info">
+        <div class="swatch-hex">${c.hex}</div>
+        <div class="swatch-rgb">rgb(${c.r}, ${c.g}, ${c.b})</div>
+        <button class="copy-btn" data-hex="${c.hex}">Copy HEX</button>
+      </div>`;
+    swatchesRow.appendChild(card);
+  });
+
+  swatchesRow.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.dataset.hex).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy HEX';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+  });
+
+  const stops = colors.map((c, i) => `${c.hex} ${(i/(colors.length-1)*100).toFixed(1)}%`).join(', ');
+  gradientBar.style.background = `linear-gradient(to right, ${stops})`;
+
+  resultsSection.style.display = 'block';
+  resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+</body>
+</html>
