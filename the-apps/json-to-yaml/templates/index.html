@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON ↔ YAML Converter</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+header { background: #14532d; padding: .8rem 2rem; text-align: center; }
+header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+.layout { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; flex: 1; min-height: 0; }
+.pane { display: flex; flex-direction: column; }
+.pane-header { display: flex; align-items: center; gap: .6rem; padding: .6rem 1rem; background: #0a1120; border-bottom: 1px solid #1e293b; }
+.pane-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #64748b; flex: 1; }
+.btn { padding: .35rem .8rem; border: none; border-radius: 6px; font-size: .78rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
+.btn-convert { background: #059669; color: #fff; }
+.btn-convert:hover { background: #047857; }
+.btn-copy { background: #334155; color: #e2e8f0; }
+.btn-copy:hover { background: #475569; }
+.btn-clear { background: #1e293b; color: #94a3b8; }
+.btn-clear:hover { background: #334155; }
+textarea { flex: 1; width: 100%; min-height: 420px; background: #0a1120; border: none; color: #e2e8f0; font-family: 'Consolas', monospace; font-size: .85rem; padding: 1rem; resize: none; outline: none; }
+.mid { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; padding: .75rem; background: #0a1120; border-left: 1px solid #1e293b; border-right: 1px solid #1e293b; }
+.arr-btn { padding: .5rem .7rem; border: 1px solid #334155; border-radius: 8px; background: #1e293b; color: #e2e8f0; font-size: .85rem; cursor: pointer; transition: background .12s; font-family: inherit; }
+.arr-btn:hover { background: #334155; }
+.error { color: #f87171; font-size: .78rem; padding: .4rem 1rem; background: rgba(239,68,68,.08); border-top: 1px solid rgba(239,68,68,.2); min-height: 32px; font-family: monospace; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<header><h1>↔ JSON ↔ YAML Converter</h1></header>
+<div class="layout">
+  <!-- JSON pane -->
+  <div class="pane">
+    <div class="pane-header">
+      <span class="pane-label">JSON</span>
+      <button class="btn btn-convert" onclick="jsonToYaml()">→ YAML</button>
+      <button class="btn btn-copy" onclick="copyPane('jsonArea')">Copy</button>
+      <button class="btn btn-clear" onclick="clearPane('jsonArea','jsonErr')">Clear</button>
+    </div>
+    <textarea id="jsonArea" placeholder='{"name":"Alice","age":30,"hobbies":["reading","coding"]}'></textarea>
+    <div class="error" id="jsonErr"></div>
+  </div>
+
+  <!-- Middle arrows -->
+  <div class="mid">
+    <button class="arr-btn" title="JSON → YAML" onclick="jsonToYaml()">→</button>
+    <button class="arr-btn" title="YAML → JSON" onclick="yamlToJson()">←</button>
+  </div>
+
+  <!-- YAML pane -->
+  <div class="pane">
+    <div class="pane-header">
+      <span class="pane-label">YAML</span>
+      <button class="btn btn-convert" onclick="yamlToJson()">→ JSON</button>
+      <button class="btn btn-copy" onclick="copyPane('yamlArea')">Copy</button>
+      <button class="btn btn-clear" onclick="clearPane('yamlArea','yamlErr')">Clear</button>
+    </div>
+    <textarea id="yamlArea" placeholder="name: Alice&#10;age: 30&#10;hobbies:&#10;  - reading&#10;  - coding"></textarea>
+    <div class="error" id="yamlErr"></div>
+  </div>
+</div>
+
+<script>
+// ── JSON → YAML ──────────────────────────────────────
+function toYaml(val, indent) {
+  const pad = '  '.repeat(indent);
+  if (val === null) return 'null';
+  if (typeof val === 'boolean' || typeof val === 'number') return String(val);
+  if (typeof val === 'string') {
+    if (/[\n\r:#{}&*!,[\]|>'"%@`]/.test(val) || /^\s|\s$/.test(val) || val === '' ||
+        /^(true|false|null|yes|no|on|off|\d.*)$/i.test(val))
+      return JSON.stringify(val);
+    return val;
+  }
+  if (Array.isArray(val)) {
+    if (!val.length) return '[]';
+    return val.map(v => {
+      const s = toYaml(v, indent + 1);
+      if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
+        const lines = s.split('\n');
+        return `\n${pad}- ${lines[0]}\n${lines.slice(1).map(l=>'  '+l).join('\n')}`;
+      }
+      return `\n${pad}- ${s}`;
+    }).join('');
+  }
+  if (typeof val === 'object') {
+    const keys = Object.keys(val);
+    if (!keys.length) return '{}';
+    return keys.map(k => {
+      const v = val[k];
+      const ks = /[:#\[\]{}&*!,|>'"%@` ]/.test(k) ? JSON.stringify(k) : k;
+      if (typeof v === 'object' && v !== null) {
+        const nested = toYaml(v, indent + 1);
+        if (Array.isArray(v) && v.length > 0) return `\n${pad}${ks}:${nested}`;
+        if (!Array.isArray(v) && Object.keys(v).length > 0) return `\n${pad}${ks}:\n${nested}`;
+        return `\n${pad}${ks}: ${nested}`;
+      }
+      return `\n${pad}${ks}: ${toYaml(v, indent)}`;
+    }).join('');
+  }
+  return String(val);
+}
+
+function jsonToYaml() {
+  const src = document.getElementById('jsonArea').value.trim();
+  document.getElementById('jsonErr').textContent = '';
+  if (!src) return;
+  try {
+    const obj = JSON.parse(src);
+    const yaml = toYaml(obj, 0).replace(/^\n/, '');
+    document.getElementById('yamlArea').value = yaml;
+    document.getElementById('yamlErr').textContent = '';
+  } catch(e) {
+    document.getElementById('jsonErr').textContent = 'JSON Error: ' + e.message;
+  }
+}
+
+// ── YAML → JSON (subset parser) ──────────────────────
+function parseYaml(text) {
+  const lines = text.split('\n');
+  return parseBlock(lines, 0, 0).val;
+}
+
+function parseBlock(lines, startLine, baseIndent) {
+  // Determine if block is sequence or mapping
+  let i = startLine;
+  while (i < lines.length && (!lines[i].trim() || lines[i].trim().startsWith('#'))) i++;
+  if (i >= lines.length) return { val: null, next: i };
+
+  const firstTrimmed = lines[i].replace(/^\s*/, '');
+  if (firstTrimmed.startsWith('- ') || firstTrimmed === '-') {
+    return parseSeq(lines, i, baseIndent);
+  }
+  return parseMap(lines, i, baseIndent);
+}
+
+function indentOf(line) { return line.match(/^( *)/)[1].length; }
+
+function parseScalar(s) {
+  s = s.trim();
+  if (s === 'null' || s === '~') return null;
+  if (s === 'true' || s === 'yes' || s === 'on') return true;
+  if (s === 'false' || s === 'no' || s === 'off') return false;
+  if (/^-?\d+$/.test(s)) return parseInt(s, 10);
+  if (/^-?\d*\.\d+$/.test(s)) return parseFloat(s);
+  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    try { return JSON.parse(s.startsWith("'") ? '"'+s.slice(1,-1).replace(/"/g,'\\"')+'"' : s); } catch(e) { return s.slice(1,-1); }
+  }
+  return s;
+}
+
+function parseSeq(lines, startLine, baseIndent) {
+  const arr = [];
+  let i = startLine;
+  const myIndent = indentOf(lines[i]);
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim() || line.trim().startsWith('#')) { i++; continue; }
+    const ind = indentOf(line);
+    if (ind < myIndent) break;
+    if (ind === myIndent && line.trim().startsWith('- ')) {
+      const rest = line.trim().slice(2).trim();
+      if (!rest || rest.startsWith('#')) {
+        // block value follows
+        const sub = parseBlock(lines, i + 1, myIndent + 2);
+        arr.push(sub.val); i = sub.next;
+      } else if (rest.includes(': ') || /^[a-zA-Z_][^:]*:/.test(rest)) {
+        // inline map start
+        const sub = parseMap(lines, i, myIndent + 2, rest);
+        arr.push(sub.val); i = sub.next;
+      } else {
+        arr.push(parseScalar(rest)); i++;
+      }
+    } else if (ind > myIndent) { i++; }
+    else { break; }
+  }
+  return { val: arr, next: i };
+}
+
+function parseMap(lines, startLine, baseIndent, firstLine) {
+  const obj = {};
+  let i = startLine;
+  const myIndent = firstLine !== undefined ? baseIndent - 2 : indentOf(lines[i]);
+
+  const processLine = (lineStr) => {
+    const m = lineStr.trim().match(/^([^:]+):\s*(.*)/);
+    if (!m) return null;
+    return [m[1].trim(), m[2].trim()];
+  };
+
+  if (firstLine !== undefined) {
+    const kv = processLine(firstLine);
+    if (kv) {
+      const [k, v] = kv;
+      if (!v || v.startsWith('#')) {
+        const sub = parseBlock(lines, i + 1, myIndent + 2);
+        obj[k] = sub.val; i = sub.next;
+      } else { obj[k] = parseScalar(v); i++; }
+    } else { i++; }
+  }
+
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim() || line.trim().startsWith('#')) { i++; continue; }
+    const ind = indentOf(line);
+    if (ind < myIndent) break;
+    if (ind === myIndent) {
+      if (line.trim().startsWith('- ')) break;
+      const kv = processLine(line);
+      if (kv) {
+        const [k, v] = kv;
+        if (!v || v.startsWith('#')) {
+          const sub = parseBlock(lines, i + 1, myIndent + 2);
+          obj[k] = sub.val; i = sub.next;
+        } else { obj[k] = parseScalar(v); i++; }
+      } else { i++; }
+    } else { i++; }
+  }
+  return { val: obj, next: i };
+}
+
+function yamlToJson() {
+  const src = document.getElementById('yamlArea').value.trim();
+  document.getElementById('yamlErr').textContent = '';
+  if (!src) return;
+  try {
+    const obj = parseYaml(src);
+    document.getElementById('jsonArea').value = JSON.stringify(obj, null, 2);
+    document.getElementById('jsonErr').textContent = '';
+  } catch(e) {
+    document.getElementById('yamlErr').textContent = 'YAML Error: ' + e.message;
+  }
+}
+
+function copyPane(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.value).catch(() => {});
+}
+
+function clearPane(id, errId) {
+  document.getElementById(id).value = '';
+  document.getElementById(errId).textContent = '';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Previewer</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+header { background: #1e3a5f; padding: .65rem 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+header h1 { font-size: 1.1rem; font-weight: 700; color: #fff; }
+.hbtn { padding: .35rem .85rem; border: 1px solid #334155; border-radius: 6px; background: #1e293b; color: #e2e8f0; font-size: .8rem; cursor: pointer; font-family: inherit; transition: background .12s; }
+.hbtn:hover { background: #334155; }
+.hbtn.run { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: 700; }
+.hbtn.run:hover { background: #1d4ed8; }
+.auto-label { font-size: .78rem; color: #64748b; display: flex; align-items: center; gap: .4rem; cursor: pointer; }
+.main { display: flex; flex: 1; overflow: hidden; flex-direction: column; }
+.editors { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 2px solid #1e293b; }
+.ed-pane { display: flex; flex-direction: column; border-right: 1px solid #1e293b; }
+.ed-pane:last-child { border-right: none; }
+.ed-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #64748b; padding: .4rem .75rem; background: #0a1120; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: .5rem; }
+textarea { flex: 1; width: 100%; min-height: 200px; background: #0a1120; border: none; color: #e2e8f0; font-family: 'Consolas', monospace; font-size: .83rem; padding: .75rem; resize: vertical; outline: none; tab-size: 2; }
+.preview-pane { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.preview-toolbar { display: flex; align-items: center; gap: .6rem; padding: .4rem .85rem; background: #0a1120; border-bottom: 1px solid #1e293b; }
+.preview-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #64748b; flex: 1; }
+.device-btn { padding: .25rem .55rem; border: 1px solid #334155; border-radius: 5px; background: #1e293b; color: #94a3b8; font-size: .75rem; cursor: pointer; transition: background .12s; font-family: inherit; }
+.device-btn.active { background: #2563eb; border-color: #2563eb; color: #fff; }
+iframe { flex: 1; border: none; background: #fff; width: 100%; transition: max-width .2s; }
+.iframe-wrap { flex: 1; display: flex; justify-content: center; overflow: auto; background: #1e293b; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌐 HTML Previewer</h1>
+  <button class="hbtn run" onclick="runCode()">▶ Run</button>
+  <button class="hbtn" onclick="clearAll()">Clear</button>
+  <button class="hbtn" onclick="loadExample()">Load Example</button>
+  <label class="auto-label"><input type="checkbox" id="autoRun" checked> Auto-run</label>
+</header>
+<div class="main">
+  <div class="editors">
+    <div class="ed-pane">
+      <div class="ed-label">HTML</div>
+      <textarea id="htmlEd" placeholder="<h1>Hello World</h1>" oninput="autoRun()"></textarea>
+    </div>
+    <div class="ed-pane">
+      <div class="ed-label">CSS</div>
+      <textarea id="cssEd" placeholder="body { font-family: sans-serif; }" oninput="autoRun()"></textarea>
+    </div>
+    <div class="ed-pane">
+      <div class="ed-label">JavaScript</div>
+      <textarea id="jsEd" placeholder="console.log('hello')" oninput="autoRun()"></textarea>
+    </div>
+  </div>
+  <div class="preview-pane">
+    <div class="preview-toolbar">
+      <span class="preview-label">Preview</span>
+      <button class="device-btn active" onclick="setDevice('full',this)">Full</button>
+      <button class="device-btn" onclick="setDevice('1024px',this)">Tablet</button>
+      <button class="device-btn" onclick="setDevice('375px',this)">Mobile</button>
+    </div>
+    <div class="iframe-wrap" id="iframeWrap">
+      <iframe id="preview" sandbox="allow-scripts"></iframe>
+    </div>
+  </div>
+</div>
+<script>
+let debounceTimer;
+
+function runCode() {
+  const html = document.getElementById('htmlEd').value;
+  const css  = document.getElementById('cssEd').value;
+  const js   = document.getElementById('jsEd').value;
+  const doc = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`;
+  const frame = document.getElementById('preview');
+  frame.srcdoc = doc;
+}
+
+function autoRun() {
+  if (!document.getElementById('autoRun').checked) return;
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(runCode, 400);
+}
+
+function setDevice(w, btn) {
+  document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const frame = document.getElementById('preview');
+  frame.style.maxWidth = w === 'full' ? '' : w;
+}
+
+function clearAll() {
+  ['htmlEd','cssEd','jsEd'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('preview').srcdoc = '';
+}
+
+function loadExample() {
+  document.getElementById('htmlEd').value =
+`<div class="card">
+  <h1>Hello from HTML Previewer!</h1>
+  <p>Edit the HTML, CSS, and JS panes above.</p>
+  <button onclick="greet()">Click me</button>
+  <p id="msg"></p>
+</div>`;
+  document.getElementById('cssEd').value =
+`body { font-family: sans-serif; display: flex; justify-content: center; padding: 2rem; background: #f1f5f9; }
+.card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,.1); max-width: 400px; text-align: center; }
+h1 { color: #3b82f6; margin-bottom: .75rem; }
+button { padding: .5rem 1.5rem; background: #3b82f6; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; }`;
+  document.getElementById('jsEd').value =
+`function greet() {
+  document.getElementById('msg').textContent = 'Hello! 👋 The preview is live.';
+}`;
+  runCode();
+}
+
+runCode();
+</script>
+</body>
+</html>

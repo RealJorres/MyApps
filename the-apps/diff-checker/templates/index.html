@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diff Checker</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+header { background: #1e3a5f; padding: .8rem 2rem; text-align: center; }
+header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+.controls { display: flex; gap: .75rem; padding: .85rem 1.25rem; align-items: center; flex-wrap: wrap; background: #0f172a; border-bottom: 1px solid #1e293b; }
+.btn { padding: .45rem 1.1rem; border: none; border-radius: 6px; font-size: .85rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
+.btn-primary { background: #2563eb; color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-clear { background: #374151; color: #e2e8f0; }
+.btn-clear:hover { background: #4b5563; }
+#summary { font-size: .8rem; color: #94a3b8; }
+#summary .add { color: #4ade80; } #summary .del { color: #f87171; }
+.editors { display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 0 0 auto; }
+.editor-pane { display: flex; flex-direction: column; }
+.editor-pane:first-child { border-right: 1px solid #1e293b; }
+.pane-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #64748b; padding: .5rem 1rem; background: #0a1120; border-bottom: 1px solid #1e293b; }
+textarea { flex: 1; width: 100%; min-height: 180px; background: #0a1120; border: none; color: #e2e8f0; font-family: 'Consolas', monospace; font-size: .82rem; padding: .75rem 1rem; resize: vertical; outline: none; }
+.diff-wrap { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #1e293b; overflow: auto; }
+.diff-pane { font-family: 'Consolas', monospace; font-size: .82rem; overflow-x: auto; }
+.diff-pane:first-child { border-right: 1px solid #1e293b; }
+.diff-line { display: flex; min-height: 22px; }
+.ln { min-width: 42px; text-align: right; padding: 1px 8px; font-size: .75rem; color: #475569; background: #0a1120; border-right: 1px solid #1e293b; user-select: none; }
+.lc { flex: 1; padding: 1px 8px; white-space: pre-wrap; word-break: break-all; }
+.line-add  { background: rgba(74,222,128,.08); }
+.line-add .lc  { color: #4ade80; }
+.line-add .ln  { color: #4ade80; background: rgba(74,222,128,.12); }
+.line-del  { background: rgba(248,113,113,.08); }
+.line-del .lc  { color: #f87171; }
+.line-del .ln  { color: #f87171; background: rgba(248,113,113,.12); }
+.line-eq   { }
+.line-empty { opacity: 0; }
+</style>
+</head>
+<body>
+<header><h1>⇄ Diff Checker</h1></header>
+<div class="controls">
+  <button class="btn btn-primary" onclick="runDiff()">Compare</button>
+  <button class="btn btn-clear" onclick="clearAll()">Clear</button>
+  <span id="summary"></span>
+</div>
+<div class="editors">
+  <div class="editor-pane">
+    <div class="pane-label">Original</div>
+    <textarea id="left" placeholder="Paste original text here…"></textarea>
+  </div>
+  <div class="editor-pane">
+    <div class="pane-label">Modified</div>
+    <textarea id="right" placeholder="Paste modified text here…"></textarea>
+  </div>
+</div>
+<div class="diff-wrap" id="diffWrap">
+  <div class="diff-pane" id="leftDiff"></div>
+  <div class="diff-pane" id="rightDiff"></div>
+</div>
+
+<script>
+// Myers diff — returns array of {type:'eq'|'add'|'del', val}
+function diff(a, b) {
+  const n=a.length, m=b.length;
+  const max=n+m;
+  const v=new Array(2*max+1).fill(0);
+  const trace=[];
+  for(let d=0;d<=max;d++){
+    trace.push([...v]);
+    for(let k=-d;k<=d;k+=2){
+      let x;
+      if(k===-d||(k!==d&&v[k-1+max]<v[k+1+max])) x=v[k+1+max];
+      else x=v[k-1+max]+1;
+      let y=x-k;
+      while(x<n&&y<m&&a[x]===b[y]){x++;y++;}
+      v[k+max]=x;
+      if(x>=n&&y>=m){
+        return backtrack(trace,a,b,max);
+      }
+    }
+  }
+  return backtrack(trace,a,b,max);
+}
+
+function backtrack(trace,a,b,max){
+  let x=a.length,y=b.length;
+  const ops=[];
+  for(let d=trace.length-1;d>=0;d--){
+    const v=trace[d];
+    const k=x-y;
+    let prevK;
+    if(k===-d||(k!==d&&v[k-1+max]<v[k+1+max])) prevK=k+1;
+    else prevK=k-1;
+    const prevX=v[prevK+max], prevY=prevX-prevK;
+    while(x>prevX&&y>prevY){x--;y--;ops.push({type:'eq',val:a[x]});}
+    if(d>0){
+      if(x===prevX) ops.push({type:'add',val:b[--y]});
+      else ops.push({type:'del',val:a[--x]});
+    }
+  }
+  return ops.reverse();
+}
+
+function runDiff(){
+  const a=document.getElementById('left').value.split('\n');
+  const b=document.getElementById('right').value.split('\n');
+  const ops=diff(a,b);
+
+  const leftLines=[],rightLines=[];
+  let ln=1,rn=1,adds=0,dels=0;
+
+  for(const op of ops){
+    if(op.type==='eq'){
+      leftLines.push({t:'eq',n:ln++,v:op.val});
+      rightLines.push({t:'eq',n:rn++,v:op.val});
+    } else if(op.type==='del'){
+      leftLines.push({t:'del',n:ln++,v:op.val});
+      rightLines.push({t:'empty',n:'',v:''});
+      dels++;
+    } else {
+      leftLines.push({t:'empty',n:'',v:''});
+      rightLines.push({t:'add',n:rn++,v:op.val});
+      adds++;
+    }
+  }
+
+  document.getElementById('leftDiff').innerHTML=leftLines.map(l=>lineHTML(l)).join('');
+  document.getElementById('rightDiff').innerHTML=rightLines.map(l=>lineHTML(l)).join('');
+  document.getElementById('summary').innerHTML=
+    `<span class="add">+${adds} added</span> &nbsp; <span class="del">-${dels} removed</span>`;
+}
+
+function lineHTML(l){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return `<div class="diff-line line-${l.t}"><span class="ln">${l.n}</span><span class="lc">${esc(l.v)}</span></div>`;
+}
+
+function clearAll(){
+  document.getElementById('left').value='';
+  document.getElementById('right').value='';
+  document.getElementById('leftDiff').innerHTML='';
+  document.getElementById('rightDiff').innerHTML='';
+  document.getElementById('summary').textContent='';
+}
+</script>
+</body>
+</html>

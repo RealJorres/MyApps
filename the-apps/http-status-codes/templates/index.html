@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP Status Codes</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+header { background: #1e3a5f; padding: .8rem 2rem; text-align: center; }
+header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+.top { padding: 1.25rem 1.5rem; display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; }
+.search { flex: 1; min-width: 200px; padding: .55rem 1rem; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: .9rem; font-family: inherit; }
+.search:focus { outline: none; border-color: #3b82f6; }
+.filters { display: flex; gap: .4rem; flex-wrap: wrap; }
+.flt { padding: .35rem .75rem; border-radius: 20px; border: 1px solid #334155; background: #1e293b; color: #94a3b8; font-size: .78rem; cursor: pointer; transition: background .12s, color .12s; }
+.flt.active,.flt:hover { color: #fff; }
+.flt[data-g="1xx"].active { background: #6366f1; border-color: #6366f1; }
+.flt[data-g="2xx"].active { background: #059669; border-color: #059669; }
+.flt[data-g="3xx"].active { background: #d97706; border-color: #d97706; }
+.flt[data-g="4xx"].active { background: #dc2626; border-color: #dc2626; }
+.flt[data-g="5xx"].active { background: #7c3aed; border-color: #7c3aed; }
+.flt[data-g="all"].active { background: #334155; border-color: #475569; }
+.content { padding: 0 1.5rem 3rem; }
+.group { margin-bottom: 2rem; }
+.group-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #64748b; padding-bottom: .5rem; border-bottom: 1px solid #1e293b; margin-bottom: .75rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: .75rem; }
+.card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: .9rem 1rem; display: flex; gap: .85rem; align-items: flex-start; transition: border-color .15s; }
+.card:hover { border-color: #475569; }
+.code { font-size: 1.15rem; font-weight: 800; min-width: 44px; font-family: monospace; }
+.c1xx { color: #818cf8; } .c2xx { color: #34d399; } .c3xx { color: #fbbf24; } .c4xx { color: #f87171; } .c5xx { color: #c084fc; }
+.name { font-size: .88rem; font-weight: 700; color: #e2e8f0; margin-bottom: .2rem; }
+.desc { font-size: .76rem; color: #94a3b8; line-height: 1.45; }
+#noResult { display: none; color: #64748b; text-align: center; padding: 3rem; }
+</style>
+</head>
+<body>
+<header><h1>🌐 HTTP Status Codes</h1></header>
+<div class="top">
+  <input class="search" id="q" placeholder="Search by code or name…" oninput="filter()">
+  <div class="filters">
+    <button class="flt active" data-g="all" onclick="setGroup('all')">All</button>
+    <button class="flt" data-g="1xx" onclick="setGroup('1xx')">1xx Info</button>
+    <button class="flt" data-g="2xx" onclick="setGroup('2xx')">2xx Success</button>
+    <button class="flt" data-g="3xx" onclick="setGroup('3xx')">3xx Redirect</button>
+    <button class="flt" data-g="4xx" onclick="setGroup('4xx')">4xx Client Error</button>
+    <button class="flt" data-g="5xx" onclick="setGroup('5xx')">5xx Server Error</button>
+  </div>
+</div>
+<div class="content" id="content"></div>
+<p id="noResult">No codes match your search.</p>
+
+<script>
+const CODES = [
+  {c:100,n:'Continue',d:'The server received the request headers and the client should proceed to send the body.',g:'1xx'},
+  {c:101,n:'Switching Protocols',d:'The server is switching protocols as requested by the client.',g:'1xx'},
+  {c:102,n:'Processing',d:'The server has received and is processing the request, but no response is available yet.',g:'1xx'},
+  {c:103,n:'Early Hints',d:'Used with the Link header to allow the browser to start preloading resources.',g:'1xx'},
+  {c:200,n:'OK',d:'The request succeeded. The meaning depends on the HTTP method used.',g:'2xx'},
+  {c:201,n:'Created',d:'The request succeeded and a new resource was created as a result.',g:'2xx'},
+  {c:202,n:'Accepted',d:'The request has been received but not yet acted upon.',g:'2xx'},
+  {c:203,n:'Non-Authoritative Information',d:'The returned metadata is not exactly the same as from the origin server.',g:'2xx'},
+  {c:204,n:'No Content',d:'There is no content to send for this request, but the headers may be useful.',g:'2xx'},
+  {c:205,n:'Reset Content',d:'Tells the client to reset the document that sent this request.',g:'2xx'},
+  {c:206,n:'Partial Content',d:'This response code is used when the Range header is sent by the client.',g:'2xx'},
+  {c:207,n:'Multi-Status',d:'Conveys information about multiple resources, for WebDAV.',g:'2xx'},
+  {c:208,n:'Already Reported',d:'Used inside a DAV binding to avoid repeatedly enumerating members.',g:'2xx'},
+  {c:226,n:'IM Used',d:'The server has fulfilled a GET request and the response is one or more instance-manipulations.',g:'2xx'},
+  {c:300,n:'Multiple Choices',d:'The request has more than one possible response. The user or client should choose one.',g:'3xx'},
+  {c:301,n:'Moved Permanently',d:'The URL has been permanently changed. The new URL is given in the Location header.',g:'3xx'},
+  {c:302,n:'Found',d:'The URI has been temporarily changed. The client should continue using the original URI.',g:'3xx'},
+  {c:303,n:'See Other',d:'The server sent this response to direct the client to get the resource at another URI with a GET.',g:'3xx'},
+  {c:304,n:'Not Modified',d:'Used for caching. Tells the client the response has not been modified.',g:'3xx'},
+  {c:307,n:'Temporary Redirect',d:'The URI is temporarily changed and the client must use the same HTTP method.',g:'3xx'},
+  {c:308,n:'Permanent Redirect',d:'Like 301 but the client must use the same HTTP method for the new request.',g:'3xx'},
+  {c:400,n:'Bad Request',d:'The server cannot process the request due to a client error (malformed syntax, etc.).',g:'4xx'},
+  {c:401,n:'Unauthorized',d:'Authentication is required and has failed or has not yet been provided.',g:'4xx'},
+  {c:402,n:'Payment Required',d:'Reserved for future use, originally intended for digital payment systems.',g:'4xx'},
+  {c:403,n:'Forbidden',d:'The client does not have access rights to the content.',g:'4xx'},
+  {c:404,n:'Not Found',d:'The server cannot find the requested resource.',g:'4xx'},
+  {c:405,n:'Method Not Allowed',d:'The HTTP method is not allowed for the requested resource.',g:'4xx'},
+  {c:406,n:'Not Acceptable',d:'No content conforms to the criteria given by the user agent.',g:'4xx'},
+  {c:407,n:'Proxy Authentication Required',d:'Authentication must be done by a proxy.',g:'4xx'},
+  {c:408,n:'Request Timeout',d:'The server timed out waiting for the request.',g:'4xx'},
+  {c:409,n:'Conflict',d:'The request conflicts with the current state of the server.',g:'4xx'},
+  {c:410,n:'Gone',d:'The content has been permanently deleted from the server.',g:'4xx'},
+  {c:411,n:'Length Required',d:'The server requires the Content-Length header.',g:'4xx'},
+  {c:412,n:'Precondition Failed',d:'The client indicated preconditions that the server does not meet.',g:'4xx'},
+  {c:413,n:'Content Too Large',d:'The request body is larger than the server is willing or able to process.',g:'4xx'},
+  {c:414,n:'URI Too Long',d:'The URI requested by the client is longer than the server is willing to interpret.',g:'4xx'},
+  {c:415,n:'Unsupported Media Type',d:'The media format of the requested data is not supported.',g:'4xx'},
+  {c:416,n:'Range Not Satisfiable',d:'The range specified by the Range header cannot be fulfilled.',g:'4xx'},
+  {c:417,n:'Expectation Failed',d:'The expectation indicated in the Expect header cannot be met.',g:'4xx'},
+  {c:418,n:"I'm a teapot",d:'The server refuses to brew coffee because it is a teapot (RFC 2324).',g:'4xx'},
+  {c:421,n:'Misdirected Request',d:'The request was directed at a server that is not able to produce a response.',g:'4xx'},
+  {c:422,n:'Unprocessable Content',d:'The request was well-formed but could not be followed due to semantic errors.',g:'4xx'},
+  {c:423,n:'Locked',d:'The resource that is being accessed is locked (WebDAV).',g:'4xx'},
+  {c:424,n:'Failed Dependency',d:'The request failed because it depended on another request that failed (WebDAV).',g:'4xx'},
+  {c:425,n:'Too Early',d:'The server is unwilling to risk processing a request that might be replayed.',g:'4xx'},
+  {c:426,n:'Upgrade Required',d:'The client should switch to a different protocol.',g:'4xx'},
+  {c:428,n:'Precondition Required',d:'The origin server requires the request to be conditional.',g:'4xx'},
+  {c:429,n:'Too Many Requests',d:'The client has sent too many requests in a given amount of time (rate limiting).',g:'4xx'},
+  {c:431,n:'Request Header Fields Too Large',d:'The server is unwilling to process the request because header fields are too large.',g:'4xx'},
+  {c:451,n:'Unavailable For Legal Reasons',d:'The user requested a resource that cannot legally be provided.',g:'4xx'},
+  {c:500,n:'Internal Server Error',d:'The server encountered an unexpected condition that prevented it from fulfilling the request.',g:'5xx'},
+  {c:501,n:'Not Implemented',d:'The request method is not supported by the server.',g:'5xx'},
+  {c:502,n:'Bad Gateway',d:'The server, while acting as a gateway, received an invalid response from an upstream server.',g:'5xx'},
+  {c:503,n:'Service Unavailable',d:'The server is not ready to handle the request, often due to maintenance or overload.',g:'5xx'},
+  {c:504,n:'Gateway Timeout',d:'The server acting as a gateway did not receive a timely response from the upstream server.',g:'5xx'},
+  {c:505,n:'HTTP Version Not Supported',d:'The HTTP version used in the request is not supported by the server.',g:'5xx'},
+  {c:506,n:'Variant Also Negotiates',d:'The server has an internal configuration error.',g:'5xx'},
+  {c:507,n:'Insufficient Storage',d:'The method could not be performed because the server cannot store the representation (WebDAV).',g:'5xx'},
+  {c:508,n:'Loop Detected',d:'The server detected an infinite loop while processing the request (WebDAV).',g:'5xx'},
+  {c:510,n:'Not Extended',d:'Further extensions to the request are required for the server to fulfill it.',g:'5xx'},
+  {c:511,n:'Network Authentication Required',d:'The client needs to authenticate to gain network access.',g:'5xx'},
+];
+
+const GROUP_LABELS={'1xx':'1xx — Informational','2xx':'2xx — Success','3xx':'3xx — Redirection','4xx':'4xx — Client Errors','5xx':'5xx — Server Errors'};
+let activeGroup='all';
+
+function setGroup(g){
+  activeGroup=g;
+  document.querySelectorAll('.flt').forEach(b=>b.classList.toggle('active',b.dataset.g===g));
+  filter();
+}
+
+function filter(){
+  const q=document.getElementById('q').value.toLowerCase();
+  const content=document.getElementById('content');
+  const groups={};
+  for(const cd of CODES){
+    if(activeGroup!=='all'&&cd.g!==activeGroup) continue;
+    if(q&&!String(cd.c).includes(q)&&!cd.n.toLowerCase().includes(q)&&!cd.d.toLowerCase().includes(q)) continue;
+    if(!groups[cd.g]) groups[cd.g]=[];
+    groups[cd.g].push(cd);
+  }
+  const order=['1xx','2xx','3xx','4xx','5xx'];
+  const total=Object.values(groups).reduce((s,a)=>s+a.length,0);
+  document.getElementById('noResult').style.display=total?'none':'block';
+  content.innerHTML=order.filter(g=>groups[g]).map(g=>`
+    <div class="group">
+      <div class="group-title">${GROUP_LABELS[g]}</div>
+      <div class="grid">${groups[g].map(cd=>`
+        <div class="card">
+          <div class="code c${cd.g}">${cd.c}</div>
+          <div><div class="name">${cd.n}</div><div class="desc">${cd.d}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+filter();
+</script>
+</body>
+</html>

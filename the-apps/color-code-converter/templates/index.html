@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Code Converter</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+header { background: #4c1d95; padding: .8rem 2rem; text-align: center; }
+header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+.container { max-width: 600px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.preview { width: 100%; height: 120px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 1.25rem; transition: background .15s; }
+.group { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: .85rem; }
+.group label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #64748b; display: block; margin-bottom: .5rem; }
+.row { display: flex; gap: .5rem; align-items: center; }
+input[type=text], input[type=number] { flex: 1; padding: .5rem .75rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: .9rem; font-family: monospace; }
+input:focus { outline: none; border-color: #7c3aed; }
+input[type=color] { width: 44px; height: 36px; padding: 2px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; cursor: pointer; }
+.copy { padding: .45rem .75rem; background: #334155; border: none; border-radius: 6px; color: #e2e8f0; font-size: .78rem; cursor: pointer; white-space: nowrap; transition: background .12s; font-family: inherit; }
+.copy:hover { background: #475569; }
+.sliders { display: grid; grid-template-columns: auto 1fr 48px; gap: .4rem .6rem; align-items: center; margin-top: .5rem; }
+.sliders span { font-size: .78rem; color: #94a3b8; font-weight: 700; }
+input[type=range] { width: 100%; accent-color: #7c3aed; }
+input.num { width: 48px; padding: .3rem .4rem; text-align: center; font-size: .82rem; }
+.section-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin: 1.25rem 0 .5rem; }
+</style>
+</head>
+<body>
+<header><h1>🎨 Color Code Converter</h1></header>
+<div class="container">
+  <div class="preview" id="preview"></div>
+
+  <!-- HEX -->
+  <div class="group">
+    <label>HEX</label>
+    <div class="row">
+      <input type="color" id="colorPicker" oninput="fromPicker()">
+      <input type="text" id="hexIn" placeholder="#3b82f6" oninput="fromHex(this.value)" maxlength="7">
+      <button class="copy" onclick="copyVal('hexIn')">Copy</button>
+    </div>
+  </div>
+
+  <!-- RGB -->
+  <div class="group">
+    <label>RGB</label>
+    <div class="row">
+      <input type="text" id="rgbIn" placeholder="rgb(59, 130, 246)" oninput="fromRgbStr(this.value)">
+      <button class="copy" onclick="copyVal('rgbIn')">Copy</button>
+    </div>
+    <div class="sliders">
+      <span>R</span><input type="range" id="rS" min="0" max="255" oninput="fromSliders()"><input type="number" class="num" id="rN" min="0" max="255" oninput="fromSliders()">
+      <span>G</span><input type="range" id="gS" min="0" max="255" oninput="fromSliders()"><input type="number" class="num" id="gN" min="0" max="255" oninput="fromSliders()">
+      <span>B</span><input type="range" id="bS" min="0" max="255" oninput="fromSliders()"><input type="number" class="num" id="bN" min="0" max="255" oninput="fromSliders()">
+    </div>
+  </div>
+
+  <!-- HSL -->
+  <div class="group">
+    <label>HSL</label>
+    <div class="row">
+      <input type="text" id="hslIn" placeholder="hsl(217, 91%, 60%)" oninput="fromHslStr(this.value)">
+      <button class="copy" onclick="copyVal('hslIn')">Copy</button>
+    </div>
+  </div>
+
+  <!-- OKLCH -->
+  <div class="group">
+    <label>OKLCH <span style="font-size:.7rem;color:#64748b;font-weight:400">(modern CSS)</span></label>
+    <div class="row">
+      <input type="text" id="oklchIn" placeholder="oklch(0.63 0.18 261)" readonly>
+      <button class="copy" onclick="copyVal('oklchIn')">Copy</button>
+    </div>
+  </div>
+
+  <!-- CSS Named approximation -->
+  <div class="group">
+    <label>CSS Variable</label>
+    <div class="row">
+      <input type="text" id="cssVar" placeholder="--color-primary: #3b82f6;" readonly>
+      <button class="copy" onclick="copyVal('cssVar')">Copy</button>
+    </div>
+  </div>
+</div>
+<script>
+let r=59,g=130,b=246;
+
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+
+function toHex(r,g,b){'use strict';return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');}
+
+function hexToRgb(hex){
+  hex=hex.trim().replace(/^#/,'');
+  if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+  if(hex.length!==6) return null;
+  return [parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)];
+}
+
+function rgbToHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{
+    const d=max-min;s=l>.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}
+    h/=6;
+  }
+  return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+}
+
+function hslToRgb(h,s,l){
+  s/=100;l/=100;
+  const k=n=>(n+h/30)%12;
+  const a=s*Math.min(l,1-l);
+  const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));
+  return [Math.round(f(0)*255),Math.round(f(8)*255),Math.round(f(4)*255)];
+}
+
+function rgbToOklch(r,g,b){
+  // simplified sRGB → linear → XYZ → Oklab → OKLCH
+  const lin=v=>{v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4);};
+  let lr=lin(r),lg=lin(g),lb=lin(b);
+  const l=Math.cbrt(.4122214708*lr+.5363325363*lg+.0514459929*lb);
+  const m=Math.cbrt(.2119034982*lr+.6806995451*lg+.1073969566*lb);
+  const s=Math.cbrt(.0883024619*lr+.2817188376*lg+.6299787005*lb);
+  const L=.2104542553*l+.7936177850*m-.0040720468*s;
+  const a=1.9779984951*l-2.4285922050*m+.4505937099*s;
+  const bk=.0259040371*l+.7827717662*m-.8086757660*s;
+  const C=Math.sqrt(a*a+bk*bk);
+  let H=Math.atan2(bk,a)*180/Math.PI;
+  if(H<0)H+=360;
+  return [L.toFixed(3),C.toFixed(3),Math.round(H)];
+}
+
+function updateAll(){
+  const hex=toHex(r,g,b);
+  const [h,s,l]=rgbToHsl(r,g,b);
+  const [ol,oc,oh]=rgbToOklch(r,g,b);
+  document.getElementById('preview').style.background=hex;
+  document.getElementById('colorPicker').value=hex;
+  document.getElementById('hexIn').value=hex;
+  document.getElementById('rgbIn').value=`rgb(${r}, ${g}, ${b})`;
+  document.getElementById('hslIn').value=`hsl(${h}, ${s}%, ${l}%)`;
+  document.getElementById('oklchIn').value=`oklch(${ol} ${oc} ${oh})`;
+  document.getElementById('cssVar').value=`--color: ${hex};`;
+  ['r','g','b'].forEach((c,i)=>{
+    const v=[r,g,b][i];
+    document.getElementById(c+'S').value=v;
+    document.getElementById(c+'N').value=v;
+  });
+}
+
+function fromHex(v){
+  const res=hexToRgb(v);
+  if(res){[r,g,b]=res;updateAll();}
+}
+
+function fromPicker(){
+  const v=document.getElementById('colorPicker').value;
+  fromHex(v);
+}
+
+function fromSliders(){
+  r=clamp(parseInt(document.getElementById('rS').value)||0,0,255);
+  g=clamp(parseInt(document.getElementById('gS').value)||0,0,255);
+  b=clamp(parseInt(document.getElementById('bS').value)||0,0,255);
+  document.getElementById('rN').value=r;document.getElementById('gN').value=g;document.getElementById('bN').value=b;
+  document.getElementById('rS').value=r;document.getElementById('gS').value=g;document.getElementById('bS').value=b;
+  updateAll();
+}
+
+function fromRgbStr(v){
+  const m=v.match(/rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
+  if(m){r=clamp(+m[1],0,255);g=clamp(+m[2],0,255);b=clamp(+m[3],0,255);updateAll();}
+}
+
+function fromHslStr(v){
+  const m=v.match(/hsl\s*\(\s*(\d+)\s*,\s*(\d+)%?\s*,\s*(\d+)%?\s*\)/i);
+  if(m){[r,g,b]=hslToRgb(+m[1],+m[2],+m[3]);updateAll();}
+}
+
+function copyVal(id){
+  const el=document.getElementById(id);
+  navigator.clipboard.writeText(el.value).catch(()=>{});
+}
+
+updateAll();
+</script>
+</body>
+</html>

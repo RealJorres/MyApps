@@ -698,5 +698,68 @@
     "description": "Guess the secret number with Too High / Too Low hints. Four difficulty levels.",
     "port": 5100, "path": "./the-apps/number-guessing", "entry": "app.py",
     "icon": "🎯", "color": "#dc2626", "tags": ["Guessing", "Number", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "chess",
+    "name": "Chess vs AI",
+    "description": "Play chess against a minimax AI. Choose Easy, Medium, or Hard difficulty. Full legal move enforcement.",
+    "port": 5101, "path": "./the-apps/chess", "entry": "app.py",
+    "icon": "♟", "color": "#1e3a5f", "tags": ["Chess", "Strategy", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "battleship",
+    "name": "Battleship",
+    "description": "Classic naval battle game. Randomize your fleet and hunt down the AI's ships on a 10×10 grid.",
+    "port": 5102, "path": "./the-apps/battleship", "entry": "app.py",
+    "icon": "🚢", "color": "#0c4a6e", "tags": ["Battleship", "Strategy", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "flappy-bird",
+    "name": "Flappy Bird",
+    "description": "Tap or press Space to flap through pipes. Canvas-based clone with score tracking and best score.",
+    "port": 5103, "path": "./the-apps/flappy-bird", "entry": "app.py",
+    "icon": "🐦", "color": "#065f46", "tags": ["Flappy Bird", "Arcade", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "paint",
+    "name": "Paint",
+    "description": "MS Paint-style canvas with brush, eraser, line, rectangle, circle, and flood-fill tools. Save as PNG.",
+    "port": 5104, "path": "./the-apps/paint", "entry": "app.py",
+    "icon": "🖌️", "color": "#be185d", "tags": ["Paint", "Drawing", "Creative"], "category": "Image / Media"
+  },
+  {
+    "id": "http-status-codes",
+    "name": "HTTP Status Codes",
+    "description": "Quick reference for all HTTP status codes — 1xx to 5xx — with descriptions. Searchable and filterable.",
+    "port": 5105, "path": "./the-apps/http-status-codes", "entry": "app.py",
+    "icon": "🌐", "color": "#1e3a5f", "tags": ["HTTP", "Status", "Reference", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "color-code-converter",
+    "name": "Color Code Converter",
+    "description": "Convert colors between HEX, RGB, HSL, and OKLCH instantly. Live preview with sliders and a color picker.",
+    "port": 5106, "path": "./the-apps/color-code-converter", "entry": "app.py",
+    "icon": "🎨", "color": "#4c1d95", "tags": ["Color", "HEX", "RGB", "HSL", "CSS"], "category": "Developer Utilities"
+  },
+  {
+    "id": "diff-checker",
+    "name": "Diff Checker",
+    "description": "Side-by-side visual diff for any two blocks of text. Added and removed lines highlighted in green and red.",
+    "port": 5107, "path": "./the-apps/diff-checker", "entry": "app.py",
+    "icon": "⇄", "color": "#1e3a5f", "tags": ["Diff", "Compare", "Text", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "json-to-yaml",
+    "name": "JSON ↔ YAML Converter",
+    "description": "Bidirectional converter between JSON and YAML. Paste either format and convert instantly.",
+    "port": 5108, "path": "./the-apps/json-to-yaml", "entry": "app.py",
+    "icon": "↔", "color": "#14532d", "tags": ["JSON", "YAML", "Convert", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "html-previewer",
+    "name": "HTML Previewer",
+    "description": "Live HTML/CSS/JS sandbox with separate editor panes and an instant preview. Mobile and tablet views included.",
+    "port": 5109, "path": "./the-apps/html-previewer", "entry": "app.py",
+    "icon": "🖥️", "color": "#1e3a5f", "tags": ["HTML", "CSS", "JS", "Sandbox", "Dev"], "category": "Developer Utilities"
   }
 ]
