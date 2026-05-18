@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCII Art Generator</title>
+<style>
+  :root {
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --bg: #0f0a1a;
+    --surface: #1a1030;
+    --surface2: #261840;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border: #3b2660;
+    --radius: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  header h1 {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+  }
+  header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+  .container { max-width: 900px; margin: 0 auto; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .field.grow { flex: 1; min-width: 180px; }
+  input[type="text"], select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  input[type="text"]:focus, select:focus { border-color: var(--primary); }
+  select option { background: var(--surface2); }
+  .char-count { font-size: 0.78rem; margin-top: 4px; }
+  .char-count.warn { color: #f59e0b; }
+  .char-count.over { color: #ef4444; }
+  .char-count.ok { color: var(--text-muted); }
+  .size-toggle {
+    display: flex;
+    gap: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .size-btn {
+    background: var(--surface2);
+    border: none;
+    color: var(--text-muted);
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s;
+  }
+  .size-btn.active { background: var(--primary); color: #fff; }
+  .output-area {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    overflow-x: auto;
+    min-height: 120px;
+    position: relative;
+  }
+  .output-area pre {
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: clamp(0.5rem, 1.5vw, 0.85rem);
+    line-height: 1.2;
+    color: #a78bfa;
+    white-space: pre;
+    tab-size: 1;
+  }
+  .placeholder-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 20px 0;
+    font-style: italic;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn:hover { background: var(--primary-dark); }
+  .btn:active { transform: scale(0.97); }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+  }
+  .btn-outline:hover { background: var(--primary); color: #fff; }
+  .copy-msg {
+    font-size: 0.82rem;
+    color: #4ade80;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+  .copy-msg.show { display: flex; }
+  .font-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .font-preview-card {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    overflow: hidden;
+  }
+  .font-preview-card.active { border-color: var(--primary); }
+  .font-preview-card:hover { border-color: var(--primary); }
+  .font-name { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+  .font-sample { font-family: monospace; font-size: 0.38rem; line-height: 1.2; color: #a78bfa; white-space: pre; overflow: hidden; max-height: 48px; }
+  @media (max-width: 480px) {
+    .card { padding: 16px; }
+    .output-area pre { font-size: 0.42rem; }
+    .font-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>ASCII Art Generator</h1>
+  <p>Convert text into ASCII art — pure JavaScript, no libraries</p>
+</header>
+<div class="container">
+  <div class="card">
+    <div class="row">
+      <div class="field grow">
+        <label>Your Text</label>
+        <input type="text" id="textInput" maxlength="15" placeholder="Type up to 15 chars..." autocomplete="off">
+        <div class="char-count ok" id="charCount">0 / 15 characters</div>
+      </div>
+      <div class="field">
+        <label>Size</label>
+        <div class="size-toggle">
+          <button class="size-btn active" id="sizeNormal" data-size="1">Normal</button>
+          <button class="size-btn" id="sizeLarge" data-size="2">Large</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>Font Style</label>
+      <div class="font-grid" id="fontGrid"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="output-area" id="outputArea">
+      <div class="placeholder-text" id="placeholder">Your ASCII art will appear here...</div>
+      <pre id="asciiOutput" style="display:none"></pre>
+    </div>
+    <div class="actions">
+      <button class="btn" id="copyBtn">Copy to Clipboard</button>
+      <button class="btn btn-outline" id="downloadBtn">Download .txt</button>
+      <div class="copy-msg" id="copyMsg">Copied!</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+//  FONT DEFINITIONS  (each char = array of strings, 1 per row)
+// =========================================================
+
+// Helper: pad all rows to equal length
+function padRows(rows) {
+  const maxLen = Math.max(...rows.map(r => r.length));
+  return rows.map(r => r.padEnd(maxLen, ' '));
+}
+
+// ---- BLOCK font (7 rows, heavy block chars) ----
+const BLOCK = {};
+const blockData = {
+  'A':['  ██  ','  ██  ',' ████ ','██  ██','██████','██  ██','██  ██'],
+  'B':['█████ ','██  ██','██  ██','█████ ','██  ██','██  ██','█████ '],
+  'C':[' ████ ','██  ██','██    ','██    ','██    ','██  ██',' ████ '],
+  'D':['█████ ','██  ██','██  ██','██  ██','██  ██','██  ██','█████ '],
+  'E':['██████','██    ','██    ','████  ','██    ','██    ','██████'],
+  'F':['██████','██    ','██    ','████  ','██    ','██    ','██    '],
+  'G':[' ████ ','██  ██','██    ','██ ███','██  ██','██  ██',' ████ '],
+  'H':['██  ██','██  ██','██  ██','██████','██  ██','██  ██','██  ██'],
+  'I':['██████','  ██  ','  ██  ','  ██  ','  ██  ','  ██  ','██████'],
+  'J':['██████','   ██ ','   ██ ','   ██ ','██ ██ ','██ ██ ',' ███  '],
+  'K':['██  ██','██ ██ ','████  ','███   ','████  ','██ ██ ','██  ██'],
+  'L':['██    ','██    ','██    ','██    ','██    ','██    ','██████'],
+  'M':['██  ██','███████','██ █ ██','██   ██','██   ██','██   ██','██   ██'],
+  'N':['██   ██','███  ██','████ ██','██ █ ██','██  ███','██   ██','██   ██'],
+  'O':[' ████ ','██  ██','██  ██','██  ██','██  ██','██  ██',' ████ '],
+  'P':['█████ ','██  ██','██  ██','█████ ','██    ','██    ','██    '],
+  'Q':[' ████ ','██  ██','██  ██','██  ██','██ ███','██  ██',' █████'],
+  'R':['█████ ','██  ██','██  ██','█████ ','████  ','██  ██','██  ██'],
+  'S':[' ████ ','██  ██','██    ',' ████ ','   ██','██  ██',' ████ '],
+  'T':['██████','  ██  ','  ██  ','  ██  ','  ██  ','  ██  ','  ██  '],
+  'U':['██  ██','██  ██','██  ██','██  ██','██  ██','██  ██',' ████ '],
+  'V':['██  ██','██  ██','██  ██','██  ██',' ████ ',' ████ ','  ██  '],
+  'W':['██   ██','██   ██','██   ██','██ █ ██','███████','███████','██   ██'],
+  'X':['██  ██','██  ██',' ████ ','  ██  ',' ████ ','██  ██','██  ██'],
+  'Y':['██  ██','██  ██',' ████ ','  ██  ','  ██  ','  ██  ','  ██  '],
+  'Z':['██████','   ██ ','  ██  ',' ██   ','██    ','██    ','██████'],
+  '0':[' ████ ','██  ██','██ ███','██████','███ ██','██  ██',' ████ '],
+  '1':['  ██  ',' ███  ','  ██  ','  ██  ','  ██  ','  ██  ','██████'],
+  '2':[' ████ ','██  ██','   ██ ','  ██  ',' ██   ','██    ','██████'],
+  '3':[' ████ ','██  ██','    ██','  ███ ','    ██','██  ██',' ████ '],
+  '4':['   ██ ','  ███ ',' ████ ','██  ██','██████','   ██ ','   ██ '],
+  '5':['██████','██    ','█████ ','   ██ ','    ██','██  ██',' ████ '],
+  '6':[' ████ ','██  ██','██    ','█████ ','██  ██','██  ██',' ████ '],
+  '7':['██████','   ██ ','  ██  ',' ██   ',' ██   ',' ██   ',' ██   '],
+  '8':[' ████ ','██  ██','██  ██',' ████ ','██  ██','██  ██',' ████ '],
+  '9':[' ████ ','██  ██','██  ██',' █████','    ██','██  ██',' ████ '],
+  ' ':['      ','      ','      ','      ','      ','      ','      '],
+  '!':['  ██  ','  ██  ','  ██  ','  ██  ','  ██  ','      ','  ██  '],
+  '?':[' ████ ','██  ██','   ██ ','  ██  ','  ██  ','      ','  ██  '],
+};
+Object.assign(BLOCK, blockData);
+
+// ---- BANNER font (5 rows, using # chars) ----
+const BANNER = {};
+const bannerData = {
+  'A':['#####','#   #','#####','#   #','#   #'],
+  'B':['#### ','#   #','#### ','#   #','#### '],
+  'C':[' ####','#    ','#    ','#    ',' ####'],
+  'D':['#### ','#   #','#   #','#   #','#### '],
+  'E':['#####','#    ','###  ','#    ','#####'],
+  'F':['#####','#    ','###  ','#    ','#    '],
+  'G':[' ####','#    ','# ###','#   #',' ####'],
+  'H':['#   #','#   #','#####','#   #','#   #'],
+  'I':['#####','  #  ','  #  ','  #  ','#####'],
+  'J':['#####','   # ','   # ','#  # ',' ##  '],
+  'K':['#   #','#  # ','##   ','#  # ','#   #'],
+  'L':['#    ','#    ','#    ','#    ','#####'],
+  'M':['#   #','## ##','# # #','#   #','#   #'],
+  'N':['#   #','##  #','# # #','#  ##','#   #'],
+  'O':[' ### ','#   #','#   #','#   #',' ### '],
+  'P':['#### ','#   #','#### ','#    ','#    '],
+  'Q':[' ### ','#   #','#   #','#  ##',' ####'],
+  'R':['#### ','#   #','#### ','#  # ','#   #'],
+  'S':[' ####','#    ',' ### ','    #','#### '],
+  'T':['#####','  #  ','  #  ','  #  ','  #  '],
+  'U':['#   #','#   #','#   #','#   #',' ### '],
+  'V':['#   #','#   #','#   #',' # # ','  #  '],
+  'W':['#   #','#   #','# # #','## ##','#   #'],
+  'X':['#   #',' # # ','  #  ',' # # ','#   #'],
+  'Y':['#   #',' # # ','  #  ','  #  ','  #  '],
+  'Z':['#####','   # ','  #  ',' #   ','#####'],
+  '0':[' ### ','#  ##','# # #','##  #',' ### '],
+  '1':['  #  ',' ##  ','  #  ','  #  ','#####'],
+  '2':[' ### ','#   #','  ## ',' #   ','#####'],
+  '3':[' ### ','#   #','  ## ','#   #',' ### '],
+  '4':['#   #','#   #','#####','    #','    #'],
+  '5':['#####','#    ','#### ','    #','#### '],
+  '6':[' ### ','#    ','#### ','#   #',' ### '],
+  '7':['#####','   # ','  #  ',' #   ','#    '],
+  '8':[' ### ','#   #',' ### ','#   #',' ### '],
+  '9':[' ### ','#   #',' ####','    #',' ### '],
+  ' ':['     ','     ','     ','     ','     '],
+  '!':['  #  ','  #  ','  #  ','     ','  #  '],
+  '?':[' ### ','#   #','  ## ','     ','  #  '],
+};
+Object.assign(BANNER, bannerData);
+
+// ---- SHADOW font (6 rows) ----
+const SHADOW = {};
+const shadowData = {
+  'A':['  /\\  ',' /  \\ ','/ /\\ \\','/_/  \\_\\','  ||  ','  ||  '],
+  'B':['|\\    ','| \\   ','|  \\  ','|--/  ','|  \\  ','|__/  '],
+  'C':['  __  ',' /  \\ ','|     ','|     ',' \\__/ ','  \\\\  '],
+  'D':['|\\    ','| \\   ','|  |  ','|  |  ','| /   ','|/    '],
+  'E':['|=== ','|__  ','|    ','|=== ','|    ','|=== '],
+  'F':['|=== ','|__  ','|    ','|=== ','|    ','|    '],
+  'G':['  __ ','/ __ ','|  _ ','| |_|','|   |',' \\__/'],
+  'H':['|  | ','|  | ','|__|_','|  | ','|  | ','|  | '],
+  'I':['=====','  |  ','  |  ','  |  ','  |  ','====='],
+  'J':['=====','   | ','   | ','   | ','|  | ',' \\|/ '],
+  'K':['|  /','| / ','|/  ','|\\  ','| \\ ','|  \\'],
+  'L':['|    ','|    ','|    ','|    ','|    ','|____'],
+  'M':['|\\  /|','| \\/ |','|    |','|    |','|    |','|    |'],
+  'N':['|\\   |','| \\  |','|  \\ |','|   \\|','|    |','|    |'],
+  'O':['  __  ',' /  \\ ','|    |','|    |',' \\__/ ','  --  '],
+  'P':['|\\   ','| \\  ','|__|/ ','|     ','|     ','|     '],
+  'Q':['  __  ',' /  \\ ','|    |','|  . |',' \\__\\|','   \\| '],
+  'R':['|\\   ','| \\  ','|__|/ ','|\\ \\  ','|  \\ ','|   \\'],
+  'S':['  __ ','/ __ ','\\__ \\','  __/','  /  ','/__/ '],
+  'T':['=====','  |  ','  |  ','  |  ','  |  ','  |  '],
+  'U':['|    |','|    |','|    |','|    |',' \\  / ','  \\/  '],
+  'V':['\\      /','\\    /  ','  \\  /  ','   \\/   ','    |   ','    |   '],
+  'W':['\\  /  \\  /','\\  /  \\  /','  \\/    \\/ ','  |    |  ','  |    |  ','  |    |  '],
+  'X':['\\  /','  \\/ ','  /\\ ','  /\\ ','  /  \\','  /   \\'],
+  'Y':['\\  /','  \\/ ','  |  ','  |  ','  |  ','  |  '],
+  'Z':['====','   /','  / ','  /  ','  /  ','===='],
+  '0':['  0  ',' /|\\ ','| | |',' \\|/ ','  0  ','     '],
+  '1':['  1  ',' /|  ','  |  ','  |  ','  |  ','====='],
+  '2':['  2  ',' ___ ',' __ /','   / ','  /  ','====='],
+  '3':['  3  ',' ___ ',' ___/','  ___','     ','====='],
+  '4':['  4  ','|   |','|___|','    |','    |','    |'],
+  '5':['  5  ','|___ ','  __ ','     ','  __ ','     '],
+  '6':['  6  ',' ___ ','|___ ','|   |',' \\__/','     '],
+  '7':['  7  ','=====','    /','   / ','  /  ',' |   '],
+  '8':['  8  ',' ___ ','|___|',' ___ ','|___|','     '],
+  '9':['  9  ',' ___ ','|___|',' ____','     ','     '],
+  ' ':['     ','     ','     ','     ','     ','     '],
+  '!':['  !  ','  |  ','  |  ','  |  ','     ','  .  '],
+  '?':['  ?  ',' ___ ',' ___)','     ','  ?  ','     '],
+};
+Object.assign(SHADOW, shadowData);
+
+// ---- MINI font (3 rows) ----
+const MINI = {};
+const miniData = {
+  'A':[' ^ ','/_\\','   '],
+  'B':['|_ ','|_)','   '],
+  'C':['/- ','\\_ ','   '],
+  'D':['|\\ ','|/ ','   '],
+  'E':['|- ','|_ ','   '],
+  'F':['|- ','|  ','   '],
+  'G':['/- ','\\-|','   '],
+  'H':['|_|','| |','   '],
+  'I':['|  ','|  ','   '],
+  'J':['  |','|_|','   '],
+  'K':['|/ ','|\\ ','   '],
+  'L':['|  ','|_ ','   '],
+  'M':['|\\/|','|  |','    '],
+  'N':['|\\ ','| \\','   '],
+  'O':['/-\\','\\-/','   '],
+  'P':['|¯ ','|  ','   '],
+  'Q':['/-\\','\\-+','   '],
+  'R':['|¯ ','|\\ ','   '],
+  'S':['/-','_/','  '],
+  'T':['¯|¯','  |','   '],
+  'U':['| |','|_|','   '],
+  'V':['\\  /','  \\/','    '],
+  'W':['|  |','|\\/|','    '],
+  'X':['\\ /','/ \\','   '],
+  'Y':['\\/ ','  | ','    '],
+  'Z':['Z/ ','/_ ','   '],
+  '0':['0 ','0 ','  '],
+  '1':['1 ','1 ','  '],
+  '2':['2 ','2 ','  '],
+  '3':['3 ','3 ','  '],
+  '4':['4 ','4 ','  '],
+  '5':['5 ','5 ','  '],
+  '6':['6 ','6 ','  '],
+  '7':['7 ','7 ','  '],
+  '8':['8 ','8 ','  '],
+  '9':['9 ','9 ','  '],
+  ' ':['  ','  ','  '],
+  '!':['! ','  ','  '],
+  '?':['? ','  ','  '],
+};
+Object.assign(MINI, miniData);
+
+// ---- BUBBLE font (5 rows) ----
+const BUBBLE = {};
+const bubbleData = {
+  'A':['  (A) ',' /(_)\\ ','(_____)','|     |','|     |'],
+  'B':['(B)   ','(__)  ','(  )  ','(__))  ','(B)   '],
+  'C':['  (C) ',' /   \\ ','(      ','|      ',' \\___/'],
+  'D':['(D)   ','(  )  ','(   )  ','(   )  ','(D)   '],
+  'E':['(EEEE)','(E)   ','(EEE) ','(E)   ','(EEEE)'],
+  'F':['(FFFF)','(F)   ','(FFF) ','(F)   ','(F)   '],
+  'G':['  (G) ',' /   \\ ','(  __ ','|  (G)| ',' \\___/ '],
+  'H':['(H) (H)','(H) (H)','(HHHHH)','(H) (H)','(H) (H)'],
+  'I':['(IIIII)','  (I)  ','  (I)  ','  (I)  ','(IIIII)'],
+  'J':['(JJJJJ)','    (J)','    (J)','(J)(J) ',' (JJ)  '],
+  'K':['(K)  (K)','(K)(K)  ','(KK)    ','(K)(K)  ','(K)  (K)'],
+  'L':['(L)    ','(L)    ','(L)    ','(L)    ','(LLLLL)'],
+  'M':['(M)   (M)','(MM) (MM)','(M (M) M)','(M)   (M)','(M)   (M)'],
+  'N':['(N)    (N)','(NN)   (N)','(N (N) (N)','(N)   (NN)','(N)    (N)'],
+  'O':['  (OO)  ',' (O  O) ','(O    O)','(O    O)',' (O  O) '],
+  'P':['(PPPP) ','(P)  (P)','(PPPP) ','(P)    ','(P)    '],
+  'Q':['  (QQ)  ',' (Q  Q) ','(Q    Q)','(Q  .Q)',' (QQ_Q) '],
+  'R':['(RRRR) ','(R)  (R)','(RRRR) ','(R)(R) ','(R) (R)'],
+  'S':['  (SS) ',' (S)   ','  (SS) ','   (S) ',' (SS)  '],
+  'T':['(TTTTT)','  (T)  ','  (T)  ','  (T)  ','  (T)  '],
+  'U':['(U)   (U)','(U)   (U)','(U)   (U)','(U)   (U)',' (UUUUU) '],
+  'V':['(V)     (V)','(V)     (V)',' (V)   (V) ','  (V) (V)  ','   (VVV)   '],
+  'W':['(W)   (W)','(W)   (W)','(W) (W) (W)','(WW) (WW)','(W)   (W)'],
+  'X':['(X)   (X)',' (X) (X) ','  (XXX)  ',' (X) (X) ','(X)   (X)'],
+  'Y':['(Y)   (Y)',' (Y) (Y) ','   (Y)   ','   (Y)   ','   (Y)   '],
+  'Z':['(ZZZZZ)',' (Z)   ','  (Z)  ','   (Z) ','(ZZZZZ)'],
+  '0':['(000) ','(0  0)','(0  0)','(0  0)','(000) '],
+  '1':['  (1) ',' (11) ','  (1) ','  (1) ','(1111)'],
+  '2':['(222) ','(2  2)','   (2)','  (2) ','(2222)'],
+  '3':['(333) ','(3  3)','  (33)','(3  3)','(333) '],
+  '4':['(4) (4)','(4) (4)','(44444)','    (4)','    (4)'],
+  '5':['(5555)','(5)   ','(555) ','   (5)','(555) '],
+  '6':['(666) ','(6)   ','(666) ','(6) (6)','(666) '],
+  '7':['(7777)','   (7)','  (7) ',' (7)  ','(7)   '],
+  '8':['(888) ','(8) (8)','(888) ','(8) (8)','(888) '],
+  '9':['(999) ','(9) (9)','(9999)','    (9)','(999) '],
+  ' ':['       ','       ','       ','       ','       '],
+  '!':['  (!)  ','  (!)  ','  (!)  ','       ','  (.)  '],
+  '?':['(???) ','(?)  ','  (?) ','       ','  (?) '],
+};
+Object.assign(BUBBLE, bubbleData);
+
+// ---- STANDARD font (6 rows) ----
+const STANDARD = {};
+const standardData = {
+  'A':['   _   ',' _/ \\ _','/ _ \\ ','/ ___ \\','/_/   \\_\\','         '],
+  'B':[' ___ ','|  _ \\','| |_) )','|  _ <','| |_) )','|____/'],
+  'C':['  ____ ',' / ___|','| |    ','| |    ','| |___ ','\\_____|'],
+  'D':['|  _ \\ ','| | | |','| | | |','| | | |','| |_| |','|____/ '],
+  'E':['|  ___|','| |__  ','|  __| ','| |___ ','|_____|','       '],
+  'F':['|  ___|','| |__  ','|  __| ','| |    ','|_|    ','       '],
+  'G':['  ___ ','/ ___|','| |  _','| |_| |','\\____|','       '],
+  'H':['|  |  |','|  |  |','|______|','|  |  |','|  |  |','       '],
+  'I':['|_|','| |','| |','| |','|_|','   '],
+  'J':['   _|','   | |','   | |','|  | |','|__|_/','       '],
+  'K':['|  //','| // ','|< <  ','| \\\\ ','|  \\\\','       '],
+  'L':['|  |','|  |','|  |','|  |','|__|','    '],
+  'M':['|\\  /|','| \\/ |','|    |','|    |','|    |','       '],
+  'N':['|\\   |','| \\  |','|  \\ |','|   \\|','|    |','       '],
+  'O':['  ___  ',' / _ \\ ','| | | |','| |_| |',' \\___/ ','       '],
+  'P':['|  _ \\','| |_) )','|  __/','| |    ','|_|    ','       '],
+  'Q':['  ___  ',' / _ \\ ','| | | |','| |_| |',' \\___Q|','      \\|'],
+  'R':['|  _ \\','| |_) )','|    /','| |\\ \\','|_| \\_\\','       '],
+  'S':['  ___ ','/ ___|','\\___  \\','  ___/ |','|_____/','       '],
+  'T':['|_   _|','  | |  ','  | |  ','  | |  ','  |_|  ','       '],
+  'U':['| | | |','| | | |','| | | |','| |_| |','\\____/','       '],
+  'V':['\\   /','\\   /','\\   /','\\  / ',' \\/ ','     '],
+  'W':['\\   /\\   /','\\   /\\   /','\\   /\\   /','\\  /\\  / ',' \\/  \\/ ','          '],
+  'X':['\\   /','\\   /','  X  ','\\  /\\','\\  /','    '],
+  'Y':['\\   /','\\   /',' | | ','  | |','  |_|','     '],
+  'Z':['|_  _|','  / / ','  / /  ','/ /__','/_/'],
+  '0':[' __ ','/ _ \\','| | |','| |_|','\\___/','     '],
+  '1':['  _','  | ','  | ','  | ','|___|','     '],
+  '2':['|¯¯|','   /','  / ','  /  ','|___|','     '],
+  '3':['|¯¯|','  _|','|¯¯|','   |','|__|','    '],
+  '4':['| |','|_|','  |','  |','  |','   '],
+  '5':['|¯¯','|__','   \\','   |','|_/','   '],
+  '6':[' __','/ _ \\','| |_','| | |','\\___/','     '],
+  '7':['|¯¯¯','   /','   /','  / ','  /  ','     '],
+  '8':[' _ ','/_\\','|_ |','/_\\|','    ','    '],
+  '9':[' __ ','/ _ \\','|_  |','  | |','/___/','     '],
+  ' ':['   ','   ','   ','   ','   ','   '],
+  '!':['|','|','|',' ','|',''],
+  '?':[' __ ','|__ \\','   | ','      ','   |_|','      '],
+};
+Object.assign(STANDARD, standardData);
+
+// ---- RETRO font (5 rows, uses block chars) ----
+const RETRO = {};
+const retroData = {
+  'A':['░░▄▀▄░░','░█▀▀▀█░','░█░░░█░','░▀░░░▀░','░░░░░░░'],
+  'B':['░█▀▀▄░░','░█▀▀▄░░','░█▄▄▀░░','░░░░░░░','░░░░░░░'],
+  'C':['░▄▀▀▀▄░','░█░░░░░','░█░░░░░','░▀▄▄▄▀░','░░░░░░░'],
+  'D':['░█▀▀▄░','░█░░█░','░█▄▄▀░','░░░░░░','░░░░░░'],
+  'E':['░█▀▀▀█░','░█▀▀▀░░','░█▄▄▄█░','░░░░░░░','░░░░░░░'],
+  'F':['░█▀▀▀█░','░█▀▀░░░','░█░░░░░','░░░░░░░','░░░░░░░'],
+  'G':['░▄▀▀▀▄░','░█░▄▀░░','░▀▄▄▄▀░','░░░░░░░','░░░░░░░'],
+  'H':['░█░░░█░','░█▀▀▀█░','░█░░░█░','░░░░░░░','░░░░░░░'],
+  'I':['░█░','░█░','░█░','░░░','░░░'],
+  'J':['░░░█░','░░░█░','░▀▀▀░','░░░░░','░░░░░'],
+  'K':['░█░░█░','░█▀▀░░','░█░░█░','░░░░░░','░░░░░░'],
+  'L':['░█░░░░','░█░░░░','░█▄▄▄░','░░░░░░','░░░░░░'],
+  'M':['░█▄░▄█░','░█▀█▀█░','░█░░░█░','░░░░░░░','░░░░░░░'],
+  'N':['░█▄░░█░','░█░▀░█░','░█░░▄█░','░░░░░░░','░░░░░░░'],
+  'O':['░▄▀▀▀▄░','░█░░░█░','░▀▄▄▄▀░','░░░░░░░','░░░░░░░'],
+  'P':['░█▀▀▄░','░█▄▄▀░','░█░░░░','░░░░░░','░░░░░░'],
+  'Q':['░▄▀▀▀▄░','░█░░░█░','░▀▀▄▄█░','░░░░░░░','░░░░░░░'],
+  'R':['░█▀▀▄░','░█▄▄▀░','░█░░█░','░░░░░░','░░░░░░'],
+  'S':['░▄▀▀▀░','░▀▀▀▄░','░▄▄▄▀░','░░░░░░','░░░░░░'],
+  'T':['░▀█▀░','░░█░░','░░█░░','░░░░░','░░░░░'],
+  'U':['░█░░░█░','░█░░░█░','░▀▄▄▄▀░','░░░░░░░','░░░░░░░'],
+  'V':['░█░░░█░','░▀▄░▄▀░','░░▀▀░░░','░░░░░░░','░░░░░░░'],
+  'W':['░█░░░░░█░','░█░░█░░█░','░▀▄▄▀▄▄▀░','░░░░░░░░░','░░░░░░░░░'],
+  'X':['░█░░░█░','░░▀▄▀░░','░█░░░█░','░░░░░░░','░░░░░░░'],
+  'Y':['░█░░░█░','░▀▄▄▄▀░','░░░█░░░','░░░░░░░','░░░░░░░'],
+  'Z':['░█▀▀▀░','░░▀▄░░','░▄▀░░░','░█▄▄▄░','░░░░░░'],
+  '0':['░▄▀▀▀▄░','░█░░░█░','░▀▄▄▄▀░','░░░░░░░','░░░░░░░'],
+  '1':['░░█░','░░█░','░░█░','░░░░','░░░░'],
+  '2':['░▀▀▀▄░','░▄▄▄▀░','░█▄▄▄░','░░░░░░','░░░░░░'],
+  '3':['░▀▀▀▄░','░░▀▀▄░','░▄▄▄▀░','░░░░░░','░░░░░░'],
+  '4':['░█░░█░','░█▄▄█░','░░░░█░','░░░░░░','░░░░░░'],
+  '5':['░█▀▀▀░','░▀▀▀▄░','░▄▄▄▀░','░░░░░░','░░░░░░'],
+  '6':['░▄▀▀░░','░█▀▀▄░','░▀▄▄▀░','░░░░░░','░░░░░░'],
+  '7':['░█▀▀▀░','░░░▄▀░','░░▄▀░░','░░░░░░','░░░░░░'],
+  '8':['░▄▀▀▀▄░','░▀▀▀▀▀░','░▀▄▄▄▀░','░░░░░░░','░░░░░░░'],
+  '9':['░▄▀▀▀▄░','░▀▀▀▀█░','░▄▄▄▄▀░','░░░░░░░','░░░░░░░'],
+  ' ':['░░░░','░░░░','░░░░','░░░░','░░░░'],
+  '!':['░█░','░█░','░░░','░█░','░░░'],
+  '?':['░▀▀▄░','░░▄▀░','░░░░░','░░█░░','░░░░░'],
+};
+Object.assign(RETRO, retroData);
+
+// ---- SIMPLE font (5 rows, line chars) ----
+const SIMPLE = {};
+const simpleData = {
+  'A':['  /\\  ',' /--\\ ','/ _  \\','      ','      '],
+  'B':['|\\   ','| -  ','|/   ','| -  ','|/   '],
+  'C':['/-\\','|  ','|  ','|  ','\\-/'],
+  'D':['|\\','| \\','|  \\','|  /','|/ '],
+  'E':['|---','|-- ','|   ','|---','    '],
+  'F':['|---','|-- ','|   ','|   ','    '],
+  'G':['/-\\','|  ','| -|','|  |','\\-/'],
+  'H':['| |','| |','|-|','| |','| |'],
+  'I':['|','|','|','|','|'],
+  'J':['  |',' |',' |','|_|','   '],
+  'K':['| /','|/ ','|\\  ','| \\ ','|  \\'],
+  'L':['|  ','|  ','|  ','|__','   '],
+  'M':['|\\/|','|  |','|  |','|  |','|  |'],
+  'N':['|\\  ','| \\ ','|  \\','|   \\','|    '],
+  'O':['/-\\','| |','| |','| |','\\-/'],
+  'P':['|\\','| \\','|/ ','|   ','|   '],
+  'Q':['/-\\','| |','|.| ','\\-/ ','   \\'],
+  'R':['|\\','| \\','|/ ','|\\ ','|  \\'],
+  'S':['/--','|   ','\\-- ','   |','--/ '],
+  'T':['---','  |','  |','  |','  |'],
+  'U':['| |','| |','| |','|_|','   '],
+  'V':['\\  /','\\  /','\\  /','  \\/','    '],
+  'W':['|   |','|   |','| | |','| | |',' \\_/ '],
+  'X':['\\  /','  \\/','  /\\','  /  \\','     '],
+  'Y':['\\  /','  \\/','  |','  |','  |'],
+  'Z':['---','  /','  /','  /','---'],
+  '0':['0','0','0','0','0'],
+  '1':['1','1','1','1','1'],
+  '2':['2','2','2','2','2'],
+  '3':['3','3','3','3','3'],
+  '4':['4','4','4','4','4'],
+  '5':['5','5','5','5','5'],
+  '6':['6','6','6','6','6'],
+  '7':['7','7','7','7','7'],
+  '8':['8','8','8','8','8'],
+  '9':['9','9','9','9','9'],
+  ' ':['  ','  ','  ','  ','  '],
+  '!':['!','!','!','  ','!'],
+  '?':['?','?','?','  ','?'],
+};
+Object.assign(SIMPLE, simpleData);
+
+// =========================================================
+//  FONT REGISTRY
+// =========================================================
+const FONTS = {
+  'Block':    { data: BLOCK,    rows: 7, sample: 'ABC' },
+  'Banner':   { data: BANNER,   rows: 5, sample: 'ABC' },
+  'Shadow':   { data: SHADOW,   rows: 6, sample: 'ABC' },
+  'Bubble':   { data: BUBBLE,   rows: 5, sample: 'AB'  },
+  'Mini':     { data: MINI,     rows: 3, sample: 'ABC' },
+  'Standard': { data: STANDARD, rows: 6, sample: 'ABC' },
+  'Retro':    { data: RETRO,    rows: 5, sample: 'ABC' },
+  'Simple':   { data: SIMPLE,   rows: 5, sample: 'ABC' },
+};
+
+let currentFont = 'Block';
+let currentSize = 1;
+let debounceTimer = null;
+
+// =========================================================
+//  RENDER ENGINE
+// =========================================================
+function renderASCII(text, fontName, size) {
+  const font = FONTS[fontName];
+  if (!font) return '';
+  const chars = text.toUpperCase().split('');
+  const numRows = font.rows;
+  const lines = Array.from({ length: numRows }, () => '');
+  const gap = size === 2 ? '  ' : ' ';
+
+  chars.forEach((ch, idx) => {
+    const charData = font.data[ch] || font.data[' '] || Array(numRows).fill('  ');
+    const padded = padRows([...charData]);
+    for (let r = 0; r < numRows; r++) {
+      const row = padded[r] || '';
+      if (size === 2) {
+        // Double spacing: duplicate each char
+        lines[r] += row.split('').map(c => c === ' ' ? '  ' : c + c).join('') + '   ';
+      } else {
+        lines[r] += row + gap;
+      }
+    }
+  });
+
+  return lines.join('\n');
+}
+
+function generateSample(fontName) {
+  const font = FONTS[fontName];
+  if (!font) return '';
+  return renderASCII(font.sample, fontName, 1);
+}
+
+// =========================================================
+//  UI
+// =========================================================
+function buildFontGrid() {
+  const grid = document.getElementById('fontGrid');
+  grid.innerHTML = '';
+  Object.keys(FONTS).forEach(name => {
+    const card = document.createElement('div');
+    card.className = 'font-preview-card' + (name === currentFont ? ' active' : '');
+    card.dataset.font = name;
+    const sample = generateSample(name);
+    card.innerHTML = `<div class="font-name">${name}</div><pre class="font-sample">${escapeHtml(sample)}</pre>`;
+    card.addEventListener('click', () => selectFont(name));
+    grid.appendChild(card);
+  });
+}
+
+function selectFont(name) {
+  currentFont = name;
+  document.querySelectorAll('.font-preview-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.font === name);
+  });
+  scheduleUpdate();
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function updateOutput() {
+  const text = document.getElementById('textInput').value;
+  const output = document.getElementById('asciiOutput');
+  const placeholder = document.getElementById('placeholder');
+  if (!text.trim()) {
+    output.style.display = 'none';
+    placeholder.style.display = 'block';
+    return;
+  }
+  const art = renderASCII(text, currentFont, currentSize);
+  output.textContent = art;
+  output.style.display = 'block';
+  placeholder.style.display = 'none';
+}
+
+function scheduleUpdate() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(updateOutput, 300);
+}
+
+function updateCharCount() {
+  const len = document.getElementById('textInput').value.length;
+  const el = document.getElementById('charCount');
+  el.textContent = `${len} / 15 characters`;
+  el.className = 'char-count ' + (len >= 15 ? 'over' : len >= 12 ? 'warn' : 'ok');
+}
+
+document.getElementById('textInput').addEventListener('input', () => {
+  updateCharCount();
+  scheduleUpdate();
+});
+
+document.querySelectorAll('.size-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSize = parseInt(btn.dataset.size, 10);
+    scheduleUpdate();
+  });
+});
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const text = document.getElementById('asciiOutput').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const msg = document.getElementById('copyMsg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2000);
+  });
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const text = document.getElementById('asciiOutput').textContent;
+  if (!text) return;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ascii-art.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+buildFontGrid();
+updateCharCount();
+</script>
+</body>
+</html>

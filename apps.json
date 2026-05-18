@@ -677,5 +677,26 @@
     "description": "Repeat the color and sound sequence before it gets too long. Classic memory game.",
     "port": 5097, "path": "./the-apps/simon-says", "entry": "app.py",
     "icon": "🟢", "color": "#16a34a", "tags": ["Simon", "Memory", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "world-clock",
+    "name": "World Clock",
+    "description": "See the current time in multiple cities at once. Add, remove, and save your timezone set.",
+    "port": 5098, "path": "./the-apps/world-clock", "entry": "app.py",
+    "icon": "🌍", "color": "#0891b2", "tags": ["Clock", "Time", "Timezone"], "category": "Text / Productivity"
+  },
+  {
+    "id": "ascii-art-generator",
+    "name": "ASCII Art Generator",
+    "description": "Convert text to large ASCII art in 8 different styles. Copy or download as .txt.",
+    "port": 5099, "path": "./the-apps/ascii-art-generator", "entry": "app.py",
+    "icon": "▓", "color": "#7c3aed", "tags": ["ASCII", "Art", "Text"], "category": "Image / Media"
+  },
+  {
+    "id": "number-guessing",
+    "name": "Number Guessing Game",
+    "description": "Guess the secret number with Too High / Too Low hints. Four difficulty levels.",
+    "port": 5100, "path": "./the-apps/number-guessing", "entry": "app.py",
+    "icon": "🎯", "color": "#dc2626", "tags": ["Guessing", "Number", "Game"], "category": "Games / Fun"
   }
 ]
