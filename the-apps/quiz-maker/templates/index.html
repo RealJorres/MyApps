@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Maker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #fffbeb; color: #1e293b; min-height: 100vh; }
+  header { background: #d97706; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(217,119,6,.3); display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 1.3rem; font-weight: 700; }
+  .nav-tabs { display: flex; gap: .5rem; }
+  .nav-tab { padding: .4rem 1rem; border-radius: 6px; border: 1.5px solid rgba(255,255,255,.5); color: #fff; background: none; font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .15s; }
+  .nav-tab.active, .nav-tab:hover { background: rgba(255,255,255,.25); }
+  main { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
+  .card-title { font-size: .9rem; font-weight: 700; color: #d97706; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; border-bottom: 2px solid #fde68a; padding-bottom: .5rem; }
+  input[type=text], textarea { width: 100%; border: 1px solid #e2e8f0; border-radius: 7px; padding: .5rem .75rem; font-size: .875rem; color: #1e293b; font-family: inherit; }
+  input[type=text]:focus, textarea:focus { outline: none; border-color: #d97706; }
+  .form-group { margin-bottom: .75rem; }
+  label { display: block; font-size: .75rem; font-weight: 600; color: #475569; margin-bottom: .3rem; }
+  .question-block { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; position: relative; }
+  .question-block .q-num { font-size: .8rem; font-weight: 700; color: #b45309; margin-bottom: .5rem; }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem; }
+  .option-row { display: flex; align-items: center; gap: .4rem; }
+  .option-row input[type=radio] { accent-color: #d97706; cursor: pointer; }
+  .option-row input[type=text] { flex: 1; }
+  .remove-q-btn { position: absolute; top: .6rem; right: .75rem; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1rem; }
+  .remove-q-btn:hover { color: #dc2626; }
+  .btn { padding: .6rem 1.25rem; border: none; border-radius: 8px; font-size: .875rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .btn-primary { background: #d97706; color: #fff; }
+  .btn-primary:hover { background: #b45309; }
+  .btn-outline { background: #fef3c7; color: #d97706; border: 1.5px solid #fde68a; }
+  .btn-outline:hover { background: #fde68a; }
+  .btn-danger { background: #fee2e2; color: #dc2626; }
+  .btn-danger:hover { background: #fca5a5; }
+  .quiz-list-item { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; border: 1px solid #fde68a; border-radius: 8px; margin-bottom: .6rem; background: #fffbeb; }
+  .quiz-list-item .quiz-name { font-weight: 600; font-size: .9rem; }
+  .quiz-list-item .quiz-meta { font-size: .75rem; color: #94a3b8; }
+  .quiz-list-item .actions { display: flex; gap: .4rem; }
+  .btn-sm { padding: .3rem .75rem; font-size: .78rem; }
+  .take-quiz-area .q-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; margin-bottom: .75rem; }
+  .take-quiz-area .q-text { font-size: .95rem; font-weight: 600; margin-bottom: .75rem; }
+  .option-choice { display: flex; align-items: center; gap: .6rem; padding: .5rem .75rem; border: 1.5px solid #e2e8f0; border-radius: 8px; cursor: pointer; margin-bottom: .4rem; font-size: .875rem; transition: all .15s; }
+  .option-choice:hover { border-color: #d97706; background: #fffbeb; }
+  .option-choice.selected { border-color: #d97706; background: #fef3c7; }
+  .option-choice.correct { border-color: #059669; background: #ecfdf5; }
+  .option-choice.wrong { border-color: #dc2626; background: #fef2f2; }
+  .option-choice input[type=radio] { accent-color: #d97706; }
+  .timer-bar { font-size: .85rem; font-weight: 600; color: #d97706; margin-bottom: 1rem; }
+  .score-display { text-align: center; padding: 2rem; }
+  .score-display .score-val { font-size: 3rem; font-weight: 800; color: #d97706; }
+  .score-display .score-sub { font-size: 1rem; color: #64748b; margin-top: .25rem; }
+  .all-one-toggle { display: flex; align-items: center; gap: .6rem; margin-bottom: 1rem; font-size: .82rem; font-weight: 600; color: #475569; }
+  .toggle { position: relative; width: 38px; height: 20px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .stoggle { position: absolute; inset: 0; background: #cbd5e1; border-radius: 10px; cursor: pointer; transition: .2s; }
+  .stoggle::before { content: ''; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  input:checked + .stoggle { background: #d97706; }
+  input:checked + .stoggle::before { transform: translateX(18px); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Quiz Maker</h1>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('create')">Create</button>
+    <button class="nav-tab" onclick="showView('take')" id="takeTabBtn">Take Quiz</button>
+  </div>
+</header>
+<main>
+  <!-- CREATE VIEW -->
+  <div class="view active" id="createView">
+    <div class="card">
+      <div class="card-title">New Quiz</div>
+      <div class="form-group"><label>Quiz Title</label><input type="text" id="quizTitle" placeholder="My Quiz"></div>
+      <div id="questionsContainer"></div>
+      <button class="btn btn-outline" onclick="addQuestion()" style="margin-top:.25rem">+ Add Question</button>
+      <button class="btn btn-primary" onclick="saveQuiz()" style="margin-left:.75rem">Save Quiz</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Saved Quizzes</div>
+      <div id="quizList"><div style="color:#94a3b8;font-size:.85rem">No quizzes saved yet.</div></div>
+    </div>
+  </div>
+
+  <!-- TAKE QUIZ VIEW -->
+  <div class="view" id="takeView">
+    <div id="takeInner"></div>
+  </div>
+</main>
+
+<script>
+  let questions = [];
+  let qCounter = 0;
+  let takingQuiz = null;
+  let timerInterval = null;
+  let timerSeconds = 0;
+  let userAnswers = {};
+  let submitted = false;
+
+  function showView(v) {
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById(v + 'View').classList.add('active');
+    const btn = v === 'create' ? document.querySelector('.nav-tab') : document.getElementById('takeTabBtn');
+    if (btn) btn.classList.add('active');
+    if (v === 'create') renderQuizList();
+  }
+
+  function addQuestion(data) {
+    const id = qCounter++;
+    const q = data || { id, prompt: '', options: ['', '', '', ''], correct: 0 };
+    if (!data) q.id = id;
+    questions.push(q);
+    renderQuestions();
+  }
+
+  function removeQuestion(id) {
+    questions = questions.filter(q => q.id !== id);
+    renderQuestions();
+  }
+
+  function renderQuestions() {
+    const c = document.getElementById('questionsContainer');
+    c.innerHTML = '';
+    questions.forEach((q, idx) => {
+      const div = document.createElement('div');
+      div.className = 'question-block';
+      div.innerHTML = `
+        <button class="remove-q-btn" onclick="removeQuestion(${q.id})">&#10005;</button>
+        <div class="q-num">Question ${idx + 1}</div>
+        <div class="form-group"><label>Question Prompt</label>
+          <input type="text" placeholder="Enter question..." value="${esc(q.prompt)}"
+                 onchange="questions[${idx}].prompt=this.value" oninput="questions[${idx}].prompt=this.value">
+        </div>
+        <label style="font-size:.75rem;font-weight:600;color:#475569">Options (select correct answer)</label>
+        <div class="options-grid">
+          ${q.options.map((opt, oi) => `
+            <div class="option-row">
+              <input type="radio" name="correct_${q.id}" value="${oi}" ${q.correct === oi ? 'checked' : ''}
+                     onchange="questions[${idx}].correct=${oi}">
+              <input type="text" placeholder="Option ${oi+1}" value="${esc(opt)}"
+                     onchange="questions[${idx}].options[${oi}]=this.value"
+                     oninput="questions[${idx}].options[${oi}]=this.value">
+            </div>
+          `).join('')}
+        </div>
+      `;
+      c.appendChild(div);
+    });
+  }
+
+  function saveQuiz() {
+    const title = document.getElementById('quizTitle').value.trim();
+    if (!title) { alert('Please enter a quiz title.'); return; }
+    if (!questions.length) { alert('Please add at least one question.'); return; }
+    const quizzes = getQuizzes();
+    const quiz = { id: Date.now(), title, questions: questions.map(q => ({...q, options: [...q.options]})) };
+    quizzes.push(quiz);
+    localStorage.setItem('quizzes', JSON.stringify(quizzes));
+    document.getElementById('quizTitle').value = '';
+    questions = [];
+    renderQuestions();
+    renderQuizList();
+    alert('Quiz saved!');
+  }
+
+  function getQuizzes() {
+    try { return JSON.parse(localStorage.getItem('quizzes')) || []; } catch(e) { return []; }
+  }
+
+  function renderQuizList() {
+    const quizzes = getQuizzes();
+    const c = document.getElementById('quizList');
+    if (!quizzes.length) { c.innerHTML = '<div style="color:#94a3b8;font-size:.85rem">No quizzes saved yet.</div>'; return; }
+    c.innerHTML = quizzes.map(qz => `
+      <div class="quiz-list-item">
+        <div>
+          <div class="quiz-name">${esc(qz.title)}</div>
+          <div class="quiz-meta">${qz.questions.length} question${qz.questions.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary btn-sm" onclick="startQuiz(${qz.id})">Take</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteQuiz(${qz.id})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function deleteQuiz(id) {
+    if (!confirm('Delete this quiz?')) return;
+    const quizzes = getQuizzes().filter(q => q.id !== id);
+    localStorage.setItem('quizzes', JSON.stringify(quizzes));
+    renderQuizList();
+  }
+
+  function startQuiz(id) {
+    const quizzes = getQuizzes();
+    takingQuiz = quizzes.find(q => q.id === id);
+    if (!takingQuiz) return;
+    userAnswers = {}; submitted = false; timerSeconds = 0;
+    showView('take');
+    renderTakeQuiz();
+  }
+
+  function renderTakeQuiz() {
+    if (!takingQuiz) return;
+    const c = document.getElementById('takeInner');
+    let html = `<div class="card">
+      <div class="card-title">${esc(takingQuiz.title)}</div>
+      <div class="all-one-toggle">
+        <label class="toggle"><input type="checkbox" id="allOneTgl" onchange="renderTakeQuiz()"><span class="stoggle"></span></label>
+        Show all at once
+        &nbsp;&nbsp;
+        <label class="toggle"><input type="checkbox" id="timedTgl" onchange="toggleTimer()"><span class="stoggle"></span></label>
+        Timed
+      </div>
+      <div class="timer-bar" id="timerDisplay" style="display:none">Time: 0:00</div>`;
+    html += `</div><div class="take-quiz-area" id="quizQArea">`;
+    takingQuiz.questions.forEach((q, qi) => {
+      html += `<div class="q-card" id="qcard_${qi}">
+        <div class="q-text">Q${qi+1}. ${esc(q.prompt)}</div>
+        ${q.options.map((opt, oi) => `
+          <div class="option-choice" id="opt_${qi}_${oi}" onclick="selectOption(${qi},${oi})">
+            <input type="radio" name="q_${qi}" value="${oi}" id="radio_${qi}_${oi}">
+            <label for="radio_${qi}_${oi}" style="cursor:pointer;font-size:.875rem">${esc(opt)}</label>
+          </div>`).join('')}
+      </div>`;
+    });
+    html += `</div>
+    <div class="card" style="text-align:center">
+      <button class="btn btn-primary" onclick="submitQuiz()">Submit Quiz</button>
+      <button class="btn btn-outline" onclick="showView('create')" style="margin-left:.75rem">Back to Quizzes</button>
+    </div>`;
+    c.innerHTML = html;
+  }
+
+  function selectOption(qi, oi) {
+    if (submitted) return;
+    userAnswers[qi] = oi;
+    for (let i = 0; i < takingQuiz.questions[qi].options.length; i++) {
+      const el = document.getElementById('opt_' + qi + '_' + i);
+      if (el) el.classList.toggle('selected', i === oi);
+    }
+    const radio = document.getElementById('radio_' + qi + '_' + oi);
+    if (radio) radio.checked = true;
+  }
+
+  function toggleTimer() {
+    const timed = document.getElementById('timedTgl') && document.getElementById('timedTgl').checked;
+    const disp = document.getElementById('timerDisplay');
+    if (!disp) return;
+    if (timed) {
+      disp.style.display = 'block';
+      timerSeconds = 0;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+        if (disp) disp.textContent = 'Time: ' + m + ':' + String(s).padStart(2,'0');
+      }, 1000);
+    } else {
+      disp.style.display = 'none';
+      clearInterval(timerInterval);
+    }
+  }
+
+  function submitQuiz() {
+    submitted = true;
+    clearInterval(timerInterval);
+    let score = 0;
+    takingQuiz.questions.forEach((q, qi) => {
+      const ua = userAnswers[qi];
+      const correct = q.correct;
+      for (let oi = 0; oi < q.options.length; oi++) {
+        const el = document.getElementById('opt_' + qi + '_' + oi);
+        if (!el) continue;
+        el.classList.remove('selected');
+        if (oi === correct) el.classList.add('correct');
+        else if (oi === ua && ua !== correct) el.classList.add('wrong');
+      }
+      if (ua === correct) score++;
+    });
+    const pct = Math.round(score / takingQuiz.questions.length * 100);
+    const resultDiv = document.createElement('div');
+    resultDiv.className = 'card score-display';
+    resultDiv.innerHTML = `
+      <div class="score-val">${score}/${takingQuiz.questions.length}</div>
+      <div class="score-sub">${pct}% correct</div>
+      <div style="margin-top:1.5rem;display:flex;gap:.75rem;justify-content:center">
+        <button class="btn btn-primary" onclick="startQuiz(${takingQuiz.id})">Retry</button>
+        <button class="btn btn-outline" onclick="showView('create')">Back to Quizzes</button>
+      </div>
+    `;
+    document.getElementById('takeInner').appendChild(resultDiv);
+    resultDiv.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  renderQuizList();
+</script>
+</body>
+</html>

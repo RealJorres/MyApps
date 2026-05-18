@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graph Plotter</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0fdf4; color: #1e293b; min-height: 100vh; }
+  header { background: #059669; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(5,150,105,.3); }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: .85rem; opacity: .85; }
+  main { max-width: 1080px; margin: 1.5rem auto; padding: 0 1rem; display: flex; flex-direction: column; gap: 1.25rem; }
+  .card { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); }
+  .functions-area { display: flex; flex-direction: column; gap: .6rem; }
+  .fn-row { display: flex; gap: .5rem; align-items: center; }
+  .fn-row input[type=text] { flex: 1; border: 1px solid #e2e8f0; border-radius: 7px; padding: .45rem .75rem; font-size: .9rem; color: #1e293b; font-family: 'Courier New', monospace; }
+  .fn-row input[type=text]:focus { outline: none; border-color: #059669; }
+  .fn-row input[type=text].error { border-color: #dc2626; background: #fef2f2; }
+  .fn-row input[type=color] { width: 34px; height: 34px; border: 1px solid #e2e8f0; border-radius: 6px; padding: 2px; cursor: pointer; }
+  .fn-row .remove-fn { background: none; border: 1px solid #e2e8f0; color: #94a3b8; border-radius: 6px; padding: .35rem .6rem; cursor: pointer; font-size: .9rem; }
+  .fn-row .remove-fn:hover { color: #dc2626; border-color: #fca5a5; }
+  .fn-error { font-size: .75rem; color: #dc2626; margin-left: .5rem; }
+  .controls-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
+  .ctrl-group { display: flex; flex-direction: column; gap: .25rem; }
+  label { font-size: .75rem; font-weight: 600; color: #475569; }
+  .range-pair { display: flex; gap: .4rem; align-items: center; }
+  .range-pair input { width: 70px; border: 1px solid #e2e8f0; border-radius: 6px; padding: .4rem .55rem; font-size: .82rem; color: #1e293b; }
+  .range-pair input:focus { outline: none; border-color: #059669; }
+  .range-pair span { font-size: .8rem; color: #94a3b8; }
+  .add-fn-btn { padding: .45rem 1rem; background: #ecfdf5; border: 1.5px dashed #6ee7b7; color: #059669; border-radius: 7px; cursor: pointer; font-size: .82rem; font-weight: 600; transition: all .2s; }
+  .add-fn-btn:hover { background: #d1fae5; }
+  .plot-btn { padding: .6rem 1.5rem; background: #059669; color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+  .plot-btn:hover { background: #047857; }
+  .dl-btn { padding: .6rem 1.2rem; background: #1e293b; color: #fff; border: none; border-radius: 8px; font-size: .88rem; font-weight: 600; cursor: pointer; transition: background .2s; }
+  .dl-btn:hover { background: #0f172a; }
+  .canvas-wrap { position: relative; }
+  canvas { display: block; width: 100%; cursor: crosshair; }
+  .coord-display { position: absolute; bottom: .5rem; right: .75rem; background: rgba(0,0,0,.6); color: #fff; font-size: .75rem; padding: .25rem .6rem; border-radius: 5px; font-family: monospace; pointer-events: none; display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Graph Plotter</h1>
+  <p>Plot mathematical functions: sin(x), x^2, log(x), sqrt(x), etc.</p>
+</header>
+<main>
+  <div class="card">
+    <div style="font-size:.8rem;color:#64748b;margin-bottom:.75rem">Supported: +, -, *, /, ^ (power), sin, cos, tan, asin, acos, atan, log, log2, ln, sqrt, abs, floor, ceil, round, exp, pi, e</div>
+    <div class="functions-area" id="fnArea"></div>
+    <button class="add-fn-btn" id="addFnBtn" onclick="addFunction()" style="margin-top:.5rem">+ Add Function</button>
+    <div class="controls-row" style="margin-top:1rem">
+      <div class="ctrl-group">
+        <label>X Min</label>
+        <input type="number" id="xMin" value="-10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+      </div>
+      <div class="ctrl-group">
+        <label>X Max</label>
+        <input type="number" id="xMax" value="10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+      </div>
+      <div class="ctrl-group">
+        <label>Y Min</label>
+        <input type="number" id="yMin" value="-10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+      </div>
+      <div class="ctrl-group">
+        <label>Y Max</label>
+        <input type="number" id="yMax" value="10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+      </div>
+      <div class="ctrl-group">
+        <label>&nbsp;</label>
+        <button class="plot-btn" onclick="plot()">Plot</button>
+      </div>
+      <div class="ctrl-group">
+        <label>&nbsp;</label>
+        <button class="dl-btn" onclick="downloadPNG()">Download PNG</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="canvas-wrap">
+      <canvas id="plotCanvas" width="900" height="500"></canvas>
+      <div class="coord-display" id="coordDisplay"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const COLORS = ['#059669', '#2563eb', '#dc2626', '#d97706'];
+  let functions = [];
+  let fnIdCounter = 0;
+
+  function addFunction(expr, color) {
+    if (functions.length >= 4) return;
+    const id = fnIdCounter++;
+    const col = color || COLORS[functions.length % COLORS.length];
+    functions.push({ id, expr: expr || '', color: col, error: '' });
+    renderFunctions();
+    if (functions.length >= 4) document.getElementById('addFnBtn').style.display = 'none';
+  }
+
+  function removeFunction(id) {
+    functions = functions.filter(f => f.id !== id);
+    document.getElementById('addFnBtn').style.display = '';
+    renderFunctions();
+    plot();
+  }
+
+  function renderFunctions() {
+    const area = document.getElementById('fnArea');
+    area.innerHTML = '';
+    functions.forEach(fn => {
+      const row = document.createElement('div');
+      row.className = 'fn-row';
+      row.innerHTML = `
+        <input type="color" value="${fn.color}" onchange="updateFnColor(${fn.id},this.value)">
+        <input type="text" placeholder="e.g. sin(x), x^2 - 3*x + 2" value="${esc(fn.expr)}"
+               class="${fn.error ? 'error' : ''}"
+               onchange="updateFnExpr(${fn.id},this.value)"
+               oninput="updateFnExpr(${fn.id},this.value)">
+        ${fn.error ? `<span class="fn-error">${esc(fn.error)}</span>` : ''}
+        <button class="remove-fn" onclick="removeFunction(${fn.id})">&#10005;</button>
+      `;
+      area.appendChild(row);
+    });
+  }
+
+  function updateFnExpr(id, val) {
+    const fn = functions.find(f => f.id === id);
+    if (fn) { fn.expr = val; fn.error = ''; renderFunctions(); plot(); }
+  }
+
+  function updateFnColor(id, val) {
+    const fn = functions.find(f => f.id === id);
+    if (fn) { fn.color = val; plot(); }
+  }
+
+  // Safe math expression evaluator
+  const MATH_SCOPE = {
+    sin: Math.sin, cos: Math.cos, tan: Math.tan,
+    asin: Math.asin, acos: Math.acos, atan: Math.atan,
+    log: Math.log10, log2: Math.log2, ln: Math.log, log10: Math.log10,
+    sqrt: Math.sqrt, abs: Math.abs, floor: Math.floor, ceil: Math.ceil,
+    round: Math.round, exp: Math.exp,
+    pi: Math.PI, e: Math.E
+  };
+
+  function buildEval(expr) {
+    let s = expr
+      .replace(/\^/g, '**')
+      .replace(/\bpi\b/g, '(' + Math.PI + ')')
+      .replace(/\be\b/g, '(' + Math.E + ')')
+      .replace(/\bsin\b/g, 'Math.sin')
+      .replace(/\bcos\b/g, 'Math.cos')
+      .replace(/\btan\b/g, 'Math.tan')
+      .replace(/\basin\b/g, 'Math.asin')
+      .replace(/\bacos\b/g, 'Math.acos')
+      .replace(/\batan\b/g, 'Math.atan')
+      .replace(/\bsqrt\b/g, 'Math.sqrt')
+      .replace(/\babs\b/g, 'Math.abs')
+      .replace(/\bfloor\b/g, 'Math.floor')
+      .replace(/\bceil\b/g, 'Math.ceil')
+      .replace(/\bround\b/g, 'Math.round')
+      .replace(/\bexp\b/g, 'Math.exp')
+      .replace(/\blog2\b/g, 'Math.log2')
+      .replace(/\blog10\b/g, 'Math.log10')
+      .replace(/\bln\b/g, 'Math.log')
+      .replace(/\blog\b/g, 'Math.log10');
+    return new Function('x', '"use strict"; return (' + s + ');');
+  }
+
+  function evalFn(fn, x) {
+    try { const f = buildEval(fn.expr); const y = f(x); return isFinite(y) ? y : null; }
+    catch(e) { return null; }
+  }
+
+  function validateFn(fn) {
+    try { buildEval(fn.expr); evalFn(fn, 0); return ''; }
+    catch(e) { return 'Invalid expression'; }
+  }
+
+  const canvas = document.getElementById('plotCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function worldToCanvas(x, y, xMin, xMax, yMin, yMax) {
+    const cx = (x - xMin) / (xMax - xMin) * canvas.width;
+    const cy = canvas.height - (y - yMin) / (yMax - yMin) * canvas.height;
+    return [cx, cy];
+  }
+
+  function canvasToWorld(cx, cy, xMin, xMax, yMin, yMax) {
+    const x = xMin + (cx / canvas.width) * (xMax - xMin);
+    const y = yMin + (1 - cy / canvas.height) * (yMax - yMin);
+    return [x, y];
+  }
+
+  function plot() {
+    const xMin = parseFloat(document.getElementById('xMin').value) || -10;
+    const xMax = parseFloat(document.getElementById('xMax').value) || 10;
+    const yMin = parseFloat(document.getElementById('yMin').value) || -10;
+    const yMax = parseFloat(document.getElementById('yMax').value) || 10;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Background
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    const xStep = niceStep(xMax - xMin, 10);
+    const yStep = niceStep(yMax - yMin, 10);
+    for (let gx = Math.ceil(xMin / xStep) * xStep; gx <= xMax; gx += xStep) {
+      const [cx] = worldToCanvas(gx, 0, xMin, xMax, yMin, yMax);
+      ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height); ctx.stroke();
+    }
+    for (let gy = Math.ceil(yMin / yStep) * yStep; gy <= yMax; gy += yStep) {
+      const [, cy] = worldToCanvas(0, gy, xMin, xMax, yMin, yMax);
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = '#374151';
+    ctx.lineWidth = 1.5;
+    const [axX] = worldToCanvas(0, 0, xMin, xMax, yMin, yMax);
+    const [, axY] = worldToCanvas(0, 0, xMin, xMax, yMin, yMax);
+    ctx.beginPath(); ctx.moveTo(0, axY); ctx.lineTo(canvas.width, axY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(axX, 0); ctx.lineTo(axX, canvas.height); ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    for (let gx = Math.ceil(xMin / xStep) * xStep; gx <= xMax; gx += xStep) {
+      if (Math.abs(gx) < xStep * 0.01) continue;
+      const [cx] = worldToCanvas(gx, 0, xMin, xMax, yMin, yMax);
+      const ly = Math.min(canvas.height - 5, Math.max(12, axY + 14));
+      ctx.fillText(fmtNum(gx), cx, ly);
+    }
+    ctx.textAlign = 'right';
+    for (let gy = Math.ceil(yMin / yStep) * yStep; gy <= yMax; gy += yStep) {
+      if (Math.abs(gy) < yStep * 0.01) continue;
+      const [, cy] = worldToCanvas(0, gy, xMin, xMax, yMin, yMax);
+      const lx = Math.min(canvas.width - 2, Math.max(30, axX - 4));
+      ctx.fillText(fmtNum(gy), lx, cy + 4);
+    }
+
+    // Functions
+    const steps = canvas.width * 2;
+    functions.forEach(fn => {
+      if (!fn.expr.trim()) return;
+      const err = validateFn(fn);
+      fn.error = err;
+      if (err) { renderFunctions(); return; }
+      ctx.strokeStyle = fn.color;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      let started = false;
+      for (let i = 0; i <= steps; i++) {
+        const x = xMin + (i / steps) * (xMax - xMin);
+        const y = evalFn(fn, x);
+        if (y === null || y < yMin - (yMax - yMin) || y > yMax + (yMax - yMin)) { started = false; continue; }
+        const [cx, cy] = worldToCanvas(x, y, xMin, xMax, yMin, yMax);
+        if (!started) { ctx.moveTo(cx, cy); started = true; }
+        else { ctx.lineTo(cx, cy); }
+      }
+      ctx.stroke();
+    });
+
+    // Legend
+    const visibleFns = functions.filter(f => f.expr.trim() && !f.error);
+    if (visibleFns.length) {
+      let ly = 14;
+      visibleFns.forEach(fn => {
+        ctx.fillStyle = fn.color;
+        ctx.fillRect(8, ly - 8, 20, 3);
+        ctx.fillStyle = '#1e293b';
+        ctx.textAlign = 'left';
+        ctx.font = '12px monospace';
+        ctx.fillText('y = ' + fn.expr, 34, ly);
+        ly += 18;
+      });
+    }
+  }
+
+  function niceStep(range, n) {
+    const rough = range / n;
+    const magnitude = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / magnitude;
+    let nice = 1;
+    if (norm >= 5) nice = 5;
+    else if (norm >= 2) nice = 2;
+    else nice = 1;
+    return nice * magnitude;
+  }
+
+  function fmtNum(n) { return Number(n.toFixed(4)).toString(); }
+
+  // Crosshair
+  const coordDisplay = document.getElementById('coordDisplay');
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) * canvas.width / rect.width;
+    const cy = (e.clientY - rect.top) * canvas.height / rect.height;
+    const xMin = parseFloat(document.getElementById('xMin').value) || -10;
+    const xMax = parseFloat(document.getElementById('xMax').value) || 10;
+    const yMin = parseFloat(document.getElementById('yMin').value) || -10;
+    const yMax = parseFloat(document.getElementById('yMax').value) || 10;
+    const [wx, wy] = canvasToWorld(cx, cy, xMin, xMax, yMin, yMax);
+    coordDisplay.style.display = 'block';
+    coordDisplay.textContent = 'x=' + wx.toFixed(3) + ', y=' + wy.toFixed(3);
+  });
+  canvas.addEventListener('mouseleave', () => { coordDisplay.style.display = 'none'; });
+
+  function downloadPNG() {
+    const a = document.createElement('a');
+    a.download = 'graph.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }
+
+  function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  addFunction('sin(x)', COLORS[0]);
+  plot();
+</script>
+</body>
+</html>

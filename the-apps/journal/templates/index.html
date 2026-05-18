@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Journal</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #faf5ff; color: #1e293b; min-height: 100vh; }
+  header { background: #7c3aed; color: #fff; padding: .9rem 1.5rem; box-shadow: 0 2px 8px rgba(124,58,237,.3); }
+  header h1 { font-size: 1.3rem; font-weight: 700; }
+  .search-bar { padding: .75rem 1.5rem; background: #fff; border-bottom: 1px solid #e2e8f0; }
+  .search-input { width: 100%; max-width: 500px; border: 1px solid #e2e8f0; border-radius: 8px; padding: .5rem 1rem; font-size: .875rem; color: #1e293b; }
+  .search-input:focus { outline: none; border-color: #7c3aed; }
+  .search-results { max-width: 500px; background: #fff; border: 1px solid #ddd6fe; border-radius: 8px; margin-top: .4rem; display: none; box-shadow: 0 4px 12px rgba(124,58,237,.12); }
+  .search-result-item { padding: .5rem 1rem; cursor: pointer; font-size: .82rem; border-bottom: 1px solid #f1f5f9; }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: #f5f3ff; }
+  .layout { display: grid; grid-template-columns: 280px 1fr; gap: 0; min-height: calc(100vh - 110px); }
+  .cal-panel { background: #fff; border-right: 1px solid #e2e8f0; padding: 1.25rem; }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
+  .cal-month { font-size: .95rem; font-weight: 700; color: #7c3aed; }
+  .cal-nav { background: none; border: none; color: #7c3aed; font-size: 1.1rem; cursor: pointer; padding: .2rem .4rem; border-radius: 4px; }
+  .cal-nav:hover { background: #f5f3ff; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-dow { text-align: center; font-size: .68rem; font-weight: 700; color: #94a3b8; padding: .2rem 0; }
+  .cal-day {
+    text-align: center; font-size: .78rem; padding: .3rem .15rem; border-radius: 5px; cursor: pointer;
+    position: relative; color: #475569; transition: all .15s;
+  }
+  .cal-day:hover { background: #ede9fe; color: #7c3aed; }
+  .cal-day.today { background: #7c3aed; color: #fff; font-weight: 700; }
+  .cal-day.selected { background: #ddd6fe; color: #5b21b6; font-weight: 700; }
+  .cal-day.today.selected { background: #5b21b6; color: #fff; }
+  .cal-day.has-entry::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #a78bfa; border-radius: 50%; }
+  .cal-day.today::after { background: rgba(255,255,255,.7); }
+  .cal-day.empty { cursor: default; }
+  .journal-panel { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .date-display { font-size: 1.1rem; font-weight: 700; color: #7c3aed; }
+  .mood-row { display: flex; gap: .4rem; align-items: center; }
+  .mood-label { font-size: .78rem; color: #64748b; font-weight: 600; margin-right: .3rem; }
+  .mood-btn { font-size: 1.4rem; cursor: pointer; padding: .2rem; border-radius: 6px; background: none; border: 2px solid transparent; transition: all .15s; }
+  .mood-btn.selected { border-color: #7c3aed; background: #f5f3ff; }
+  textarea#entryText { width: 100%; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; font-size: .92rem; line-height: 1.6; color: #1e293b; resize: vertical; min-height: 300px; font-family: inherit; }
+  textarea#entryText:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+  .entry-footer { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+  .word-count { font-size: .78rem; color: #94a3b8; margin-right: auto; }
+  .btn { padding: .5rem 1.1rem; border: none; border-radius: 8px; font-size: .875rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .btn-save { background: #7c3aed; color: #fff; }
+  .btn-save:hover { background: #6d28d9; }
+  .btn-clear { background: #fee2e2; color: #dc2626; }
+  .btn-clear:hover { background: #fca5a5; }
+  .saved-msg { font-size: .78rem; color: #059669; display: none; }
+  @media (max-width: 660px) { .layout { grid-template-columns: 1fr; } .cal-panel { border-right: none; border-bottom: 1px solid #e2e8f0; } }
+</style>
+</head>
+<body>
+<header><h1>Daily Journal</h1></header>
+<div class="search-bar">
+  <input class="search-input" id="searchInput" type="text" placeholder="Search entries..." oninput="doSearch()">
+  <div class="search-results" id="searchResults"></div>
+</div>
+<div class="layout">
+  <div class="cal-panel">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">&#8592;</button>
+      <span class="cal-month" id="calMonth"></span>
+      <button class="cal-nav" onclick="changeMonth(1)">&#8594;</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+  <div class="journal-panel">
+    <div class="date-display" id="dateDisplay"></div>
+    <div class="mood-row">
+      <span class="mood-label">Mood:</span>
+      <button class="mood-btn" data-mood="happy" onclick="selectMood('happy')">😊</button>
+      <button class="mood-btn" data-mood="neutral" onclick="selectMood('neutral')">😐</button>
+      <button class="mood-btn" data-mood="sad" onclick="selectMood('sad')">😔</button>
+      <button class="mood-btn" data-mood="angry" onclick="selectMood('angry')">😤</button>
+      <button class="mood-btn" data-mood="excited" onclick="selectMood('excited')">🤩</button>
+    </div>
+    <textarea id="entryText" placeholder="Write your thoughts for today..." oninput="onTextInput()"></textarea>
+    <div class="entry-footer">
+      <span class="word-count" id="wordCount">0 words</span>
+      <span class="saved-msg" id="savedMsg">Saved ✓</span>
+      <button class="btn btn-save" onclick="saveEntry()">Save</button>
+      <button class="btn btn-clear" onclick="clearEntry()">Clear Entry</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const today = new Date();
+  let curYear = today.getFullYear();
+  let curMonth = today.getMonth();
+  let selectedDate = toKey(today);
+  let autoSaveTimer = null;
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+  function toKey(d) {
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function loadEntry(key) {
+    try { return JSON.parse(localStorage.getItem('journal_' + key)) || {}; } catch(e) { return {}; }
+  }
+
+  function saveEntryData(key, entry) {
+    localStorage.setItem('journal_' + key, JSON.stringify(entry));
+  }
+
+  function renderCalendar() {
+    document.getElementById('calMonth').textContent = MONTHS[curMonth] + ' ' + curYear;
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    DAYS.forEach(d => { const el = document.createElement('div'); el.className = 'cal-dow'; el.textContent = d; grid.appendChild(el); });
+    const first = new Date(curYear, curMonth, 1).getDay();
+    const daysInMonth = new Date(curYear, curMonth + 1, 0).getDate();
+    for (let i = 0; i < first; i++) { const el = document.createElement('div'); el.className = 'cal-day empty'; grid.appendChild(el); }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const key = `${curYear}-${String(curMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const el = document.createElement('div');
+      el.className = 'cal-day';
+      el.textContent = d;
+      el.dataset.key = key;
+      const todayKey = toKey(today);
+      if (key === todayKey) el.classList.add('today');
+      if (key === selectedDate) el.classList.add('selected');
+      const entry = loadEntry(key);
+      if (entry.text && entry.text.trim()) el.classList.add('has-entry');
+      el.addEventListener('click', () => selectDate(key));
+      grid.appendChild(el);
+    }
+  }
+
+  function selectDate(key) {
+    selectedDate = key;
+    const parts = key.split('-');
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    document.getElementById('dateDisplay').textContent = d.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    const entry = loadEntry(key);
+    document.getElementById('entryText').value = entry.text || '';
+    updateWordCount();
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    if (entry.mood) {
+      const btn = document.querySelector('.mood-btn[data-mood="' + entry.mood + '"]');
+      if (btn) btn.classList.add('selected');
+    }
+    renderCalendar();
+  }
+
+  function selectMood(mood) {
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    const btn = document.querySelector('.mood-btn[data-mood="' + mood + '"]');
+    if (btn) btn.classList.add('selected');
+    const entry = loadEntry(selectedDate);
+    entry.mood = mood;
+    saveEntryData(selectedDate, entry);
+  }
+
+  function updateWordCount() {
+    const text = document.getElementById('entryText').value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    document.getElementById('wordCount').textContent = words + ' word' + (words !== 1 ? 's' : '');
+  }
+
+  function onTextInput() {
+    updateWordCount();
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => { saveEntry(true); }, 1000);
+  }
+
+  function saveEntry(auto) {
+    const entry = loadEntry(selectedDate);
+    entry.text = document.getElementById('entryText').value;
+    saveEntryData(selectedDate, entry);
+    if (!auto) {
+      document.getElementById('savedMsg').style.display = 'inline';
+      setTimeout(() => { document.getElementById('savedMsg').style.display = 'none'; }, 1500);
+    }
+    renderCalendar();
+  }
+
+  function clearEntry() {
+    if (!confirm('Clear entry for this day?')) return;
+    localStorage.removeItem('journal_' + selectedDate);
+    document.getElementById('entryText').value = '';
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    updateWordCount();
+    renderCalendar();
+  }
+
+  function changeMonth(delta) {
+    curMonth += delta;
+    if (curMonth < 0) { curMonth = 11; curYear--; }
+    if (curMonth > 11) { curMonth = 0; curYear++; }
+    renderCalendar();
+  }
+
+  function doSearch() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const results = document.getElementById('searchResults');
+    if (!q) { results.style.display = 'none'; return; }
+    const matches = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key.startsWith('journal_')) continue;
+      try {
+        const entry = JSON.parse(localStorage.getItem(key));
+        if (entry.text && entry.text.toLowerCase().includes(q)) {
+          const dateKey = key.replace('journal_', '');
+          matches.push({ key: dateKey, preview: entry.text.slice(0, 60) });
+        }
+      } catch(e) {}
+    }
+    matches.sort((a, b) => b.key.localeCompare(a.key));
+    if (!matches.length) { results.innerHTML = '<div class="search-result-item" style="color:#94a3b8">No matches found</div>'; results.style.display = 'block'; return; }
+    results.innerHTML = matches.slice(0, 10).map(m =>
+      `<div class="search-result-item" onclick="goToDate('${m.key}')"><strong>${m.key}</strong> — ${esc(m.preview)}...</div>`
+    ).join('');
+    results.style.display = 'block';
+  }
+
+  function goToDate(key) {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').style.display = 'none';
+    const parts = key.split('-');
+    curYear = parseInt(parts[0]); curMonth = parseInt(parts[1]) - 1;
+    selectDate(key);
+  }
+
+  function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  selectDate(toKey(today));
+</script>
+</body>
+</html>

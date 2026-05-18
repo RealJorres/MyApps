@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speech to Text</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #fff5f5; color: #1e293b; min-height: 100vh; }
+  header { background: #dc2626; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(220,38,38,.3); }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: .85rem; opacity: .85; }
+  main { max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+  .card { background: #fff; border-radius: 12px; padding: 1.75rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
+  .mic-area { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .mic-btn {
+    width: 90px; height: 90px; border-radius: 50%; border: none; background: #dc2626; color: #fff;
+    font-size: 2.2rem; cursor: pointer; position: relative; transition: all .2s; box-shadow: 0 4px 16px rgba(220,38,38,.4);
+  }
+  .mic-btn:hover { background: #b91c1c; transform: scale(1.05); }
+  .mic-btn.recording { background: #dc2626; animation: pulseBtn 1s ease-in-out infinite; }
+  @keyframes pulseBtn {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,.6); }
+    50% { box-shadow: 0 0 0 18px rgba(220,38,38,0); }
+  }
+  .mic-btn.recording::before {
+    content: ''; position: absolute; inset: -8px; border-radius: 50%;
+    border: 3px solid rgba(220,38,38,.4); animation: pulseBorder 1s ease-in-out infinite;
+  }
+  @keyframes pulseBorder {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: .3; }
+  }
+  .status-text { font-size: .9rem; font-weight: 600; color: #64748b; }
+  .status-text.active { color: #dc2626; }
+  .controls-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  .ctrl-group { display: flex; flex-direction: column; gap: .3rem; }
+  label { font-size: .78rem; font-weight: 600; color: #475569; }
+  select { border: 1px solid #e2e8f0; border-radius: 6px; padding: .45rem .75rem; font-size: .875rem; color: #1e293b; background: #fff; }
+  select:focus { outline: none; border-color: #dc2626; }
+  .toggle-row { display: flex; align-items: center; gap: .6rem; }
+  .toggle-label { font-size: .82rem; color: #475569; font-weight: 600; }
+  .toggle { position: relative; width: 40px; height: 22px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider-toggle { position: absolute; inset: 0; background: #cbd5e1; border-radius: 11px; cursor: pointer; transition: .2s; }
+  .slider-toggle::before { content: ''; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  input:checked + .slider-toggle { background: #dc2626; }
+  input:checked + .slider-toggle::before { transform: translateX(18px); }
+  .interim-text { font-style: italic; color: #94a3b8; font-size: .88rem; min-height: 24px; padding: .4rem .6rem; background: #fef2f2; border-radius: 6px; }
+  textarea { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: .75rem 1rem; font-size: .9rem; color: #1e293b; resize: vertical; min-height: 180px; font-family: inherit; line-height: 1.6; }
+  textarea:focus { outline: none; border-color: #dc2626; }
+  .action-btns { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: .75rem; }
+  .btn { padding: .5rem 1.1rem; border: none; border-radius: 8px; font-size: .875rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .btn-copy { background: #1e293b; color: #fff; }
+  .btn-copy:hover { background: #0f172a; }
+  .btn-dl { background: #dc2626; color: #fff; }
+  .btn-dl:hover { background: #b91c1c; }
+  .btn-clr { background: #fee2e2; color: #dc2626; }
+  .btn-clr:hover { background: #fca5a5; }
+  .unsupported { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 1.5rem; text-align: center; color: #9a3412; }
+  .unsupported h3 { font-size: 1.1rem; margin-bottom: .5rem; }
+  .unsupported p { font-size: .875rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Speech to Text</h1>
+  <p>Convert your voice to text using the browser Web Speech API</p>
+</header>
+<main id="main">
+  <div id="unsupportedMsg" class="unsupported" style="display:none">
+    <h3>Browser Not Supported</h3>
+    <p>Your browser does not support the Web Speech API.<br>Please use Google Chrome or Microsoft Edge for speech recognition.</p>
+  </div>
+
+  <div id="appContent">
+    <div class="card">
+      <div class="mic-area">
+        <button class="mic-btn" id="micBtn" onclick="toggleRecording()">🎤</button>
+        <div class="status-text" id="statusText">Click microphone to start</div>
+      </div>
+      <div class="controls-row" style="margin-top:1.5rem">
+        <div class="ctrl-group">
+          <label>Language</label>
+          <select id="langSelect" onchange="setLang()">
+            <option value="en-US">English (US)</option>
+            <option value="en-GB">English (UK)</option>
+            <option value="es-ES">Spanish</option>
+            <option value="fr-FR">French</option>
+            <option value="de-DE">German</option>
+            <option value="pt-BR">Portuguese</option>
+            <option value="it-IT">Italian</option>
+            <option value="ja-JP">Japanese</option>
+            <option value="zh-CN">Chinese (Simplified)</option>
+          </select>
+        </div>
+        <div class="toggle-row" style="margin-top:1.3rem">
+          <label class="toggle"><input type="checkbox" id="continuousToggle" onchange="setLang()"><span class="slider-toggle"></span></label>
+          <span class="toggle-label">Continuous Mode</span>
+        </div>
+      </div>
+      <div class="interim-text" id="interimText">Interim transcript will appear here...</div>
+    </div>
+
+    <div class="card">
+      <label style="font-size:.85rem;font-weight:700;color:#dc2626;display:block;margin-bottom:.6rem">Transcript</label>
+      <textarea id="outputText" placeholder="Your speech will appear here..."></textarea>
+      <div class="action-btns">
+        <button class="btn btn-copy" onclick="copyText()">Copy</button>
+        <button class="btn btn-dl" onclick="downloadText()">Download .txt</button>
+        <button class="btn btn-clr" onclick="clearText()">Clear</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('unsupportedMsg').style.display = 'block';
+    document.getElementById('appContent').style.display = 'none';
+  }
+
+  let recognition = null;
+  let isRecording = false;
+  let finalText = '';
+
+  function initRecognition() {
+    if (recognition) { try { recognition.stop(); } catch(e) {} }
+    recognition = new SpeechRecognition();
+    recognition.lang = document.getElementById('langSelect').value;
+    recognition.continuous = document.getElementById('continuousToggle').checked;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      isRecording = true;
+      document.getElementById('micBtn').classList.add('recording');
+      document.getElementById('micBtn').textContent = '⏹';
+      document.getElementById('statusText').textContent = 'Listening...';
+      document.getElementById('statusText').classList.add('active');
+    };
+
+    recognition.onresult = e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const transcript = e.results[i][0].transcript;
+        if (e.results[i].isFinal) { finalText += transcript + ' '; }
+        else { interim += transcript; }
+      }
+      document.getElementById('outputText').value = finalText;
+      document.getElementById('interimText').textContent = interim || '';
+    };
+
+    recognition.onerror = e => {
+      document.getElementById('statusText').textContent = 'Error: ' + e.error;
+      stopRecording();
+    };
+
+    recognition.onend = () => {
+      if (isRecording && document.getElementById('continuousToggle').checked) {
+        try { recognition.start(); } catch(e) { stopRecording(); }
+      } else { stopRecording(); }
+    };
+  }
+
+  function toggleRecording() {
+    if (!SpeechRecognition) return;
+    if (isRecording) { stopRecording(); }
+    else { startRecording(); }
+  }
+
+  function startRecording() {
+    initRecognition();
+    try { recognition.start(); }
+    catch(e) { document.getElementById('statusText').textContent = 'Error starting: ' + e.message; }
+  }
+
+  function stopRecording() {
+    isRecording = false;
+    try { if (recognition) recognition.stop(); } catch(e) {}
+    document.getElementById('micBtn').classList.remove('recording');
+    document.getElementById('micBtn').textContent = '🎤';
+    document.getElementById('statusText').textContent = 'Click microphone to start';
+    document.getElementById('statusText').classList.remove('active');
+    document.getElementById('interimText').textContent = '';
+  }
+
+  function setLang() {
+    if (isRecording) { stopRecording(); }
+  }
+
+  function copyText() {
+    const t = document.getElementById('outputText').value;
+    if (!t) return;
+    navigator.clipboard.writeText(t).then(() => { alert('Copied to clipboard!'); });
+  }
+
+  function downloadText() {
+    const t = document.getElementById('outputText').value;
+    if (!t) return;
+    const blob = new Blob([t], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'transcript.txt'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function clearText() {
+    document.getElementById('outputText').value = '';
+    finalText = '';
+    document.getElementById('interimText').textContent = '';
+  }
+</script>
+</body>
+</html>

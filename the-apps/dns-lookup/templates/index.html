@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNS Lookup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #faf5ff; color: #1e293b; min-height: 100vh; }
+  header { background: #7c3aed; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(124,58,237,.3); }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: .85rem; opacity: .85; }
+  main { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+  .card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
+  .input-row { display: flex; gap: .75rem; margin-bottom: 1rem; }
+  .input-row input { flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: .65rem 1rem; font-size: .9rem; color: #1e293b; }
+  .input-row input:focus { outline: none; border-color: #7c3aed; }
+  .btn { padding: .65rem 1.4rem; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: #6d28d9; }
+  .btn-all { background: #6d28d9; }
+  .btn-outline { background: #ede9fe; color: #7c3aed; border: 1.5px solid #ddd6fe; }
+  .btn-outline:hover { background: #ddd6fe; }
+  .type-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .type-tab { padding: .35rem .8rem; border: 1.5px solid #ddd6fe; border-radius: 6px; background: #faf5ff; color: #7c3aed; font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .15s; }
+  .type-tab.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+  .type-tab:hover:not(.active) { background: #ede9fe; }
+  .quick-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+  .quick-label { font-size: .78rem; color: #94a3b8; font-weight: 600; }
+  .results-section { margin-top: .5rem; }
+  .result-group { margin-bottom: 1.25rem; }
+  .result-group-title { font-size: .8rem; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th { background: #f5f3ff; color: #5b21b6; font-weight: 700; padding: .5rem .75rem; text-align: left; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+  td { padding: .5rem .75rem; border-bottom: 1px solid #f1f5f9; word-break: break-all; color: #1e293b; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #faf5ff; }
+  .empty-note { color: #94a3b8; font-size: .85rem; font-style: italic; padding: .5rem 0; }
+  .error-msg { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; padding: .75rem 1rem; border-radius: 8px; font-size: .875rem; }
+  .loading { color: #94a3b8; font-size: .85rem; padding: .5rem 0; }
+  .badge { display: inline-block; padding: .15rem .45rem; border-radius: 4px; font-size: .72rem; font-weight: 700; background: #ede9fe; color: #7c3aed; margin-right: .3rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>DNS Lookup</h1>
+  <p>Query DNS records for any domain</p>
+</header>
+<main>
+  <div class="card">
+    <div class="input-row">
+      <input type="text" id="domainInput" placeholder="Enter domain (e.g. example.com)" onkeydown="if(event.key==='Enter')doLookup()">
+      <button class="btn" onclick="doLookup()">Lookup</button>
+      <button class="btn btn-all" onclick="lookupAll()">All Types</button>
+    </div>
+    <div class="type-tabs" id="typeTabs">
+      <span class="type-tab active" data-type="A" onclick="selectType(this,'A')">A</span>
+      <span class="type-tab" data-type="AAAA" onclick="selectType(this,'AAAA')">AAAA</span>
+      <span class="type-tab" data-type="MX" onclick="selectType(this,'MX')">MX</span>
+      <span class="type-tab" data-type="TXT" onclick="selectType(this,'TXT')">TXT</span>
+      <span class="type-tab" data-type="CNAME" onclick="selectType(this,'CNAME')">CNAME</span>
+      <span class="type-tab" data-type="NS" onclick="selectType(this,'NS')">NS</span>
+      <span class="type-tab" data-type="SOA" onclick="selectType(this,'SOA')">SOA</span>
+    </div>
+    <div class="quick-row">
+      <span class="quick-label">Quick test:</span>
+      <button class="btn btn-outline" style="padding:.3rem .75rem;font-size:.8rem" onclick="quickTest('google.com')">google.com</button>
+      <button class="btn btn-outline" style="padding:.3rem .75rem;font-size:.8rem" onclick="quickTest('github.com')">github.com</button>
+      <button class="btn btn-outline" style="padding:.3rem .75rem;font-size:.8rem" onclick="quickTest('cloudflare.com')">cloudflare.com</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="resultsArea"><div style="color:#94a3b8;font-size:.875rem">Enter a domain and click Lookup to see DNS records.</div></div>
+  </div>
+</main>
+
+<script>
+  let selectedType = 'A';
+
+  function selectType(el, type) {
+    document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    selectedType = type;
+  }
+
+  async function doLookup() {
+    const domain = document.getElementById('domainInput').value.trim();
+    if (!domain) return;
+    document.getElementById('resultsArea').innerHTML = '<div class="loading">Looking up ' + selectedType + ' records for ' + esc(domain) + '...</div>';
+    try {
+      const resp = await fetch('api/lookup', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ domain, type: selectedType }) });
+      const data = await resp.json();
+      renderSingleResult(data, selectedType);
+    } catch(e) {
+      document.getElementById('resultsArea').innerHTML = `<div class="error-msg">Error: ${e.message}</div>`;
+    }
+  }
+
+  function renderSingleResult(data, type) {
+    if (data.error) { document.getElementById('resultsArea').innerHTML = `<div class="error-msg">${esc(data.error)}</div>`; return; }
+    document.getElementById('resultsArea').innerHTML = renderGroup(data, type);
+  }
+
+  function renderGroup(data, type) {
+    if (data.error) return `<div class="error-msg">${esc(data.error)}</div>`;
+    let html = `<div class="result-group">`;
+    html += `<div class="result-group-title"><span class="badge">${type}</span> ${esc(data.domain)}</div>`;
+    if (data.note && !data.records.length) {
+      html += `<div class="empty-note">${esc(data.note)}</div>`;
+    } else if (!data.records || !data.records.length) {
+      html += `<div class="empty-note">No records found.</div>`;
+    } else {
+      html += `<table><thead><tr><th>Type</th><th>Value</th><th>TTL</th></tr></thead><tbody>`;
+      data.records.forEach(r => {
+        html += `<tr><td><span class="badge">${type}</span></td><td>${esc(r.value)}</td><td>${r.ttl}s</td></tr>`;
+      });
+      html += `</tbody></table>`;
+    }
+    html += `</div>`;
+    return html;
+  }
+
+  async function lookupAll() {
+    const domain = document.getElementById('domainInput').value.trim();
+    if (!domain) return;
+    const types = ['A', 'AAAA', 'MX', 'TXT', 'CNAME', 'NS', 'SOA'];
+    document.getElementById('resultsArea').innerHTML = '<div class="loading">Querying all record types for ' + esc(domain) + '...</div>';
+    const results = [];
+    for (const t of types) {
+      try {
+        const resp = await fetch('api/lookup', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ domain, type: t }) });
+        const data = await resp.json();
+        results.push({ type: t, data });
+      } catch(e) {
+        results.push({ type: t, data: { error: e.message } });
+      }
+    }
+    let html = '';
+    results.forEach(r => { html += renderGroup(r.data, r.type); });
+    document.getElementById('resultsArea').innerHTML = html || '<div class="empty-note">No records found.</div>';
+  }
+
+  function quickTest(domain) {
+    document.getElementById('domainInput').value = domain;
+    doLookup();
+  }
+
+  function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

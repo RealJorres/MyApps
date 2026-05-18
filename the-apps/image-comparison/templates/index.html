@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Comparison</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #faf5ff; color: #1e293b; min-height: 100vh; }
+  header { background: #7c3aed; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(124,58,237,.3); }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: .85rem; opacity: .85; }
+  main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+  .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+  .card { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+  .drop-zone {
+    border: 2px dashed #ddd6fe; border-radius: 10px; padding: 2rem 1rem;
+    text-align: center; cursor: pointer; transition: all .2s; background: #faf5ff; min-height: 140px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .drop-zone:hover, .drop-zone.over { border-color: #7c3aed; background: #ede9fe; }
+  .drop-zone .label { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+  .before-label { color: #7c3aed; }
+  .after-label { color: #6d28d9; }
+  .drop-zone p { font-size: .85rem; color: #64748b; }
+  .drop-zone strong { color: #7c3aed; cursor: pointer; }
+  .thumb { max-width: 100%; max-height: 80px; border-radius: 6px; margin-top: .5rem; object-fit: cover; }
+  .file-info { font-size: .75rem; color: #94a3b8; margin-top: .3rem; }
+  .compare-section { display: none; }
+  .compare-section.visible { display: block; }
+  .compare-wrap {
+    position: relative; overflow: hidden; border-radius: 10px; user-select: none;
+    border: 2px solid #ddd6fe; background: #1e293b; cursor: col-resize;
+  }
+  .compare-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; }
+  .compare-img.after { clip-path: inset(0 0 0 50%); }
+  .divider-line {
+    position: absolute; top: 0; bottom: 0; width: 3px; background: #fff;
+    transform: translateX(-50%); box-shadow: 0 0 6px rgba(0,0,0,.5); pointer-events: none;
+  }
+  .handle {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 36px; height: 36px; background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35); color: #7c3aed; font-size: 1rem; pointer-events: none;
+  }
+  .side-label {
+    position: absolute; top: .6rem; padding: .25rem .6rem; background: rgba(0,0,0,.55);
+    color: #fff; font-size: .78rem; font-weight: 700; border-radius: 4px; pointer-events: none;
+  }
+  .side-label.before-pos { left: .6rem; }
+  .side-label.after-pos { right: .6rem; }
+  .info-bar { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
+  .info-item { font-size: .85rem; color: #475569; }
+  .info-item strong { color: #7c3aed; }
+  .swap-btn {
+    padding: .5rem 1.25rem; background: #7c3aed; color: #fff; border: none;
+    border-radius: 8px; font-size: .875rem; font-weight: 600; cursor: pointer; transition: background .2s; margin-left: auto;
+  }
+  .swap-btn:hover { background: #6d28d9; }
+  @media (max-width: 600px) { .upload-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Image Comparison</h1>
+  <p>Drag the slider to compare Before and After images</p>
+</header>
+<main>
+  <div class="upload-row">
+    <div class="card">
+      <div class="drop-zone" id="dropBefore">
+        <div class="label before-label">Before</div>
+        <p>Drop image or <strong onclick="document.getElementById('fileBefore').click()">browse</strong></p>
+        <input type="file" id="fileBefore" accept="image/*" style="display:none">
+        <img class="thumb" id="thumbBefore" style="display:none">
+        <div class="file-info" id="infoBefore"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="drop-zone" id="dropAfter">
+        <div class="label after-label">After</div>
+        <p>Drop image or <strong onclick="document.getElementById('fileAfter').click()">browse</strong></p>
+        <input type="file" id="fileAfter" accept="image/*" style="display:none">
+        <img class="thumb" id="thumbAfter" style="display:none">
+        <div class="file-info" id="infoAfter"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card compare-section" id="compareSection">
+    <div class="compare-wrap" id="compareWrap" style="height:460px">
+      <img class="compare-img before" id="imgBefore" src="" alt="Before">
+      <img class="compare-img after" id="imgAfter" src="" alt="After">
+      <div class="divider-line" id="dividerLine" style="left:50%"></div>
+      <div class="handle" id="handle" style="left:50%">&#8596;</div>
+      <div class="side-label before-pos">Before</div>
+      <div class="side-label after-pos">After</div>
+    </div>
+    <div class="info-bar">
+      <div class="info-item" id="nameInfo"></div>
+      <div class="info-item" id="dimInfo"></div>
+      <button class="swap-btn" onclick="swapImages()">&#8646; Swap</button>
+    </div>
+  </div>
+</main>
+<script>
+  let beforeSrc = null, afterSrc = null;
+  let beforeName = '', afterName = '';
+  let beforeDim = '', afterDim = '';
+  let isDragging = false;
+  let sliderPct = 50;
+
+  function setupDrop(zoneId, fileId, which) {
+    const zone = document.getElementById(zoneId);
+    const inp = document.getElementById(fileId);
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) loadImage(f, which); });
+    inp.addEventListener('change', () => { if (inp.files[0]) loadImage(inp.files[0], which); });
+  }
+
+  setupDrop('dropBefore', 'fileBefore', 'before');
+  setupDrop('dropAfter', 'fileAfter', 'after');
+
+  function loadImage(file, which) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const dim = img.naturalWidth + ' × ' + img.naturalHeight + ' px';
+        if (which === 'before') {
+          beforeSrc = e.target.result; beforeName = file.name; beforeDim = dim;
+          const t = document.getElementById('thumbBefore');
+          t.src = e.target.result; t.style.display = 'block';
+          document.getElementById('infoBefore').textContent = dim;
+        } else {
+          afterSrc = e.target.result; afterName = file.name; afterDim = dim;
+          const t = document.getElementById('thumbAfter');
+          t.src = e.target.result; t.style.display = 'block';
+          document.getElementById('infoAfter').textContent = dim;
+        }
+        if (beforeSrc && afterSrc) initCompare();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function initCompare() {
+    document.getElementById('imgBefore').src = beforeSrc;
+    document.getElementById('imgAfter').src = afterSrc;
+    document.getElementById('compareSection').classList.add('visible');
+    updateSlider(sliderPct);
+    document.getElementById('nameInfo').innerHTML = '<strong>Before:</strong> ' + beforeName + ' &nbsp;|&nbsp; <strong>After:</strong> ' + afterName;
+    document.getElementById('dimInfo').innerHTML = '<strong>Dims:</strong> ' + beforeDim + ' / ' + afterDim;
+  }
+
+  function updateSlider(pct) {
+    sliderPct = pct;
+    document.getElementById('imgAfter').style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    document.getElementById('dividerLine').style.left = pct + '%';
+    document.getElementById('handle').style.left = pct + '%';
+  }
+
+  const wrap = document.getElementById('compareWrap');
+
+  wrap.addEventListener('mousedown', e => { isDragging = true; e.preventDefault(); moveTo(e); });
+  window.addEventListener('mousemove', e => { if (isDragging) moveTo(e); });
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  wrap.addEventListener('touchstart', e => { isDragging = true; moveToTouch(e.touches[0]); }, { passive: true });
+  window.addEventListener('touchmove', e => { if (isDragging) moveToTouch(e.touches[0]); }, { passive: true });
+  window.addEventListener('touchend', () => { isDragging = false; });
+
+  function moveTo(e) {
+    const rect = wrap.getBoundingClientRect();
+    let pct = (e.clientX - rect.left) / rect.width * 100;
+    pct = Math.max(0, Math.min(100, pct));
+    updateSlider(pct);
+  }
+
+  function moveToTouch(t) {
+    const rect = wrap.getBoundingClientRect();
+    let pct = (t.clientX - rect.left) / rect.width * 100;
+    pct = Math.max(0, Math.min(100, pct));
+    updateSlider(pct);
+  }
+
+  function swapImages() {
+    [beforeSrc, afterSrc] = [afterSrc, beforeSrc];
+    [beforeName, afterName] = [afterName, beforeName];
+    [beforeDim, afterDim] = [afterDim, beforeDim];
+    document.getElementById('thumbBefore').src = beforeSrc;
+    document.getElementById('thumbAfter').src = afterSrc;
+    document.getElementById('infoBefore').textContent = beforeDim;
+    document.getElementById('infoAfter').textContent = afterDim;
+    if (beforeSrc && afterSrc) initCompare();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Info Lookup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f9ff; color: #1e293b; min-height: 100vh; }
+  header { background: #0891b2; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(8,145,178,.3); }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: .85rem; opacity: .85; }
+  main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+  .card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
+  .lookup-row { display: flex; gap: .75rem; }
+  .lookup-row input { flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: .65rem 1rem; font-size: .9rem; color: #1e293b; }
+  .lookup-row input:focus { outline: none; border-color: #0891b2; }
+  .btn { padding: .65rem 1.5rem; background: #0891b2; color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: #0e7490; }
+  .section-title { font-size: .85rem; font-weight: 700; color: #0891b2; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; display: flex; align-items: center; gap: .4rem; }
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .75rem; }
+  .info-item { background: #f0f9ff; border-radius: 8px; padding: .75rem 1rem; border: 1px solid #bae6fd; }
+  .info-label { font-size: .7rem; font-weight: 700; color: #0891b2; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .2rem; }
+  .info-value { font-size: .88rem; color: #1e293b; font-weight: 500; word-break: break-all; }
+  .info-value a { color: #0891b2; text-decoration: none; font-size: .78rem; }
+  .info-value a:hover { text-decoration: underline; }
+  .flag { font-size: 1.3rem; margin-right: .3rem; }
+  .error-msg { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; padding: .75rem 1rem; border-radius: 8px; font-size: .875rem; }
+  .loading { color: #94a3b8; font-size: .9rem; text-align: center; padding: 1rem; }
+  .divider { border: none; border-top: 1px solid #e2e8f0; margin: 1.25rem 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>IP Info Lookup</h1>
+  <p>Geolocate any IP address or check your own public IP</p>
+</header>
+<main>
+  <div class="card">
+    <div class="section-title">Your Public IP</div>
+    <div id="myIpResult"><div class="loading">Loading your IP info...</div></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Lookup Any IP</div>
+    <div class="lookup-row">
+      <input type="text" id="ipInput" placeholder="Enter IP address (e.g. 8.8.8.8)" onkeydown="if(event.key==='Enter')doLookup()">
+      <button class="btn" onclick="doLookup()">Lookup</button>
+    </div>
+    <div style="margin-top:1rem" id="lookupResult"></div>
+  </div>
+</main>
+
+<script>
+  const FLAGS = {};
+
+  function flagEmoji(code) {
+    if (!code || code.length !== 2) return '';
+    return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E0 - 65 + c.charCodeAt(0)));
+  }
+
+  function renderInfo(data, label) {
+    if (data.error) return `<div class="error-msg">${esc(data.error)}</div>`;
+    const flag = flagEmoji(data.countryCode);
+    const lat = data.lat, lon = data.lon;
+    const mapsUrl = `https://maps.google.com/?q=${lat},${lon}`;
+    return `
+      <div class="section-title" style="margin-bottom:.75rem">${label}</div>
+      <div class="info-grid">
+        <div class="info-item"><div class="info-label">IP Address</div><div class="info-value">${esc(data.query || '')}</div></div>
+        <div class="info-item"><div class="info-label">Country</div><div class="info-value"><span class="flag">${flag}</span>${esc(data.country || '')}</div></div>
+        <div class="info-item"><div class="info-label">Region</div><div class="info-value">${esc(data.regionName || '')}</div></div>
+        <div class="info-item"><div class="info-label">City</div><div class="info-value">${esc(data.city || '')}</div></div>
+        <div class="info-item"><div class="info-label">ZIP / Postal</div><div class="info-value">${esc(data.zip || 'N/A')}</div></div>
+        <div class="info-item"><div class="info-label">Timezone</div><div class="info-value">${esc(data.timezone || '')}</div></div>
+        <div class="info-item"><div class="info-label">ISP</div><div class="info-value">${esc(data.isp || '')}</div></div>
+        <div class="info-item"><div class="info-label">Organization</div><div class="info-value">${esc(data.org || '')}</div></div>
+        <div class="info-item"><div class="info-label">AS Number</div><div class="info-value">${esc(data.as || '')}</div></div>
+        <div class="info-item"><div class="info-label">Coordinates</div><div class="info-value">${lat}, ${lon}<br><a href="${mapsUrl}" target="_blank">Open in Maps &#8599;</a></div></div>
+      </div>
+    `;
+  }
+
+  async function loadMyIp() {
+    try {
+      const resp = await fetch('api/myip');
+      const data = await resp.json();
+      document.getElementById('myIpResult').innerHTML = renderInfo(data, 'Your IP Details');
+    } catch(e) {
+      document.getElementById('myIpResult').innerHTML = `<div class="error-msg">Failed to load: ${e.message}</div>`;
+    }
+  }
+
+  async function doLookup() {
+    const ip = document.getElementById('ipInput').value.trim();
+    if (!ip) return;
+    document.getElementById('lookupResult').innerHTML = '<div class="loading">Looking up...</div>';
+    try {
+      const resp = await fetch('api/lookup', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ ip }) });
+      const data = await resp.json();
+      document.getElementById('lookupResult').innerHTML = renderInfo(data, 'Lookup Result: ' + ip);
+    } catch(e) {
+      document.getElementById('lookupResult').innerHTML = `<div class="error-msg">Error: ${e.message}</div>`;
+    }
+  }
+
+  function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  loadMyIp();
+</script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Cropper</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f9ff; color: #1e293b; min-height: 100vh; }
+  header { background: #0891b2; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(8,145,178,.3); }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: .85rem; opacity: .85; }
+  main { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+  .card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
+  .drop-zone {
+    border: 2px dashed #bae6fd; border-radius: 10px; padding: 2.5rem 1rem;
+    text-align: center; cursor: pointer; transition: all .2s; background: #f0f9ff;
+  }
+  .drop-zone:hover, .drop-zone.over { border-color: #0891b2; background: #e0f2fe; }
+  .drop-icon { font-size: 2.5rem; margin-bottom: .5rem; }
+  .drop-zone p { color: #64748b; font-size: .9rem; }
+  .drop-zone strong { color: #0891b2; }
+  #fileInput { display: none; }
+  .controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+  .ctrl-group { display: flex; flex-direction: column; gap: .3rem; }
+  label { font-size: .78rem; font-weight: 600; color: #475569; }
+  select { border: 1px solid #e2e8f0; border-radius: 6px; padding: .4rem .7rem; font-size: .875rem; color: #1e293b; background: #fff; }
+  select:focus { outline: none; border-color: #0891b2; }
+  .canvas-wrap { position: relative; overflow: auto; background: #1e293b; border-radius: 8px; display: flex; align-items: center; justify-content: center; min-height: 200px; }
+  canvas { display: block; cursor: crosshair; }
+  .dim-label { font-size: .8rem; color: #0891b2; font-weight: 600; background: #e0f2fe; border-radius: 6px; padding: .35rem .75rem; }
+  .btn { padding: .7rem 1.5rem; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .btn-primary { background: #0891b2; color: #fff; }
+  .btn-primary:hover { background: #0e7490; }
+  .btn-primary:disabled { background: #7dd3fc; cursor: not-allowed; }
+  .hidden { display: none !important; }
+  .info-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Image Cropper</h1>
+  <p>Upload an image, draw a crop region, then download</p>
+</header>
+<main>
+  <div class="card" id="uploadCard">
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-icon">🖼️</div>
+      <p>Drop image here or <strong onclick="document.getElementById('fileInput').click()">browse</strong></p>
+      <p style="font-size:.75rem;color:#94a3b8;margin-top:.3rem">PNG, JPEG, WEBP up to 20MB</p>
+    </div>
+    <input type="file" id="fileInput" accept="image/*">
+  </div>
+
+  <div class="card hidden" id="editorCard">
+    <div class="controls" style="margin-bottom:1rem">
+      <div class="ctrl-group">
+        <label>Aspect Ratio</label>
+        <select id="aspectRatio">
+          <option value="free">Free</option>
+          <option value="1:1">1 : 1</option>
+          <option value="4:3">4 : 3</option>
+          <option value="16:9">16 : 9</option>
+          <option value="3:4">3 : 4</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Output Format</label>
+        <select id="outFormat">
+          <option value="PNG">PNG</option>
+          <option value="JPEG">JPEG</option>
+          <option value="WEBP">WEBP</option>
+        </select>
+      </div>
+      <div class="dim-label" id="dimLabel">No selection</div>
+      <button class="btn btn-primary" id="cropBtn" disabled>Crop &amp; Download</button>
+    </div>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="mainCanvas"></canvas>
+    </div>
+    <p style="font-size:.78rem;color:#94a3b8;margin-top:.5rem">Drag to create crop area. Drag corners or edges to resize. Drag inside to move.</p>
+  </div>
+</main>
+<script>
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const editorCard = document.getElementById('editorCard');
+  const uploadCard = document.getElementById('uploadCard');
+  const canvas = document.getElementById('mainCanvas');
+  const ctx = canvas.getContext('2d');
+  const dimLabel = document.getElementById('dimLabel');
+  const cropBtn = document.getElementById('cropBtn');
+  const aspectSelect = document.getElementById('aspectRatio');
+
+  let img = null, imgNatW = 0, imgNatH = 0, scale = 1;
+  let crop = null; // {x, y, w, h} in canvas coords
+  let drag = null; // {mode, startX, startY, origCrop}
+  const HANDLE = 8;
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) loadFile(f); });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+
+  function loadFile(f) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      img = new Image();
+      img.onload = () => {
+        imgNatW = img.naturalWidth; imgNatH = img.naturalHeight;
+        const maxW = Math.min(800, window.innerWidth - 80);
+        const maxH = 560;
+        scale = Math.min(maxW / imgNatW, maxH / imgNatH, 1);
+        canvas.width = Math.round(imgNatW * scale);
+        canvas.height = Math.round(imgNatH * scale);
+        crop = { x: 0, y: 0, w: canvas.width, h: canvas.height };
+        editorCard.classList.remove('hidden');
+        uploadCard.classList.add('hidden');
+        drawCanvas();
+        cropBtn.disabled = false;
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(f);
+  }
+
+  function drawCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    if (!crop) return;
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(crop.x, crop.y, crop.w, crop.h);
+    ctx.drawImage(img, crop.x / scale, crop.y / scale, crop.w / scale, crop.h / scale,
+                  crop.x, crop.y, crop.w, crop.h);
+    ctx.strokeStyle = '#0891b2';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(crop.x, crop.y, crop.w, crop.h);
+    // Rule of thirds
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 0.5;
+    for (let i = 1; i < 3; i++) {
+      ctx.beginPath(); ctx.moveTo(crop.x + crop.w * i / 3, crop.y);
+      ctx.lineTo(crop.x + crop.w * i / 3, crop.y + crop.h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(crop.x, crop.y + crop.h * i / 3);
+      ctx.lineTo(crop.x + crop.w, crop.y + crop.h * i / 3); ctx.stroke();
+    }
+    // Corner handles
+    const handles = getHandles();
+    handles.forEach(h => {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(h.x - HANDLE/2, h.y - HANDLE/2, HANDLE, HANDLE);
+      ctx.strokeStyle = '#0891b2';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(h.x - HANDLE/2, h.y - HANDLE/2, HANDLE, HANDLE);
+    });
+    const natW = Math.round(crop.w / scale);
+    const natH = Math.round(crop.h / scale);
+    dimLabel.textContent = natW + ' × ' + natH + ' px';
+  }
+
+  function getHandles() {
+    if (!crop) return [];
+    const { x, y, w, h } = crop;
+    return [
+      { id: 'tl', x: x, y: y }, { id: 'tc', x: x + w/2, y: y }, { id: 'tr', x: x+w, y: y },
+      { id: 'ml', x: x, y: y + h/2 }, { id: 'mr', x: x+w, y: y + h/2 },
+      { id: 'bl', x: x, y: y+h }, { id: 'bc', x: x + w/2, y: y+h }, { id: 'br', x: x+w, y: y+h }
+    ];
+  }
+
+  function hitHandle(mx, my) {
+    return getHandles().find(h => Math.abs(mx - h.x) <= HANDLE && Math.abs(my - h.y) <= HANDLE) || null;
+  }
+
+  function inCrop(mx, my) {
+    return crop && mx >= crop.x && mx <= crop.x + crop.w && my >= crop.y && my <= crop.y + crop.h;
+  }
+
+  function getAspect() {
+    const v = aspectSelect.value;
+    if (v === 'free') return null;
+    const [a, b] = v.split(':').map(Number);
+    return a / b;
+  }
+
+  function clampCrop(c) {
+    c.x = Math.max(0, c.x); c.y = Math.max(0, c.y);
+    c.w = Math.max(10, c.w); c.h = Math.max(10, c.h);
+    if (c.x + c.w > canvas.width) c.w = canvas.width - c.x;
+    if (c.y + c.h > canvas.height) c.h = canvas.height - c.y;
+    return c;
+  }
+
+  canvas.addEventListener('mousedown', e => {
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
+    const h = hitHandle(mx, my);
+    if (h) { drag = { mode: 'resize', handle: h.id, startX: mx, startY: my, origCrop: {...crop} }; return; }
+    if (inCrop(mx, my)) { drag = { mode: 'move', startX: mx, startY: my, origCrop: {...crop} }; return; }
+    drag = { mode: 'new', startX: mx, startY: my };
+    crop = { x: mx, y: my, w: 0, h: 0 };
+  });
+
+  canvas.addEventListener('mousemove', e => {
+    if (!drag) {
+      const r = canvas.getBoundingClientRect();
+      const mx = e.clientX - r.left, my = e.clientY - r.top;
+      const h = hitHandle(mx, my);
+      canvas.style.cursor = h ? 'pointer' : inCrop(mx, my) ? 'move' : 'crosshair';
+      return;
+    }
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
+    const dx = mx - drag.startX, dy = my - drag.startY;
+    const aspect = getAspect();
+
+    if (drag.mode === 'new') {
+      let w = mx - drag.startX, h = my - drag.startY;
+      if (aspect) h = w / aspect;
+      crop = { x: drag.startX, y: drag.startY, w, h };
+      if (w < 0) { crop.x = drag.startX + w; crop.w = -w; }
+      if (h < 0) { crop.y = drag.startY + h; crop.h = -h; }
+    } else if (drag.mode === 'move') {
+      crop.x = Math.max(0, Math.min(canvas.width - drag.origCrop.w, drag.origCrop.x + dx));
+      crop.y = Math.max(0, Math.min(canvas.height - drag.origCrop.h, drag.origCrop.y + dy));
+      crop.w = drag.origCrop.w; crop.h = drag.origCrop.h;
+    } else if (drag.mode === 'resize') {
+      const o = drag.origCrop;
+      let nx = o.x, ny = o.y, nw = o.w, nh = o.h;
+      const hid = drag.handle;
+      if (hid.includes('l')) { nx = o.x + dx; nw = o.w - dx; }
+      if (hid.includes('r')) { nw = o.w + dx; }
+      if (hid.includes('t')) { ny = o.y + dy; nh = o.h - dy; }
+      if (hid.includes('b')) { nh = o.h + dy; }
+      if (aspect) { nh = nw / aspect; }
+      crop = clampCrop({ x: nx, y: ny, w: Math.max(10, nw), h: Math.max(10, nh) });
+    }
+    drawCanvas();
+    cropBtn.disabled = false;
+  });
+
+  canvas.addEventListener('mouseup', () => { drag = null; });
+  canvas.addEventListener('mouseleave', () => { drag = null; });
+
+  cropBtn.addEventListener('click', async () => {
+    if (!crop || !img) return;
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = imgNatW; tempCanvas.height = imgNatH;
+    const tc = tempCanvas.getContext('2d');
+    tc.drawImage(img, 0, 0);
+    const b64 = tempCanvas.toDataURL('image/png');
+    const payload = {
+      image: b64,
+      x: Math.round(crop.x / scale), y: Math.round(crop.y / scale),
+      w: Math.round(crop.w / scale), h: Math.round(crop.h / scale),
+      format: document.getElementById('outFormat').value
+    };
+    try {
+      const resp = await fetch('api/crop', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if (!resp.ok) { const d = await resp.json(); alert('Error: ' + d.error); return; }
+      const blob = await resp.blob();
+      const fmt = payload.format.toLowerCase();
+      const ext = fmt === 'jpeg' ? 'jpg' : fmt;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'cropped.' + ext; a.click();
+      URL.revokeObjectURL(url);
+    } catch(e) { alert('Error: ' + e.message); }
+  });
+</script>
+</body>
+</html>

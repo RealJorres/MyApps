@@ -404,5 +404,110 @@
     "description": "Flip cards to find matching emoji pairs. Three difficulty levels with a star rating.",
     "port": 5054, "path": "./the-apps/memory-card-game", "entry": "app.py",
     "icon": "🃏", "color": "#7c3aed", "tags": ["Memory", "Cards", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "sudoku",
+    "name": "Sudoku",
+    "description": "Classic 9×9 Sudoku with Easy, Medium, and Hard difficulties. Hints, check, and solve.",
+    "port": 5071, "path": "./the-apps/sudoku", "entry": "app.py",
+    "icon": "🔢", "color": "#0891b2", "tags": ["Sudoku", "Puzzle", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "snake-game",
+    "name": "Snake",
+    "description": "Classic snake game. Eat food, grow longer, avoid yourself. Arrow keys or swipe to play.",
+    "port": 5072, "path": "./the-apps/snake-game", "entry": "app.py",
+    "icon": "🐍", "color": "#16a34a", "tags": ["Snake", "Game", "Arcade"], "category": "Games / Fun"
+  },
+  {
+    "id": "tic-tac-toe",
+    "name": "Tic-Tac-Toe",
+    "description": "Play vs a friend or vs an AI. Hard mode uses minimax — try to beat it.",
+    "port": 5073, "path": "./the-apps/tic-tac-toe", "entry": "app.py",
+    "icon": "❌", "color": "#be185d", "tags": ["Tic-Tac-Toe", "Game", "AI"], "category": "Games / Fun"
+  },
+  {
+    "id": "pdf-compressor",
+    "name": "PDF Compressor",
+    "description": "Reduce PDF file size with one click. Shows original size, compressed size, and savings.",
+    "port": 5059, "path": "./the-apps/pdf-compressor", "entry": "app.py",
+    "icon": "🗜️", "color": "#4f46e5", "tags": ["PDF", "Compress"], "category": "Document / File"
+  },
+  {
+    "id": "resume-builder",
+    "name": "Resume Builder",
+    "description": "Fill in your experience, education, and skills — download a clean one-page PDF resume.",
+    "port": 5060, "path": "./the-apps/resume-builder", "entry": "app.py",
+    "icon": "📋", "color": "#0f766e", "tags": ["Resume", "PDF", "Career"], "category": "Document / File"
+  },
+  {
+    "id": "image-cropper",
+    "name": "Image Cropper",
+    "description": "Upload an image, drag a crop box, and download the cropped result.",
+    "port": 5061, "path": "./the-apps/image-cropper", "entry": "app.py",
+    "icon": "✂️", "color": "#0891b2", "tags": ["Crop", "Images", "Edit"], "category": "Image / Media"
+  },
+  {
+    "id": "meme-generator",
+    "name": "Meme Generator",
+    "description": "Add top and bottom text to any image with live preview. Download your meme instantly.",
+    "port": 5062, "path": "./the-apps/meme-generator", "entry": "app.py",
+    "icon": "😂", "color": "#d97706", "tags": ["Meme", "Images", "Fun"], "category": "Image / Media"
+  },
+  {
+    "id": "image-comparison",
+    "name": "Image Comparison",
+    "description": "Upload two images and compare them with a drag-to-reveal before/after slider.",
+    "port": 5063, "path": "./the-apps/image-comparison", "entry": "app.py",
+    "icon": "⇔", "color": "#7c3aed", "tags": ["Compare", "Images", "Before/After"], "category": "Image / Media"
+  },
+  {
+    "id": "kanban-board",
+    "name": "Kanban Board",
+    "description": "Drag-and-drop task board with To Do, In Progress, and Done columns. Saved in browser.",
+    "port": 5064, "path": "./the-apps/kanban-board", "entry": "app.py",
+    "icon": "📌", "color": "#0891b2", "tags": ["Kanban", "Tasks", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "journal",
+    "name": "Journal",
+    "description": "Daily journal with a calendar view, mood selector, and search. All saved in your browser.",
+    "port": 5065, "path": "./the-apps/journal", "entry": "app.py",
+    "icon": "📔", "color": "#7c3aed", "tags": ["Journal", "Diary", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "speech-to-text",
+    "name": "Speech to Text",
+    "description": "Click the mic and speak — your words are transcribed live using your browser's speech API.",
+    "port": 5066, "path": "./the-apps/speech-to-text", "entry": "app.py",
+    "icon": "🎙️", "color": "#dc2626", "tags": ["Speech", "Transcribe", "Voice"], "category": "Text / Productivity"
+  },
+  {
+    "id": "ip-info",
+    "name": "IP Address Info",
+    "description": "See your public IP address and look up any IP for location, ISP, and timezone info.",
+    "port": 5067, "path": "./the-apps/ip-info", "entry": "app.py",
+    "icon": "🌐", "color": "#0891b2", "tags": ["IP", "Network", "Lookup"], "category": "Network / Security"
+  },
+  {
+    "id": "dns-lookup",
+    "name": "DNS Lookup",
+    "description": "Look up A, AAAA, MX, TXT, CNAME, and NS records for any domain.",
+    "port": 5068, "path": "./the-apps/dns-lookup", "entry": "app.py",
+    "icon": "🔎", "color": "#7c3aed", "tags": ["DNS", "Network", "Dev"], "category": "Network / Security"
+  },
+  {
+    "id": "graph-plotter",
+    "name": "Graph Plotter",
+    "description": "Plot math functions like sin(x), x^2, and more. Up to 4 functions at once on a canvas.",
+    "port": 5069, "path": "./the-apps/graph-plotter", "entry": "app.py",
+    "icon": "📉", "color": "#059669", "tags": ["Graph", "Math", "Science"], "category": "Science / Education"
+  },
+  {
+    "id": "quiz-maker",
+    "name": "Quiz Maker",
+    "description": "Create multiple-choice quizzes, save them, and test yourself. Score tracked per attempt.",
+    "port": 5070, "path": "./the-apps/quiz-maker", "entry": "app.py",
+    "icon": "📝", "color": "#d97706", "tags": ["Quiz", "Study", "Education"], "category": "Science / Education"
   }
 ]
