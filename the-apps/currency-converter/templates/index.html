@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Converter</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #eff6ff; color: #1e293b; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #1d4ed8, #1e40af); color: white; padding: 1.25rem 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; }
+  .main { max-width: 800px; margin: 0 auto; padding: 1.75rem 1.25rem; }
+  .converter-card { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 2px 16px rgba(29,78,216,0.1); margin-bottom: 1.5rem; }
+  .converter-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: end; margin-bottom: 1.25rem; }
+  .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field-group label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; }
+  .field-group input { padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1.4rem; font-weight: 700; color: #1e293b; background: #f8fafc; transition: border-color 0.2s; }
+  .field-group input:focus { outline: none; border-color: #1d4ed8; background: white; }
+  .field-group select { padding: 0.6rem 0.75rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.92rem; background: white; cursor: pointer; transition: border-color 0.2s; }
+  .field-group select:focus { outline: none; border-color: #1d4ed8; }
+  .swap-btn { width: 44px; height: 44px; border-radius: 50%; background: #1d4ed8; color: white; border: none; font-size: 1.2rem; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; align-self: center; margin-bottom: 0; }
+  .swap-btn:hover { background: #1e40af; transform: rotate(180deg); }
+  .rate-display { text-align: center; font-size: 0.9rem; color: #6b7280; padding: 0.75rem; background: #f0f9ff; border-radius: 8px; }
+  .rate-display strong { color: #1d4ed8; font-size: 1rem; }
+  .quick-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .chip { padding: 0.35rem 0.8rem; border: 1.5px solid #bfdbfe; border-radius: 999px; font-size: 0.82rem; font-weight: 600; cursor: pointer; background: white; color: #1d4ed8; transition: all 0.15s; }
+  .chip:hover { background: #eff6ff; border-color: #1d4ed8; }
+  .chip.active { background: #1d4ed8; color: white; border-color: #1d4ed8; }
+  .disclaimer { font-size: 0.75rem; color: #9ca3af; text-align: center; margin-top: 1rem; font-style: italic; }
+  .table-card { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+  .table-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .table-toggle-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #1d4ed8; }
+  .rate-table { margin-top: 1rem; display: none; max-height: 400px; overflow-y: auto; }
+  .rate-table.open { display: block; }
+  .rate-table table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .rate-table th { position: sticky; top: 0; background: #1d4ed8; color: white; padding: 0.5rem 0.75rem; text-align: left; }
+  .rate-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid #e2e8f0; }
+  .rate-table tr:nth-child(even) td { background: #f8fafc; }
+  .rate-table tr:hover td { background: #eff6ff; }
+  @media (max-width: 500px) { .converter-row { grid-template-columns: 1fr; } .swap-btn { width: 100%; border-radius: 8px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Currency Converter</h1>
+  <p>Static indicative exchange rates — 34 currencies</p>
+</header>
+<div class="main">
+  <div class="converter-card">
+    <div class="converter-row">
+      <div>
+        <div class="field-group">
+          <label>Amount</label>
+          <input type="number" id="amount" value="1" min="0" step="any" oninput="convert()">
+        </div>
+        <div class="field-group" style="margin-top:0.5rem">
+          <label>From</label>
+          <select id="from-cur" onchange="convert()"></select>
+        </div>
+      </div>
+      <button class="swap-btn" onclick="swapCurrencies()" title="Swap">&#8597;</button>
+      <div>
+        <div class="field-group">
+          <label>Result</label>
+          <input type="number" id="result" readonly style="color:#1d4ed8;background:#eff6ff">
+        </div>
+        <div class="field-group" style="margin-top:0.5rem">
+          <label>To</label>
+          <select id="to-cur" onchange="convert()"></select>
+        </div>
+      </div>
+    </div>
+    <div class="rate-display" id="rate-display">Select currencies to see exchange rate</div>
+    <div class="quick-chips" id="quick-chips"></div>
+    <div class="disclaimer">Rates are indicative and may not reflect current market rates. For financial decisions, please use a live rate source.</div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-toggle" onclick="toggleTable()">
+      <div class="table-toggle-title">All Exchange Rates</div>
+      <span id="table-arrow">▼</span>
+    </div>
+    <div class="rate-table" id="rate-table">
+      <table><thead><tr><th>Currency</th><th>Name</th><th>Rate (vs 1 selected)</th></tr></thead>
+      <tbody id="rate-table-body"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<script>
+const CURRENCIES = [
+  {code:'USD',flag:'🇺🇸',name:'US Dollar',rate:1},
+  {code:'EUR',flag:'🇪🇺',name:'Euro',rate:0.92},
+  {code:'GBP',flag:'🇬🇧',name:'British Pound',rate:0.79},
+  {code:'JPY',flag:'🇯🇵',name:'Japanese Yen',rate:149.5},
+  {code:'CNY',flag:'🇨🇳',name:'Chinese Yuan',rate:7.24},
+  {code:'KRW',flag:'🇰🇷',name:'South Korean Won',rate:1325},
+  {code:'PHP',flag:'🇵🇭',name:'Philippine Peso',rate:56.5},
+  {code:'SGD',flag:'🇸🇬',name:'Singapore Dollar',rate:1.34},
+  {code:'AUD',flag:'🇦🇺',name:'Australian Dollar',rate:1.53},
+  {code:'CAD',flag:'🇨🇦',name:'Canadian Dollar',rate:1.36},
+  {code:'CHF',flag:'🇨🇭',name:'Swiss Franc',rate:0.90},
+  {code:'HKD',flag:'🇭🇰',name:'Hong Kong Dollar',rate:7.82},
+  {code:'MXN',flag:'🇲🇽',name:'Mexican Peso',rate:17.15},
+  {code:'BRL',flag:'🇧🇷',name:'Brazilian Real',rate:4.97},
+  {code:'INR',flag:'🇮🇳',name:'Indian Rupee',rate:83.1},
+  {code:'IDR',flag:'🇮🇩',name:'Indonesian Rupiah',rate:15700},
+  {code:'THB',flag:'🇹🇭',name:'Thai Baht',rate:35.4},
+  {code:'MYR',flag:'🇲🇾',name:'Malaysian Ringgit',rate:4.72},
+  {code:'VND',flag:'🇻🇳',name:'Vietnamese Dong',rate:24350},
+  {code:'TWD',flag:'🇹🇼',name:'Taiwan Dollar',rate:31.9},
+  {code:'AED',flag:'🇦🇪',name:'UAE Dirham',rate:3.67},
+  {code:'SAR',flag:'🇸🇦',name:'Saudi Riyal',rate:3.75},
+  {code:'EGP',flag:'🇪🇬',name:'Egyptian Pound',rate:30.9},
+  {code:'TRY',flag:'🇹🇷',name:'Turkish Lira',rate:28.7},
+  {code:'RUB',flag:'🇷🇺',name:'Russian Ruble',rate:89.5},
+  {code:'ZAR',flag:'🇿🇦',name:'South African Rand',rate:18.6},
+  {code:'NGN',flag:'🇳🇬',name:'Nigerian Naira',rate:1550},
+  {code:'PKR',flag:'🇵🇰',name:'Pakistani Rupee',rate:278},
+  {code:'BDT',flag:'🇧🇩',name:'Bangladeshi Taka',rate:110},
+  {code:'SEK',flag:'🇸🇪',name:'Swedish Krona',rate:10.42},
+  {code:'NOK',flag:'🇳🇴',name:'Norwegian Krone',rate:10.55},
+  {code:'DKK',flag:'🇩🇰',name:'Danish Krone',rate:6.88},
+  {code:'PLN',flag:'🇵🇱',name:'Polish Zloty',rate:4.03},
+  {code:'CZK',flag:'🇨🇿',name:'Czech Koruna',rate:22.9},
+];
+
+const QUICK = ['USD','EUR','GBP','JPY','PHP'];
+
+function rateOf(code) { return CURRENCIES.find(c=>c.code===code)?.rate||1; }
+
+function buildSelects() {
+  ['from-cur','to-cur'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = CURRENCIES.map(c => `<option value="${c.code}">${c.flag} ${c.code} — ${c.name}</option>`).join('');
+  });
+  document.getElementById('from-cur').value = 'USD';
+  document.getElementById('to-cur').value = 'PHP';
+}
+
+function buildQuickChips() {
+  const wrap = document.getElementById('quick-chips');
+  QUICK.forEach(code => {
+    const chip = document.createElement('div');
+    chip.className = 'chip'; chip.textContent = code;
+    chip.dataset.code = code;
+    chip.onclick = () => {
+      document.getElementById('from-cur').value = 'USD';
+      document.getElementById('to-cur').value = code;
+      updateChips(); convert();
+    };
+    wrap.appendChild(chip);
+  });
+  updateChips();
+}
+
+function updateChips() {
+  const toCur = document.getElementById('to-cur').value;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.code === toCur));
+}
+
+function convert() {
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const from = document.getElementById('from-cur').value;
+  const to = document.getElementById('to-cur').value;
+  const fromRate = rateOf(from), toRate = rateOf(to);
+  const amtUSD = amount / fromRate;
+  const result = amtUSD * toRate;
+  document.getElementById('result').value = result.toFixed(4);
+  const crossRate = toRate / fromRate;
+  document.getElementById('rate-display').innerHTML = `<strong>1 ${from} = ${crossRate.toFixed(6)} ${to}</strong>  &nbsp;|&nbsp;  1 ${to} = ${(1/crossRate).toFixed(6)} ${from}`;
+  updateChips();
+  renderTable();
+}
+
+function swapCurrencies() {
+  const from = document.getElementById('from-cur').value;
+  const to = document.getElementById('to-cur').value;
+  document.getElementById('from-cur').value = to;
+  document.getElementById('to-cur').value = from;
+  convert();
+}
+
+function toggleTable() {
+  const el = document.getElementById('rate-table');
+  el.classList.toggle('open');
+  document.getElementById('table-arrow').textContent = el.classList.contains('open') ? '▲' : '▼';
+  if (el.classList.contains('open')) renderTable();
+}
+
+function renderTable() {
+  const from = document.getElementById('from-cur').value;
+  const fromRate = rateOf(from);
+  const tbody = document.getElementById('rate-table-body');
+  tbody.innerHTML = CURRENCIES.map(c => {
+    const rate = c.rate / fromRate;
+    return `<tr><td>${c.flag} ${c.code}</td><td>${c.name}</td><td>${rate.toFixed(6)}</td></tr>`;
+  }).join('');
+}
+
+buildSelects();
+buildQuickChips();
+convert();
+</script>
+</body>
+</html>

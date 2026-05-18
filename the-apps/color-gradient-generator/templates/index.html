@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Gradient Generator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #faf5ff; color: #1e293b; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 1.25rem 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; }
+  .layout { display: grid; grid-template-columns: 340px 1fr; gap: 0; min-height: calc(100vh - 80px); }
+  .sidebar { background: white; border-right: 2px solid #e2e8f0; padding: 1.25rem; overflow-y: auto; }
+  .main { display: flex; flex-direction: column; gap: 1.25rem; padding: 1.25rem; }
+  .section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #7c3aed; margin-bottom: 0.75rem; }
+  .preview-box { border-radius: 14px; height: 220px; transition: all 0.3s; box-shadow: 0 4px 24px rgba(124,58,237,0.15); }
+  .css-output { background: #1e1e2e; border-radius: 10px; padding: 1rem 1.25rem; position: relative; }
+  .css-output pre { font-family: 'Courier New', monospace; font-size: 0.85rem; color: #cdd6f4; white-space: pre-wrap; word-break: break-all; }
+  .copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: #7c3aed; color: white; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  .copy-btn:hover { background: #6d28d9; }
+  .stop-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.75rem; }
+  .stop-row { display: flex; align-items: center; gap: 0.6rem; background: #f8fafc; border-radius: 8px; padding: 0.5rem 0.75rem; }
+  .stop-row input[type="color"] { width: 36px; height: 36px; border: 2px solid #e2e8f0; border-radius: 6px; cursor: pointer; padding: 0; background: none; }
+  .stop-row .pos-wrap { display: flex; align-items: center; gap: 0.5rem; flex: 1; }
+  .stop-row input[type="range"] { flex: 1; accent-color: #7c3aed; }
+  .stop-row .pos-val { font-size: 0.8rem; font-weight: 700; color: #7c3aed; width: 32px; text-align: right; }
+  .stop-row .del-btn { background: #fef2f2; color: #dc2626; border: none; border-radius: 5px; width: 26px; height: 26px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .stop-row .del-btn:hover { background: #fecaca; }
+  .add-stop-btn { width: 100%; padding: 0.5rem; border: 2px dashed #d8b4fe; border-radius: 8px; background: none; color: #7c3aed; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .add-stop-btn:hover { background: #f5f3ff; border-color: #7c3aed; }
+  .type-tabs { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .type-tab { flex: 1; padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 7px; background: white; font-size: 0.82rem; font-weight: 600; cursor: pointer; color: #64748b; transition: all 0.2s; text-align: center; }
+  .type-tab.active { border-color: #7c3aed; background: #f5f3ff; color: #7c3aed; }
+  .angle-row { display: flex; align-items: center; gap: 0.75rem; }
+  .angle-row label { font-size: 0.82rem; font-weight: 600; color: #374151; width: 50px; }
+  .angle-row input[type="range"] { flex: 1; accent-color: #7c3aed; }
+  .angle-row .angle-val { font-size: 0.85rem; font-weight: 700; color: #7c3aed; width: 40px; }
+  .section { margin-bottom: 1.25rem; }
+  .divider { border: none; border-top: 1.5px solid #e2e8f0; margin: 1rem 0; }
+  .presets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .preset-chip { height: 52px; border-radius: 9px; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; display: flex; align-items: flex-end; padding: 0.3rem 0.5rem; }
+  .preset-chip:hover { border-color: #7c3aed; transform: scale(1.04); }
+  .preset-chip span { font-size: 0.72rem; font-weight: 700; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+  @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>CSS Gradient Generator</h1>
+  <p>Create beautiful CSS gradients visually</p>
+</header>
+<div class="layout">
+  <div class="sidebar">
+    <div class="section">
+      <div class="section-title">Type</div>
+      <div class="type-tabs">
+        <div class="type-tab active" onclick="setType('linear')">Linear</div>
+        <div class="type-tab" onclick="setType('radial')">Radial</div>
+      </div>
+      <div id="angle-section" class="angle-row">
+        <label>Angle</label>
+        <input type="range" id="angle" min="0" max="360" value="135" oninput="updateAngle()">
+        <span class="angle-val" id="angle-val">135deg</span>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="section">
+      <div class="section-title">Color Stops</div>
+      <div class="stop-list" id="stop-list"></div>
+      <button class="add-stop-btn" onclick="addStop()">+ Add Color Stop</button>
+    </div>
+    <hr class="divider">
+    <div class="section">
+      <div class="section-title">Presets</div>
+      <div class="presets-grid" id="presets-grid"></div>
+    </div>
+  </div>
+  <div class="main">
+    <div>
+      <div class="section-title" style="margin-bottom:0.5rem">Preview</div>
+      <div class="preview-box" id="preview"></div>
+    </div>
+    <div>
+      <div class="section-title" style="margin-bottom:0.5rem">Generated CSS</div>
+      <div class="css-output">
+        <pre id="css-text"></pre>
+        <button class="copy-btn" onclick="copyCss()">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PRESETS = [
+  {name:'Sunset',stops:['#f97316 0%','#ef4444 50%','#8b5cf6 100%'],type:'linear',angle:135},
+  {name:'Ocean',stops:['#06b6d4 0%','#3b82f6 50%','#1e40af 100%'],type:'linear',angle:180},
+  {name:'Forest',stops:['#86efac 0%','#22c55e 50%','#15803d 100%'],type:'linear',angle:145},
+  {name:'Candy',stops:['#f9a8d4 0%','#c084fc 50%','#818cf8 100%'],type:'linear',angle:120},
+  {name:'Fire',stops:['#fde047 0%','#f97316 40%','#dc2626 100%'],type:'linear',angle:160},
+  {name:'Midnight',stops:['#1e1b4b 0%','#312e81 50%','#0f172a 100%'],type:'linear',angle:135},
+  {name:'Aurora',stops:['#34d399 0%','#06b6d4 33%','#818cf8 66%','#f472b6 100%'],type:'linear',angle:105},
+  {name:'Rose Gold',stops:['#fbbf24 0%','#f472b6 50%','#ef4444 100%'],type:'linear',angle:135},
+  {name:'Sky',stops:['#bae6fd 0%','#38bdf8 50%','#0284c7 100%'],type:'linear',angle:180},
+  {name:'Radial Pop',stops:['#f0abfc 0%','#c026d3 60%','#4a044e 100%'],type:'radial',angle:135},
+];
+
+let state = { type: 'linear', angle: 135, stops: [{color:'#7c3aed',pos:0},{color:'#06b6d4',pos:100}] };
+
+function setType(t) {
+  state.type = t;
+  document.querySelectorAll('.type-tab').forEach((el,i) => el.classList.toggle('active', ['linear','radial'][i] === t));
+  document.getElementById('angle-section').style.display = t === 'linear' ? 'flex' : 'none';
+  render();
+}
+
+function updateAngle() {
+  state.angle = parseInt(document.getElementById('angle').value);
+  document.getElementById('angle-val').textContent = state.angle + 'deg';
+  render();
+}
+
+function addStop() {
+  if (state.stops.length >= 6) return;
+  const mid = Math.round((state.stops[0].pos + state.stops[state.stops.length-1].pos) / 2);
+  state.stops.push({color:'#a78bfa', pos: mid});
+  state.stops.sort((a,b) => a.pos - b.pos);
+  renderStops(); render();
+}
+
+function removeStop(idx) {
+  if (state.stops.length <= 2) return;
+  state.stops.splice(idx, 1);
+  renderStops(); render();
+}
+
+function renderStops() {
+  const list = document.getElementById('stop-list');
+  list.innerHTML = '';
+  state.stops.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'stop-row';
+    row.innerHTML = `
+      <input type="color" value="${s.color}" oninput="updateStop(${i},'color',this.value)">
+      <div class="pos-wrap">
+        <input type="range" min="0" max="100" value="${s.pos}" oninput="updateStop(${i},'pos',+this.value)">
+        <span class="pos-val">${s.pos}%</span>
+      </div>
+      <button class="del-btn" onclick="removeStop(${i})" title="Remove">×</button>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function updateStop(i, key, val) {
+  state.stops[i][key] = val;
+  if (key === 'pos') renderStops();
+  render();
+}
+
+function buildGradient() {
+  const stopsStr = state.stops.map(s => `${s.color} ${s.pos}%`).join(', ');
+  if (state.type === 'radial') return `radial-gradient(circle, ${stopsStr})`;
+  return `linear-gradient(${state.angle}deg, ${stopsStr})`;
+}
+
+function render() {
+  const g = buildGradient();
+  document.getElementById('preview').style.background = g;
+  const css = `background: ${g};`;
+  document.getElementById('css-text').textContent = css;
+}
+
+function copyCss() {
+  navigator.clipboard.writeText(document.getElementById('css-text').textContent);
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+
+function loadPreset(p) {
+  state.type = p.type;
+  state.angle = p.angle;
+  state.stops = p.stops.map(s => {
+    const m = s.match(/^(#[0-9a-f]+)\s+(\d+)%$/i);
+    return {color: m[1], pos: parseInt(m[2])};
+  });
+  document.getElementById('angle').value = state.angle;
+  document.getElementById('angle-val').textContent = state.angle + 'deg';
+  document.querySelectorAll('.type-tab').forEach((el,i) => el.classList.toggle('active', ['linear','radial'][i] === state.type));
+  document.getElementById('angle-section').style.display = state.type === 'linear' ? 'flex' : 'none';
+  renderStops(); render();
+}
+
+function buildPresets() {
+  const grid = document.getElementById('presets-grid');
+  PRESETS.forEach(p => {
+    const chip = document.createElement('div');
+    chip.className = 'preset-chip';
+    const stopsStr = p.stops.join(', ');
+    chip.style.background = p.type === 'radial' ? `radial-gradient(circle, ${stopsStr})` : `linear-gradient(${p.angle}deg, ${stopsStr})`;
+    chip.innerHTML = `<span>${p.name}</span>`;
+    chip.onclick = () => loadPreset(p);
+    grid.appendChild(chip);
+  });
+}
+
+buildPresets();
+renderStops();
+render();
+</script>
+</body>
+</html>

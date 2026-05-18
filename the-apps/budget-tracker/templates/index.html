@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Tracker</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0fdf4; color: #1e293b; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #059669, #047857); color: white; padding: 1.25rem 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  .month-nav { background: white; border-bottom: 2px solid #e2e8f0; padding: 0.75rem 2rem; display: flex; align-items: center; gap: 1rem; justify-content: space-between; flex-wrap: wrap; }
+  .month-nav-left { display: flex; align-items: center; gap: 0.75rem; }
+  .nav-btn { background: #f1f5f9; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; cursor: pointer; font-size: 1rem; color: #374151; transition: background 0.15s; }
+  .nav-btn:hover { background: #e2e8f0; }
+  .month-label { font-size: 1.1rem; font-weight: 700; color: #1e293b; min-width: 160px; text-align: center; }
+  .btn { padding: 0.5rem 1rem; border: none; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: #059669; color: white; }
+  .btn-primary:hover { background: #047857; }
+  .btn-secondary { background: #f1f5f9; color: #374151; }
+  .btn-secondary:hover { background: #e2e8f0; }
+  .main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; }
+  .summary-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .summary-card { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); text-align: center; }
+  .summary-card .label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 0.4rem; }
+  .summary-card .amount { font-size: 1.6rem; font-weight: 800; }
+  .income-val { color: #059669; }
+  .expense-val { color: #dc2626; }
+  .balance-pos { color: #059669; }
+  .balance-neg { color: #dc2626; }
+  .panel { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+  .panel-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #059669; margin-bottom: 1rem; }
+  .form-group { margin-bottom: 0.85rem; }
+  .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: #374151; margin-bottom: 0.3rem; }
+  .form-group input, .form-group select { width: 100%; padding: 0.5rem 0.75rem; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.85rem; background: white; }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
+  .type-toggle { display: flex; gap: 0.5rem; }
+  .type-btn { flex: 1; padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 7px; background: white; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .type-btn.income.active { border-color: #059669; background: #d1fae5; color: #065f46; }
+  .type-btn.expense.active { border-color: #dc2626; background: #fee2e2; color: #991b1b; }
+  .transactions { grid-column: 2; }
+  .date-group { margin-bottom: 1rem; }
+  .date-header { font-size: 0.78rem; font-weight: 700; color: #6b7280; padding: 0.3rem 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 0.5rem; }
+  .tx-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.5rem; border-radius: 7px; transition: background 0.15s; }
+  .tx-row:hover { background: #f8fafc; }
+  .tx-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .tx-details { flex: 1; min-width: 0; }
+  .tx-desc { font-size: 0.88rem; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-cat { font-size: 0.75rem; color: #6b7280; }
+  .tx-amount { font-size: 0.95rem; font-weight: 700; flex-shrink: 0; }
+  .tx-amount.income { color: #059669; }
+  .tx-amount.expense { color: #dc2626; }
+  .del-btn { background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 1rem; padding: 0.2rem; transition: color 0.15s; }
+  .del-btn:hover { color: #dc2626; }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: #9ca3af; }
+  .empty-state .icon { font-size: 3rem; margin-bottom: 0.75rem; }
+  .breakdown { grid-column: 1 / -1; }
+  .breakdown-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .breakdown-content { margin-top: 1rem; display: none; }
+  .breakdown-content.open { display: block; }
+  .cat-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .cat-name { font-size: 0.82rem; font-weight: 600; color: #374151; width: 110px; flex-shrink: 0; }
+  .cat-bar-wrap { flex: 1; background: #e2e8f0; border-radius: 999px; height: 10px; overflow: hidden; }
+  .cat-bar { height: 100%; background: #059669; border-radius: 999px; transition: width 0.4s; }
+  .cat-amount { font-size: 0.8rem; font-weight: 700; color: #374151; width: 90px; text-align: right; flex-shrink: 0; }
+  .cat-pct { font-size: 0.75rem; color: #6b7280; width: 35px; text-align: right; flex-shrink: 0; }
+  @media (max-width: 768px) { .main { grid-template-columns: 1fr; } .transactions { grid-column: 1; } .breakdown { grid-column: 1; } }
+</style>
+</head>
+<body>
+<header><h1>Budget Tracker</h1></header>
+
+<div class="month-nav">
+  <div class="month-nav-left">
+    <button class="nav-btn" onclick="changeMonth(-1)">&#8592;</button>
+    <div class="month-label" id="month-label"></div>
+    <button class="nav-btn" onclick="changeMonth(1)">&#8594;</button>
+  </div>
+  <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+</div>
+
+<div class="main">
+  <div class="summary-row">
+    <div class="summary-card"><div class="label">Income</div><div class="amount income-val" id="sum-income">₱0.00</div></div>
+    <div class="summary-card"><div class="label">Expenses</div><div class="amount expense-val" id="sum-expense">₱0.00</div></div>
+    <div class="summary-card"><div class="label">Balance</div><div class="amount" id="sum-balance">₱0.00</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Add Transaction</div>
+    <div class="form-group">
+      <label>Type</label>
+      <div class="type-toggle">
+        <button class="type-btn income active" id="btn-income" onclick="setType('income')">Income</button>
+        <button class="type-btn expense" id="btn-expense" onclick="setType('expense')">Expense</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Amount</label>
+      <input type="number" id="amount" placeholder="0.00" min="0" step="0.01">
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="category"></select>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" id="description" placeholder="What was this for?">
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="date">
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="addTransaction()">Add Transaction</button>
+  </div>
+
+  <div class="transactions panel">
+    <div class="panel-title">Transactions</div>
+    <div id="tx-list"></div>
+  </div>
+
+  <div class="breakdown panel">
+    <div class="breakdown-toggle" onclick="toggleBreakdown()">
+      <div class="panel-title" style="margin-bottom:0">Category Breakdown</div>
+      <span id="breakdown-arrow">▼</span>
+    </div>
+    <div class="breakdown-content" id="breakdown-content"></div>
+  </div>
+</div>
+
+<script>
+const INCOME_CATS = [{icon:'💼',name:'Salary'},{icon:'💻',name:'Freelance'},{icon:'📦',name:'Other'}];
+const EXPENSE_CATS = [{icon:'🍔',name:'Food'},{icon:'🚗',name:'Transport'},{icon:'💡',name:'Utilities'},{icon:'🎬',name:'Entertainment'},{icon:'🏥',name:'Health'},{icon:'🛍',name:'Shopping'},{icon:'🏠',name:'Rent'},{icon:'📦',name:'Other'}];
+
+let txType = 'income';
+let currentDate = new Date();
+let currentYear = currentDate.getFullYear();
+let currentMonth = currentDate.getMonth();
+
+function storageKey() { return `budget_${currentYear}-${String(currentMonth+1).padStart(2,'0')}`; }
+function getTransactions() { try { return JSON.parse(localStorage.getItem(storageKey()) || '[]'); } catch { return []; } }
+function saveTransactions(txs) { localStorage.setItem(storageKey(), JSON.stringify(txs)); }
+
+function updateMonthLabel() {
+  const d = new Date(currentYear, currentMonth, 1);
+  document.getElementById('month-label').textContent = d.toLocaleDateString('en-US', {month:'long',year:'numeric'});
+}
+
+function changeMonth(dir) {
+  currentMonth += dir;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  updateMonthLabel(); render();
+}
+
+function setType(t) {
+  txType = t;
+  document.getElementById('btn-income').classList.toggle('active', t === 'income');
+  document.getElementById('btn-expense').classList.toggle('active', t === 'expense');
+  updateCategorySelect();
+}
+
+function updateCategorySelect() {
+  const sel = document.getElementById('category');
+  const cats = txType === 'income' ? INCOME_CATS : EXPENSE_CATS;
+  sel.innerHTML = cats.map(c => `<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
+}
+
+function addTransaction() {
+  const amount = parseFloat(document.getElementById('amount').value);
+  if (!amount || amount <= 0) { alert('Please enter a valid amount'); return; }
+  const category = document.getElementById('category').value;
+  const description = document.getElementById('description').value || category;
+  const date = document.getElementById('date').value || new Date().toISOString().split('T')[0];
+  const txs = getTransactions();
+  txs.push({ id: Date.now(), type: txType, amount, category, description, date });
+  saveTransactions(txs);
+  document.getElementById('amount').value = '';
+  document.getElementById('description').value = '';
+  render();
+}
+
+function deleteTransaction(id) {
+  const txs = getTransactions().filter(t => t.id !== id);
+  saveTransactions(txs); render();
+}
+
+function fmt(n) { return '₱' + n.toLocaleString('en-PH', {minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function render() {
+  const txs = getTransactions();
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const balance = income - expense;
+  document.getElementById('sum-income').textContent = fmt(income);
+  document.getElementById('sum-expense').textContent = fmt(expense);
+  const balEl = document.getElementById('sum-balance');
+  balEl.textContent = fmt(balance);
+  balEl.className = 'amount ' + (balance >= 0 ? 'balance-pos' : 'balance-neg');
+
+  const groups = {};
+  txs.forEach(t => { if (!groups[t.date]) groups[t.date] = []; groups[t.date].push(t); });
+  const sortedDates = Object.keys(groups).sort().reverse();
+  const list = document.getElementById('tx-list');
+  if (!sortedDates.length) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">💸</div><p>No transactions yet.<br>Add your first one!</p></div>';
+  } else {
+    list.innerHTML = sortedDates.map(d => {
+      const dateStr = new Date(d + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
+      const rows = groups[d].map(t => {
+        const allCats = [...INCOME_CATS, ...EXPENSE_CATS];
+        const catObj = allCats.find(c=>c.name===t.category) || {icon:'📦'};
+        return `<div class="tx-row">
+          <div class="tx-icon" style="background:${t.type==='income'?'#d1fae5':'#fee2e2'}">${catObj.icon}</div>
+          <div class="tx-details">
+            <div class="tx-desc">${t.description}</div>
+            <div class="tx-cat">${t.category}</div>
+          </div>
+          <div class="tx-amount ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+          <button class="del-btn" onclick="deleteTransaction(${t.id})">×</button>
+        </div>`;
+      }).join('');
+      return `<div class="date-group"><div class="date-header">${dateStr}</div>${rows}</div>`;
+    }).join('');
+  }
+
+  renderBreakdown(txs, expense);
+}
+
+function renderBreakdown(txs, totalExpense) {
+  const cats = {};
+  txs.filter(t=>t.type==='expense').forEach(t => { cats[t.category] = (cats[t.category]||0)+t.amount; });
+  const el = document.getElementById('breakdown-content');
+  if (!Object.keys(cats).length) { el.innerHTML = '<p style="color:#9ca3af;font-size:0.85rem">No expense data yet.</p>'; return; }
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML = sorted.map(([cat, amt]) => {
+    const pct = totalExpense > 0 ? (amt/totalExpense*100).toFixed(1) : 0;
+    const allCats = [...INCOME_CATS, ...EXPENSE_CATS];
+    const catObj = allCats.find(c=>c.name===cat) || {icon:'📦'};
+    return `<div class="cat-row">
+      <div class="cat-name">${catObj.icon} ${cat}</div>
+      <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%"></div></div>
+      <div class="cat-amount">${fmt(amt)}</div>
+      <div class="cat-pct">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleBreakdown() {
+  const el = document.getElementById('breakdown-content');
+  const arrow = document.getElementById('breakdown-arrow');
+  el.classList.toggle('open');
+  arrow.textContent = el.classList.contains('open') ? '▲' : '▼';
+}
+
+function exportCSV() {
+  const txs = getTransactions();
+  if (!txs.length) { alert('No transactions to export'); return; }
+  const header = 'Date,Type,Category,Description,Amount';
+  const rows = txs.map(t => `${t.date},${t.type},${t.category},"${t.description}",${t.amount}`);
+  const csv = [header, ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = `budget_${currentYear}-${String(currentMonth+1).padStart(2,'0')}.csv`;
+  a.click();
+}
+
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
+updateMonthLabel();
+updateCategorySelect();
+render();
+</script>
+</body>
+</html>

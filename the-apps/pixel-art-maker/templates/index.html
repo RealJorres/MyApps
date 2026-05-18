@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Art Maker</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fdf2f8; color: #1e293b; min-height: 100vh; user-select: none; }
+  header { background: linear-gradient(135deg, #be185d, #9d174d); color: white; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  header h1 { font-size: 1.3rem; font-weight: 700; }
+  .toolbar { background: white; border-bottom: 2px solid #e2e8f0; padding: 0.6rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .tool-group { display: flex; align-items: center; gap: 0.4rem; }
+  .tool-label { font-size: 0.75rem; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-right: 0.25rem; }
+  .tool-btn { padding: 0.4rem 0.7rem; border: 2px solid #e2e8f0; border-radius: 6px; background: white; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: #374151; }
+  .tool-btn.active { border-color: #be185d; background: #fdf2f8; color: #be185d; }
+  .tool-btn:hover:not(.active) { border-color: #d1d5db; background: #f8fafc; }
+  select { padding: 0.35rem 0.6rem; border: 1.5px solid #d1d5db; border-radius: 6px; font-size: 0.8rem; background: white; cursor: pointer; }
+  .btn { padding: 0.4rem 0.85rem; border: none; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: #be185d; color: white; }
+  .btn-primary:hover { background: #9d174d; }
+  .btn-danger { background: #fef2f2; color: #dc2626; border: 1.5px solid #fca5a5; }
+  .btn-danger:hover { background: #fecaca; }
+  .btn-secondary { background: #f1f5f9; color: #374151; }
+  .btn-secondary:hover { background: #e2e8f0; }
+  .layout { display: flex; gap: 0; min-height: calc(100vh - 110px); }
+  .palette-panel { width: 180px; background: white; border-right: 2px solid #e2e8f0; padding: 1rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; }
+  .palette-section-title { font-size: 0.72rem; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .color-swatch { width: 100%; aspect-ratio: 1; border-radius: 5px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+  .color-swatch.selected { border-color: #1e293b; transform: scale(1.15); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+  .color-swatch:hover:not(.selected) { transform: scale(1.1); }
+  .custom-color-wrap { display: flex; align-items: center; gap: 0.5rem; }
+  .custom-color-wrap input[type="color"] { width: 40px; height: 32px; border: 1.5px solid #d1d5db; border-radius: 5px; cursor: pointer; padding: 1px; }
+  .custom-color-wrap span { font-size: 0.78rem; color: #374151; }
+  .canvas-area { flex: 1; display: flex; align-items: center; justify-content: center; background: #f8fafc; padding: 1.5rem; overflow: auto; }
+  .canvas-wrap { position: relative; }
+  canvas { display: block; cursor: crosshair; image-rendering: pixelated; }
+  .recent-colors { display: flex; flex-wrap: wrap; gap: 3px; }
+  .current-color-show { width: 100%; height: 36px; border-radius: 7px; border: 2px solid #e2e8f0; margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pixel Art Maker</h1>
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+    <button class="btn btn-secondary" onclick="exportPNG()">Export PNG</button>
+    <button class="btn btn-danger" onclick="clearCanvas()">Clear</button>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="tool-group">
+    <span class="tool-label">Grid</span>
+    <select id="grid-size" onchange="changeGrid()">
+      <option value="8">8×8</option>
+      <option value="16" selected>16×16</option>
+      <option value="32">32×32</option>
+    </select>
+  </div>
+  <div class="tool-group">
+    <span class="tool-label">Tool</span>
+    <button class="tool-btn active" id="tool-draw" onclick="setTool('draw')">✏ Draw</button>
+    <button class="tool-btn" id="tool-erase" onclick="setTool('erase')">⬜ Erase</button>
+    <button class="tool-btn" id="tool-fill" onclick="setTool('fill')">🪣 Fill</button>
+    <button class="tool-btn" id="tool-pick" onclick="setTool('pick')">💉 Pick</button>
+  </div>
+  <div class="tool-group">
+    <span class="tool-label">BG</span>
+    <select id="bg-select" onchange="changeBg()">
+      <option value="white">White</option>
+      <option value="black">Black</option>
+      <option value="checker">Checker</option>
+    </select>
+  </div>
+  <div class="tool-group">
+    <button class="tool-btn" id="grid-toggle" onclick="toggleGrid()">Grid Lines: ON</button>
+  </div>
+  <div class="tool-group">
+    <button class="btn btn-secondary" onclick="undo()">↩ Undo</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="palette-panel">
+    <div>
+      <div class="palette-section-title">Current Color</div>
+      <div class="current-color-show" id="current-color-show"></div>
+    </div>
+    <div>
+      <div class="palette-section-title">Palette</div>
+      <div class="palette-grid" id="palette-grid"></div>
+    </div>
+    <div>
+      <div class="palette-section-title">Custom</div>
+      <div class="custom-color-wrap">
+        <input type="color" id="custom-color" value="#7c3aed" oninput="selectColor(this.value)">
+        <span>Pick color</span>
+      </div>
+    </div>
+    <div>
+      <div class="palette-section-title">Recent</div>
+      <div class="recent-colors" id="recent-colors"></div>
+    </div>
+  </div>
+
+  <div class="canvas-area">
+    <div class="canvas-wrap">
+      <canvas id="pixel-canvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+const PALETTE = ['#000000','#ffffff','#dc2626','#ea580c','#d97706','#ca8a04','#16a34a','#0d9488','#2563eb','#7c3aed','#db2777','#9ca3af','#374151','#1e40af','#166534','#7f1d1d'];
+const CELL_DISPLAY = 24;
+let gridSize = 16;
+let cells = [];
+let currentColor = '#000000';
+let tool = 'draw';
+let showGrid = true;
+let bgMode = 'white';
+let isDrawing = false;
+let history = [];
+let recentColors = [];
+
+const canvas = document.getElementById('pixel-canvas');
+const ctx = canvas.getContext('2d');
+
+function initGrid() {
+  cells = Array.from({length: gridSize}, () => Array(gridSize).fill(null));
+  history = [];
+  resizeCanvas();
+  redraw();
+}
+
+function resizeCanvas() {
+  const size = gridSize * CELL_DISPLAY;
+  canvas.width = size; canvas.height = size;
+  canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+}
+
+function redraw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const c = CELL_DISPLAY;
+  // background
+  for (let r = 0; r < gridSize; r++) {
+    for (let col = 0; col < gridSize; col++) {
+      const x = col * c, y = r * c;
+      if (bgMode === 'checker') {
+        ctx.fillStyle = (r+col)%2===0 ? '#ccc' : '#fff';
+      } else {
+        ctx.fillStyle = bgMode;
+      }
+      ctx.fillRect(x,y,c,c);
+      if (cells[r][col]) {
+        ctx.fillStyle = cells[r][col];
+        ctx.fillRect(x,y,c,c);
+      }
+    }
+  }
+  if (showGrid) {
+    ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+    ctx.lineWidth = 0.5;
+    for (let i=0; i<=gridSize; i++) {
+      ctx.beginPath(); ctx.moveTo(i*c,0); ctx.lineTo(i*c,canvas.height); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,i*c); ctx.lineTo(canvas.width,i*c); ctx.stroke();
+    }
+  }
+}
+
+function getCell(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+  const col = Math.floor(x / CELL_DISPLAY);
+  const row = Math.floor(y / CELL_DISPLAY);
+  if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) return null;
+  return {row, col};
+}
+
+function saveHistory() {
+  history.push(cells.map(r => [...r]));
+  if (history.length > 20) history.shift();
+}
+
+function applyTool(e) {
+  const cell = getCell(e);
+  if (!cell) return;
+  const {row, col} = cell;
+  if (tool === 'draw') { cells[row][col] = currentColor; redraw(); }
+  else if (tool === 'erase') { cells[row][col] = null; redraw(); }
+  else if (tool === 'pick') {
+    const c = cells[row][col];
+    if (c) { selectColor(c); setTool('draw'); }
+  }
+}
+
+canvas.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  saveHistory();
+  isDrawing = true;
+  if (tool === 'fill') {
+    const cell = getCell(e);
+    if (cell) floodFill(cell.row, cell.col, cells[cell.row][cell.col], currentColor);
+  } else applyTool(e);
+});
+canvas.addEventListener('mousemove', e => { if (isDrawing && tool !== 'fill' && tool !== 'pick') applyTool(e); });
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+function floodFill(r, c, target, replacement) {
+  if (target === replacement) return;
+  if (r < 0 || r >= gridSize || c < 0 || c >= gridSize) return;
+  if (cells[r][c] !== target) return;
+  cells[r][c] = replacement;
+  floodFill(r+1,c,target,replacement);
+  floodFill(r-1,c,target,replacement);
+  floodFill(r,c+1,target,replacement);
+  floodFill(r,c-1,target,replacement);
+  redraw();
+}
+
+function undo() {
+  if (!history.length) return;
+  cells = history.pop();
+  redraw();
+}
+
+function setTool(t) {
+  tool = t;
+  ['draw','erase','fill','pick'].forEach(id => {
+    document.getElementById('tool-'+id).classList.toggle('active', id === t);
+  });
+}
+
+function selectColor(c) {
+  currentColor = c;
+  document.getElementById('current-color-show').style.background = c;
+  document.getElementById('custom-color').value = c;
+  if (!recentColors.includes(c)) {
+    recentColors.unshift(c);
+    if (recentColors.length > 8) recentColors.pop();
+    renderRecent();
+  }
+  document.querySelectorAll('.color-swatch').forEach(el => el.classList.toggle('selected', el.dataset.color === c));
+}
+
+function renderRecent() {
+  const el = document.getElementById('recent-colors');
+  el.innerHTML = '';
+  recentColors.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch'; sw.dataset.color = c;
+    sw.style.background = c; sw.style.width='24px'; sw.style.height='24px';
+    sw.onclick = () => selectColor(c);
+    if (c === currentColor) sw.classList.add('selected');
+    el.appendChild(sw);
+  });
+}
+
+function buildPalette() {
+  const grid = document.getElementById('palette-grid');
+  PALETTE.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch'; sw.dataset.color = c;
+    sw.style.background = c;
+    sw.onclick = () => selectColor(c);
+    if (c === currentColor) sw.classList.add('selected');
+    grid.appendChild(sw);
+  });
+}
+
+function changeGrid() {
+  if (!confirm('Change grid size? This will clear the canvas.')) {
+    document.getElementById('grid-size').value = gridSize; return;
+  }
+  gridSize = parseInt(document.getElementById('grid-size').value);
+  initGrid();
+}
+
+function changeBg() { bgMode = document.getElementById('bg-select').value; redraw(); }
+
+function toggleGrid() {
+  showGrid = !showGrid;
+  document.getElementById('grid-toggle').textContent = 'Grid Lines: ' + (showGrid ? 'ON' : 'OFF');
+  redraw();
+}
+
+function clearCanvas() {
+  if (!confirm('Clear the canvas?')) return;
+  saveHistory();
+  cells = Array.from({length: gridSize}, () => Array(gridSize).fill(null));
+  redraw();
+}
+
+function exportPNG() {
+  const scale = Math.floor(512 / gridSize);
+  const exp = document.createElement('canvas');
+  exp.width = gridSize * scale; exp.height = gridSize * scale;
+  const ectx = exp.getContext('2d');
+  for (let r=0; r<gridSize; r++) {
+    for (let c=0; c<gridSize; c++) {
+      ectx.fillStyle = cells[r][c] || (bgMode === 'checker' ? ((r+c)%2===0 ? '#ccc' : '#fff') : bgMode);
+      ectx.fillRect(c*scale, r*scale, scale, scale);
+    }
+  }
+  const a = document.createElement('a');
+  a.href = exp.toDataURL('image/png');
+  a.download = 'pixel-art.png'; a.click();
+}
+
+buildPalette();
+selectColor('#000000');
+initGrid();
+</script>
+</body>
+</html>

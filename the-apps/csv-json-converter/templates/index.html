@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSV ↔ JSON Converter</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0fdf4; color: #1e293b; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #059669, #047857); color: white; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; }
+  .tabs { display: flex; gap: 0; background: white; border-bottom: 2px solid #e2e8f0; padding: 0 2rem; }
+  .tab { padding: 0.9rem 1.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: #64748b; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+  .tab.active { color: #059669; border-bottom-color: #059669; }
+  .tab:hover:not(.active) { color: #374151; background: #f8fafc; }
+  .panel { display: none; padding: 1.5rem 2rem; }
+  .panel.active { display: block; }
+  .controls { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .controls label { font-size: 0.85rem; font-weight: 600; color: #374151; }
+  select { padding: 0.4rem 0.75rem; border: 1.5px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; background: white; cursor: pointer; }
+  select:focus { outline: none; border-color: #059669; }
+  .editor-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+  .editor-col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .editor-label { font-size: 0.8rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+  textarea { width: 100%; height: 400px; font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; border: 1.5px solid #d1d5db; border-radius: 8px; padding: 0.75rem; resize: vertical; background: white; line-height: 1.5; transition: border-color 0.2s; }
+  textarea:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
+  textarea[readonly] { background: #f8fafc; color: #374151; }
+  .mid-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding-top: 1.5rem; }
+  .btn { padding: 0.55rem 1.1rem; border: none; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.18s; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .btn-primary { background: #059669; color: white; }
+  .btn-primary:hover { background: #047857; transform: translateY(-1px); }
+  .btn-secondary { background: #e2e8f0; color: #374151; }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.78rem; }
+  .output-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .info-bar { display: flex; align-items: center; gap: 1rem; min-height: 1.5rem; }
+  .count-badge { background: #d1fae5; color: #065f46; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; }
+  .error-box { background: #fef2f2; border: 1.5px solid #fca5a5; color: #dc2626; padding: 0.6rem 1rem; border-radius: 7px; font-size: 0.85rem; display: none; }
+  .error-box.visible { display: block; }
+  .arrow { font-size: 1.5rem; color: #059669; }
+  @media (max-width: 768px) { .editor-row { grid-template-columns: 1fr; } .mid-col { flex-direction: row; padding-top: 0; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>CSV ↔ JSON Converter</h1>
+    <p>Convert between CSV and JSON formats instantly</p>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('csv2json')">CSV → JSON</div>
+  <div class="tab" onclick="switchTab('json2csv')">JSON → CSV</div>
+</div>
+
+<!-- CSV to JSON -->
+<div id="panel-csv2json" class="panel active">
+  <div class="controls">
+    <label>Delimiter:</label>
+    <select id="c2j-delim" onchange="convert('csv2json')">
+      <option value=",">Comma (,)</option>
+      <option value=";">Semicolon (;)</option>
+      <option value="&#9;">Tab (\t)</option>
+      <option value="|">Pipe (|)</option>
+    </select>
+  </div>
+  <div class="editor-row">
+    <div class="editor-col">
+      <div class="editor-label">CSV Input</div>
+      <textarea id="c2j-input" placeholder="Paste CSV here..." oninput="convert('csv2json')">name,age,city
+Alice,30,New York
+Bob,25,London
+Carol,35,Tokyo</textarea>
+    </div>
+    <div class="mid-col">
+      <span class="arrow">→</span>
+      <button class="btn btn-primary" onclick="convert('csv2json')">Convert</button>
+    </div>
+    <div class="editor-col">
+      <div class="editor-label">JSON Output</div>
+      <textarea id="c2j-output" readonly placeholder="JSON will appear here..."></textarea>
+      <div class="info-bar">
+        <span id="c2j-count" class="count-badge" style="display:none"></span>
+        <div class="output-actions">
+          <button class="btn btn-secondary btn-sm" onclick="copyOutput('c2j-output')">Copy</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadOutput('c2j-output','output.json','application/json')">Download</button>
+        </div>
+      </div>
+      <div id="c2j-error" class="error-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- JSON to CSV -->
+<div id="panel-json2csv" class="panel">
+  <div class="controls">
+    <label>Delimiter:</label>
+    <select id="j2c-delim" onchange="convert('json2csv')">
+      <option value=",">Comma (,)</option>
+      <option value=";">Semicolon (;)</option>
+      <option value="&#9;">Tab (\t)</option>
+      <option value="|">Pipe (|)</option>
+    </select>
+  </div>
+  <div class="editor-row">
+    <div class="editor-col">
+      <div class="editor-label">JSON Input</div>
+      <textarea id="j2c-input" placeholder="Paste JSON array here..." oninput="convert('json2csv')">[
+  {"name": "Alice", "age": 30, "city": "New York"},
+  {"name": "Bob", "age": 25, "city": "London"},
+  {"name": "Carol", "age": 35, "city": "Tokyo"}
+]</textarea>
+    </div>
+    <div class="mid-col">
+      <span class="arrow">→</span>
+      <button class="btn btn-primary" onclick="convert('json2csv')">Convert</button>
+    </div>
+    <div class="editor-col">
+      <div class="editor-label">CSV Output</div>
+      <textarea id="j2c-output" readonly placeholder="CSV will appear here..."></textarea>
+      <div class="info-bar">
+        <span id="j2c-count" class="count-badge" style="display:none"></span>
+        <div class="output-actions">
+          <button class="btn btn-secondary btn-sm" onclick="copyOutput('j2c-output')">Copy</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadOutput('j2c-output','output.csv','text/csv')">Download</button>
+        </div>
+      </div>
+      <div id="j2c-error" class="error-box"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['csv2json','json2csv'][i] === id));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+async function convert(mode) {
+  if (mode === 'csv2json') {
+    const text = document.getElementById('c2j-input').value;
+    const delimiter = document.getElementById('c2j-delim').value;
+    const errEl = document.getElementById('c2j-error');
+    const countEl = document.getElementById('c2j-count');
+    try {
+      const r = await fetch('/api/csv-to-json', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({text, delimiter}) });
+      const data = await r.json();
+      if (data.error) { errEl.textContent = data.error; errEl.classList.add('visible'); document.getElementById('c2j-output').value = ''; countEl.style.display='none'; return; }
+      errEl.classList.remove('visible');
+      document.getElementById('c2j-output').value = data.result;
+      countEl.textContent = data.count + ' rows'; countEl.style.display='inline-block';
+    } catch(e) { errEl.textContent = e.message; errEl.classList.add('visible'); }
+  } else {
+    const text = document.getElementById('j2c-input').value;
+    const delimiter = document.getElementById('j2c-delim').value;
+    const errEl = document.getElementById('j2c-error');
+    const countEl = document.getElementById('j2c-count');
+    try {
+      const r = await fetch('/api/json-to-csv', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({text, delimiter}) });
+      const data = await r.json();
+      if (data.error) { errEl.textContent = data.error; errEl.classList.add('visible'); document.getElementById('j2c-output').value = ''; countEl.style.display='none'; return; }
+      errEl.classList.remove('visible');
+      document.getElementById('j2c-output').value = data.result;
+      countEl.textContent = data.count + ' rows'; countEl.style.display='inline-block';
+    } catch(e) { errEl.textContent = e.message; errEl.classList.add('visible'); }
+  }
+}
+
+function copyOutput(id) {
+  const el = document.getElementById(id);
+  if (!el.value) return;
+  navigator.clipboard.writeText(el.value).then(() => { /* copied */ });
+}
+
+function downloadOutput(id, filename, mime) {
+  const el = document.getElementById(id);
+  if (!el.value) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([el.value], {type: mime}));
+  a.download = filename; a.click();
+}
+
+// Auto-convert on load
+convert('csv2json');
+convert('json2csv');
+</script>
+</body>
+</html>

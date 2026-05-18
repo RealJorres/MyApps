@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hangman</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f3ff; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  header { width: 100%; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 1.3rem; font-weight: 800; }
+  .score-display { display: flex; gap: 1rem; font-size: 0.85rem; }
+  .score-item { display: flex; gap: 0.35rem; align-items: center; }
+  .score-val { font-weight: 800; font-size: 1rem; }
+  .wins { color: #86efac; }
+  .losses { color: #fca5a5; }
+  .game-wrap { width: 100%; max-width: 700px; padding: 1.25rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  /* Category Selector */
+  .cat-selector { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .cat-btn { padding: 0.4rem 0.9rem; border: 2px solid #d8b4fe; border-radius: 999px; background: white; color: #7c3aed; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .cat-btn:hover { background: #f5f3ff; }
+  .cat-btn.active { background: #7c3aed; color: white; border-color: #7c3aed; }
+  .cat-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #7c3aed; text-align: center; }
+  /* SVG Hangman */
+  .hangman-svg { background: white; border-radius: 12px; box-shadow: 0 1px 8px rgba(0,0,0,0.08); }
+  /* Word display */
+  .word-display { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+  .letter-slot { width: 36px; height: 44px; border-bottom: 3px solid #374151; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; font-size: 1.4rem; font-weight: 800; text-transform: uppercase; color: #1e293b; transition: color 0.2s; }
+  .letter-slot.space-slot { border-bottom: none; }
+  .wrong-letters { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; min-height: 1.5rem; }
+  .wrong-letter { padding: 0.2rem 0.5rem; background: #fee2e2; color: #dc2626; border-radius: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; }
+  /* Keyboard */
+  .keyboard { display: flex; flex-direction: column; gap: 5px; }
+  .kb-row { display: flex; gap: 5px; justify-content: center; }
+  .key { width: 34px; height: 42px; border: none; border-radius: 5px; background: #e2e8f0; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .key:hover:not(:disabled) { filter: brightness(0.9); }
+  .key:disabled { opacity: 0.35; cursor: not-allowed; }
+  .key.correct { background: #16a34a; color: white; }
+  .key.wrong { background: #374151; color: white; }
+  /* End screen */
+  .end-screen { display: none; text-align: center; padding: 1.25rem; background: white; border-radius: 12px; box-shadow: 0 1px 8px rgba(0,0,0,0.08); width: 100%; }
+  .end-screen.visible { display: block; }
+  .end-screen h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .end-screen .answer { font-size: 1rem; color: #6b7280; margin-bottom: 1rem; }
+  .btn { padding: 0.6rem 1.5rem; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: #7c3aed; color: white; }
+  .btn-primary:hover { background: #6d28d9; }
+  /* Confetti */
+  .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; overflow: hidden; }
+  .confetto { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: fall linear forwards; }
+  @keyframes fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+  .hint-guesses { font-size: 0.82rem; color: #6b7280; }
+  .hint-guesses strong { color: #7c3aed; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Hangman</h1>
+  <div class="score-display">
+    <div class="score-item"><span>Wins:</span><span class="score-val wins" id="wins">0</span></div>
+    <div class="score-item"><span>Losses:</span><span class="score-val losses" id="losses">0</span></div>
+  </div>
+</header>
+
+<div class="game-wrap">
+  <div class="cat-label">Category</div>
+  <div class="cat-selector" id="cat-selector"></div>
+
+  <svg class="hangman-svg" width="200" height="200" viewBox="0 0 200 200" id="hangman-svg">
+    <!-- Gallows (always shown) -->
+    <line x1="20" y1="190" x2="180" y2="190" stroke="#374151" stroke-width="4" stroke-linecap="round"/>
+    <line x1="60" y1="190" x2="60" y2="20" stroke="#374151" stroke-width="4" stroke-linecap="round"/>
+    <line x1="60" y1="20" x2="130" y2="20" stroke="#374151" stroke-width="4" stroke-linecap="round"/>
+    <line x1="130" y1="20" x2="130" y2="45" stroke="#374151" stroke-width="4" stroke-linecap="round"/>
+    <!-- Body parts (shown progressively) -->
+    <circle id="hm-head" cx="130" cy="58" r="13" stroke="#7c3aed" stroke-width="3" fill="none" style="display:none"/>
+    <line id="hm-body" x1="130" y1="71" x2="130" y2="115" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" style="display:none"/>
+    <line id="hm-larm" x1="130" y1="85" x2="108" y2="100" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" style="display:none"/>
+    <line id="hm-rarm" x1="130" y1="85" x2="152" y2="100" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" style="display:none"/>
+    <line id="hm-lleg" x1="130" y1="115" x2="110" y2="145" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" style="display:none"/>
+    <line id="hm-rleg" x1="130" y1="115" x2="150" y2="145" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" style="display:none"/>
+    <text id="hm-face" x="130" y="63" text-anchor="middle" font-size="12" style="display:none">😵</text>
+  </svg>
+
+  <div class="word-display" id="word-display"></div>
+  <div class="hint-guesses">Wrong guesses: <strong id="wrong-count">0</strong> / 7</div>
+  <div class="wrong-letters" id="wrong-letters"></div>
+  <div class="keyboard" id="keyboard"></div>
+
+  <div class="end-screen" id="end-screen">
+    <h2 id="end-title"></h2>
+    <div class="answer" id="end-answer"></div>
+    <button class="btn btn-primary" onclick="newGame()">Play Again</button>
+  </div>
+</div>
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+const WORD_LISTS = {
+  Animals: ['elephant','dolphin','cheetah','kangaroo','gorilla','penguin','flamingo','crocodile','chameleon','octopus','rhinoceros','giraffe','butterfly','hedgehog','platypus','salamander'],
+  Countries: ['brazil','france','nigeria','thailand','vietnam','australia','argentina','portugal','indonesia','malaysia','philippines','cambodia','ethiopia','colombia','switzerland','bangladesh'],
+  Movies: ['inception','gladiator','titanic','avatar','parasite','interstellar','frozen','joker','coco','alien','gravity','matrix','shrek','jaws','bambi','grease'],
+  Food: ['avocado','burrito','croissant','dumpling','enchilada','falafel','guacamole','hummus','lasagna','mozzarella','noodles','paella','quesadilla','ramen','sushi','tiramisu'],
+  Technology: ['algorithm','bandwidth','blockchain','compiler','database','ethernet','firewall','hardware','javascript','keyboard','laptop','memory','network','python','router','software'],
+  Sports: ['basketball','badminton','volleyball','swimming','skateboard','wrestling','gymnastics','archery','baseball','cricket','football','lacrosse','marathon','snowboard','surfing','tennis'],
+};
+
+const BODY_PARTS = ['hm-head','hm-body','hm-larm','hm-rarm','hm-lleg','hm-rleg'];
+const MAX_WRONG = 7;
+const CATS = [...Object.keys(WORD_LISTS), 'Random'];
+
+let wins = 0, losses = 0;
+let currentCategory = 'Random';
+let word = '', guessed = new Set(), wrongCount = 0, gameOver = false;
+
+function buildCatSelector() {
+  const el = document.getElementById('cat-selector');
+  el.innerHTML = '';
+  CATS.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (cat === currentCategory ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      newGame();
+    };
+    el.appendChild(btn);
+  });
+}
+
+function pickWord() {
+  const cat = currentCategory === 'Random' ? Object.keys(WORD_LISTS)[Math.floor(Math.random()*Object.keys(WORD_LISTS).length)] : currentCategory;
+  const list = WORD_LISTS[cat];
+  return list[Math.floor(Math.random()*list.length)].toLowerCase();
+}
+
+function newGame() {
+  word = pickWord();
+  guessed = new Set(); wrongCount = 0; gameOver = false;
+  document.getElementById('end-screen').classList.remove('visible');
+  document.getElementById('confetti-container').innerHTML = '';
+  updateHangman();
+  renderWord();
+  renderWrong();
+  buildKeyboard();
+  document.getElementById('wrong-count').textContent = '0';
+}
+
+function buildKeyboard() {
+  const rows = [['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']];
+  const kb = document.getElementById('keyboard'); kb.innerHTML = '';
+  rows.forEach(row => {
+    const rowEl = document.createElement('div'); rowEl.className = 'kb-row';
+    row.forEach(k => {
+      const btn = document.createElement('button'); btn.className = 'key'; btn.id = 'kb-'+k;
+      btn.textContent = k.toUpperCase();
+      btn.onclick = () => guess(k);
+      rowEl.appendChild(btn);
+    });
+    kb.appendChild(rowEl);
+  });
+}
+
+function guess(letter) {
+  if (gameOver || guessed.has(letter)) return;
+  guessed.add(letter);
+  const btn = document.getElementById('kb-'+letter);
+  if (word.includes(letter)) {
+    if (btn) { btn.classList.add('correct'); btn.disabled = true; }
+  } else {
+    wrongCount++;
+    if (btn) { btn.classList.add('wrong'); btn.disabled = true; }
+    updateHangman();
+  }
+  renderWord();
+  renderWrong();
+  document.getElementById('wrong-count').textContent = wrongCount;
+  checkEnd();
+}
+
+function renderWord() {
+  const el = document.getElementById('word-display');
+  el.innerHTML = word.split('').map(l => l === ' ' ? '<div class="letter-slot space-slot"></div>' : `<div class="letter-slot">${guessed.has(l)?l:''}</div>`).join('');
+}
+
+function renderWrong() {
+  const el = document.getElementById('wrong-letters');
+  const wrongLetters = [...guessed].filter(l => !word.includes(l));
+  el.innerHTML = wrongLetters.map(l => `<span class="wrong-letter">${l}</span>`).join('');
+}
+
+function updateHangman() {
+  BODY_PARTS.forEach((id,i) => {
+    document.getElementById(id).style.display = i < wrongCount ? 'block' : 'none';
+  });
+  const face = document.getElementById('hm-face');
+  face.style.display = wrongCount >= MAX_WRONG ? 'block' : 'none';
+  const head = document.getElementById('hm-head');
+  if (head) head.style.display = wrongCount >= 1 ? 'block' : 'none';
+}
+
+function checkEnd() {
+  const won = word.split('').every(l => l === ' ' || guessed.has(l));
+  const lost = wrongCount >= MAX_WRONG;
+  if (!won && !lost) return;
+  gameOver = true;
+  if (won) {
+    wins++; document.getElementById('wins').textContent = wins;
+    document.getElementById('end-title').textContent = 'You Won!';
+    document.getElementById('end-title').style.color = '#059669';
+    document.getElementById('end-answer').textContent = 'The word was: ' + word.toUpperCase();
+    confetti();
+  } else {
+    losses++; document.getElementById('losses').textContent = losses;
+    document.getElementById('end-title').textContent = 'Game Over';
+    document.getElementById('end-title').style.color = '#dc2626';
+    document.getElementById('end-answer').textContent = 'The word was: ' + word.toUpperCase();
+    word.split('').forEach(l => { if (l !== ' ') guessed.add(l); });
+    renderWord();
+    document.querySelectorAll('.letter-slot').forEach(el => { if(el.textContent) el.style.color='#dc2626'; });
+    // show full hangman
+    wrongCount = MAX_WRONG; updateHangman();
+  }
+  setTimeout(() => document.getElementById('end-screen').classList.add('visible'), won ? 600 : 200);
+}
+
+function confetti() {
+  const container = document.getElementById('confetti-container');
+  const colors = ['#7c3aed','#059669','#dc2626','#d97706','#3b82f6','#ec4899'];
+  for (let i=0; i<60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetto';
+    el.style.left = Math.random()*100+'%';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDuration = (1.5+Math.random()*2)+'s';
+    el.style.animationDelay = (Math.random()*0.8)+'s';
+    el.style.transform = `rotate(${Math.random()*360}deg)`;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (/^[a-zA-Z]$/.test(e.key)) guess(e.key.toLowerCase());
+});
+
+buildCatSelector();
+newGame();
+</script>
+</body>
+</html>

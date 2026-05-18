@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minesweeper</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff1f2; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  header { width: 100%; background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 0.9rem 1.5rem; text-align: center; }
+  header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: 0.05em; }
+  .controls { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid #e2e8f0; width: 100%; justify-content: center; flex-wrap: wrap; }
+  .diff-btn { padding: 0.4rem 1rem; border: 2px solid #e2e8f0; border-radius: 7px; background: white; font-size: 0.82rem; font-weight: 600; cursor: pointer; color: #374151; transition: all 0.15s; }
+  .diff-btn.active { border-color: #dc2626; background: #fff1f2; color: #dc2626; }
+  .diff-btn:hover:not(.active) { background: #f8fafc; }
+  .status-bar { display: flex; align-items: center; gap: 1.5rem; background: #1e293b; border-radius: 10px; padding: 0.6rem 1.25rem; font-family: 'Courier New', monospace; }
+  .counter { font-size: 1.4rem; font-weight: 700; color: #ef4444; min-width: 48px; text-align: center; }
+  .smiley { font-size: 1.6rem; cursor: pointer; transition: transform 0.1s; background: none; border: none; }
+  .smiley:hover { transform: scale(1.15); }
+  .timer { font-size: 1.4rem; font-weight: 700; color: #ef4444; min-width: 48px; text-align: center; }
+  .board-wrap { overflow: auto; padding: 1.25rem; }
+  .board { display: inline-grid; gap: 2px; background: #64748b; padding: 4px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+  .cell { width: 32px; height: 32px; background: #cbd5e1; border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; font-weight: 800; transition: background 0.08s; user-select: none; border: none; }
+  .cell:hover:not(.revealed):not(.flagged) { background: #e2e8f0; }
+  .cell:active:not(.revealed) { background: #94a3b8; }
+  .cell.revealed { background: #f1f5f9; cursor: default; }
+  .cell.mine { background: #dc2626; }
+  .cell.flagged { background: #fef3c7; }
+  .cell.win { animation: sparkle 0.5s ease; }
+  @keyframes sparkle { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+  .n1{color:#2563eb} .n2{color:#16a34a} .n3{color:#dc2626} .n4{color:#1e40af} .n5{color:#9f1239} .n6{color:#0e7490} .n7{color:#1e293b} .n8{color:#475569}
+  .best-times { display: flex; gap: 1rem; padding: 0.6rem 1.5rem; font-size: 0.8rem; color: #6b7280; flex-wrap: wrap; justify-content: center; }
+  .best-times span { font-weight: 600; color: #374151; }
+  .long-press-hint { font-size: 0.72rem; color: #9ca3af; padding: 0.4rem; }
+</style>
+</head>
+<body>
+<header><h1>💣 Minesweeper</h1></header>
+<div class="controls">
+  <button class="diff-btn active" id="diff-easy" onclick="setDiff('easy')">Easy (9×9)</button>
+  <button class="diff-btn" id="diff-medium" onclick="setDiff('medium')">Medium (16×16)</button>
+  <button class="diff-btn" id="diff-hard" onclick="setDiff('hard')">Hard (16×30)</button>
+  <div class="status-bar">
+    <div class="counter" id="mine-counter">010</div>
+    <button class="smiley" id="smiley" onclick="newGame()">🙂</button>
+    <div class="timer" id="timer">000</div>
+  </div>
+</div>
+<div class="board-wrap"><div class="board" id="board"></div></div>
+<div class="best-times" id="best-times"></div>
+<div class="long-press-hint">Mobile: long-press to flag</div>
+
+<script>
+const DIFFS = {
+  easy:   {rows:9,  cols:9,  mines:10},
+  medium: {rows:16, cols:16, mines:40},
+  hard:   {rows:16, cols:30, mines:99},
+};
+let diff = 'easy', cfg = DIFFS.easy;
+let cells, flagged, revealed, mines, gameState, timerInterval, timeElapsed, firstClick;
+
+function setDiff(d) {
+  diff = d; cfg = DIFFS[d];
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('diff-'+d).classList.add('active');
+  newGame();
+}
+
+function newGame() {
+  clearInterval(timerInterval);
+  timeElapsed = 0; firstClick = true; gameState = 'idle';
+  cells = Array(cfg.rows*cfg.cols).fill(0);
+  flagged = new Set(); revealed = new Set(); mines = new Set();
+  updateCounter(cfg.mines);
+  updateTimer(0);
+  document.getElementById('smiley').textContent = '🙂';
+  renderBoard();
+  renderBestTimes();
+}
+
+function placeMines(safeIdx) {
+  const available = [...Array(cfg.rows*cfg.cols).keys()].filter(i => {
+    const r = Math.floor(i/cfg.cols), c = i%cfg.cols;
+    const sr = Math.floor(safeIdx/cfg.cols), sc = safeIdx%cfg.cols;
+    return Math.abs(r-sr)>1 || Math.abs(c-sc)>1;
+  });
+  for (let i=available.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [available[i],available[j]] = [available[j],available[i]];
+  }
+  mines = new Set(available.slice(0,cfg.mines));
+  cells = Array(cfg.rows*cfg.cols).fill(0);
+  mines.forEach(m => cells[m] = -1);
+  for (let i=0; i<cells.length; i++) {
+    if (cells[i]===-1) continue;
+    cells[i] = neighbors(i).filter(n=>mines.has(n)).length;
+  }
+}
+
+function neighbors(idx) {
+  const r = Math.floor(idx/cfg.cols), c = idx%cfg.cols, res = [];
+  for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++) {
+    if (dr===0&&dc===0) continue;
+    const nr=r+dr,nc=c+dc;
+    if (nr>=0&&nr<cfg.rows&&nc>=0&&nc<cfg.cols) res.push(nr*cfg.cols+nc);
+  }
+  return res;
+}
+
+function reveal(idx) {
+  if (flagged.has(idx)||revealed.has(idx)) return;
+  if (firstClick) {
+    firstClick = false; gameState = 'playing';
+    placeMines(idx);
+    startTimer();
+  }
+  if (mines.has(idx)) { gameOver(idx); return; }
+  const queue = [idx];
+  while (queue.length) {
+    const curr = queue.shift();
+    if (revealed.has(curr)) continue;
+    revealed.add(curr);
+    if (cells[curr]===0) { neighbors(curr).filter(n=>!revealed.has(n)&&!flagged.has(n)&&!mines.has(n)).forEach(n=>queue.push(n)); }
+  }
+  renderBoard();
+  checkWin();
+}
+
+function toggleFlag(idx) {
+  if (revealed.has(idx)||gameState==='over'||gameState==='won') return;
+  if (flagged.has(idx)) flagged.delete(idx); else flagged.add(idx);
+  updateCounter(cfg.mines - flagged.size);
+  renderBoard();
+}
+
+function gameOver(triggeredIdx) {
+  gameState = 'over'; clearInterval(timerInterval);
+  document.getElementById('smiley').textContent = '😵';
+  mines.forEach(m => {
+    const el = document.getElementById('c'+m);
+    if (el) { el.classList.add('revealed','mine'); el.textContent = '💣'; }
+  });
+  const el = document.getElementById('c'+triggeredIdx);
+  if (el) el.style.background = '#7f1d1d';
+}
+
+function checkWin() {
+  if (revealed.size === cfg.rows*cfg.cols - cfg.mines) {
+    gameState = 'won'; clearInterval(timerInterval);
+    document.getElementById('smiley').textContent = '😎';
+    mines.forEach(m => { const el=document.getElementById('c'+m); if(el){el.classList.add('flagged');el.textContent='🚩';} });
+    saveBestTime();
+    renderBestTimes();
+    document.querySelectorAll('.cell.revealed').forEach(el=>el.classList.add('win'));
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => { timeElapsed++; updateTimer(timeElapsed); }, 1000);
+}
+function updateTimer(t) { document.getElementById('timer').textContent = String(Math.min(t,999)).padStart(3,'0'); }
+function updateCounter(n) { document.getElementById('mine-counter').textContent = String(Math.max(-99,n)).padStart(3,'0'); }
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.style.gridTemplateColumns = `repeat(${cfg.cols},32px)`;
+  board.innerHTML = '';
+  for (let i=0; i<cfg.rows*cfg.cols; i++) {
+    const el = document.createElement('div');
+    el.className = 'cell'; el.id = 'c'+i;
+    if (revealed.has(i)) {
+      el.classList.add('revealed');
+      if (cells[i]>0) { el.textContent=cells[i]; el.classList.add('n'+cells[i]); }
+    } else if (flagged.has(i)) { el.classList.add('flagged'); el.textContent='🚩'; }
+    el.addEventListener('click', e => { if(gameState==='over'||gameState==='won')return; reveal(i); });
+    el.addEventListener('contextmenu', e => { e.preventDefault(); if(gameState==='over'||gameState==='won')return; toggleFlag(i); });
+    // long press for mobile
+    let pressTimer;
+    el.addEventListener('touchstart', e => { pressTimer = setTimeout(()=>{e.preventDefault();toggleFlag(i);},500); },{passive:true});
+    el.addEventListener('touchend', () => clearTimeout(pressTimer));
+    el.addEventListener('touchmove', () => clearTimeout(pressTimer));
+    board.appendChild(el);
+  }
+}
+
+function saveBestTime() {
+  const key = 'ms_best_'+diff;
+  const prev = parseInt(localStorage.getItem(key))||Infinity;
+  if (timeElapsed < prev) localStorage.setItem(key, timeElapsed);
+}
+
+function renderBestTimes() {
+  const el = document.getElementById('best-times');
+  const parts = Object.keys(DIFFS).map(d => {
+    const t = localStorage.getItem('ms_best_'+d);
+    return t ? `${d.charAt(0).toUpperCase()+d.slice(1)}: <span>${t}s</span>` : `${d.charAt(0).toUpperCase()+d.slice(1)}: <span>—</span>`;
+  });
+  el.innerHTML = 'Best Times: ' + parts.join(' &nbsp;|&nbsp; ');
+}
+
+newGame();
+</script>
+</body>
+</html>

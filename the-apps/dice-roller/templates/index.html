@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dice Roller</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff5f5; color: #1e293b; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 1.25rem 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; }
+  .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+  .dice-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
+  .die-btn { width: 90px; height: 90px; border: none; border-radius: 14px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem; transition: all 0.18s; font-family: inherit; }
+  .die-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 18px rgba(220,38,38,0.2); }
+  .die-btn:active { transform: scale(0.97); }
+  .die-btn .die-emoji { font-size: 2rem; }
+  .die-btn .die-label { font-size: 0.8rem; font-weight: 700; color: #dc2626; }
+  .die-btn.rolling { animation: shake 0.4s ease; }
+  @keyframes shake {
+    0%,100%{transform:translateY(0) rotate(0)}
+    15%{transform:translateY(-6px) rotate(-10deg)}
+    30%{transform:translateY(-4px) rotate(8deg)}
+    45%{transform:translateY(-8px) rotate(-6deg)}
+    60%{transform:translateY(-2px) rotate(5deg)}
+    75%{transform:translateY(-5px) rotate(-3deg)}
+  }
+  .controls { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+  .ctrl-group { display: flex; align-items: center; gap: 0.5rem; }
+  .ctrl-group label { font-size: 0.82rem; font-weight: 600; color: #374151; }
+  .ctrl-group input { width: 70px; padding: 0.45rem 0.5rem; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.9rem; text-align: center; }
+  .ctrl-group input:focus { outline: none; border-color: #dc2626; }
+  .ctrl-group.custom input { width: 55px; }
+  .roll-btn { background: #dc2626; color: white; border: none; border-radius: 9px; padding: 0.65rem 1.75rem; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.18s; }
+  .roll-btn:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
+  .roll-btn:active { transform: translateY(0); }
+  .result-area { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); margin-bottom: 1.5rem; text-align: center; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; }
+  .result-dice { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+  .result-die { width: 60px; height: 60px; background: #dc2626; color: white; border-radius: 10px; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(220,38,38,0.3); animation: popIn 0.25s ease; }
+  @keyframes popIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+  .result-total { font-size: 2.5rem; font-weight: 900; color: #dc2626; }
+  .result-formula { font-size: 0.88rem; color: #6b7280; }
+  .result-placeholder { color: #9ca3af; font-size: 1rem; }
+  .history-section { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+  .section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #dc2626; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; }
+  .clear-hist { background: none; border: none; font-size: 0.75rem; color: #9ca3af; cursor: pointer; }
+  .clear-hist:hover { color: #dc2626; }
+  .history-list { max-height: 260px; overflow-y: auto; }
+  .hist-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.45rem 0.5rem; border-radius: 6px; font-size: 0.85rem; }
+  .hist-row:nth-child(even) { background: #f8fafc; }
+  .hist-notation { font-weight: 600; color: #374151; flex: 1; }
+  .hist-result { font-weight: 800; color: #dc2626; }
+  .sound-toggle { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: #6b7280; cursor: pointer; margin-left: auto; }
+  .sound-toggle input { accent-color: #dc2626; cursor: pointer; }
+  .custom-label { font-size: 0.82rem; color: #6b7280; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Dice Roller</h1>
+  <p>Roll any dice — perfect for tabletop RPGs</p>
+</header>
+<div class="main">
+  <div class="dice-grid">
+    <button class="die-btn" onclick="quickRoll(4)"><span class="die-emoji">🔺</span><span class="die-label">d4</span></button>
+    <button class="die-btn" onclick="quickRoll(6)"><span class="die-emoji">🎲</span><span class="die-label">d6</span></button>
+    <button class="die-btn" onclick="quickRoll(8)"><span class="die-emoji">🔷</span><span class="die-label">d8</span></button>
+    <button class="die-btn" onclick="quickRoll(10)"><span class="die-emoji">🔹</span><span class="die-label">d10</span></button>
+    <button class="die-btn" onclick="quickRoll(12)"><span class="die-emoji">🔶</span><span class="die-label">d12</span></button>
+    <button class="die-btn" onclick="quickRoll(20)"><span class="die-emoji">💎</span><span class="die-label">d20</span></button>
+    <button class="die-btn" onclick="quickRoll(100)"><span class="die-emoji">⭕</span><span class="die-label">d100</span></button>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-group">
+      <label>Number of dice</label>
+      <input type="number" id="num-dice" value="2" min="1" max="10">
+    </div>
+    <div class="ctrl-group">
+      <label>Die type (dX)</label>
+      <input type="number" id="die-type" value="6" min="2" max="1000">
+    </div>
+    <div class="ctrl-group">
+      <label>Modifier</label>
+      <input type="number" id="modifier" value="0" min="-99" max="99">
+    </div>
+    <button class="roll-btn" onclick="rollDice()">Roll!</button>
+    <label class="sound-toggle"><input type="checkbox" id="sound-on" checked>Sound</label>
+  </div>
+
+  <div class="result-area" id="result-area">
+    <div class="result-placeholder">Click a die or roll to see results</div>
+  </div>
+
+  <div class="history-section">
+    <div class="section-title">
+      Roll History
+      <button class="clear-hist" onclick="clearHistory()">Clear</button>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+</div>
+
+<script>
+let rollHistory = [];
+let lastDieType = 6;
+
+function rollN(n, sides) { return Array.from({length:n}, () => Math.floor(Math.random()*sides)+1); }
+
+function playClick() {
+  if (!document.getElementById('sound-on').checked) return;
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.frequency.setValueAtTime(400, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime+0.08);
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.12);
+  osc.start(); osc.stop(ctx.currentTime+0.12);
+}
+
+function quickRoll(sides) {
+  document.getElementById('die-type').value = sides;
+  document.getElementById('num-dice').value = 1;
+  rollDice();
+}
+
+function rollDice() {
+  const n = Math.max(1, Math.min(10, parseInt(document.getElementById('num-dice').value)||1));
+  const sides = Math.max(2, parseInt(document.getElementById('die-type').value)||6);
+  const mod = parseInt(document.getElementById('modifier').value)||0;
+  lastDieType = sides;
+  const results = rollN(n, sides);
+  const sum = results.reduce((a,b)=>a+b,0);
+  const total = sum + mod;
+  const modStr = mod > 0 ? `+${mod}` : (mod < 0 ? `${mod}` : '');
+  const notation = `${n}d${sides}${modStr}`;
+  const formula = `[${results.join(', ')}]${modStr ? ' '+modStr : ''} = ${total}`;
+  showResult(results, total, notation, formula, sides);
+  addHistory(notation, total, formula);
+  animateDiceBtns(sides);
+  playClick();
+}
+
+function animateDiceBtns(sides) {
+  const sideToDie = {4:0,6:1,8:2,10:3,12:4,20:5,100:6};
+  const btns = document.querySelectorAll('.die-btn');
+  const idx = sideToDie[sides];
+  if (idx !== undefined) {
+    const btn = btns[idx];
+    btn.classList.remove('rolling');
+    void btn.offsetWidth;
+    btn.classList.add('rolling');
+    setTimeout(() => btn.classList.remove('rolling'), 400);
+  }
+}
+
+function showResult(results, total, notation, formula, sides) {
+  const maxVal = sides;
+  const diceHtml = results.map(r => {
+    const isCrit = r === maxVal;
+    const isFail = r === 1 && sides >= 4;
+    const bg = isCrit ? '#059669' : (isFail ? '#7f1d1d' : '#dc2626');
+    return `<div class="result-die" style="background:${bg}">${r}</div>`;
+  }).join('');
+  document.getElementById('result-area').innerHTML = `
+    <div class="result-dice">${diceHtml}</div>
+    <div class="result-total">${total}</div>
+    <div class="result-formula">${formula}</div>
+  `;
+}
+
+function addHistory(notation, total, formula) {
+  rollHistory.unshift({notation, total, formula});
+  if (rollHistory.length > 20) rollHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (!rollHistory.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:0.85rem;padding:0.5rem">No rolls yet.</div>'; return; }
+  list.innerHTML = rollHistory.map(h => `
+    <div class="hist-row">
+      <div class="hist-notation">${h.notation}</div>
+      <div style="font-size:0.8rem;color:#6b7280;flex:2">${h.formula}</div>
+      <div class="hist-result">${h.total}</div>
+    </div>
+  `).join('');
+}
+
+renderHistory();
+</script>
+</body>
+</html>

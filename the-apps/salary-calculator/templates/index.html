@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PH Salary Calculator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0fdf4; color: #1e293b; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #059669, #047857); color: white; padding: 1.25rem 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.85; }
+  .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.25rem; display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; }
+  .panel { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+  .panel-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #059669; margin-bottom: 1rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem; }
+  .form-group input { width: 100%; padding: 0.55rem 0.8rem; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 1rem; }
+  .form-group input:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
+  .toggle-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+  .toggle-btn { flex: 1; padding: 0.45rem; border: 2px solid #e2e8f0; border-radius: 7px; background: white; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s; color: #64748b; }
+  .toggle-btn.active { border-color: #059669; background: #d1fae5; color: #065f46; }
+  .checkbox-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 0.85rem; color: #374151; cursor: pointer; }
+  .checkbox-row input { accent-color: #059669; cursor: pointer; }
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.88rem; }
+  .result-row:last-child { border-bottom: none; }
+  .result-label { color: #4b5563; }
+  .result-label.deduction { color: #dc2626; }
+  .result-val { font-weight: 700; }
+  .result-val.deduction { color: #dc2626; }
+  .result-val.positive { color: #059669; }
+  .net-row { background: linear-gradient(135deg, #059669, #047857); color: white; border-radius: 10px; padding: 1rem 1.25rem; margin: 0.75rem 0; display: flex; justify-content: space-between; align-items: center; }
+  .net-row .net-label { font-size: 0.88rem; font-weight: 600; opacity: 0.9; }
+  .net-row .net-val { font-size: 1.75rem; font-weight: 900; }
+  .annual-note { font-size: 0.72rem; color: #6b7280; }
+  .visual-bar { margin: 1rem 0; }
+  .bar-track { background: #e2e8f0; border-radius: 999px; height: 20px; overflow: hidden; display: flex; }
+  .bar-seg { height: 100%; transition: width 0.4s; }
+  .bar-legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: #374151; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  .divider { border: none; border-top: 1.5px solid #e2e8f0; margin: 1rem 0; }
+  .result-subval { font-size: 0.73rem; color: #9ca3af; }
+  @media (max-width: 700px) { .main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Philippine Salary Calculator</h1>
+  <p>2023 TRAIN Law — BIR withholding tax, SSS, PhilHealth, Pag-IBIG</p>
+</header>
+
+<div class="main">
+  <div class="panel">
+    <div class="panel-title">Input</div>
+    <div class="toggle-row">
+      <button class="toggle-btn active" id="btn-monthly" onclick="setPeriod('monthly')">Monthly</button>
+      <button class="toggle-btn" id="btn-annual" onclick="setPeriod('annual')">Annual</button>
+    </div>
+    <div class="form-group">
+      <label id="salary-label">Gross Monthly Salary (₱)</label>
+      <input type="number" id="salary" value="30000" min="0" step="100" oninput="calculate()">
+    </div>
+    <label class="checkbox-row">
+      <input type="checkbox" id="has-13th" checked onchange="calculate()">
+      Include 13th Month Pay
+    </label>
+    <div class="form-group">
+      <label>De Minimis Benefits (₱/month)</label>
+      <input type="number" id="deminimis" value="0" min="0" step="100" oninput="calculate()">
+    </div>
+    <div style="font-size:0.75rem;color:#6b7280;margin-top:0.5rem;line-height:1.5">
+      <strong>Rates used:</strong><br>
+      SSS: 4.5% of basic (max ₱900)<br>
+      PhilHealth: 2.5% of basic (max ₱2,500)<br>
+      Pag-IBIG: ₱100 fixed
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Results — Monthly</div>
+
+    <div class="result-row">
+      <span class="result-label">Gross Salary</span>
+      <div style="text-align:right"><div class="result-val" id="r-gross">₱0</div></div>
+    </div>
+    <hr class="divider">
+    <div class="result-row">
+      <span class="result-label deduction">SSS Contribution</span>
+      <div class="result-val deduction" id="r-sss">₱0</div>
+    </div>
+    <div class="result-row">
+      <span class="result-label deduction">PhilHealth Contribution</span>
+      <div class="result-val deduction" id="r-philhealth">₱0</div>
+    </div>
+    <div class="result-row">
+      <span class="result-label deduction">Pag-IBIG Contribution</span>
+      <div class="result-val deduction" id="r-pagibig">₱0</div>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Taxable Income</span>
+      <div class="result-val" id="r-taxable">₱0</div>
+    </div>
+    <div class="result-row">
+      <span class="result-label deduction">Withholding Tax (BIR)</span>
+      <div class="result-val deduction" id="r-tax">₱0</div>
+    </div>
+    <div class="result-row" style="font-weight:700">
+      <span class="result-label deduction">Total Deductions</span>
+      <div class="result-val deduction" id="r-total-ded">₱0</div>
+    </div>
+
+    <div class="net-row">
+      <span class="net-label">Net Take-Home Pay</span>
+      <span class="net-val" id="r-net">₱0</span>
+    </div>
+
+    <div class="visual-bar">
+      <div class="bar-track">
+        <div class="bar-seg" id="bar-net" style="background:#059669;width:70%"></div>
+        <div class="bar-seg" id="bar-gov" style="background:#0284c7;width:10%"></div>
+        <div class="bar-seg" id="bar-tax" style="background:#dc2626;width:20%"></div>
+      </div>
+      <div class="bar-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#059669"></div>Net Pay</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0284c7"></div>Gov't Contributions</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>Tax</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="panel-title" style="margin-bottom:0.5rem">Annual Equivalents</div>
+    <div class="result-row"><span class="result-label">Annual Gross</span><div class="result-val" id="a-gross">₱0</div></div>
+    <div class="result-row"><span class="result-label">Annual Net</span><div class="result-val positive" id="a-net">₱0</div></div>
+    <div class="result-row"><span class="result-label">Annual Tax</span><div class="result-val deduction" id="a-tax">₱0</div></div>
+    <div class="result-row"><span class="result-label">Effective Tax Rate</span><div class="result-val" id="a-rate">0%</div></div>
+  </div>
+</div>
+
+<script>
+let period = 'monthly';
+
+function setPeriod(p) {
+  period = p;
+  document.getElementById('btn-monthly').classList.toggle('active', p==='monthly');
+  document.getElementById('btn-annual').classList.toggle('active', p==='annual');
+  document.getElementById('salary-label').textContent = p==='monthly' ? 'Gross Monthly Salary (₱)' : 'Gross Annual Salary (₱)';
+  calculate();
+}
+
+function fmt(n) { return '₱' + Math.abs(n).toLocaleString('en-PH', {minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function calcTax(monthly) {
+  if (monthly <= 20833) return 0;
+  if (monthly <= 33333) return 0.20 * (monthly - 20833);
+  if (monthly <= 66667) return 2500 + 0.25 * (monthly - 33333);
+  if (monthly <= 166667) return 10833 + 0.30 * (monthly - 66667);
+  if (monthly <= 666667) return 40833 + 0.32 * (monthly - 166667);
+  return 200833 + 0.35 * (monthly - 666667);
+}
+
+function calculate() {
+  let inputSalary = parseFloat(document.getElementById('salary').value) || 0;
+  const has13th = document.getElementById('has-13th').checked;
+  const deminimis = parseFloat(document.getElementById('deminimis').value) || 0;
+  let gross = period === 'monthly' ? inputSalary : inputSalary / 12;
+
+  const sss = Math.min(gross * 0.045, 900);
+  const philhealth = Math.min(gross * 0.025, 2500);
+  const pagibig = 100;
+  const govContribs = sss + philhealth + pagibig;
+  const taxable = Math.max(0, gross - govContribs - deminimis);
+  const tax = calcTax(taxable);
+  const totalDed = govContribs + tax;
+  const net = gross - totalDed;
+  const multiplier = has13th ? 13 : 12;
+  const annGross = gross * multiplier;
+  const annNet = net * multiplier;
+  const annTax = tax * multiplier;
+  const effRate = annGross > 0 ? (annTax / annGross * 100).toFixed(2) : 0;
+
+  const pNet = gross > 0 ? (net/gross*100) : 70;
+  const pGov = gross > 0 ? (govContribs/gross*100) : 10;
+  const pTax = gross > 0 ? (tax/gross*100) : 20;
+
+  document.getElementById('r-gross').textContent = fmt(gross);
+  document.getElementById('r-sss').textContent = '-' + fmt(sss);
+  document.getElementById('r-philhealth').textContent = '-' + fmt(philhealth);
+  document.getElementById('r-pagibig').textContent = '-' + fmt(pagibig);
+  document.getElementById('r-taxable').textContent = fmt(taxable);
+  document.getElementById('r-tax').textContent = '-' + fmt(tax);
+  document.getElementById('r-total-ded').textContent = '-' + fmt(totalDed);
+  document.getElementById('r-net').textContent = fmt(net);
+  document.getElementById('a-gross').textContent = fmt(annGross);
+  document.getElementById('a-net').textContent = fmt(annNet);
+  document.getElementById('a-tax').textContent = fmt(annTax);
+  document.getElementById('a-rate').textContent = effRate + '%';
+
+  document.getElementById('bar-net').style.width = pNet.toFixed(1) + '%';
+  document.getElementById('bar-gov').style.width = pGov.toFixed(1) + '%';
+  document.getElementById('bar-tax').style.width = pTax.toFixed(1) + '%';
+}
+
+calculate();
+</script>
+</body>
+</html>
