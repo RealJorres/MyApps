@@ -11,4 +11,4 @@ croniter
 sqlparse
 cssbeautifier
 requests
-easyocr
+rapidocr-onnxruntime

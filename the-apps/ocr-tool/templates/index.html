@@ -51,7 +51,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 <div class="container">
   <header>
     <h1>OCR Tool</h1>
-    <p>Extract text from images using Tesseract OCR.</p>
+    <p>Extract text from images — no system dependencies required.</p>
   </header>
 
   <div class="card">
@@ -89,7 +89,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Extract Text
           </button>
-          <p style="font-size:0.78rem; color:var(--muted); margin-top:0.5rem">Requires Tesseract installed on your system.</p>
+          <p style="font-size:0.78rem; color:var(--muted); margin-top:0.5rem">Models download automatically on first use.</p>
         </div>
       </div>
     </div>
@@ -152,17 +152,7 @@ document.getElementById('extractBtn').addEventListener('click', async () => {
     const resp = await fetch('api/extract', { method: 'POST', body: fd });
     const data = await resp.json();
     if (!resp.ok || data.error) {
-      let msg = data.error || 'Extraction failed';
-      if (msg.includes('pytesseract') || msg.includes('Tesseract')) {
-        statusMsg.innerHTML = `<div class="install-note">
-          <strong>Tesseract not found.</strong> To use OCR:<br>
-          1. Install Tesseract: <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">https://github.com/tesseract-ocr/tesseract</a><br>
-          2. Install Python package: <code>pip install pytesseract</code><br>
-          3. On Windows, set the path in pytesseract or add Tesseract to PATH.
-        </div>`;
-      } else {
-        statusMsg.innerHTML = `<div class="status error">${msg}</div>`;
-      }
+      statusMsg.innerHTML = `<div class="status error">${data.error || 'Extraction failed'}</div>`;
       return;
     }
     document.getElementById('resultText').value = data.text;
