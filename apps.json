@@ -355,5 +355,26 @@
     "description": "Track your daily water intake with a goal, progress ring, and history log. Resets each day.",
     "port": 5051, "path": "./the-apps/water-tracker", "entry": "app.py",
     "icon": "💧", "color": "#0284c7", "tags": ["Water", "Hydration", "Health"], "category": "Health & Wellness"
+  },
+  {
+    "id": "typing-speed-test",
+    "name": "Typing Speed Test",
+    "description": "60-second WPM typing test with accuracy score and a personal results history.",
+    "port": 5052, "path": "./the-apps/typing-speed-test", "entry": "app.py",
+    "icon": "⌨️", "color": "#0891b2", "tags": ["Typing", "WPM", "Speed"], "category": "Games / Fun"
+  },
+  {
+    "id": "game-2048",
+    "name": "2048",
+    "description": "The classic sliding tile puzzle. Merge tiles to reach 2048. Arrow keys or swipe to play.",
+    "port": 5053, "path": "./the-apps/game-2048", "entry": "app.py",
+    "icon": "🎮", "color": "#d97706", "tags": ["2048", "Puzzle", "Game"], "category": "Games / Fun"
+  },
+  {
+    "id": "memory-card-game",
+    "name": "Memory Card Game",
+    "description": "Flip cards to find matching emoji pairs. Three difficulty levels with a star rating.",
+    "port": 5054, "path": "./the-apps/memory-card-game", "entry": "app.py",
+    "icon": "🃏", "color": "#7c3aed", "tags": ["Memory", "Cards", "Game"], "category": "Games / Fun"
   }
 ]
