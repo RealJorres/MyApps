@@ -196,61 +196,29 @@
         margin-top: 0.25rem;
       }
       .donate-body {
-        padding: 1.5rem;
+        padding: 1.25rem 1.5rem 1.5rem;
       }
-      .bank-card {
-        background: linear-gradient(135deg, #1a5276, #1d6a3a);
-        border-radius: 10px;
-        padding: 1.25rem 1.4rem;
-        margin-bottom: 1rem;
-        position: relative;
-      }
-      .bank-name {
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.65);
-        margin-bottom: 0.75rem;
-      }
-      .bank-acc-label {
-        font-size: 0.68rem;
-        color: rgba(255, 255, 255, 0.55);
-        margin-bottom: 0.2rem;
-      }
-      .bank-acc-name {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 0.75rem;
-      }
-      .bank-acc-number {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #fff;
-        letter-spacing: 0.08em;
-        font-family: "Courier New", monospace;
-      }
-      .copy-row {
+      .qr-wrap {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1rem;
       }
-      .btn-copy-acc {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        color: #fff;
-        border-radius: 6px;
-        padding: 0.3rem 0.7rem;
-        font-size: 0.75rem;
+      .qr-img {
+        width: 220px;
+        height: 220px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: #fff;
+        padding: 8px;
+        border: 2px solid #2a475e;
+      }
+      .donate-bank-info {
+        text-align: center;
+        font-size: 0.82rem;
+        color: #c6d4df;
         font-weight: 600;
-        cursor: pointer;
-        font-family: inherit;
-        transition: background 0.15s;
-      }
-      .btn-copy-acc:hover {
-        background: rgba(255, 255, 255, 0.25);
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
       }
       .donate-note {
         font-size: 0.78rem;
@@ -537,25 +505,12 @@
           <p>If this saved you time, a coffee would mean a lot!</p>
         </div>
         <div class="donate-body">
-          <div class="bank-card">
-            <div class="bank-name">🏦 Land Bank of the Philippines</div>
-            <div class="bank-acc-label">Account Name</div>
-            <div class="bank-acc-name">Joshua M. Relatorres</div>
-            <div class="bank-acc-label">Savings Account No.</div>
-            <div class="copy-row">
-              <div class="bank-acc-number">1156352027</div>
-              <button class="btn-copy-acc" onclick="copyAccNumber()">
-                Copy
-              </button>
-            </div>
+          <div class="qr-wrap">
+            <img src="/static/qr_code.jpg" alt="LandBank QR Code" class="qr-img">
           </div>
-          <p class="donate-note">
-            Send any amount via bank transfer or over-the-counter deposit. Every
-            contribution is deeply appreciated. 💜
-          </p>
-          <button class="donate-close" onclick="closeDonate()">
-            Maybe next time
-          </button>
+          <p class="donate-bank-info">🏦 Land Bank of the Philippines<br>Joshua M. Relatorres</p>
+          <p class="donate-note">Scan the QR code with your banking app to send any amount. Every contribution is deeply appreciated. 🙏</p>
+          <button class="donate-close" onclick="closeDonate()">Maybe next time</button>
         </div>
       </div>
     </div>
@@ -684,13 +639,6 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeDonate();
       });
-      function copyAccNumber() {
-        navigator.clipboard.writeText("1156352027").then(() => {
-          const btn = event.target;
-          btn.textContent = "Copied!";
-          setTimeout(() => (btn.textContent = "Copy"), 1500);
-        });
-      }
     </script>
   </body>
 </html>
