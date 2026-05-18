@@ -705,18 +705,13 @@
         return "#" + c(n >> 16) + c((n >> 8) & 0xff) + c(n & 0xff);
       }
 
-      async function fetchApps() {
-        try {
-          const res = await fetch("/api/apps");
-          allApps = await res.json();
-          const cats = new Set(allApps.map((a) => a.category || "Other"));
-          document.getElementById("statApps").textContent = allApps.length;
-          document.getElementById("statCats").textContent = cats.size;
-          applyFilters();
-          renderFavorites();
-        } catch {
-          /* retry */
-        }
+      function fetchApps() {
+        allApps = {{ apps_json | safe }};
+        const cats = new Set(allApps.map((a) => a.category || "Other"));
+        document.getElementById("statApps").textContent = allApps.length;
+        document.getElementById("statCats").textContent = cats.size;
+        applyFilters();
+        renderFavorites();
       }
 
       function applyFilters() {
@@ -786,7 +781,6 @@
       }
 
       fetchApps();
-      setInterval(fetchApps, 3000);
 
       function openDonate() {
         document.getElementById("donateModal").classList.add("open");

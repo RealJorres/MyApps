@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, make_response
 import sys
 import json
 import os
+from json import dumps as _json_dumps
 import importlib.util
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
@@ -93,7 +94,21 @@ app = SecurityHeadersMiddleware(
 
 @flask_app.route('/')
 def index():
-    return render_template('index.html')
+    apps = [
+        {
+            'id':          a['id'],
+            'name':        a['name'],
+            'description': a['description'],
+            'icon':        a['icon'],
+            'color':       a['color'],
+            'tags':        a.get('tags', []),
+            'category':    a.get('category', 'Other'),
+            'status':      'running' if f"/{a['id']}" in mounts else 'error',
+            'url':         f"/{a['id']}/",
+        }
+        for a in REGISTRY
+    ]
+    return render_template('index.html', apps_json=_json_dumps(apps))
 
 
 BASE_URL = 'https://jorresapps.onrender.com'
