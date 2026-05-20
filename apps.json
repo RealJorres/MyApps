@@ -761,5 +761,82 @@
     "description": "Live HTML/CSS/JS sandbox with separate editor panes and an instant preview. Mobile and tablet views included.",
     "port": 5109, "path": "./the-apps/html-previewer", "entry": "app.py",
     "icon": "🖥️", "color": "#1e3a5f", "tags": ["HTML", "CSS", "JS", "Sandbox", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "cidr-calculator",
+    "name": "CIDR / Subnet Calculator",
+    "description": "Enter an IP/CIDR notation to get network address, broadcast, subnet mask, usable hosts, and a bit layout.",
+    "port": 5110, "path": "./the-apps/cidr-calculator", "entry": "app.py",
+    "icon": "🌐", "color": "#1d4ed8", "tags": ["CIDR", "Subnet", "IP", "Network", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "gitignore-generator",
+    "name": "Gitignore Generator",
+    "description": "Pick languages, frameworks, and editors to instantly generate a ready-to-use .gitignore file.",
+    "port": 5111, "path": "./the-apps/gitignore-generator", "entry": "app.py",
+    "icon": "⛔", "color": "#1d4ed8", "tags": ["Git", "Gitignore", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "ascii-table",
+    "name": "ASCII Table",
+    "description": "All 128 ASCII characters with decimal, hex, octal, binary values and descriptions. Searchable and filterable.",
+    "port": 5112, "path": "./the-apps/ascii-table", "entry": "app.py",
+    "icon": "Aa", "color": "#7c3aed", "tags": ["ASCII", "Reference", "Dev"], "category": "Developer Utilities"
+  },
+  {
+    "id": "todo-list",
+    "name": "To-Do List",
+    "description": "Simple task checklist with High / Medium / Low priorities. Filter by status or priority. Saved in browser.",
+    "port": 5113, "path": "./the-apps/todo-list", "entry": "app.py",
+    "icon": "✅", "color": "#1d4ed8", "tags": ["Tasks", "Todo", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "meeting-timer",
+    "name": "Meeting Timer",
+    "description": "Add agenda items with time limits. A bell rings when each item ends and the timer auto-advances.",
+    "port": 5114, "path": "./the-apps/meeting-timer", "entry": "app.py",
+    "icon": "🔔", "color": "#be185d", "tags": ["Meeting", "Timer", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "image-filters",
+    "name": "Image Filters & Effects",
+    "description": "Upload an image and adjust brightness, contrast, saturation, grayscale, sepia, blur, and more. Download the result.",
+    "port": 5115, "path": "./the-apps/image-filters", "entry": "app.py",
+    "icon": "✨", "color": "#7c3aed", "tags": ["Image", "Filter", "Effects", "Edit"], "category": "Image / Media"
+  },
+  {
+    "id": "svg-to-png",
+    "name": "SVG to PNG Converter",
+    "description": "Paste SVG code or upload an SVG file, set output dimensions, and download as a PNG image.",
+    "port": 5116, "path": "./the-apps/svg-to-png", "entry": "app.py",
+    "icon": "🔄", "color": "#0891b2", "tags": ["SVG", "PNG", "Convert", "Images"], "category": "Image / Media"
+  },
+  {
+    "id": "roi-calculator",
+    "name": "ROI Calculator",
+    "description": "Calculate return on investment, annualized CAGR, net profit/loss, and investment multiple.",
+    "port": 5117, "path": "./the-apps/roi-calculator", "entry": "app.py",
+    "icon": "📈", "color": "#059669", "tags": ["ROI", "Return", "Finance", "Investment"], "category": "Finance / Math"
+  },
+  {
+    "id": "inflation-calculator",
+    "name": "Inflation Calculator",
+    "description": "Find the purchasing power equivalent of any dollar amount across years using US CPI data (1913–2024).",
+    "port": 5118, "path": "./the-apps/inflation-calculator", "entry": "app.py",
+    "icon": "💸", "color": "#dc2626", "tags": ["Inflation", "CPI", "Finance"], "category": "Finance / Math"
+  },
+  {
+    "id": "statistics-calculator",
+    "name": "Statistics Calculator",
+    "description": "Paste a list of numbers to compute mean, median, mode, std dev, variance, quartiles, and more.",
+    "port": 5119, "path": "./the-apps/statistics-calculator", "entry": "app.py",
+    "icon": "📊", "color": "#0891b2", "tags": ["Statistics", "Math", "Data", "Science"], "category": "Science / Education"
+  },
+  {
+    "id": "prime-factorizer",
+    "name": "Prime Factorizer",
+    "description": "Enter any number to get its prime factorization, all divisors, and properties like perfect number check.",
+    "port": 5120, "path": "./the-apps/prime-factorizer", "entry": "app.py",
+    "icon": "🔢", "color": "#7c3aed", "tags": ["Prime", "Factors", "Math", "Science"], "category": "Science / Education"
   }
 ]

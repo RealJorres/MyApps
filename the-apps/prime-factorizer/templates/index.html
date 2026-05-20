@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prime Factorizer</title>
+<style>
+:root{--primary:#7c3aed;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:680px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.input-row{display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap}
+.input-row .field{flex:1;min-width:200px}
+input[type=number]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.95rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus{border-color:var(--primary)}
+.btn{padding:.55rem 1.25rem;border-radius:.5rem;border:none;font-size:.9rem;font-weight:600;cursor:pointer;background:var(--primary);color:#fff;font-family:inherit;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.factorization{font-size:1.5rem;font-weight:800;color:var(--primary);margin:.75rem 0;word-break:break-all;line-height:1.5}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
+.badge{padding:.3rem .7rem;border-radius:.4rem;font-size:.8rem;font-weight:700}
+.badge-prime{background:#f3e8ff;color:#7c3aed}
+.badge-composite{background:#fef3c7;color:#b45309}
+.badge-perfect{background:#dcfce7;color:#15803d}
+.divisors-wrap{overflow-x:auto}
+.divisors{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.div-chip{padding:.25rem .6rem;border-radius:.35rem;background:var(--bg);border:1px solid var(--border);font-size:.8rem;font-family:monospace}
+.div-chip.prime-div{background:#f3e8ff;border-color:#c4b5fd;color:#6d28d9}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;margin-top:.75rem}
+.ic{background:var(--bg);border:1px solid var(--border);border-radius:.5rem;padding:.75rem;text-align:center}
+.ic .il{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem}
+.ic .iv{font-size:1.1rem;font-weight:800;color:var(--primary)}
+#output{display:none}
+.error{color:#dc2626;font-size:.875rem;margin-top:.5rem;display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Prime Factorizer</h1>
+    <p>Enter a number to get its prime factorization, divisors, and more.</p>
+  </header>
+
+  <div class="card">
+    <div class="input-row">
+      <div class="field">
+        <label>Number</label>
+        <input type="number" id="num" value="360" min="2" max="999999999" step="1">
+      </div>
+      <button class="btn" onclick="factorize()">Factorize</button>
+    </div>
+    <div class="error" id="err"></div>
+  </div>
+
+  <div id="output">
+    <div class="card">
+      <div style="font-size:.875rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Prime Factorization</div>
+      <div class="factorization" id="factStr"></div>
+      <div class="badges" id="badges"></div>
+      <div class="info-grid" id="infoGrid"></div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:.875rem;font-weight:700;margin-bottom:.25rem">All Divisors <span id="divCount" style="color:var(--muted);font-weight:400;font-size:.8rem"></span></div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.5rem">Purple = prime divisor</div>
+      <div class="divisors" id="divisors"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function isPrime(n){
+  if(n<2)return false;
+  if(n===2)return true;
+  if(n%2===0)return false;
+  for(let i=3;i*i<=n;i+=2)if(n%i===0)return false;
+  return true;
+}
+function primeFactors(n){
+  const factors={};
+  let d=2;
+  while(d*d<=n){while(n%d===0){factors[d]=(factors[d]||0)+1;n=Math.floor(n/d);}d++;}
+  if(n>1)factors[n]=(factors[n]||0)+1;
+  return factors;
+}
+function getDivisors(n){
+  const divs=[];
+  for(let i=1;i*i<=n;i++){if(n%i===0){divs.push(i);if(i!==n/i)divs.push(n/i);}}
+  return divs.sort((a,b)=>a-b);
+}
+function superscript(n){
+  return n.toString().split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join('');
+}
+
+function factorize(){
+  const raw=document.getElementById('num').value;
+  const n=parseInt(raw);
+  const err=document.getElementById('err');
+  const output=document.getElementById('output');
+  err.style.display='none';
+  if(!Number.isInteger(n)||n<2||n>999999999){
+    err.textContent='Please enter an integer between 2 and 999,999,999.';
+    err.style.display='block';
+    output.style.display='none';
+    return;
+  }
+
+  const factors=primeFactors(n);
+  const factorEntries=Object.entries(factors).map(([p,e])=>({p:parseInt(p),e}));
+  const factStr=factorEntries.map(({p,e})=>e>1?`${p}${superscript(e)}`:String(p)).join(' × ');
+  document.getElementById('factStr').textContent=`${n} = ${factStr}`;
+
+  const primeCheck=isPrime(n);
+  const divisors=getDivisors(n);
+  const numDivisors=divisors.length;
+  const sumDivisors=divisors.reduce((a,b)=>a+b,0)-n;
+  const isPerfect=sumDivisors===n;
+  const isDeficient=sumDivisors<n;
+
+  const badges=[];
+  badges.push(primeCheck?'<span class="badge badge-prime">Prime</span>':'<span class="badge badge-composite">Composite</span>');
+  if(isPerfect)badges.push('<span class="badge badge-perfect">Perfect Number</span>');
+  document.getElementById('badges').innerHTML=badges.join('');
+
+  document.getElementById('infoGrid').innerHTML=`
+    <div class="ic"><div class="il">Divisor Count</div><div class="iv">${numDivisors}</div></div>
+    <div class="ic"><div class="il">Sum of Divisors</div><div class="iv">${(sumDivisors+n).toLocaleString()}</div></div>
+    <div class="ic"><div class="il">Aliquot Sum</div><div class="iv">${sumDivisors.toLocaleString()}</div></div>
+    <div class="ic"><div class="il">Unique Primes</div><div class="iv">${factorEntries.length}</div></div>
+  `;
+
+  document.getElementById('divCount').textContent=`(${numDivisors})`;
+  document.getElementById('divisors').innerHTML=divisors.map(d=>`<span class="div-chip ${isPrime(d)?'prime-div':''}">${d}</span>`).join('');
+  output.style.display='block';
+}
+
+document.getElementById('num').addEventListener('keydown',e=>{if(e.key==='Enter')factorize();});
+factorize();
+</script>
+</body>
+</html>

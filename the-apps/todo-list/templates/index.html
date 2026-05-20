@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do List</title>
+<style>
+:root{--primary:#1d4ed8;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:640px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+.add-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.add-row input[type=text]{flex:1;min-width:0;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+.add-row input:focus{border-color:var(--primary)}
+.add-row select{padding:.6rem .5rem;border:1px solid var(--border);border-radius:.5rem;font-size:.85rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+.btn{padding:.6rem 1rem;border-radius:.5rem;border:none;font-size:.85rem;font-weight:600;cursor:pointer;background:var(--primary);color:#fff;font-family:inherit;white-space:nowrap}
+.btn:hover{opacity:.85}
+.filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.fb{padding:.35rem .75rem;border-radius:.4rem;border:1px solid var(--border);font-size:.78rem;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit}
+.fb.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.stats{display:flex;gap:1rem;font-size:.8rem;color:var(--muted);margin-bottom:.75rem;flex-wrap:wrap}
+.stats span b{color:var(--text)}
+.todo-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.todo-item:last-child{border-bottom:none}
+.todo-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.todo-text{flex:1;min-width:0;font-size:.9rem;word-break:break-word;cursor:pointer}
+.todo-text.done{text-decoration:line-through;color:var(--muted)}
+.priority-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.p-high{background:#dc2626}
+.p-med{background:#f97316}
+.p-low{background:#059669}
+.del-btn{background:none;border:none;cursor:pointer;color:#cbd5e1;font-size:1.1rem;padding:0 2px;line-height:1;flex-shrink:0}
+.del-btn:hover{color:#dc2626}
+.empty{text-align:center;color:var(--muted);padding:2rem 0;font-size:.9rem}
+.clear-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.78rem;text-decoration:underline;font-family:inherit;padding:0}
+.clear-btn:hover{color:#dc2626}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>To-Do List</h1>
+    <p>Simple task checklist with priorities. Saved in your browser.</p>
+  </header>
+
+  <div class="card">
+    <div class="add-row">
+      <input type="text" id="taskInput" placeholder="Add a new task…" maxlength="200">
+      <select id="prioritySelect">
+        <option value="high">High</option>
+        <option value="med" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <button class="btn" onclick="addTask()">Add</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="filter-row">
+      <button class="fb active" onclick="setFilter('all',this)">All</button>
+      <button class="fb" onclick="setFilter('active',this)">Active</button>
+      <button class="fb" onclick="setFilter('done',this)">Done</button>
+      <button class="fb" onclick="setFilter('high',this)">High</button>
+      <button class="fb" onclick="setFilter('med',this)">Medium</button>
+      <button class="fb" onclick="setFilter('low',this)">Low</button>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div id="list"></div>
+    <button class="clear-btn" onclick="clearDone()" style="margin-top:.5rem">Clear completed</button>
+  </div>
+</div>
+
+<script>
+let tasks=JSON.parse(localStorage.getItem('todo-tasks')||'[]');
+let filter='all';
+
+function save(){localStorage.setItem('todo-tasks',JSON.stringify(tasks));}
+
+function addTask(){
+  const input=document.getElementById('taskInput');
+  const text=input.value.trim();
+  if(!text)return;
+  tasks.unshift({id:Date.now(),text,priority:document.getElementById('prioritySelect').value,done:false});
+  input.value='';
+  save();render();
+}
+
+function toggle(id){
+  const t=tasks.find(t=>t.id===id);
+  if(t)t.done=!t.done;
+  save();render();
+}
+
+function del(id){tasks=tasks.filter(t=>t.id!==id);save();render();}
+function clearDone(){tasks=tasks.filter(t=>!t.done);save();render();}
+
+function setFilter(f,btn){
+  filter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+const PMAP={high:{label:'High',cls:'p-high'},med:{label:'Medium',cls:'p-med'},low:{label:'Low',cls:'p-low'}};
+
+function render(){
+  const total=tasks.length;
+  const done=tasks.filter(t=>t.done).length;
+  document.getElementById('stats').innerHTML=`<span><b>${total}</b> total</span><span><b>${done}</b> done</span><span><b>${total-done}</b> remaining</span>`;
+
+  let visible=tasks;
+  if(filter==='active')visible=tasks.filter(t=>!t.done);
+  else if(filter==='done')visible=tasks.filter(t=>t.done);
+  else if(['high','med','low'].includes(filter))visible=tasks.filter(t=>t.priority===filter);
+
+  if(visible.length===0){
+    document.getElementById('list').innerHTML='<div class="empty">No tasks here.</div>';
+    return;
+  }
+  document.getElementById('list').innerHTML=visible.map(t=>`
+    <div class="todo-item">
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggle(${t.id})">
+      <div class="priority-dot ${PMAP[t.priority].cls}" title="${PMAP[t.priority].label} priority"></div>
+      <span class="todo-text ${t.done?'done':''}" onclick="toggle(${t.id})">${escHtml(t.text)}</span>
+      <button class="del-btn" onclick="del(${t.id})" title="Delete">×</button>
+    </div>
+  `).join('');
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+render();
+</script>
+</body>
+</html>

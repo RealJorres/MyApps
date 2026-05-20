@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gitignore Generator</title>
+<style>
+:root{--primary:#1d4ed8;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:820px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+.section-title{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+.tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.tag{padding:.35rem .8rem;border-radius:.4rem;border:2px solid var(--border);font-size:.82rem;font-weight:600;cursor:pointer;background:#fff;color:var(--text);transition:all .15s;user-select:none}
+.tag:hover{border-color:var(--primary);color:var(--primary)}
+.tag.selected{background:var(--primary);color:#fff;border-color:var(--primary)}
+.actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:.75rem}
+.btn{padding:.5rem 1.1rem;border-radius:.5rem;border:none;font-size:.875rem;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn:hover{opacity:.85}
+textarea{width:100%;height:360px;padding:.75rem;border:1px solid var(--border);border-radius:.5rem;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.6;background:#0f172a;color:#e2e8f0;resize:vertical;outline:none}
+.selected-list{display:flex;flex-wrap:wrap;gap:.4rem;min-height:32px}
+.sel-chip{display:flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:.35rem;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;font-size:.8rem;font-weight:600}
+.sel-chip button{background:none;border:none;cursor:pointer;color:#1d4ed8;font-size:.9rem;line-height:1;padding:0}
+.empty-note{color:var(--muted);font-size:.85rem;font-style:italic}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Gitignore Generator</h1>
+    <p>Pick languages and frameworks to generate a ready-to-use <code>.gitignore</code> file.</p>
+  </header>
+
+  <div class="card">
+    <div class="section-title">Languages</div>
+    <div class="tags" id="langTags"></div>
+    <div class="section-title" style="margin-top:1.25rem">Frameworks & Tools</div>
+    <div class="tags" id="toolTags"></div>
+    <div class="section-title" style="margin-top:1.25rem">Editors & OS</div>
+    <div class="tags" id="editorTags"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Selected</div>
+    <div class="selected-list" id="selectedList"><span class="empty-note">Nothing selected yet.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="actions">
+      <button class="btn btn-primary" onclick="copyOutput()">Copy</button>
+      <button class="btn btn-secondary" onclick="downloadOutput()">Download .gitignore</button>
+      <button class="btn btn-secondary" onclick="clearAll()">Clear All</button>
+    </div>
+    <textarea id="output" readonly placeholder="Select languages or frameworks above to generate your .gitignore…"></textarea>
+  </div>
+</div>
+
+<script>
+const TEMPLATES={
+  Python:`# Python\n__pycache__/\n*.py[cod]\n*$py.class\n*.so\n.Python\nbuild/\ndevelop-eggs/\ndist/\ndownloads/\neggs/\n.eggs/\nlib/\nlib64/\nparts/\nsdist/\nvar/\nwheels/\npip-wheel-metadata/\nshare/python-wheels/\n*.egg-info/\n.installed.cfg\n*.egg\nMANIFEST\n*.manifest\n*.spec\npip-log.txt\npip-delete-this-directory.txt\nhtmlcov/\n.tox/\n.nox/\n.coverage\n.coverage.*\n.cache\nnosetests.xml\ncoverage.xml\n*.cover\n*.py,cover\n.hypothesis/\n.pytest_cache/\n.env\n.venv\nenv/\nvenv/\nENV/\nenv.bak/\nvenv.bak/\n.spyderproject.db\n.spyproject\n.ropeproject\n/site\n.mypy_cache/\n.dmypy.json\ndmypy.json\n.pyre/`,
+  JavaScript:`# JavaScript\nnode_modules/\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\nlerna-debug.log*\n.pnpm-debug.log*\n.npm\n.yarn-integrity\n.env\n.env.local\n.env.development.local\n.env.test.local\n.env.production.local\ndist/\nbuild/\n.cache/\ncoverage/\n*.lcov\n.nyc_output`,
+  TypeScript:`# TypeScript\nnode_modules/\ndist/\nbuild/\n*.js.map\n*.d.ts.map\ntsconfig.tsbuildinfo\n.tsbuildinfo\n.env\n.env.local\ncoverage/`,
+  Java:`# Java\n*.class\n*.log\n*.jar\n*.war\n*.nar\n*.ear\n*.zip\n*.tar.gz\n*.rar\nhs_err_pid*\ntarget/\n.mtj.tmp/\n.classpath\n.project\n.settings/\n.factorypath`,
+  'C/C++':`# C/C++\n*.d\n*.slo\n*.lo\n*.o\n*.obj\n*.gch\n*.pch\n*.so\n*.dylib\n*.dll\n*.mod\n*.smod\n*.lai\n*.la\n*.a\n*.lib\n*.exe\n*.out\n*.app\nbuild/\nCMakeFiles/\nCMakeCache.txt\ncmake_install.cmake\nMakefile`,
+  Go:`# Go\n*.exe\n*.exe~\n*.dll\n*.so\n*.dylib\n*.test\n*.out\nvendor/\n/bin/\n/pkg/`,
+  Ruby:`# Ruby\n*.gem\n*.rbc\n/.config\n/coverage/\n/InstalledFiles\n/pkg/\n/spec/reports/\n/spec/examples.txt\n/test/tmp/\n/test/version_tmp/\n/tmp/\n.bundle/\n.yardoc/\n_yardoc/\ndoc/\nlog/\ntmp/\n.rvmrc\n.ruby-version\nGemfile.lock`,
+  PHP:`# PHP\nvendor/\n.env\n.phpunit.result.cache\nstorage/\nbootstrap/cache/\n*.log\npublic/hot\npublic/storage\n.idea/\n.DS_Store`,
+  Rust:`# Rust\ndebug/\ntarget/\nCargo.lock\n**/*.rs.bk\n*.pdb`,
+  Swift:`# Swift\n.build/\n*.xcodeproj\n.swiftpm/\nPackage.resolved`,
+  'C#':`# C#\n*.user\n*.suo\n*.userosscache\n*.sln.docstates\n[Dd]ebug/\n[Rr]elease/\nx64/\nx86/\nbld/\n[Bb]in/\n[Oo]bj/\n.vs/\nproject.lock.json\n*.nupkg\n*.snupkg`,
+  Kotlin:`# Kotlin\n*.class\n*.log\n*.jar\n*.war\n.gradle/\nbuild/\n.idea/\n*.iml\n.kotlin/`,
+  React:`# React\nnode_modules/\n.env\n.env.local\n.env.development.local\n.env.test.local\n.env.production.local\nbuild/\n.cache/\ncoverage/\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*`,
+  'Vue.js':`# Vue.js\nnode_modules/\ndist/\n.env\n.env.local\n.env.*.local\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\npnpm-debug.log*\n.DS_Store`,
+  Angular:`# Angular\nnode_modules/\ndist/\n.angular/\n.env\ncoverage/\nnpm-debug.log\nyarn-error.log`,
+  'Next.js':`# Next.js\n.next/\nout/\nbuild/\nnode_modules/\n.env\n.env.local\n.env.development.local\n.env.test.local\n.env.production.local\nnpm-debug.log*\nyarn-debug.log*`,
+  Django:`# Django\n*.log\n*.pot\n*.pyc\n__pycache__/\nlocal_settings.py\ndb.sqlite3\ndb.sqlite3-journal\nmedia/\n.env\n.venv\nvenv/`,
+  Flask:`# Flask\n.env\n.venv\nvenv/\n__pycache__/\n*.pyc\ninstance/\n.pytest_cache/\ndist/\nbuild/\n*.egg-info/`,
+  Laravel:`# Laravel\nvendor/\n.env\n.env.backup\n.phpunit.result.cache\nHomestead.json\nHomestead.yaml\nnpm-debug.log\nyarn-error.log\npublic/hot\npublic/storage\nstorage/*.key\n.idea\n.vscode`,
+  Docker:`# Docker\n.dockerignore\ndocker-compose.override.yml\n*.env`,
+  Terraform:`# Terraform\n.terraform/\n*.tfstate\n*.tfstate.backup\n*.tfvars\n.terraform.lock.hcl\ncrash.log\ncrash.*.log\noverride.tf\noverride.tf.json\n*_override.tf\n*_override.tf.json`,
+  'Node.js':`# Node.js\nnode_modules/\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n.pnpm-debug.log*\n.npm\n.env\n.env.local\n.env.*.local\npids\n*.pid\n*.seed\n*.pid.lock\nlib-cov/\ncoverage/\n.nyc_output/\n.grunt\n.node_repl_history`,
+  VSCode:`# Visual Studio Code\n.vscode/*\n!.vscode/settings.json\n!.vscode/tasks.json\n!.vscode/launch.json\n!.vscode/extensions.json\n!.vscode/*.code-snippets\n.history/\n*.vsix`,
+  JetBrains:`# JetBrains\n.idea/\n*.iws\n*.iml\n*.ipr\nout/\n.idea_modules/`,
+  'Vim/Neovim':`# Vim/Neovim\n[._]*.s[a-v][a-z]\n!*.svg\n[._]*.sw[a-p]\n[._]s[a-rt-v][a-z]\n[._]ss[a-gi-z]\n[._]sw[a-p]\nSession.vim\nNetrwTreeListing\n.netrwhist\n*~\ntags\n[._]*.un~`,
+  macOS:`# macOS\n.DS_Store\n.AppleDouble\n.LSOverride\nIcon\n._*\n.DocumentRevisions-V100\n.fseventsd\n.Spotlight-V100\n.TemporaryItems\n.Trashes\n.VolumeIcon.icns\n.com.apple.timemachine.donotpresent\n.AppleDB\n.AppleDesktop\nNetwork Trash Folder\nTemporary Items\n.apdisk`,
+  Windows:`# Windows\nThumbs.db\nThumbs.db:encryptable\nehthumbs.db\nehthumbs_vista.db\n*.stackdump\n[Dd]esktop.ini\n$RECYCLE.BIN/\n*.cab\n*.msi\n*.msix\n*.msm\n*.msp\n*.lnk`,
+  Linux:`# Linux\n*~\n.fuse_hidden*\n.directory\n.Trash-*\n.nfs*`,
+};
+
+const LANG_KEYS=['Python','JavaScript','TypeScript','Java','C/C++','Go','Ruby','PHP','Rust','Swift','C#','Kotlin'];
+const TOOL_KEYS=['React','Vue.js','Angular','Next.js','Django','Flask','Laravel','Docker','Terraform','Node.js'];
+const EDITOR_KEYS=['VSCode','JetBrains','Vim/Neovim','macOS','Windows','Linux'];
+
+const selected=new Set();
+
+function renderGroup(ids,containerId){
+  document.getElementById(containerId).innerHTML=ids.map(id=>`
+    <span class="tag ${selected.has(id)?'selected':''}" onclick="toggle('${id}')">${id}</span>
+  `).join('');
+}
+
+function renderAll(){
+  renderGroup(LANG_KEYS,'langTags');
+  renderGroup(TOOL_KEYS,'toolTags');
+  renderGroup(EDITOR_KEYS,'editorTags');
+  const list=document.getElementById('selectedList');
+  if(selected.size===0){list.innerHTML='<span class="empty-note">Nothing selected yet.</span>';return;}
+  list.innerHTML=[...selected].map(id=>`<span class="sel-chip">${id}<button onclick="toggle('${id}')" title="Remove">×</button></span>`).join('');
+  generateOutput();
+}
+
+function generateOutput(){
+  if(selected.size===0){document.getElementById('output').value='';return;}
+  const sections=[];
+  sections.push('# Generated by Gitignore Generator\n# https://jorresapps.onrender.com/gitignore-generator/\n# Selections: '+[...selected].join(', ')+'\n');
+  [...selected].forEach(id=>{if(TEMPLATES[id])sections.push(TEMPLATES[id]);});
+  document.getElementById('output').value=sections.join('\n\n');
+}
+
+function toggle(id){
+  if(selected.has(id))selected.delete(id);else selected.add(id);
+  renderAll();
+}
+
+function copyOutput(){
+  const val=document.getElementById('output').value;
+  if(!val)return;
+  navigator.clipboard.writeText(val).then(()=>{
+    const btn=document.querySelector('.btn-primary');
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy',1500);
+  });
+}
+
+function downloadOutput(){
+  const val=document.getElementById('output').value;
+  if(!val)return;
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(val);
+  a.download='.gitignore';
+  a.click();
+}
+
+function clearAll(){selected.clear();renderAll();}
+renderAll();
+</script>
+</body>
+</html>

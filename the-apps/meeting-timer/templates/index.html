@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Timer</title>
+<style>
+:root{--primary:#be185d;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:640px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.add-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.add-row input[type=text]{flex:2;min-width:0;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+.add-row input[type=number]{flex:1;min-width:60px;padding:.6rem .5rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus{border-color:var(--primary)}
+.btn{padding:.6rem 1rem;border-radius:.5rem;border:none;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-success{background:#059669;color:#fff}
+.btn-danger{background:#dc2626;color:#fff}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.agenda-item{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.6rem;margin-bottom:.4rem;background:#fff}
+.agenda-item.active-item{border-color:var(--primary);background:#fdf2f8}
+.agenda-item.done-item{opacity:.55;text-decoration:line-through}
+.item-name{flex:1;font-size:.9rem;min-width:0;word-break:break-word}
+.item-dur{font-size:.8rem;color:var(--muted);flex-shrink:0}
+.del-btn{background:none;border:none;cursor:pointer;color:#cbd5e1;font-size:1.1rem;line-height:1;padding:0 2px;flex-shrink:0}
+.del-btn:hover{color:#dc2626}
+.timer-display{text-align:center;padding:1.5rem 1rem}
+.timer-label{font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:.4rem}
+.timer-name{font-size:1.2rem;font-weight:800;margin-bottom:.5rem}
+.timer-clock{font-size:3.5rem;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.05em;color:var(--primary)}
+.timer-clock.warning{color:#dc2626}
+.progress-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin:.75rem 0}
+.progress-fill{height:100%;background:var(--primary);border-radius:4px;transition:width .5s}
+.progress-fill.warning{background:#dc2626}
+.controls{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.75rem}
+.meeting-total{text-align:center;font-size:.85rem;color:var(--muted);margin-top:.5rem}
+.empty{text-align:center;color:var(--muted);padding:1rem 0;font-size:.875rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Meeting Timer</h1>
+    <p>Add agenda items with time limits. A bell rings when each item ends.</p>
+  </header>
+
+  <div class="card" id="setupCard">
+    <div class="add-row">
+      <input type="text" id="itemName" placeholder="Agenda item name…" maxlength="80">
+      <input type="number" id="itemMins" value="5" min="1" max="120" step="1" title="Minutes">
+      <button class="btn btn-primary" onclick="addItem()">Add</button>
+    </div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Minutes per item</div>
+    <div id="agendaList" style="margin-top:1rem"></div>
+    <div class="meeting-total" id="totalTime"></div>
+    <div style="text-align:center;margin-top:1rem">
+      <button class="btn btn-success" id="startBtn" onclick="startMeeting()" disabled>Start Meeting</button>
+    </div>
+  </div>
+
+  <div class="card" id="runCard" style="display:none">
+    <div class="timer-display">
+      <div class="timer-label" id="timerLabel">Item 1 of X</div>
+      <div class="timer-name" id="timerName"></div>
+      <div class="timer-clock" id="timerClock">00:00</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="prevItem()" id="prevBtn">← Prev</button>
+      <button class="btn btn-primary" onclick="togglePause()" id="pauseBtn">Pause</button>
+      <button class="btn btn-secondary" onclick="nextItem()" id="nextBtn">Next →</button>
+    </div>
+    <div class="controls" style="margin-top:.5rem">
+      <button class="btn btn-danger" onclick="stopMeeting()">Stop Meeting</button>
+    </div>
+    <div style="margin-top:1rem" id="runAgenda"></div>
+  </div>
+
+  <div class="card" id="doneCard" style="display:none;text-align:center">
+    <div style="font-size:2rem;margin-bottom:.5rem">✅</div>
+    <div style="font-size:1.2rem;font-weight:800;margin-bottom:.5rem">Meeting Complete!</div>
+    <div style="color:var(--muted);margin-bottom:1rem" id="doneMsg"></div>
+    <button class="btn btn-primary" onclick="resetMeeting()">New Meeting</button>
+  </div>
+</div>
+
+<script>
+let agenda=[];
+let current=0;
+let secondsLeft=0;
+let totalSeconds=0;
+let interval=null;
+let paused=false;
+let startedAt=null;
+let totalElapsed=0;
+
+const beep=()=>{
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [0,200,400].forEach(delay=>{
+      const osc=ctx.createOscillator();
+      const g=ctx.createGain();
+      osc.connect(g);g.connect(ctx.destination);
+      osc.frequency.value=880;
+      g.gain.setValueAtTime(0.3,ctx.currentTime+delay/1000);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay/1000+0.3);
+      osc.start(ctx.currentTime+delay/1000);
+      osc.stop(ctx.currentTime+delay/1000+0.3);
+    });
+  }catch(e){}
+};
+
+function addItem(){
+  const name=document.getElementById('itemName').value.trim();
+  const mins=parseInt(document.getElementById('itemMins').value)||5;
+  if(!name)return;
+  agenda.push({name,mins});
+  document.getElementById('itemName').value='';
+  renderSetup();
+}
+function removeItem(i){agenda.splice(i,1);renderSetup();}
+
+function renderSetup(){
+  const list=document.getElementById('agendaList');
+  if(agenda.length===0){list.innerHTML='<div class="empty">No agenda items yet.</div>';document.getElementById('startBtn').disabled=true;document.getElementById('totalTime').textContent='';return;}
+  list.innerHTML=agenda.map((it,i)=>`
+    <div class="agenda-item">
+      <span class="item-name">${escHtml(it.name)}</span>
+      <span class="item-dur">${it.mins} min</span>
+      <button class="del-btn" onclick="removeItem(${i})">×</button>
+    </div>
+  `).join('');
+  const total=agenda.reduce((s,it)=>s+it.mins,0);
+  document.getElementById('totalTime').textContent=`Total: ${total} minute${total!==1?'s':''}`;
+  document.getElementById('startBtn').disabled=false;
+}
+
+function startMeeting(){
+  current=0;
+  totalElapsed=0;
+  document.getElementById('setupCard').style.display='none';
+  document.getElementById('runCard').style.display='block';
+  document.getElementById('doneCard').style.display='none';
+  loadItem(0);
+}
+
+function loadItem(idx){
+  if(idx>=agenda.length){endMeeting();return;}
+  current=idx;
+  const it=agenda[idx];
+  secondsLeft=it.mins*60;
+  totalSeconds=it.mins*60;
+  paused=false;
+  document.getElementById('pauseBtn').textContent='Pause';
+  updateDisplay();
+  clearInterval(interval);
+  interval=setInterval(tick,1000);
+}
+
+function tick(){
+  if(paused)return;
+  secondsLeft--;
+  totalElapsed++;
+  if(secondsLeft<=0){
+    secondsLeft=0;
+    updateDisplay();
+    clearInterval(interval);
+    beep();
+    setTimeout(()=>loadItem(current+1),1200);
+  }else{
+    updateDisplay();
+  }
+}
+
+function updateDisplay(){
+  const it=agenda[current];
+  document.getElementById('timerLabel').textContent=`Item ${current+1} of ${agenda.length}`;
+  document.getElementById('timerName').textContent=it.name;
+  const m=Math.floor(secondsLeft/60),s=secondsLeft%60;
+  const clockStr=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const clock=document.getElementById('timerClock');
+  const fill=document.getElementById('progressFill');
+  const warning=secondsLeft<=30&&secondsLeft>0;
+  clock.textContent=clockStr;
+  clock.className='timer-clock'+(warning?' warning':'');
+  const pct=totalSeconds>0?((totalSeconds-secondsLeft)/totalSeconds*100):100;
+  fill.style.width=pct+'%';
+  fill.className='progress-fill'+(warning?' warning':'');
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('nextBtn').disabled=current===agenda.length-1;
+
+  document.getElementById('runAgenda').innerHTML=agenda.map((it,i)=>`
+    <div class="agenda-item ${i===current?'active-item':''} ${i<current?'done-item':''}">
+      <span class="item-name">${escHtml(it.name)}</span>
+      <span class="item-dur">${it.mins} min</span>
+    </div>
+  `).join('');
+}
+
+function togglePause(){
+  paused=!paused;
+  document.getElementById('pauseBtn').textContent=paused?'Resume':'Pause';
+}
+function nextItem(){clearInterval(interval);loadItem(current+1);}
+function prevItem(){if(current>0){clearInterval(interval);loadItem(current-1);}}
+function stopMeeting(){clearInterval(interval);resetMeeting();}
+
+function endMeeting(){
+  clearInterval(interval);
+  document.getElementById('runCard').style.display='none';
+  document.getElementById('doneCard').style.display='block';
+  const total=agenda.reduce((s,it)=>s+it.mins,0);
+  document.getElementById('doneMsg').textContent=`Covered ${agenda.length} item${agenda.length!==1?'s':''} in ${total} min${total!==1?'s':''}.`;
+}
+function resetMeeting(){
+  clearInterval(interval);
+  agenda=[];
+  document.getElementById('setupCard').style.display='block';
+  document.getElementById('runCard').style.display='none';
+  document.getElementById('doneCard').style.display='none';
+  renderSetup();
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+document.getElementById('itemName').addEventListener('keydown',e=>{if(e.key==='Enter')addItem();});
+renderSetup();
+</script>
+</body>
+</html>

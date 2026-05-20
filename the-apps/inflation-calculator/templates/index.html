@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inflation Calculator</title>
+<style>
+:root{--primary:#dc2626;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:680px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem}
+.field{display:flex;flex-direction:column}
+input[type=number],select{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus,select:focus{border-color:var(--primary)}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem}
+.rc{background:var(--bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem;text-align:center}
+.rc .rl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.rc .rv{font-size:1.3rem;font-weight:800;color:var(--primary)}
+.rc .sub{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{background:var(--bg);padding:.45rem .75rem;text-align:left;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+tbody td{padding:.45rem .75rem;border-bottom:1px solid var(--border)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f8fafc}
+details summary{cursor:pointer;font-size:.875rem;font-weight:600;color:var(--muted);padding:.5rem 0}
+details summary:hover{color:var(--text)}
+.note{font-size:.75rem;color:var(--muted);margin-top:.75rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Inflation Calculator</h1>
+    <p>Find the purchasing power equivalent of a dollar amount across years.</p>
+  </header>
+
+  <div class="card">
+    <div class="grid">
+      <div class="field">
+        <label>Amount ($)</label>
+        <input type="number" id="amount" value="100" min="0.01" step="1">
+      </div>
+      <div class="field">
+        <label>From Year</label>
+        <select id="fromYear"></select>
+      </div>
+      <div class="field">
+        <label>To Year</label>
+        <select id="toYear"></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="results" id="results"></div>
+    <details>
+      <summary>Year-by-Year CPI Table</summary>
+      <div class="table-wrap" style="margin-top:.75rem">
+        <table>
+          <thead><tr><th>Year</th><th>CPI</th><th>Equivalent Value</th><th>Cumulative Change</th></tr></thead>
+          <tbody id="cpiTable"></tbody>
+        </table>
+      </div>
+    </details>
+    <div class="note">* Based on US CPI data (BLS annual averages). Data through 2024.</div>
+  </div>
+</div>
+
+<script>
+const CPI={
+  1913:9.9,1914:10.0,1915:10.1,1916:10.9,1917:12.8,1918:15.1,1919:17.3,
+  1920:20.0,1921:17.9,1922:16.8,1923:17.1,1924:17.1,1925:17.5,1926:17.7,1927:17.4,1928:17.1,1929:17.1,
+  1930:16.7,1931:15.2,1932:13.7,1933:13.0,1934:13.4,1935:13.7,1936:13.9,1937:14.4,1938:14.1,1939:13.9,
+  1940:14.0,1941:14.7,1942:16.3,1943:17.3,1944:17.6,1945:18.0,1946:19.5,1947:22.3,1948:24.1,1949:23.8,
+  1950:24.1,1951:26.0,1952:26.5,1953:26.7,1954:26.9,1955:26.8,1956:27.2,1957:28.1,1958:28.9,1959:29.1,
+  1960:29.6,1961:29.9,1962:30.2,1963:30.6,1964:31.0,1965:31.5,1966:32.4,1967:33.4,1968:34.8,1969:36.7,
+  1970:38.8,1971:40.5,1972:41.8,1973:44.4,1974:49.3,1975:53.8,1976:56.9,1977:60.6,1978:65.2,1979:72.6,
+  1980:82.4,1981:90.9,1982:96.5,1983:99.6,1984:103.9,1985:107.6,1986:109.6,1987:113.6,1988:118.3,1989:124.0,
+  1990:130.7,1991:136.2,1992:140.3,1993:144.5,1994:148.2,1995:152.4,1996:156.9,1997:160.5,1998:163.0,1999:166.6,
+  2000:172.2,2001:177.1,2002:179.9,2003:184.0,2004:188.9,2005:195.3,2006:201.6,2007:207.3,2008:215.3,2009:214.5,
+  2010:218.1,2011:224.9,2012:229.6,2013:233.0,2014:236.7,2015:237.0,2016:240.0,2017:245.1,2018:251.1,2019:255.7,
+  2020:258.8,2021:270.9,2022:292.7,2023:304.7,2024:314.2
+};
+const YEARS=Object.keys(CPI).map(Number).sort((a,b)=>a-b);
+
+function populateSelects(){
+  const fromSel=document.getElementById('fromYear');
+  const toSel=document.getElementById('toYear');
+  YEARS.forEach(y=>{
+    fromSel.innerHTML+=`<option value="${y}">${y}</option>`;
+    toSel.innerHTML+=`<option value="${y}">${y}</option>`;
+  });
+  fromSel.value=1990;
+  toSel.value=2024;
+}
+
+function fmt(n){return'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+function calculate(){
+  const amount=parseFloat(document.getElementById('amount').value)||100;
+  const fromYear=parseInt(document.getElementById('fromYear').value);
+  const toYear=parseInt(document.getElementById('toYear').value);
+
+  const fromCPI=CPI[fromYear];
+  const toCPI=CPI[toYear];
+  const adjusted=amount*(toCPI/fromCPI);
+  const change=((toCPI/fromCPI)-1)*100;
+  const years=Math.abs(toYear-fromYear);
+  const annualRate=years>0?(Math.pow(toCPI/fromCPI,1/years)-1)*100:0;
+
+  document.getElementById('results').innerHTML=`
+    <div class="rc"><div class="rl">${fromYear} Value</div><div class="rv">${fmt(amount)}</div></div>
+    <div class="rc"><div class="rl">${toYear} Equivalent</div><div class="rv">${fmt(adjusted)}</div></div>
+    <div class="rc"><div class="rl">Total Change</div><div class="rv">${change>=0?'+':''}${change.toFixed(1)}%</div></div>
+    <div class="rc"><div class="rl">Avg Annual</div><div class="rv">${annualRate>=0?'+':''}${annualRate.toFixed(2)}%</div><div class="sub">per year</div></div>
+  `;
+
+  const minY=Math.min(fromYear,toYear);
+  const maxY=Math.max(fromYear,toYear);
+  const rangeYears=YEARS.filter(y=>y>=minY&&y<=maxY);
+  const baseCPI=CPI[fromYear];
+  document.getElementById('cpiTable').innerHTML=rangeYears.map(y=>{
+    const val=amount*(CPI[y]/baseCPI);
+    const cumChange=((CPI[y]/baseCPI)-1)*100;
+    return`<tr><td>${y}</td><td>${CPI[y].toFixed(1)}</td><td>${fmt(val)}</td><td>${cumChange>=0?'+':''}${cumChange.toFixed(1)}%</td></tr>`;
+  }).join('');
+}
+
+['amount','fromYear','toYear'].forEach(id=>document.getElementById(id).addEventListener('change',calculate));
+document.getElementById('amount').addEventListener('input',calculate);
+populateSelects();
+calculate();
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROI Calculator</title>
+<style>
+:root{--primary:#059669;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:680px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
+.field{display:flex;flex-direction:column}
+input[type=number],select{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus,select:focus{border-color:var(--primary)}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}
+.rc{background:var(--bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem;text-align:center}
+.rc .rl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.rc .rv{font-size:1.4rem;font-weight:800;color:var(--primary)}
+.rc .rv.loss{color:#dc2626}
+.rc .sub{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+.bar-wrap{height:32px;border-radius:.5rem;overflow:hidden;display:flex;margin-bottom:.5rem}
+.bar-invest{background:#1d4ed8}
+.bar-profit{background:#059669}
+.bar-loss{background:#dc2626}
+.legend{display:flex;gap:1.25rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;display:inline-block;vertical-align:middle;margin-right:4px}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>ROI Calculator</h1>
+    <p>Calculate return on investment and annualized return rate.</p>
+  </header>
+
+  <div class="card">
+    <div class="grid">
+      <div class="field">
+        <label>Initial Investment ($)</label>
+        <input type="number" id="initial" value="10000" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Final Value ($)</label>
+        <input type="number" id="final" value="15000" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Time Period</label>
+        <input type="number" id="period" value="3" min="0.01" step="0.5">
+      </div>
+      <div class="field">
+        <label>Period Unit</label>
+        <select id="unit">
+          <option value="1">Years</option>
+          <option value="0.0833">Months</option>
+          <option value="0.00274">Days</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="results" id="results"></div>
+    <div style="margin-top:1.25rem">
+      <div style="font-size:.875rem;font-weight:700;margin-bottom:.5rem">Investment Breakdown</div>
+      <div class="bar-wrap" id="bar"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function fmt(n){return'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtPct(n){return(n>=0?'+':'')+n.toFixed(2)+'%';}
+
+function calculate(){
+  const initial=parseFloat(document.getElementById('initial').value)||0;
+  const final=parseFloat(document.getElementById('final').value)||0;
+  const period=parseFloat(document.getElementById('period').value)||1;
+  const unit=parseFloat(document.getElementById('unit').value);
+  const years=period*unit;
+
+  const profit=final-initial;
+  const roi=initial>0?(profit/initial)*100:0;
+  const annualized=initial>0&&years>0?(Math.pow(final/initial,1/years)-1)*100:0;
+  const multiple=initial>0?final/initial:0;
+  const isLoss=profit<0;
+
+  document.getElementById('results').innerHTML=`
+    <div class="rc"><div class="rl">Net Profit/Loss</div><div class="rv ${isLoss?'loss':''}">${fmt(profit)}</div></div>
+    <div class="rc"><div class="rl">Total ROI</div><div class="rv ${isLoss?'loss':''}">${fmtPct(roi)}</div></div>
+    <div class="rc"><div class="rl">Annualized Return</div><div class="rv ${isLoss?'loss':''}">${fmtPct(annualized)}</div><div class="sub">per year (CAGR)</div></div>
+    <div class="rc"><div class="rl">Investment Multiple</div><div class="rv ${isLoss?'loss':''}">${multiple.toFixed(2)}×</div></div>
+  `;
+
+  const total=Math.max(initial,final);
+  const pI=(initial/total*100).toFixed(2);
+  const pP=(Math.abs(profit)/total*100).toFixed(2);
+  document.getElementById('bar').innerHTML=isLoss
+    ?`<div class="bar-invest" style="width:${(final/total*100).toFixed(2)}%"></div><div class="bar-loss" style="width:${pP}%"></div>`
+    :`<div class="bar-invest" style="width:${pI}%"></div><div class="bar-profit" style="width:${pP}%"></div>`;
+  document.getElementById('legend').innerHTML=`
+    <span><span class="leg-dot" style="background:#1d4ed8"></span>Initial Investment (${fmt(initial)})</span>
+    <span><span class="leg-dot" style="background:${isLoss?'#dc2626':'#059669'}"></span>${isLoss?'Loss':'Profit'} (${fmt(Math.abs(profit))})</span>
+  `;
+}
+
+['initial','final','period','unit'].forEach(id=>document.getElementById(id).addEventListener('input',calculate));
+calculate();
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistics Calculator</title>
+<style>
+:root{--primary:#0891b2;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+textarea{width:100%;height:130px;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;font-family:inherit;background:#fff;color:var(--text);resize:vertical;outline:none}
+textarea:focus{border-color:var(--primary)}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.75rem}
+.btn{padding:.5rem 1rem;border-radius:.5rem;border:none;font-size:.875rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn:hover{opacity:.85}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.85rem}
+.rc{background:var(--bg);border:1px solid var(--border);border-radius:.75rem;padding:.9rem;text-align:center}
+.rc .rl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.rc .rv{font-size:1.15rem;font-weight:800;color:var(--primary)}
+.error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:.5rem;padding:.65rem .85rem;font-size:.85rem;margin-top:.5rem;display:none}
+#output{display:none}
+.sorted-wrap{overflow-x:auto;margin-top:.75rem}
+.sorted{display:flex;flex-wrap:wrap;gap:.35rem}
+.s-chip{padding:.2rem .5rem;border-radius:.3rem;background:var(--bg);border:1px solid var(--border);font-size:.78rem;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Statistics Calculator</h1>
+    <p>Paste a list of numbers to compute descriptive statistics instantly.</p>
+  </header>
+
+  <div class="card">
+    <label>Numbers (comma, space, or newline separated)</label>
+    <textarea id="input" placeholder="e.g.  4, 8, 15, 16, 23, 42&#10;or one per line"></textarea>
+    <div class="error" id="err"></div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+      <button class="btn btn-secondary" onclick="loadSample()">Load Sample</button>
+      <button class="btn btn-secondary" onclick="clearInput()">Clear</button>
+    </div>
+  </div>
+
+  <div id="output">
+    <div class="card">
+      <div style="font-size:.875rem;font-weight:700;margin-bottom:.75rem">Results</div>
+      <div class="results-grid" id="grid"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:.875rem;font-weight:700;margin-bottom:.4rem">Sorted Values</div>
+      <div class="sorted" id="sorted"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function parseNums(raw){
+  return raw.split(/[\s,;]+/).map(s=>s.trim()).filter(s=>s!=='').map(s=>{
+    const n=parseFloat(s);
+    if(isNaN(n))throw new Error(`"${s}" is not a valid number`);
+    return n;
+  });
+}
+function median(sorted){
+  const n=sorted.length;
+  if(n%2===0)return(sorted[n/2-1]+sorted[n/2])/2;
+  return sorted[Math.floor(n/2)];
+}
+function mode(arr){
+  const freq={};
+  arr.forEach(n=>{freq[n]=(freq[n]||0)+1;});
+  const max=Math.max(...Object.values(freq));
+  const modes=Object.keys(freq).filter(k=>freq[k]===max).map(Number);
+  return modes.length===arr.length?[]:modes;
+}
+function fmt(n){
+  if(Number.isInteger(n))return n.toLocaleString();
+  return parseFloat(n.toPrecision(8)).toLocaleString('en-US',{maximumFractionDigits:6});
+}
+
+function calculate(){
+  const raw=document.getElementById('input').value.trim();
+  const err=document.getElementById('err');
+  const output=document.getElementById('output');
+  err.style.display='none';
+  if(!raw){err.textContent='Please enter some numbers.';err.style.display='block';return;}
+  let nums;
+  try{nums=parseNums(raw);}catch(e){err.textContent=e.message;err.style.display='block';return;}
+  if(nums.length<1){err.textContent='No valid numbers found.';err.style.display='block';return;}
+
+  const sorted=[...nums].sort((a,b)=>a-b);
+  const n=nums.length;
+  const sum=nums.reduce((a,b)=>a+b,0);
+  const mean=sum/n;
+  const med=median(sorted);
+  const modes=mode(nums);
+  const variance=nums.reduce((a,b)=>a+Math.pow(b-mean,2),0)/n;
+  const sampleVariance=n>1?nums.reduce((a,b)=>a+Math.pow(b-mean,2),0)/(n-1):0;
+  const stdDev=Math.sqrt(variance);
+  const sampleStdDev=Math.sqrt(sampleVariance);
+  const range=sorted[n-1]-sorted[0];
+  const q1=median(sorted.slice(0,Math.floor(n/2)));
+  const q3=median(sorted.slice(Math.ceil(n/2)));
+  const iqr=q3-q1;
+
+  const results=[
+    ['Count',n],
+    ['Sum',fmt(sum)],
+    ['Mean',fmt(mean)],
+    ['Median',fmt(med)],
+    ['Mode',modes.length?modes.map(fmt).join(', '):'None (all unique)'],
+    ['Std Dev (pop)',fmt(stdDev)],
+    ['Std Dev (sample)',fmt(sampleStdDev)],
+    ['Variance (pop)',fmt(variance)],
+    ['Minimum',fmt(sorted[0])],
+    ['Maximum',fmt(sorted[n-1])],
+    ['Range',fmt(range)],
+    ['Q1',fmt(q1)],
+    ['Q3',fmt(q3)],
+    ['IQR',fmt(iqr)],
+  ];
+
+  document.getElementById('grid').innerHTML=results.map(([l,v])=>`
+    <div class="rc"><div class="rl">${l}</div><div class="rv">${v}</div></div>
+  `).join('');
+  document.getElementById('sorted').innerHTML=sorted.map(n=>`<span class="s-chip">${fmt(n)}</span>`).join('');
+  output.style.display='block';
+}
+
+function loadSample(){
+  document.getElementById('input').value='23, 45, 12, 67, 34, 89, 12, 56, 78, 34, 45, 23, 67, 90, 11, 55, 44, 33, 77, 22';
+  calculate();
+}
+function clearInput(){
+  document.getElementById('input').value='';
+  document.getElementById('output').style.display='none';
+  document.getElementById('err').style.display='none';
+}
+document.getElementById('input').addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter')calculate();});
+</script>
+</body>
+</html>

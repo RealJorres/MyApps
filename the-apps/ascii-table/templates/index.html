@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCII Table</title>
+<style>
+:root{--primary:#7c3aed;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:980px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+.search-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+input[type=text]{flex:1;min-width:160px;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus{border-color:var(--primary)}
+.filter-btn{padding:.45rem .9rem;border-radius:.5rem;border:1px solid var(--border);font-size:.8rem;font-weight:600;cursor:pointer;background:#fff;color:var(--text);font-family:inherit;transition:all .15s}
+.filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+thead th{background:var(--bg);padding:.5rem .75rem;text-align:left;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:.45rem .75rem;border-bottom:1px solid var(--border);font-family:monospace}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f8fafc}
+.char-cell{font-size:1rem;font-weight:700;color:var(--primary);min-width:32px;display:inline-block;text-align:center}
+.ctrl-badge{background:#f1f5f9;border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.72rem;color:var(--muted);font-family:monospace}
+.count{color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>ASCII Table</h1>
+    <p>All 128 ASCII characters — decimal, hex, octal, binary, and description.</p>
+  </header>
+
+  <div class="card">
+    <div class="search-row">
+      <input type="text" id="search" placeholder="Search by char, decimal, hex, or description…">
+      <button class="filter-btn active" data-group="all" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" data-group="control" onclick="setFilter('control',this)">Control (0–31)</button>
+      <button class="filter-btn" data-group="printable" onclick="setFilter('printable',this)">Printable (32–127)</button>
+    </div>
+    <div class="count" id="count"></div>
+    <div class="table-wrap" style="margin-top:.75rem">
+      <table>
+        <thead>
+          <tr><th>Dec</th><th>Hex</th><th>Oct</th><th>Binary</th><th>Char</th><th>Description</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const DESC=[
+  'NUL — Null','SOH — Start of Heading','STX — Start of Text','ETX — End of Text',
+  'EOT — End of Transmission','ENQ — Enquiry','ACK — Acknowledge','BEL — Bell',
+  'BS — Backspace','HT — Horizontal Tab','LF — Line Feed','VT — Vertical Tab',
+  'FF — Form Feed','CR — Carriage Return','SO — Shift Out','SI — Shift In',
+  'DLE — Data Link Escape','DC1 — Device Control 1','DC2 — Device Control 2','DC3 — Device Control 3',
+  'DC4 — Device Control 4','NAK — Negative Acknowledge','SYN — Synchronous Idle','ETB — End of Transmission Block',
+  'CAN — Cancel','EM — End of Medium','SUB — Substitute','ESC — Escape',
+  'FS — File Separator','GS — Group Separator','RS — Record Separator','US — Unit Separator',
+  'Space','Exclamation mark','Double quote','Hash / Number sign',
+  'Dollar sign','Percent','Ampersand','Single quote',
+  'Open parenthesis','Close parenthesis','Asterisk','Plus',
+  'Comma','Hyphen / Minus','Period / Dot','Forward slash',
+  'Digit 0','Digit 1','Digit 2','Digit 3','Digit 4','Digit 5','Digit 6','Digit 7','Digit 8','Digit 9',
+  'Colon','Semicolon','Less than','Equals','Greater than','Question mark',
+  'At sign',
+  'Uppercase A','Uppercase B','Uppercase C','Uppercase D','Uppercase E','Uppercase F','Uppercase G',
+  'Uppercase H','Uppercase I','Uppercase J','Uppercase K','Uppercase L','Uppercase M','Uppercase N',
+  'Uppercase O','Uppercase P','Uppercase Q','Uppercase R','Uppercase S','Uppercase T','Uppercase U',
+  'Uppercase V','Uppercase W','Uppercase X','Uppercase Y','Uppercase Z',
+  'Open bracket','Backslash','Close bracket','Caret','Underscore','Backtick',
+  'Lowercase a','Lowercase b','Lowercase c','Lowercase d','Lowercase e','Lowercase f','Lowercase g',
+  'Lowercase h','Lowercase i','Lowercase j','Lowercase k','Lowercase l','Lowercase m','Lowercase n',
+  'Lowercase o','Lowercase p','Lowercase q','Lowercase r','Lowercase s','Lowercase t','Lowercase u',
+  'Lowercase v','Lowercase w','Lowercase x','Lowercase y','Lowercase z',
+  'Open brace','Pipe / Vertical bar','Close brace','Tilde','DEL — Delete'
+];
+
+const CTRL=['NUL','SOH','STX','ETX','EOT','ENQ','ACK','BEL','BS','HT','LF','VT','FF','CR','SO','SI',
+  'DLE','DC1','DC2','DC3','DC4','NAK','SYN','ETB','CAN','EM','SUB','ESC','FS','GS','RS','US'];
+
+const rows=[];
+for(let i=0;i<128;i++){
+  let ch='';
+  if(i===32)ch='<span class="ctrl-badge">SP</span>';
+  else if(i===127)ch='<span class="ctrl-badge">DEL</span>';
+  else if(i<32)ch=`<span class="ctrl-badge">${CTRL[i]}</span>`;
+  else ch=`<span class="char-cell">${escHtml(String.fromCharCode(i))}</span>`;
+  rows.push({
+    dec:i,
+    hex:'0x'+i.toString(16).toUpperCase().padStart(2,'0'),
+    oct:i.toString(8).padStart(3,'0'),
+    bin:i.toString(2).padStart(8,'0'),
+    ch,
+    desc:DESC[i]||'',
+    group:i<32||i===127?'control':'printable',
+    searchText:(DESC[i]||'').toLowerCase()+' '+i+' '+i.toString(16).toLowerCase()+' '+(i>=32&&i<127?String.fromCharCode(i):'')
+  });
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+let currentGroup='all';
+function setFilter(g,btn){
+  currentGroup=g;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+document.getElementById('search').addEventListener('input',render);
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const filtered=rows.filter(r=>{
+    if(currentGroup!=='all'&&r.group!==currentGroup)return false;
+    if(q&&!r.searchText.includes(q))return false;
+    return true;
+  });
+  document.getElementById('count').textContent=`${filtered.length} of 128 characters`;
+  document.getElementById('tbody').innerHTML=filtered.map(r=>`
+    <tr>
+      <td>${r.dec}</td>
+      <td>${r.hex}</td>
+      <td>${r.oct}</td>
+      <td style="font-family:monospace">${r.bin}</td>
+      <td>${r.ch}</td>
+      <td style="color:var(--muted)">${r.desc}</td>
+    </tr>
+  `).join('');
+}
+render();
+</script>
+</body>
+</html>
