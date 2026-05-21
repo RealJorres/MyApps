@@ -123,26 +123,49 @@ def google_verification():
 
 @flask_app.route('/robots.txt')
 def robots():
-    body = f'User-agent: *\nAllow: /\n\nSitemap: {BASE_URL}/sitemap.xml\n'
+    body = (
+        f'User-agent: *\n'
+        f'Allow: /\n'
+        f'Disallow: /api/\n'
+        f'\n'
+        f'Sitemap: {BASE_URL}/sitemap.xml\n'
+    )
     resp = make_response(body)
     resp.headers['Content-Type'] = 'text/plain'
+    resp.headers['Cache-Control'] = 'public, max-age=86400'
     return resp
 
 
 @flask_app.route('/sitemap.xml')
 def sitemap():
-    urls = [f'  <url><loc>{BASE_URL}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>']
+    from datetime import date
+    today = date.today().isoformat()
+    urls = [
+        f'  <url>'
+        f'<loc>{BASE_URL}/</loc>'
+        f'<lastmod>{today}</lastmod>'
+        f'<changefreq>weekly</changefreq>'
+        f'<priority>1.0</priority>'
+        f'</url>'
+    ]
     for a in REGISTRY:
         urls.append(
-            f'  <url><loc>{BASE_URL}/{a["id"]}/</loc>'
-            f'<changefreq>monthly</changefreq><priority>0.8</priority></url>'
+            f'  <url>'
+            f'<loc>{BASE_URL}/{a["id"]}/</loc>'
+            f'<lastmod>{today}</lastmod>'
+            f'<changefreq>monthly</changefreq>'
+            f'<priority>0.8</priority>'
+            f'</url>'
         )
-    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-           + '\n'.join(urls)
-           + '\n</urlset>')
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + '\n'.join(urls)
+        + '\n</urlset>'
+    )
     resp = make_response(xml)
     resp.headers['Content-Type'] = 'application/xml'
+    resp.headers['Cache-Control'] = 'public, max-age=86400'
     return resp
 
 
