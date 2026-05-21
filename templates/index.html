@@ -765,6 +765,36 @@
       .bug-msg.ok  { background: rgba(74,222,128,.1); color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
       .bug-msg.err { background: rgba(248,113,113,.1); color: #f87171; border: 1px solid rgba(248,113,113,.2); }
 
+      /* ── Subcategory nav bar ── */
+      .subcat-nav {
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        padding: .4rem 1.75rem;
+        display: none;
+        align-items: center;
+        gap: .35rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .subcat-nav::-webkit-scrollbar { display: none; }
+      .subcat-nav.visible { display: flex; }
+      .subcat-pill {
+        flex-shrink: 0;
+        padding: .25rem .75rem;
+        border: 1px solid var(--border);
+        border-radius: 2rem;
+        font-size: .72rem;
+        font-weight: 600;
+        color: var(--muted);
+        background: var(--surface);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all .15s;
+        font-family: inherit;
+      }
+      .subcat-pill:hover { border-color: var(--accent); color: var(--accent); }
+      .subcat-pill.active { background: rgba(102,192,244,.12); color: var(--accent); border-color: var(--accent); }
+
       /* ── Category nav bar ── */
       .cat-nav {
         background: var(--surface);
@@ -917,6 +947,9 @@
 
     <!-- Category nav bar -->
     <nav class="cat-nav" id="catNav" aria-label="Filter by category"></nav>
+
+    <!-- Subcategory nav bar (shown when a specific category is active) -->
+    <nav class="subcat-nav" id="subcatNav" aria-label="Filter by subcategory"></nav>
 
     <!-- Quick Tools shelf -->
     <div class="shelf-section" id="quickSection"></div>
@@ -1095,6 +1128,67 @@
 
       // ── Category filter state ──────────────────────────
       let activeCat = "All";
+      let activeSubcat = "All";
+
+      // ── Subcategory definitions ─────────────────────────
+      // Keys = category name. Values = array of { label, ids[] }.
+      const SUBCATEGORIES = {
+        "Developer Tools": [
+          { label: "Code Formatters",  ids: ["json-formatter","sql-formatter","css-formatter","code-beautifier","html-entity-encoder"] },
+          { label: "Editors",          ids: ["html-previewer","regex-tester","markdown-editor"] },
+          { label: "API & Auth",       ids: ["api-tester","jwt-generator"] },
+          { label: "Generators",       ids: ["uuid-generator","cron-builder","gitignore-generator","random-data-generator"] },
+          { label: "Converters",       ids: ["base64-tool","base-converter","url-parser","timestamp-converter","json-to-yaml","markdown-table-generator"] },
+          { label: "Reference",        ids: ["http-status-codes","ascii-table","chmod-calculator","diff-checker"] },
+        ],
+        "Design & Visuals": [
+          { label: "Color Tools",    ids: ["color-picker","color-contrast","color-palette-extractor","color-gradient-generator"] },
+          { label: "Image Editing",  ids: ["image-tools","image-cropper","image-filters","watermark-tool","image-comparison"] },
+          { label: "Creative",       ids: ["paint","pixel-art-maker","meme-generator","ascii-art-generator"] },
+          { label: "Asset Export",   ids: ["favicon-generator","svg-to-png","exif-viewer"] },
+        ],
+        "Finance & Business": [
+          { label: "Business Ops",       ids: ["invoice-generator","qr-generator","barcode-generator"] },
+          { label: "Investment",         ids: ["compound-interest","roi-calculator","inflation-calculator","break-even-calculator","depreciation-calculator"] },
+          { label: "Personal Finance",   ids: ["loan-calculator","tip-calculator","percentage-calculator","vat-calculator","currency-converter","expense-splitter","salary-calculator","budget-tracker"] },
+        ],
+        "Documents & Writing": [
+          { label: "PDF Tools",    ids: ["pdf-to-image","pdf-merger","pdf-splitter","pdf-compressor"] },
+          { label: "Templates",    ids: ["resume-builder","business-letter","certificate-generator"] },
+          { label: "Text Tools",   ids: ["word-counter","text-case-converter","lorem-ipsum"] },
+          { label: "Notes",        ids: ["notepad","sticky-notes","journal"] },
+          { label: "Capture",      ids: ["ocr-tool","speech-to-text"] },
+        ],
+        "Productivity & Planning": [
+          { label: "Task Management",  ids: ["todo-list","kanban-board","gantt-chart","okr-tracker"] },
+          { label: "Strategy",         ids: ["decision-matrix","swot-analysis","mind-map"] },
+          { label: "Meetings",         ids: ["meeting-agenda","meeting-timer","meeting-time-planner","org-chart","survey-builder"] },
+          { label: "Time & Focus",     ids: ["pomodoro-timer","countdown-timer","world-clock","reading-list"] },
+        ],
+        "Security & Network": [
+          { label: "Passwords & Crypto", ids: ["password-generator","hash-generator","cipher-tool"] },
+          { label: "Network Lookup",     ids: ["ip-info","dns-lookup","whois-lookup","ssl-checker","cidr-calculator"] },
+        ],
+        "Health & Wellness": [
+          { label: "Body Calculators", ids: ["bmi-calculator","tdee-calculator","age-calculator"] },
+          { label: "Daily Trackers",   ids: ["water-tracker","calorie-tracker","sleep-calculator","habit-tracker"] },
+        ],
+        "Science & Learning": [
+          { label: "Reference",    ids: ["periodic-table","unit-converter"] },
+          { label: "Mathematics",  ids: ["prime-factorizer","graph-plotter"] },
+          { label: "Study Tools",  ids: ["flashcards","quiz-maker"] },
+        ],
+        "Data & Analysis": [
+          { label: "Data Processing",  ids: ["csv-viewer","csv-json-converter","pivot-table"] },
+          { label: "Visualization",    ids: ["chart-visualizer","statistics-calculator"] },
+        ],
+        "Games": [
+          { label: "Strategy",      ids: ["chess","battleship","connect-four","tic-tac-toe"] },
+          { label: "Arcade",        ids: ["tetris","game-2048","snake-game","minesweeper","sudoku","flappy-bird"] },
+          { label: "Word & Memory", ids: ["wordle","hangman","memory-card-game","simon-says","number-guessing"] },
+          { label: "Skills & Fun",  ids: ["typing-speed-test","dice-roller"] },
+        ],
+      };
 
       // ── Quick Tools: most broadly-useful apps ──────────
       const QUICK_TOOL_IDS = [
@@ -1122,6 +1216,7 @@
         document.getElementById("statApps").textContent = allApps.length;
         document.getElementById("statCats").textContent = cats.size;
         renderCategoryNav();
+        renderSubcatNav();
         renderQuickTools();
         renderRecentlyUsed();
         applyFilters();
@@ -1142,9 +1237,33 @@
 
       function filterByCategory(cat) {
         activeCat = cat;
+        activeSubcat = "All";
         document.getElementById("searchInput").value = "";
         renderCategoryNav();
+        renderSubcatNav();
         applyFilters();
+      }
+
+      function filterBySubcat(label) {
+        activeSubcat = label;
+        renderSubcatNav();
+        applyFilters();
+      }
+
+      function renderSubcatNav() {
+        const nav = document.getElementById("subcatNav");
+        const subs = SUBCATEGORIES[activeCat];
+        if (!subs || activeCat === "All") {
+          nav.classList.remove("visible");
+          nav.innerHTML = "";
+          return;
+        }
+        nav.classList.add("visible");
+        const pills = [{ label: "All" }, ...subs].map(s =>
+          `<button class="subcat-pill${s.label === activeSubcat ? " active" : ""}"
+            onclick="filterBySubcat('${s.label.replace(/'/g, "\\'")}')">${s.label}</button>`
+        ).join("");
+        nav.innerHTML = pills;
       }
 
       // ── Quick Tools shelf ──────────────────────────────
@@ -1177,18 +1296,31 @@
       function applyFilters() {
         const q = document.getElementById("searchInput").value.toLowerCase();
         let visible = allApps;
-        // Text search overrides category filter
+
         if (q) {
+          // Text search overrides all category/subcategory filters
           visible = allApps.filter((a) =>
             [a.name, a.description, ...a.tags].join(" ").toLowerCase().includes(q)
           );
-          // Reset category pill to All when searching
           if (activeCat !== "All") {
             activeCat = "All";
+            activeSubcat = "All";
             renderCategoryNav();
+            renderSubcatNav();
           }
         } else if (activeCat !== "All") {
+          // Category filter
           visible = allApps.filter((a) => (a.category || "Other") === activeCat);
+
+          // Subcategory filter (within the category)
+          if (activeSubcat !== "All") {
+            const subs = SUBCATEGORIES[activeCat] || [];
+            const sub = subs.find(s => s.label === activeSubcat);
+            if (sub) {
+              const idSet = new Set(sub.ids);
+              visible = visible.filter(a => idSet.has(a.id));
+            }
+          }
         }
         renderGrid(visible);
       }

@@ -53,6 +53,12 @@
     var favs = getFavorites();
     var isFav = favs.has(appId);
 
+    // ── Skip-to-content link (accessibility) ──────────────
+    var skip = document.createElement('a');
+    skip.className = 'skip-link';
+    skip.href = '#app-main-content';
+    skip.textContent = 'Skip to main content';
+
     // Track this visit
     trackRecent(appId);
 
@@ -104,13 +110,24 @@
     bar.appendChild(title);
     bar.appendChild(star);
 
-    // Insert at top of body
+    // ── Main content anchor (skip link target) ───────────
+    var anchor = document.createElement('a');
+    anchor.id = 'app-main-content';
+    anchor.tabIndex = -1;
+    anchor.setAttribute('aria-hidden', 'true');
+    anchor.style.cssText = 'position:absolute;top:0;left:0;width:0;height:0;overflow:hidden';
+
+    // Insert: skip-link → nav-bar → anchor → rest of body
     var body = document.body;
     if (body) {
-      body.insertBefore(bar, body.firstChild);
+      body.insertBefore(anchor, body.firstChild);
+      body.insertBefore(bar, anchor);
+      body.insertBefore(skip, bar);
     } else {
       document.addEventListener('DOMContentLoaded', function () {
-        document.body.insertBefore(bar, document.body.firstChild);
+        document.body.insertBefore(anchor, document.body.firstChild);
+        document.body.insertBefore(bar, anchor);
+        document.body.insertBefore(skip, bar);
       });
     }
   }

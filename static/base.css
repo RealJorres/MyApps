@@ -303,6 +303,17 @@ input[type=checkbox], input[type=radio] { accent-color: var(--brand); width: aut
 /* ── Empty state ──────────────────────────────── */
 .empty-state { text-align: center; padding: var(--space-12) var(--space-4); color: var(--text-muted); }
 
+/* ── Screen-reader only (accessibility) ──────── */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ── Responsive ───────────────────────────────── */
 @media (max-width: 600px) {
   body { overflow-x: hidden; }
