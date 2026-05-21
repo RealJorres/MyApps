@@ -47,7 +47,7 @@ function spawnPipe(){
 
 function flap(){
   if(state==='idle'){state='playing';loop();}
-  else if(state==='dead'){reset();state='idle';render();return;}
+  else if(state==='dead'){reset();state='playing';loop();bird.vy=FLAP;return;}
   if(state==='playing') bird.vy=FLAP;
 }
 

@@ -50,9 +50,9 @@ input.num { width: 48px; padding: .3rem .4rem; text-align: center; font-size: .8
       <button class="copy" onclick="copyVal('rgbIn')">Copy</button>
     </div>
     <div class="sliders">
-      <span>R</span><input type="range" id="rS" min="0" max="255" oninput="fromSliders()"><input type="number" class="num" id="rN" min="0" max="255" oninput="fromSliders()">
-      <span>G</span><input type="range" id="gS" min="0" max="255" oninput="fromSliders()"><input type="number" class="num" id="gN" min="0" max="255" oninput="fromSliders()">
-      <span>B</span><input type="range" id="bS" min="0" max="255" oninput="fromSliders()"><input type="number" class="num" id="bN" min="0" max="255" oninput="fromSliders()">
+      <span>R</span><input type="range" id="rS" min="0" max="255" oninput="fromSliderInput()"><input type="number" class="num" id="rN" min="0" max="255" oninput="fromNumberInput()">
+      <span>G</span><input type="range" id="gS" min="0" max="255" oninput="fromSliderInput()"><input type="number" class="num" id="gN" min="0" max="255" oninput="fromNumberInput()">
+      <span>B</span><input type="range" id="bS" min="0" max="255" oninput="fromSliderInput()"><input type="number" class="num" id="bN" min="0" max="255" oninput="fromNumberInput()">
     </div>
   </div>
 
@@ -161,11 +161,18 @@ function fromPicker(){
   fromHex(v);
 }
 
-function fromSliders(){
+function fromSliderInput(){
   r=clamp(parseInt(document.getElementById('rS').value)||0,0,255);
   g=clamp(parseInt(document.getElementById('gS').value)||0,0,255);
   b=clamp(parseInt(document.getElementById('bS').value)||0,0,255);
   document.getElementById('rN').value=r;document.getElementById('gN').value=g;document.getElementById('bN').value=b;
+  updateAll();
+}
+
+function fromNumberInput(){
+  r=clamp(parseInt(document.getElementById('rN').value)||0,0,255);
+  g=clamp(parseInt(document.getElementById('gN').value)||0,0,255);
+  b=clamp(parseInt(document.getElementById('bN').value)||0,0,255);
   document.getElementById('rS').value=r;document.getElementById('gS').value=g;document.getElementById('bS').value=b;
   updateAll();
 }

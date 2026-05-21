@@ -261,14 +261,15 @@ function doMove(from,to,isHuman){
     setTimeout(aiMove,80);
   } else {
     turn=W; render();
-    // check for checkmate/stalemate
+    // check for checkmate/stalemate/check
     const wMoves=getAllMoves(board,W);
     if(!wMoves.length){
       if(isInCheck(board,W)){updateStatus('Checkmate! Black wins ♟','');}
       else{updateStatus('Stalemate — Draw','');}
       gameOver=true; return;
     }
-    updateStatus('Your turn','White');
+    if(isInCheck(board,W)){updateStatus('Your turn — <span style="color:#ef4444">⚠ In Check!</span>','');}
+    else{updateStatus('Your turn','White');}
   }
 }
 
@@ -291,10 +292,24 @@ function updateStatus(msg,who){
 
 function undoMove(){
   if(history.length<2||gameOver) return;
-  // naive: restart and replay minus last 2
-  const h=[...history];h.pop();h.pop();
-  newGame();
-  // replay (simplified — no capture restoration, just visual)
+  const movesToReplay=[...history];
+  movesToReplay.pop();movesToReplay.pop();
+  // Re-initialise then replay all kept moves
+  initBoard();
+  turn=W; selected=null; legalMoves=[]; history=[]; captured={W:[],BL:[]};
+  lastMove=null; gameOver=false;
+  for(const notation of movesToReplay){
+    const from='abcdefgh'.indexOf(notation[0])+(8-parseInt(notation[1]))*8;
+    const to='abcdefgh'.indexOf(notation[2])+(8-parseInt(notation[3]))*8;
+    const cap=board[to];
+    if(cap){const c=color(cap);captured[c===W?BL:W].push(type(cap));}
+    board[to]=board[from];board[from]=0;
+    if(type(board[to])===P&&(to<8||to>=56)) board[to]=(color(board[to]))|Q;
+    lastMove={from,to};
+    history.push(notation);
+    turn=turn===W?BL:W;
+  }
+  turn=W; render(); updateStatus('Your turn','White');
 }
 
 newGame();

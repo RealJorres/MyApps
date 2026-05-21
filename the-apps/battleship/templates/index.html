@@ -128,11 +128,12 @@ function checkWin(ships,board){
 
 function playerShoot(i){
   if(phase!=='playing'||enemyBoard[i]===2||enemyBoard[i]===3) return;
-  if(enemyBoard[i]===1){enemyBoard[i]=2;setStatus('Hit! 💥 Keep firing.');}
+  let hit=false;
+  if(enemyBoard[i]===1){enemyBoard[i]=2;hit=true;setStatus('Hit! 💥 Keep firing.');}
   else{enemyBoard[i]=3;setStatus('Miss. 🌊 AI\'s turn…');}
   renderGrids();
   if(checkWin(enemyShips,enemyBoard)){phase='over';setStatus('<strong>You win! 🎉 All enemy ships sunk!</strong>');return;}
-  setTimeout(aiShoot,600);
+  if(!hit) setTimeout(aiShoot,600);
 }
 
 function aiShoot(){
