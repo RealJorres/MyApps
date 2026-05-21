@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -45,7 +45,7 @@ input:focus,textarea:focus{border-color:var(--primary)}
 <body>
 <div class="container">
   <header>
-    <h1>🎯 OKR Tracker</h1>
+    <h1>OKR Tracker</h1>
     <p>Define Objectives and Key Results, track your progress.</p>
   </header>
 
@@ -182,7 +182,7 @@ function render() {
       <div class="progress-bar"><div class="progress-fill" id="fill_${obj.id}" style="width:${pct}%;background:${color}"></div></div>
       ${obj.krs.map(kr => `
         <div class="kr-row">
-          <div class="kr-text">◦ ${esc(kr.text)}</div>
+          <div class="kr-text">– ${esc(kr.text)}</div>
           <input type="range" class="kr-slider" min="0" max="100" value="${kr.progress}" oninput="updateProgress(${obj.id},${kr.id},this.value)">
           <div class="kr-pct" id="pct_${kr.id}">${kr.progress}%</div>
           <button class="btn btn-danger btn-sm" onclick="deleteKR(${obj.id},${kr.id})">✕</button>

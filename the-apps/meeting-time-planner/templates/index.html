@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -45,7 +45,7 @@ select:focus,input:focus{border-color:var(--primary)}
 <body>
 <div class="container">
   <header>
-    <h1>🌍 Meeting Time Planner</h1>
+    <h1>Meeting Time Planner</h1>
     <p>Find the best time to meet across multiple timezones.</p>
   </header>
 
@@ -207,10 +207,10 @@ function renderGrid() {
   // Best times
   const bestDiv = document.getElementById('bestTimes');
   if (overlapHours.length) {
-    bestDiv.innerHTML = '<p style="font-weight:700;margin-bottom:.4rem;color:#059669">✅ Suggested Meeting Times (UTC):</p>' +
+    bestDiv.innerHTML = '<p style="font-weight:700;margin-bottom:.4rem;color:#059669">Suggested meeting times (UTC):</p>' +
       overlapHours.map(h => `<span class="best-slot">${String(h).padStart(2,'0')}:00 UTC</span>`).join('');
   } else {
-    bestDiv.innerHTML = '<p style="color:#dc2626;font-weight:600;margin-top:.5rem">⚠️ No overlapping work hours found. Consider adjusting work hour settings.</p>';
+    bestDiv.innerHTML = '<p style="color:#dc2626;font-weight:600;margin-top:.5rem">No overlapping business hours found. Try adjusting the work hour range.</p>';
   }
 }
 

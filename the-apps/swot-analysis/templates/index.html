@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -54,19 +54,19 @@ header p{color:var(--muted);margin-top:.4rem}
 <body>
 <div class="container">
   <header>
-    <h1>🔍 SWOT Analysis Board</h1>
+    <h1>SWOT Analysis Board</h1>
     <p>Map Strengths, Weaknesses, Opportunities, and Threats.</p>
   </header>
 
   <div class="toolbar">
     <input type="text" id="boardTitle" value="My SWOT Analysis" placeholder="Analysis title...">
     <button class="btn btn-outline" onclick="clearAll()">Clear All</button>
-    <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+    <button class="btn btn-outline" onclick="window.print()">Print</button>
   </div>
 
   <div class="grid">
     <div class="quadrant q-S" id="q-S">
-      <h2>💪 Strengths <span class="count-badge" id="cnt-S">0</span></h2>
+      <h2>Strengths <span class="count-badge" id="cnt-S">0</span></h2>
       <div class="add-row">
         <input type="text" id="inp-S" placeholder="Add a strength..." onkeydown="if(event.key==='Enter')addItem('S')">
         <button class="add-btn" onclick="addItem('S')">+ Add</button>
@@ -74,7 +74,7 @@ header p{color:var(--muted);margin-top:.4rem}
       <div class="items-list" id="list-S"></div>
     </div>
     <div class="quadrant q-W" id="q-W">
-      <h2>⚠️ Weaknesses <span class="count-badge" id="cnt-W">0</span></h2>
+      <h2>Weaknesses <span class="count-badge" id="cnt-W">0</span></h2>
       <div class="add-row">
         <input type="text" id="inp-W" placeholder="Add a weakness..." onkeydown="if(event.key==='Enter')addItem('W')">
         <button class="add-btn" onclick="addItem('W')">+ Add</button>
@@ -82,7 +82,7 @@ header p{color:var(--muted);margin-top:.4rem}
       <div class="items-list" id="list-W"></div>
     </div>
     <div class="quadrant q-O" id="q-O">
-      <h2>🚀 Opportunities <span class="count-badge" id="cnt-O">0</span></h2>
+      <h2>Opportunities <span class="count-badge" id="cnt-O">0</span></h2>
       <div class="add-row">
         <input type="text" id="inp-O" placeholder="Add an opportunity..." onkeydown="if(event.key==='Enter')addItem('O')">
         <button class="add-btn" onclick="addItem('O')">+ Add</button>
@@ -90,7 +90,7 @@ header p{color:var(--muted);margin-top:.4rem}
       <div class="items-list" id="list-O"></div>
     </div>
     <div class="quadrant q-T" id="q-T">
-      <h2>🔥 Threats <span class="count-badge" id="cnt-T">0</span></h2>
+      <h2>Threats <span class="count-badge" id="cnt-T">0</span></h2>
       <div class="add-row">
         <input type="text" id="inp-T" placeholder="Add a threat..." onkeydown="if(event.key==='Enter')addItem('T')">
         <button class="add-btn" onclick="addItem('T')">+ Add</button>

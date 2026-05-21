@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -47,7 +47,7 @@ input:focus,textarea:focus{border-color:var(--primary)}
 <body>
 <div class="container">
   <header>
-    <h1>📋 Meeting Agenda Builder</h1>
+    <h1>Meeting Agenda Builder</h1>
     <p>Create structured agendas with timed items. Copy or print.</p>
   </header>
 
@@ -116,8 +116,8 @@ input:focus,textarea:focus{border-color:var(--primary)}
         <span class="total-time">Total: <span id="totalTime">0</span> min</span>
       </div>
       <div style="display:flex;gap:.5rem">
-        <button class="btn btn-outline" onclick="copyAgenda()">📋 Copy Text</button>
-        <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+        <button class="btn btn-outline" onclick="copyAgenda()">Copy Text</button>
+        <button class="btn btn-outline" onclick="window.print()">Print</button>
       </div>
     </div>
     <div id="agendaList"><p style="color:var(--muted);text-align:center;padding:1.5rem">No agenda items yet.</p></div>
@@ -175,9 +175,9 @@ function render() {
       <div class="item-body">
         <strong>${esc(item.topic)}</strong>
         <div class="item-meta">
-          🕐 ${startStr}–${endStr} (${item.dur} min)
-          ${item.presenter ? ` · 👤 ${esc(item.presenter)}` : ''}
-          ${item.notes ? ` · 📝 ${esc(item.notes)}` : ''}
+          ${startStr}–${endStr} (${item.dur} min)
+          ${item.presenter ? ` · ${esc(item.presenter)}` : ''}
+          ${item.notes ? ` · ${esc(item.notes)}` : ''}
         </div>
       </div>
       <div class="item-actions">

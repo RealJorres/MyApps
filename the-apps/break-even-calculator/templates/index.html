@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -38,7 +38,7 @@ canvas{display:block;width:100%;height:auto;border-radius:.5rem}
 <body>
 <div class="container">
   <header>
-    <h1>📉 Break-Even Calculator</h1>
+    <h1>Break-Even Calculator</h1>
     <p>Find the point where revenue equals total costs.</p>
   </header>
 
@@ -86,7 +86,7 @@ canvas{display:block;width:100%;height:auto;border-radius:.5rem}
       <div class="leg-item"><div class="leg-dot" style="background:#059669"></div>Revenue</div>
       <div class="leg-item"><div class="leg-dot" style="background:#f59e0b;width:2px;height:12px;border-radius:0;border:none"></div>Break-Even</div>
     </div>
-    <div class="dl-row"><button class="btn" onclick="download()">⬇ Download PNG</button></div>
+    <div class="dl-row"><button class="btn" onclick="download()">Download PNG</button></div>
   </div>
 </div>
 <script>
@@ -100,7 +100,7 @@ function calc(){
   const curSales = parseFloat(document.getElementById('curSales').value)||0;
 
   if(sp<=vc){
-    document.getElementById('results').innerHTML='<p style="color:#dc2626;font-weight:600">⚠️ Price must be higher than variable cost to break even.</p>';
+    document.getElementById('results').innerHTML='<p style="color:#dc2626;font-weight:600">Price must exceed variable cost per unit to calculate a break-even point.</p>';
     return;
   }
 
