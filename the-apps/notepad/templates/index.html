@@ -47,7 +47,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <span id="wordCount">0 words</span>
     <span id="charCount">0 chars</span>
   </div>
-  <span class="save-indicator saved" id="saveIndicator">✓ Saved</span>
+  <span class="save-indicator saved" id="saveIndicator">Saved</span>
   <div class="actions">
     <button class="btn btn-ghost" onclick="copyAll()">Copy All</button>
     <button class="btn btn-ghost" onclick="downloadTxt()">Download .txt</button>
@@ -86,7 +86,7 @@ function scheduleSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     localStorage.setItem(STORAGE_KEY, editor.value);
-    ind.textContent = '✓ Saved';
+    ind.textContent = 'Saved';
     ind.className = 'save-indicator saved';
   }, 500);
 }
@@ -109,7 +109,7 @@ function clearAll() {
   localStorage.removeItem(STORAGE_KEY);
   updateStats();
   const ind = document.getElementById('saveIndicator');
-  ind.textContent = '✓ Saved'; ind.className = 'save-indicator saved';
+  ind.textContent = 'Saved'; ind.className = 'save-indicator saved';
 }
 </script>
 <!-- SITE-FOOTER-START -->
@@ -255,7 +255,7 @@ function clearAll() {
       });
       var data={};try{data=await resp.json();}catch(_){}
       if(resp.ok&&data.ok){
-        status.innerHTML='<span style="color:#4ade80">✓ Report sent — thank you!</span>';
+        status.innerHTML='<span style="color:#4ade80">Report sent — thank you!</span>';
         ['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});
         document.getElementById('ft-bug-type').selectedIndex=0;
         setTimeout(function(){ftClose('ft-bug');},2200);

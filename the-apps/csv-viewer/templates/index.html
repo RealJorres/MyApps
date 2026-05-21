@@ -453,7 +453,7 @@ function escHtml(s) {
       });
       var data={};try{data=await resp.json();}catch(_){}
       if(resp.ok&&data.ok){
-        status.innerHTML='<span style="color:#4ade80">✓ Report sent — thank you!</span>';
+        status.innerHTML='<span style="color:#4ade80">Report sent — thank you!</span>';
         ['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});
         document.getElementById('ft-bug-type').selectedIndex=0;
         setTimeout(function(){ftClose('ft-bug');},2200);

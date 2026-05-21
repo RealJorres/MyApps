@@ -98,7 +98,7 @@
     <textarea id="entryText" placeholder="Write your thoughts for today..." oninput="onTextInput()"></textarea>
     <div class="entry-footer">
       <span class="word-count" id="wordCount">0 words</span>
-      <span class="saved-msg" id="savedMsg">Saved ✓</span>
+      <span class="saved-msg" id="savedMsg">Saved </span>
       <button class="btn btn-save" onclick="saveEntry()">Save</button>
       <button class="btn btn-clear" onclick="clearEntry()">Clear Entry</button>
     </div>
@@ -394,7 +394,7 @@
       });
       var data={};try{data=await resp.json();}catch(_){}
       if(resp.ok&&data.ok){
-        status.innerHTML='<span style="color:#4ade80">✓ Report sent — thank you!</span>';
+        status.innerHTML='<span style="color:#4ade80">Report sent — thank you!</span>';
         ['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});
         document.getElementById('ft-bug-type').selectedIndex=0;
         setTimeout(function(){ftClose('ft-bug');},2200);
