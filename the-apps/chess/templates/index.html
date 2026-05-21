@@ -92,7 +92,7 @@ function newGame(){
   // Kill any running AI search so stale results don't arrive after reset
   if(aiWorker){aiWorker.terminate();aiWorker=null;}
   initBoard();
-  turn=W; selected=null; legalMoves=[]; history=[]; captured={W:[],BL:[]};
+  turn=W; selected=null; legalMoves=[]; history=[]; captured={[W]:[],[BL]:[]};
   lastMove=null; gameOver=false;
   render(); updateStatus('Your turn','White');
 }
@@ -221,8 +221,8 @@ function render(){
   const fl=document.getElementById('files');
   fl.innerHTML=['a','b','c','d','e','f','g','h'].map(f=>`<div>${f}</div>`).join('');
   // captured
-  document.getElementById('capW').textContent=captured.W.map(p=>GLYPHS[W|p]||'').join('');
-  document.getElementById('capB').textContent=captured.BL.map(p=>GLYPHS[BL|p]||'').join('');
+  document.getElementById('capW').textContent=(captured[W]||[]).map(p=>GLYPHS[W|p]||'').join('');
+  document.getElementById('capB').textContent=(captured[BL]||[]).map(p=>GLYPHS[BL|p]||'').join('');
   // move history
   const ml=document.getElementById('moveList');
   ml.innerHTML='';
@@ -393,7 +393,7 @@ function undoMove(){
   movesToReplay.pop();movesToReplay.pop();
   // Re-initialise then replay all kept moves
   initBoard();
-  turn=W; selected=null; legalMoves=[]; history=[]; captured={W:[],BL:[]};
+  turn=W; selected=null; legalMoves=[]; history=[]; captured={[W]:[],[BL]:[]};
   lastMove=null; gameOver=false;
   for(const notation of movesToReplay){
     const from='abcdefgh'.indexOf(notation[0])+(8-parseInt(notation[1]))*8;
