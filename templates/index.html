@@ -1015,21 +1015,39 @@
         renderGrid(visible);
       }
 
+      const CATEGORY_ORDER = [
+        "Developer Tools",
+        "Documents & Writing",
+        "Design & Visuals",
+        "Data & Analysis",
+        "Finance & Business",
+        "Productivity & Planning",
+        "Security & Network",
+        "Health & Wellness",
+        "Science & Learning",
+        "Games",
+      ];
+
       function renderGrid(apps) {
         const grid = document.getElementById("grid");
         if (!apps.length) {
-          grid.innerHTML = `<div class="empty"><span class="empty-icon">🔍</span><p>No apps match your search.</p></div>`;
+          grid.innerHTML = `<div class="empty"><p>No apps match your search.</p></div>`;
           return;
         }
-        const order = [],
-          groups = {};
+        const groups = {};
         apps.forEach((a) => {
           const cat = a.category || "Other";
-          if (!groups[cat]) {
-            groups[cat] = [];
-            order.push(cat);
-          }
+          if (!groups[cat]) groups[cat] = [];
           groups[cat].push(a);
+        });
+        // Sort by defined order, then alphabetically for any unknown categories
+        const order = Object.keys(groups).sort((a, b) => {
+          const ai = CATEGORY_ORDER.indexOf(a);
+          const bi = CATEGORY_ORDER.indexOf(b);
+          if (ai === -1 && bi === -1) return a.localeCompare(b);
+          if (ai === -1) return 1;
+          if (bi === -1) return -1;
+          return ai - bi;
         });
         grid.innerHTML = order
           .map(
