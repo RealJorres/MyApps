@@ -151,52 +151,82 @@ def sitemap():
 
 @flask_app.route('/api/bug-report', methods=['POST'])
 def bug_report():
-    data = request.json or {}
-    app_name  = data.get('app',   '').strip() or '(not specified)'
-    issue_type = data.get('type', 'Bug').strip()
-    desc      = data.get('desc',  '').strip()
-    reporter  = data.get('email', '').strip() or '(not provided)'
+    import urllib.request as _urlreq
+    import urllib.error  as _urlerr
+
+    data       = request.json or {}
+    app_name   = data.get('app',   '').strip() or '(not specified)'
+    issue_type = data.get('type',  'Bug').strip()
+    desc       = data.get('desc',  '').strip()
+    reporter   = data.get('email', '').strip() or '(not provided)'
+    page       = data.get('page',  '').strip()
 
     if not desc:
         return jsonify({'ok': False, 'error': 'Description is required.'}), 400
 
+    subject = f'[Jorres Apps] {issue_type}: {app_name}'
+    body = (
+        f'Bug Report — Jorres Apps\n'
+        f'{"="*44}\n'
+        f'App / Page:   {app_name}\n'
+        f'URL:          {page}\n'
+        f'Issue type:   {issue_type}\n'
+        f'Reporter:     {reporter}\n'
+        f'{"="*44}\n\n'
+        f'{desc}\n'
+    )
+
+    # ── Always log to server console (visible in Render logs) ──────────────
+    print(f'[BUG REPORT] {subject}\n{body}')
+
+    # ── 1. Try Resend (HTTP API — works on any host, no SMTP needed) ───────
+    resend_key = os.environ.get('RESEND_API_KEY', '')
+    if resend_key:
+        try:
+            payload = json.dumps({
+                'from':    'Jorres Apps Bug Report <onboarding@resend.dev>',
+                'to':      ['joshuarelatorres28@gmail.com'],
+                'subject': subject,
+                'text':    body,
+            }).encode()
+            req = _urlreq.Request(
+                'https://api.resend.com/emails',
+                data=payload,
+                headers={
+                    'Authorization': f'Bearer {resend_key}',
+                    'Content-Type':  'application/json',
+                },
+                method='POST',
+            )
+            with _urlreq.urlopen(req, timeout=15) as resp:
+                if resp.status in (200, 201):
+                    return jsonify({'ok': True})
+        except Exception as e:
+            print(f'[BUG REPORT] Resend failed: {e}')
+
+    # ── 2. Fallback: Gmail SMTP ────────────────────────────────────────────
     mail_user = os.environ.get('MAIL_USER', '')
     mail_pass = os.environ.get('MAIL_PASS', '')
+    if mail_user and mail_pass:
+        try:
+            msg = MIMEMultipart()
+            msg['From']    = mail_user
+            msg['To']      = 'joshuarelatorres28@gmail.com'
+            msg['Subject'] = subject
+            msg.attach(MIMEText(body, 'plain'))
+            with smtplib.SMTP('smtp.gmail.com', 587, timeout=15) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login(mail_user, mail_pass)
+                server.sendmail(mail_user, 'joshuarelatorres28@gmail.com', msg.as_string())
+            return jsonify({'ok': True})
+        except Exception as e:
+            print(f'[BUG REPORT] SMTP failed: {e}')
+            return jsonify({'ok': False, 'error': f'Email delivery failed: {e}'}), 500
 
-    if not mail_user or not mail_pass:
-        # Env vars not configured — still return success so the user isn't
-        # blocked, but log to server console so the dev can see the report.
-        print(f'[BUG REPORT] App={app_name} | Type={issue_type} | Reporter={reporter}\n{desc}')
-        return jsonify({'ok': True})
-
-    try:
-        subject = f'[Jorres Apps] Bug Report – {issue_type}: {app_name}'
-        body = (
-            f'Bug Report from Jorres Apps\n'
-            f'{"="*40}\n'
-            f'App:         {app_name}\n'
-            f'Issue type:  {issue_type}\n'
-            f'Reporter:    {reporter}\n'
-            f'{"="*40}\n\n'
-            f'{desc}\n'
-        )
-        msg = MIMEMultipart()
-        msg['From']    = mail_user
-        msg['To']      = 'joshuarelatorres28@gmail.com'
-        msg['Subject'] = subject
-        msg.attach(MIMEText(body, 'plain'))
-
-        with smtplib.SMTP('smtp.gmail.com', 587, timeout=15) as server:
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(mail_user, mail_pass)
-            server.sendmail(mail_user, 'joshuarelatorres28@gmail.com', msg.as_string())
-
-        return jsonify({'ok': True})
-    except Exception as e:
-        print(f'[BUG REPORT] Email failed: {e}')
-        return jsonify({'ok': False, 'error': 'Failed to send email. Please try again later.'}), 500
+    # ── 3. No credentials configured — report is in the server log ─────────
+    return jsonify({'ok': True})
 
 
 @flask_app.route('/api/apps')
