@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Invoice Generator">
 <meta name="twitter:description" content="Create professional invoices and download them as PDF. Free, no sign-up, no watermarks.">
-<title>Invoice Generator</title>
+<title>Invoice Manager</title>
 <style>
 :root {
   --primary: #0f766e; --primary-h: #0d6b63;
@@ -93,9 +93,18 @@ textarea { resize: vertical; min-height: 80px; }
 <body>
 <div class="container">
   <header>
-    <h1>Invoice Generator</h1>
-    <p>Create professional invoices and download as PDF</p>
+    <h1>Invoice Manager</h1>
+    <p>Create professional invoices and track their payment status.</p>
   </header>
+
+  <!-- Tab nav -->
+  <div style="display:flex;gap:0;background:#fff;border:1px solid var(--border);border-radius:.75rem;padding:.3rem;margin-bottom:1.5rem;max-width:360px">
+    <button id="invTabCreate" onclick="switchInvTab('create')" style="flex:1;padding:.6rem 1rem;border:none;background:var(--primary);color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;border-radius:.5rem;font-family:inherit">Create Invoice</button>
+    <button id="invTabTrack" onclick="switchInvTab('track')" style="flex:1;padding:.6rem 1rem;border:none;background:none;color:var(--muted);font-size:.9rem;font-weight:600;cursor:pointer;border-radius:.5rem;font-family:inherit">Track Invoices</button>
+  </div>
+
+  <!-- CREATE TAB -->
+  <div id="invPanelCreate">
   <div class="layout">
     <!-- LEFT: Form -->
     <div class="form-col">
@@ -204,13 +213,82 @@ textarea { resize: vertical; min-height: 80px; }
         <div class="preview-invoice" id="preview"></div>
         <div class="download-bar" style="margin-top:1.25rem;">
           <button class="btn btn-primary" onclick="downloadPDF()" style="width:100%;justify-content:center;padding:0.75rem;">
-            ⬇ Download PDF
+            Download PDF
           </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+  </div><!-- /invPanelCreate -->
+
+  <!-- TRACK TAB -->
+  <div id="invPanelTrack" style="display:none">
+    <div class="stats" id="invStats"></div>
+    <div class="card">
+      <p style="font-weight:700;margin-bottom:.75rem">Add Invoice</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;align-items:end">
+        <div><label>Invoice #</label><input type="text" id="invNum" placeholder="INV-001"></div>
+        <div><label>Client</label><input type="text" id="invClient" placeholder="Client name"></div>
+        <div><label>Amount</label><input type="number" id="invAmount" placeholder="0.00" min="0" step="0.01"></div>
+        <div><label>Issue Date</label><input type="date" id="invIssue"></div>
+        <div><label>Due Date</label><input type="date" id="invDue"></div>
+        <div><label>Status</label>
+          <select id="invStatus">
+            <option value="unpaid">Unpaid</option>
+            <option value="paid">Paid</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </div>
+        <div><label>Notes</label><input type="text" id="invNotes" placeholder="Optional…"></div>
+        <div style="align-self:end"><button class="btn btn-primary" onclick="addTrackedInvoice()" style="width:100%">+ Add</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="inv-filter-btn inv-filter-active" onclick="setInvFilter('all',this)">All</button>
+          <button class="inv-filter-btn" onclick="setInvFilter('unpaid',this)">Unpaid</button>
+          <button class="inv-filter-btn" onclick="setInvFilter('overdue',this)">Overdue</button>
+          <button class="inv-filter-btn" onclick="setInvFilter('paid',this)">Paid</button>
+        </div>
+        <input type="text" id="invSearch" placeholder="Search client or #…" style="width:200px" oninput="renderInvList()">
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:.875rem">
+          <thead>
+            <tr>
+              <th onclick="sortInv('num')" style="padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border);cursor:pointer">Invoice #</th>
+              <th onclick="sortInv('client')" style="padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border);cursor:pointer">Client</th>
+              <th onclick="sortInv('amount')" style="padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border);cursor:pointer">Amount</th>
+              <th onclick="sortInv('issue')" style="padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border);cursor:pointer">Issue</th>
+              <th onclick="sortInv('due')" style="padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border);cursor:pointer">Due</th>
+              <th style="padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border)">Status</th>
+              <th style="padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border)">Notes</th>
+              <th style="border-bottom:2px solid var(--border)"></th>
+            </tr>
+          </thead>
+          <tbody id="invTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /invPanelTrack -->
+
+</div><!-- /container -->
+
+<style>
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem;text-align:center}
+.stat-card .sv{font-size:1.4rem;font-weight:800}
+.stat-card .sl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem}
+.inv-filter-btn{padding:.35rem .85rem;border:1px solid var(--border);border-radius:2rem;font-size:.8rem;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit}
+.inv-filter-btn.inv-filter-active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.inv-badge{display:inline-block;padding:.18rem .6rem;border-radius:2rem;font-size:.72rem;font-weight:700;cursor:pointer}
+.inv-badge-paid{background:#d1fae5;color:#065f46}
+.inv-badge-unpaid{background:#fef3c7;color:#92400e}
+.inv-badge-overdue{background:#fee2e2;color:#991b1b}
+</style>
+
 <script>
 // Set today's date as default
 const today = new Date().toISOString().split('T')[0];
@@ -381,6 +459,134 @@ addItem('Web Design Services', 1, 1200);
 addItem('Monthly Hosting', 12, 25);
 addItem('Domain Registration', 1, 15);
 updatePreview();
+
+/* ── Tab switching ───────────────────────────────────── */
+function switchInvTab(tab){
+  const isCreate = tab==='create';
+  document.getElementById('invPanelCreate').style.display = isCreate ? '' : 'none';
+  document.getElementById('invPanelTrack').style.display  = isCreate ? 'none' : '';
+  const btnC = document.getElementById('invTabCreate');
+  const btnT = document.getElementById('invTabTrack');
+  btnC.style.background = isCreate ? 'var(--primary)' : 'none';
+  btnC.style.color       = isCreate ? '#fff' : 'var(--muted)';
+  btnT.style.background  = isCreate ? 'none' : 'var(--primary)';
+  btnT.style.color        = isCreate ? 'var(--muted)' : '#fff';
+  if (!isCreate) renderInvTracker();
+}
+
+/* ── Invoice Tracker ─────────────────────────────────── */
+const INV_KEY = 'invoices_v2';
+let trackedInvoices = JSON.parse(localStorage.getItem(INV_KEY) || '[]');
+let invFilterStatus = 'all';
+let invSortKey = 'due';
+let invSortDir = 1;
+
+// Seed sample data if empty
+if (!trackedInvoices.length) {
+  const past  = d => { const dt=new Date(); dt.setDate(dt.getDate()-d); return dt.toISOString().split('T')[0]; };
+  const future= d => { const dt=new Date(); dt.setDate(dt.getDate()+d); return dt.toISOString().split('T')[0]; };
+  trackedInvoices = [
+    {id:1,num:'INV-001',client:'Acme Corp',   amount:5200, issue:past(30), due:past(5),   status:'overdue', notes:''},
+    {id:2,num:'INV-002',client:'Global Tech',  amount:12800,issue:past(20), due:future(10),status:'unpaid',  notes:'Net 30'},
+    {id:3,num:'INV-003',client:'Blue Sky LLC', amount:3400, issue:past(45), due:past(15),  status:'paid',    notes:''},
+    {id:4,num:'INV-004',client:'Sunrise Media',amount:7600, issue:past(10), due:future(20),status:'unpaid',  notes:'Pending review'},
+  ];
+  localStorage.setItem(INV_KEY, JSON.stringify(trackedInvoices));
+}
+
+function saveInv(){ localStorage.setItem(INV_KEY, JSON.stringify(trackedInvoices)); }
+
+function addTrackedInvoice(){
+  const num    = document.getElementById('invNum').value.trim();
+  const client = document.getElementById('invClient').value.trim();
+  const amount = parseFloat(document.getElementById('invAmount').value) || 0;
+  const issue  = document.getElementById('invIssue').value;
+  const due    = document.getElementById('invDue').value;
+  const status = document.getElementById('invStatus').value;
+  const notes  = document.getElementById('invNotes').value.trim();
+  if (!client || !amount) { alert('Client and amount are required.'); return; }
+  trackedInvoices.push({ id:Date.now(), num:num||'INV-'+Date.now(), client, amount, issue, due, status, notes });
+  saveInv(); renderInvTracker();
+  ['invNum','invClient','invAmount','invNotes'].forEach(id=>document.getElementById(id).value='');
+}
+
+function deleteTrackedInvoice(id){
+  trackedInvoices = trackedInvoices.filter(i=>i.id!==id); saveInv(); renderInvTracker();
+}
+
+function toggleInvStatus(id){
+  const inv = trackedInvoices.find(i=>i.id===id); if (!inv) return;
+  const cycle={unpaid:'paid',paid:'overdue',overdue:'unpaid'};
+  inv.status = cycle[inv.status]||'unpaid';
+  saveInv(); renderInvTracker();
+}
+
+function setInvFilter(f,btn){
+  invFilterStatus=f;
+  document.querySelectorAll('.inv-filter-btn').forEach(b=>b.classList.remove('inv-filter-active'));
+  btn.classList.add('inv-filter-active');
+  renderInvList();
+}
+
+function sortInv(key){
+  if(invSortKey===key)invSortDir*=-1; else{invSortKey=key;invSortDir=1;}
+  renderInvList();
+}
+
+function fmt$(v){ return '$'+parseFloat(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtDt(d){ if(!d)return '—'; const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function isInvOverdue(inv){ if(!inv.due)return false; return inv.status!=='paid'&&new Date(inv.due+'T00:00:00')<new Date(); }
+
+function renderInvStats(){
+  const paid = trackedInvoices.filter(i=>i.status==='paid').reduce((a,i)=>a+i.amount,0);
+  const outstanding = trackedInvoices.filter(i=>i.status!=='paid').reduce((a,i)=>a+i.amount,0);
+  const overdue = trackedInvoices.filter(i=>i.status==='overdue'||isInvOverdue(i)).length;
+  document.getElementById('invStats').innerHTML=`
+    <div class="stat-card"><div class="sv" style="color:var(--primary)">${trackedInvoices.length}</div><div class="sl">Total</div></div>
+    <div class="stat-card"><div class="sv" style="color:#059669">${fmt$(paid)}</div><div class="sl">Paid</div></div>
+    <div class="stat-card"><div class="sv" style="color:#d97706">${fmt$(outstanding)}</div><div class="sl">Outstanding</div></div>
+    <div class="stat-card"><div class="sv" style="color:#dc2626">${overdue}</div><div class="sl">Overdue</div></div>`;
+}
+
+function renderInvList(){
+  const q = document.getElementById('invSearch')?.value?.toLowerCase()||'';
+  let list = trackedInvoices.filter(i=>{
+    if(invFilterStatus!=='all'&&i.status!==invFilterStatus)return false;
+    if(q&&!i.client.toLowerCase().includes(q)&&!i.num.toLowerCase().includes(q))return false;
+    return true;
+  });
+  list.sort((a,b)=>{
+    const va=a[invSortKey], vb=b[invSortKey];
+    if(invSortKey==='amount')return(va-vb)*invSortDir;
+    return (va||'').toString().localeCompare((vb||'').toString())*invSortDir;
+  });
+  const tbody=document.getElementById('invTableBody');
+  if(!list.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem">No invoices found.</td></tr>';return;}
+  tbody.innerHTML=list.map(inv=>{
+    const ov=isInvOverdue(inv);
+    const bc=inv.status==='paid'?'inv-badge-paid':ov?'inv-badge-overdue':'inv-badge-unpaid';
+    const bl=inv.status==='paid'?'Paid':ov?'Overdue':'Unpaid';
+    return `<tr style="${ov?'background:#fff7f7':''}">
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)"><strong>${escHtml(inv.num)}</strong></td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)">${escHtml(inv.client)}</td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border);font-weight:700">${fmt$(inv.amount)}</td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)">${fmtDt(inv.issue)}</td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border);color:${ov?'#dc2626':'inherit'}">${fmtDt(inv.due)}</td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)"><span class="inv-badge ${bc}" onclick="toggleInvStatus(${inv.id})" title="Click to cycle status">${bl}</span></td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border);color:var(--muted);font-size:.8rem">${escHtml(inv.notes||'—')}</td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)"><button class="btn btn-danger btn-sm" onclick="deleteTrackedInvoice(${inv.id})">&#10005;</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderInvTracker(){
+  // Set default dates
+  const today2 = new Date().toISOString().split('T')[0];
+  const nd = new Date(); nd.setDate(nd.getDate()+30);
+  document.getElementById('invIssue').value = today2;
+  document.getElementById('invDue').value = nd.toISOString().split('T')[0];
+  renderInvStats(); renderInvList();
+}
 </script>
 <!-- SITE-FOOTER-START -->
 <style>

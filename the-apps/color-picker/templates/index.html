@@ -1,259 +1,334 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/color-picker/">
-<meta name="description" content="Pick any color and get its HEX, RGB, HSL, and CMYK values instantly. A must-have tool for designers.">
-<meta name="keywords" content="color picker, color code, HEX color, RGB color, HSL color">
-<meta name="author" content="Jorres Apps">
-<meta property="og:title" content="Color Picker">
-<meta property="og:description" content="Pick any color and get its HEX, RGB, HSL, and CMYK values instantly. A must-have tool for designers.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Color Picker">
-<meta name="twitter:description" content="Pick any color and get its HEX, RGB, HSL, and CMYK values instantly. A must-have tool for designers.">
-<title>Color Picker</title>
+<meta name="description" content="Pick any color and instantly get HEX, RGB, HSL, and OKLCH values with sliders, copy buttons, and tints and shades.">
+<meta name="robots" content="index, follow">
+<title>Color Studio</title>
 <style>
-:root {
-  --primary: #7c3aed; --primary-h: #6d28d9;
-  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
-  --text: #1e293b; --muted: #64748b;
-  --success-bg: #f0fdf4; --success-fg: #16a34a;
-  --error-bg: #fef2f2; --error-fg: #dc2626;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
-.container { max-width: 860px; margin: 0 auto; }
-header { text-align: center; margin-bottom: 2rem; }
-header h1 { font-size: 2rem; font-weight: 800; }
-header p { color: var(--muted); margin-top: 0.4rem; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
-.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-h); }
-.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
-.btn-ghost:hover { background: var(--border); }
-label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
-input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent); }
-.status { margin-top: 0.75rem; padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
-.status.error { background: var(--error-bg); color: var(--error-fg); }
-.status.success { background: var(--success-bg); color: var(--success-fg); }
+:root{--primary:#7c3aed;--primary-h:#6d28d9;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:800px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.1rem;border-radius:.5rem;border:none;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
 
-/* App-specific */
-.picker-row {
-  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
-}
-input[type=color] {
-  width: 96px; height: 96px; border: none; border-radius: 0.75rem;
-  cursor: pointer; padding: 0; background: none; flex-shrink: 0;
-}
-input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
-input[type=color]::-webkit-color-swatch { border: none; border-radius: 0.75rem; }
-.hex-input-wrap { flex: 1; min-width: 140px; }
-.hex-input-wrap input { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.05em; font-family: monospace; }
+/* Picker */
+.picker-row{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+input[type=color]{width:88px;height:88px;border:none;border-radius:.75rem;cursor:pointer;padding:0;background:none;flex-shrink:0}
+input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+input[type=color]::-webkit-color-swatch{border:none;border-radius:.75rem}
+.hex-wrap{flex:1;min-width:160px}
+.hex-wrap input{font-size:1.5rem;font-weight:700;letter-spacing:.05em;font-family:monospace;width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;background:#fff;color:var(--text);outline:none}
+.hex-wrap input:focus{border-color:var(--primary)}
+.preview-strip{height:48px;border-radius:.6rem;margin-top:.75rem;border:1px solid var(--border);transition:background .1s}
 
-.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 0.5rem; }
-.value-box { background: var(--bg); border-radius: 0.65rem; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
-.value-box .val-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.value-box .val-text { font-family: monospace; font-size: 0.95rem; font-weight: 600; word-break: break-all; }
-.value-box .copy-btn { align-self: flex-start; margin-top: 0.25rem; padding: 0.3rem 0.75rem; font-size: 0.75rem; }
+/* Format grid */
+.fmt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:.75rem}
+.fmt-box{background:var(--bg);border-radius:.65rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.35rem}
+.fmt-box .fmt-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.fmt-box .fmt-val{font-family:monospace;font-size:.9rem;font-weight:600;word-break:break-all;color:var(--text)}
 
-.swatches-section h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
-.swatch-group { margin-bottom: 1rem; }
-.swatch-group-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-.swatch-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.swatch { width: 56px; height: 56px; border-radius: 0.5rem; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s, border-color 0.1s; position: relative; }
-.swatch:hover { transform: scale(1.1); border-color: var(--text); }
-.swatch .swatch-hex { position: absolute; bottom: -1.4rem; left: 50%; transform: translateX(-50%); font-size: 0.6rem; font-family: monospace; color: var(--muted); white-space: nowrap; }
-.swatch-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem; }
-@media (max-width: 600px) {
-  body { overflow-x: hidden; }
-  .values-grid { grid-template-columns: 1fr !important; }
-  input[type=text] { width: 100% !important; min-width: 0 !important; }
+/* Sliders */
+.slider-section{margin-top:.5rem}
+.slider-section h3{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+.slider-grid{display:grid;grid-template-columns:28px 1fr 52px;gap:.4rem .6rem;align-items:center;margin-bottom:.5rem}
+.slider-grid span{font-size:.8rem;font-weight:700;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--primary);cursor:pointer}
+input.num-inp{padding:.3rem .4rem;border:1px solid var(--border);border-radius:.4rem;font-size:.82rem;text-align:center;background:#fff;color:var(--text);outline:none;font-family:monospace;width:52px}
+input.num-inp:focus{border-color:var(--primary)}
+
+/* Tints & shades */
+.swatches-section h3{font-size:.9rem;font-weight:700;margin-bottom:.25rem}
+.swatches-section p{font-size:.78rem;color:var(--muted);margin-bottom:1rem}
+.swatch-group-label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.swatch-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.swatch-wrap{display:flex;flex-direction:column;align-items:center;gap:.35rem}
+.swatch{width:52px;height:52px;border-radius:.5rem;cursor:pointer;border:2px solid transparent;transition:transform .1s,border-color .1s}
+.swatch:hover{transform:scale(1.1);border-color:var(--text)}
+.swatch-hex{font-size:.58rem;font-family:monospace;color:var(--muted)}
+
+#copyToast{position:fixed;bottom:2rem;right:2rem;background:#1e293b;color:#fff;padding:.6rem 1.2rem;border-radius:.5rem;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9998}
+
+@media(max-width:600px){
+  body{overflow-x:hidden}
+  .fmt-grid{grid-template-columns:1fr}
+  .hex-wrap input{font-size:1.2rem}
 }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>Color Picker</h1>
-    <p>Pick, convert, and explore tints & shades</p>
+    <h1>Color Studio</h1>
+    <p>Pick a color to instantly get all formats, sliders, and tints &amp; shades.</p>
   </header>
 
+  <!-- Picker -->
   <div class="card">
     <div class="picker-row">
       <input type="color" id="colorInput" value="#7c3aed">
-      <div class="hex-input-wrap">
+      <div class="hex-wrap">
         <label for="hexText">Hex Value</label>
-        <input type="text" id="hexText" value="#7c3aed" maxlength="7" spellcheck="false">
+        <input type="text" id="hexText" value="#7c3aed" maxlength="7" spellcheck="false" placeholder="#7c3aed">
       </div>
     </div>
+    <div class="preview-strip" id="previewStrip" style="background:#7c3aed"></div>
   </div>
 
+  <!-- Format outputs -->
   <div class="card">
-    <label style="margin-bottom:1rem;">Color Values</label>
-    <div class="values-grid">
-      <div class="value-box">
-        <span class="val-label">HEX</span>
-        <span class="val-text" id="valHex">#7c3aed</span>
-        <button class="btn btn-ghost copy-btn" onclick="copyVal('valHex')">Copy</button>
+    <label style="margin-bottom:.85rem">Color Formats</label>
+    <div class="fmt-grid">
+      <div class="fmt-box">
+        <span class="fmt-label">HEX</span>
+        <span class="fmt-val" id="valHex">#7c3aed</span>
+        <button class="btn btn-ghost" style="margin-top:.2rem" onclick="copyFmt('valHex')">Copy</button>
       </div>
-      <div class="value-box">
-        <span class="val-label">RGB</span>
-        <span class="val-text" id="valRgb">rgb(124, 58, 237)</span>
-        <button class="btn btn-ghost copy-btn" onclick="copyVal('valRgb')">Copy</button>
+      <div class="fmt-box">
+        <span class="fmt-label">RGB</span>
+        <span class="fmt-val" id="valRgb">rgb(124, 58, 237)</span>
+        <button class="btn btn-ghost" style="margin-top:.2rem" onclick="copyFmt('valRgb')">Copy</button>
       </div>
-      <div class="value-box">
-        <span class="val-label">HSL</span>
-        <span class="val-text" id="valHsl">hsl(262, 83%, 58%)</span>
-        <button class="btn btn-ghost copy-btn" onclick="copyVal('valHsl')">Copy</button>
+      <div class="fmt-box">
+        <span class="fmt-label">HSL</span>
+        <span class="fmt-val" id="valHsl">hsl(262, 83%, 58%)</span>
+        <button class="btn btn-ghost" style="margin-top:.2rem" onclick="copyFmt('valHsl')">Copy</button>
       </div>
-      <div class="value-box">
-        <span class="val-label">CSS Variable</span>
-        <span class="val-text" id="valCss">--color: #7c3aed;</span>
-        <button class="btn btn-ghost copy-btn" onclick="copyVal('valCss')">Copy</button>
+      <div class="fmt-box">
+        <span class="fmt-label">OKLCH <span style="font-weight:400;text-transform:none;letter-spacing:0">(modern CSS)</span></span>
+        <span class="fmt-val" id="valOklch">oklch(0.52 0.26 274)</span>
+        <button class="btn btn-ghost" style="margin-top:.2rem" onclick="copyFmt('valOklch')">Copy</button>
+      </div>
+      <div class="fmt-box">
+        <span class="fmt-label">CSS Variable</span>
+        <span class="fmt-val" id="valCss">--color: #7c3aed;</span>
+        <button class="btn btn-ghost" style="margin-top:.2rem" onclick="copyFmt('valCss')">Copy</button>
+      </div>
+      <div class="fmt-box">
+        <span class="fmt-label">Tailwind Approx.</span>
+        <span class="fmt-val" id="valTw">—</span>
+        <button class="btn btn-ghost" style="margin-top:.2rem" onclick="copyFmt('valTw')">Copy</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="slider-section">
+      <h3>RGB Sliders</h3>
+      <div class="slider-grid">
+        <span>R</span><input type="range" id="rS" min="0" max="255" oninput="fromRgbSlider()"><input class="num-inp" id="rN" type="number" min="0" max="255" oninput="fromRgbNum()">
+        <span>G</span><input type="range" id="gS" min="0" max="255" oninput="fromRgbSlider()"><input class="num-inp" id="gN" type="number" min="0" max="255" oninput="fromRgbNum()">
+        <span>B</span><input type="range" id="bS" min="0" max="255" oninput="fromRgbSlider()"><input class="num-inp" id="bN" type="number" min="0" max="255" oninput="fromRgbNum()">
+      </div>
+      <h3 style="margin-top:.75rem">HSL Sliders</h3>
+      <div class="slider-grid">
+        <span>H</span><input type="range" id="hS" min="0" max="360" oninput="fromHslSlider()"><input class="num-inp" id="hN" type="number" min="0" max="360" oninput="fromHslNum()">
+        <span>S</span><input type="range" id="sS" min="0" max="100" oninput="fromHslSlider()"><input class="num-inp" id="sN" type="number" min="0" max="100" oninput="fromHslNum()">
+        <span>L</span><input type="range" id="lS" min="0" max="100" oninput="fromHslSlider()"><input class="num-inp" id="lN" type="number" min="0" max="100" oninput="fromHslNum()">
       </div>
     </div>
   </div>
 
+  <!-- Tints & Shades -->
   <div class="card">
     <div class="swatches-section">
       <h3>Tints &amp; Shades</h3>
-      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1.25rem;">Click any swatch to set it as the current color</p>
-      <div class="swatch-group">
-        <div class="swatch-group-label">Tints (toward white)</div>
-        <div class="swatch-row" id="tintsRow"></div>
-      </div>
-      <div class="swatch-group" style="margin-top:1.5rem;">
-        <div class="swatch-group-label">Shades (toward black)</div>
-        <div class="swatch-row" id="shadesRow"></div>
-      </div>
+      <p>Click any swatch to set it as the active color.</p>
+      <div class="swatch-group-label">Tints (toward white)</div>
+      <div class="swatch-row" id="tintsRow"></div>
+      <div class="swatch-group-label">Shades (toward black)</div>
+      <div class="swatch-row" id="shadesRow"></div>
     </div>
   </div>
 </div>
 
-<div id="copyToast" style="position:fixed;bottom:2rem;right:2rem;background:#1e293b;color:#fff;padding:0.6rem 1.2rem;border-radius:0.5rem;font-size:0.85rem;font-weight:600;opacity:0;transition:opacity 0.2s;pointer-events:none;">Copied!</div>
+<div id="copyToast">Copied!</div>
 
 <script>
-const colorInput = document.getElementById('colorInput');
-const hexText = document.getElementById('hexText');
+let cr=124, cg=58, cb=237; // current RGB
 
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1,3),16);
-  const g = parseInt(hex.slice(3,5),16);
-  const b = parseInt(hex.slice(5,7),16);
-  return {r,g,b};
+/* ── Conversion helpers ─────────────────────────────── */
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+function toHex(r,g,b){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
+function hexToRgb(hex){
+  hex=hex.trim().replace(/^#/,'');
+  if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');
+  if(!/^[0-9a-f]{6}$/i.test(hex))return null;
+  return [parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)];
 }
-function rgbToHsl(r,g,b) {
-  r/=255; g/=255; b/=255;
-  const max=Math.max(r,g,b), min=Math.min(r,g,b);
-  let h,s,l=(max+min)/2;
-  if(max===min){h=s=0;}
-  else{
-    const d=max-min;
-    s=l>0.5?d/(2-max-min):d/(max+min);
-    switch(max){
-      case r: h=((g-b)/d+(g<b?6:0))/6; break;
-      case g: h=((b-r)/d+2)/6; break;
-      case b: h=((r-g)/d+4)/6; break;
-    }
+function rgbToHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
+  let h,s,l=(mx+mn)/2;
+  if(mx===mn){h=s=0;}else{
+    const d=mx-mn;
+    s=l>.5?d/(2-mx-mn):d/(mx+mn);
+    switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}
   }
-  return {h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+  return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
 }
-function mixColor(hex, target, amount) {
-  const {r,g,b} = hexToRgb(hex);
-  const tr = target==='white'?255:0, tg = target==='white'?255:0, tb = target==='white'?255:0;
-  const nr = Math.round(r + (tr-r)*amount);
-  const ng = Math.round(g + (tg-g)*amount);
-  const nb = Math.round(b + (tb-b)*amount);
-  return '#'+[nr,ng,nb].map(v=>v.toString(16).padStart(2,'0')).join('');
+function hslToRgb(h,s,l){
+  s/=100;l/=100;
+  const k=n=>(n+h/30)%12;
+  const a=s*Math.min(l,1-l);
+  const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));
+  return [Math.round(f(0)*255),Math.round(f(8)*255),Math.round(f(4)*255)];
+}
+function rgbToOklch(r,g,b){
+  const lin=v=>{v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4);};
+  const lr=lin(r),lg=lin(g),lb=lin(b);
+  const l=Math.cbrt(.4122214708*lr+.5363325363*lg+.0514459929*lb);
+  const m=Math.cbrt(.2119034982*lr+.6806995451*lg+.1073969566*lb);
+  const s=Math.cbrt(.0883024619*lr+.2817188376*lg+.6299787005*lb);
+  const L=.2104542553*l+.7936177850*m-.0040720468*s;
+  const a=1.9779984951*l-2.4285922050*m+.4505937099*s;
+  const bk=.0259040371*l+.7827717662*m-.8086757660*s;
+  const C=Math.sqrt(a*a+bk*bk);
+  let H=Math.atan2(bk,a)*180/Math.PI;
+  if(H<0)H+=360;
+  return [L.toFixed(3),C.toFixed(3),Math.round(H)];
+}
+function mixColor(r,g,b,target,amt){
+  const t=target==='white'?255:0;
+  return [Math.round(r+(t-r)*amt),Math.round(g+(t-g)*amt),Math.round(b+(t-b)*amt)];
 }
 
-function updateAll(hex) {
-  hex = hex.toLowerCase();
-  const {r,g,b} = hexToRgb(hex);
-  const {h,s,l} = rgbToHsl(r,g,b);
-  document.getElementById('valHex').textContent = hex;
-  document.getElementById('valRgb').textContent = `rgb(${r}, ${g}, ${b})`;
-  document.getElementById('valHsl').textContent = `hsl(${h}, ${s}%, ${l}%)`;
-  document.getElementById('valCss').textContent = `--color: ${hex};`;
-  renderSwatches(hex);
+// Tailwind color palette approximation
+const TW_COLORS=[
+  {name:'slate-500',h:[210,220]},{name:'gray-500',h:[215,225]},{name:'zinc-500',h:[220,240]},
+  {name:'red-500',h:[0,15]},{name:'orange-500',h:[20,35]},{name:'amber-500',h:[36,50]},
+  {name:'yellow-500',h:[51,65]},{name:'lime-500',h:[66,90]},{name:'green-500',h:[91,160]},
+  {name:'teal-500',h:[161,185]},{name:'cyan-500',h:[186,200]},{name:'sky-500',h:[201,215]},
+  {name:'blue-500',h:[216,240]},{name:'indigo-500',h:[241,260]},{name:'violet-500',h:[261,280]},
+  {name:'purple-500',h:[281,300]},{name:'fuchsia-500',h:[301,325]},{name:'pink-500',h:[326,345]},{name:'rose-500',h:[346,360]},
+];
+function getTailwindApprox(h,s,l){
+  if(s<10)return l<30?'slate-900':l<50?'slate-600':l<70?'slate-400':'slate-100';
+  const match=TW_COLORS.find(c=>h>=c.h[0]&&h<=c.h[1]);
+  const name=match?match.name:'blue-500';
+  const shade=l<15?900:l<30?800:l<45?700:l<55?600:l<65?500:l<75?400:l<82?300:l<90?200:100;
+  return name.replace('-500','-'+shade);
 }
 
-function renderSwatches(hex) {
-  const tintsRow = document.getElementById('tintsRow');
-  const shadesRow = document.getElementById('shadesRow');
-  tintsRow.innerHTML = '';
-  shadesRow.innerHTML = '';
-  [0.2,0.4,0.6,0.8,0.9].forEach(amt => {
-    const c = mixColor(hex,'white',amt);
-    tintsRow.appendChild(makeSwatch(c));
+/* ── Master update ──────────────────────────────────── */
+function updateAll(){
+  const hex=toHex(cr,cg,cb);
+  const [h,s,l]=rgbToHsl(cr,cg,cb);
+  const [ol,oc,oh]=rgbToOklch(cr,cg,cb);
+
+  // Inputs
+  document.getElementById('colorInput').value=hex;
+  document.getElementById('hexText').value=hex;
+  document.getElementById('previewStrip').style.background=hex;
+
+  // Format display
+  document.getElementById('valHex').textContent=hex;
+  document.getElementById('valRgb').textContent=`rgb(${cr}, ${cg}, ${cb})`;
+  document.getElementById('valHsl').textContent=`hsl(${h}, ${s}%, ${l}%)`;
+  document.getElementById('valOklch').textContent=`oklch(${ol} ${oc} ${oh})`;
+  document.getElementById('valCss').textContent=`--color: ${hex};`;
+  document.getElementById('valTw').textContent=getTailwindApprox(h,s,l);
+
+  // RGB sliders
+  ['r','g','b'].forEach((c,i)=>{
+    const v=[cr,cg,cb][i];
+    document.getElementById(c+'S').value=v;
+    document.getElementById(c+'N').value=v;
   });
-  [0.2,0.4,0.6,0.8,0.9].forEach(amt => {
-    const c = mixColor(hex,'black',amt);
-    shadesRow.appendChild(makeSwatch(c));
+
+  // HSL sliders
+  document.getElementById('hS').value=h; document.getElementById('hN').value=h;
+  document.getElementById('sS').value=s; document.getElementById('sN').value=s;
+  document.getElementById('lS').value=l; document.getElementById('lN').value=l;
+
+  // Swatches
+  const tintsRow=document.getElementById('tintsRow');
+  const shadesRow=document.getElementById('shadesRow');
+  tintsRow.innerHTML=''; shadesRow.innerHTML='';
+  [.2,.35,.5,.65,.8,.9].forEach(a=>{
+    const [r,g,b]=mixColor(cr,cg,cb,'white',a);
+    tintsRow.appendChild(makeSwatch(toHex(r,g,b)));
+  });
+  [.15,.3,.45,.6,.75,.9].forEach(a=>{
+    const [r,g,b]=mixColor(cr,cg,cb,'black',a);
+    shadesRow.appendChild(makeSwatch(toHex(r,g,b)));
   });
 }
 
-function makeSwatch(hex) {
-  const wrap = document.createElement('div');
-  wrap.className = 'swatch-wrap';
-  const s = document.createElement('div');
-  s.className = 'swatch';
-  s.style.background = hex;
-  s.title = hex;
-  s.onclick = () => setColor(hex);
-  const label = document.createElement('span');
-  label.className = 'swatch-hex';
-  label.textContent = hex;
-  wrap.appendChild(s);
-  wrap.appendChild(label);
+function makeSwatch(hex){
+  const wrap=document.createElement('div'); wrap.className='swatch-wrap';
+  const s=document.createElement('div'); s.className='swatch';
+  s.style.background=hex; s.title=hex;
+  s.onclick=()=>setColor(hex);
+  const lbl=document.createElement('span'); lbl.className='swatch-hex'; lbl.textContent=hex;
+  wrap.appendChild(s); wrap.appendChild(lbl);
   return wrap;
 }
 
-function setColor(hex) {
-  colorInput.value = hex;
-  hexText.value = hex;
-  updateAll(hex);
+function setColor(hex){
+  const res=hexToRgb(hex);
+  if(res){[cr,cg,cb]=res; updateAll();}
 }
 
-colorInput.addEventListener('input', e => {
-  const hex = e.target.value;
-  hexText.value = hex;
-  updateAll(hex);
+/* ── Input handlers ─────────────────────────────────── */
+document.getElementById('colorInput').addEventListener('input',e=>setColor(e.target.value));
+document.getElementById('hexText').addEventListener('input',e=>{
+  let v=e.target.value.trim();
+  if(!v.startsWith('#'))v='#'+v;
+  setColor(v);
 });
 
-hexText.addEventListener('input', e => {
-  let val = e.target.value.trim();
-  if(!val.startsWith('#')) val = '#'+val;
-  if(/^#[0-9a-fA-F]{6}$/.test(val)) {
-    colorInput.value = val;
-    updateAll(val);
-  }
-});
-
-function copyVal(id) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => showToast());
+function fromRgbSlider(){
+  cr=clamp(parseInt(document.getElementById('rS').value)||0,0,255);
+  cg=clamp(parseInt(document.getElementById('gS').value)||0,0,255);
+  cb=clamp(parseInt(document.getElementById('bS').value)||0,0,255);
+  document.getElementById('rN').value=cr; document.getElementById('gN').value=cg; document.getElementById('bN').value=cb;
+  updateAll();
+}
+function fromRgbNum(){
+  cr=clamp(parseInt(document.getElementById('rN').value)||0,0,255);
+  cg=clamp(parseInt(document.getElementById('gN').value)||0,0,255);
+  cb=clamp(parseInt(document.getElementById('bN').value)||0,0,255);
+  document.getElementById('rS').value=cr; document.getElementById('gS').value=cg; document.getElementById('bS').value=cb;
+  updateAll();
+}
+function fromHslSlider(){
+  const h=parseInt(document.getElementById('hS').value)||0;
+  const s=parseInt(document.getElementById('sS').value)||0;
+  const l=parseInt(document.getElementById('lS').value)||0;
+  document.getElementById('hN').value=h; document.getElementById('sN').value=s; document.getElementById('lN').value=l;
+  [cr,cg,cb]=hslToRgb(h,s,l); updateAll();
+}
+function fromHslNum(){
+  const h=clamp(parseInt(document.getElementById('hN').value)||0,0,360);
+  const s=clamp(parseInt(document.getElementById('sN').value)||0,0,100);
+  const l=clamp(parseInt(document.getElementById('lN').value)||0,0,100);
+  document.getElementById('hS').value=h; document.getElementById('sS').value=s; document.getElementById('lS').value=l;
+  [cr,cg,cb]=hslToRgb(h,s,l); updateAll();
 }
 
+/* ── Copy ───────────────────────────────────────────── */
 let toastTimer;
-function showToast() {
-  const t = document.getElementById('copyToast');
-  t.style.opacity='1';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.style.opacity='0',1500);
+function copyFmt(id){
+  const text=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const t=document.getElementById('copyToast');
+    t.style.opacity='1';
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>t.style.opacity='0',1400);
+  });
 }
 
-updateAll('#7c3aed');
+updateAll();
 </script>
 <!-- SITE-FOOTER-START -->
 <style>
@@ -284,7 +359,6 @@ updateAll('#7c3aed');
 .ft-submit:disabled{background:#1e3a5f;color:#475569;cursor:not-allowed}
 #ft-bug-status{margin-top:.75rem;font-size:.8rem;text-align:center;min-height:1.4em}
 </style>
-
 <footer class="site-footer">
   <span>© 2025 Jorres Apps</span>
   <span class="ft-sep">·</span>
@@ -292,127 +366,55 @@ updateAll('#7c3aed');
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
-
-<!-- ── Terms & Conditions Modal ───────────────────────── -->
 <div class="ft-modal-backdrop" id="ft-terms" onclick="ftOutside(event,'ft-terms')">
   <div class="ft-modal" role="dialog" aria-modal="true">
-    <div class="ft-modal-head">
-      <h3>Terms &amp; Conditions</h3>
-      <button class="ft-close" onclick="ftClose('ft-terms')">✕</button>
-    </div>
+    <div class="ft-modal-head"><h3>Terms &amp; Conditions</h3><button class="ft-close" onclick="ftClose('ft-terms')">&#x2715;</button></div>
     <div class="ft-modal-body">
-      <h4>1. Acceptance</h4>
-      <p>By accessing or using Jorres Apps you agree to these terms. If you do not agree, please discontinue use of the site.</p>
-      <h4>2. Free Service — No Warranty</h4>
-      <p>All tools are provided free of charge and "as is", without any warranty of accuracy, completeness, fitness for a particular purpose, or uninterrupted availability.</p>
-      <h4>3. Data &amp; Privacy</h4>
-      <p>We do not collect, store, or sell any personal data. Some apps save data to your browser's localStorage — this data stays on your device only and can be cleared at any time through your browser settings.</p>
-      <h4>4. No Account Required</h4>
-      <p>No sign-up, login, or personal information is required to use any tool on this site.</p>
-      <h4>5. Acceptable Use</h4>
-      <p>You agree not to use these tools for any unlawful or harmful purpose. Automated scraping or abuse of the service is prohibited.</p>
-      <h4>6. Third-Party Services</h4>
-      <p>Certain tools (e.g. DNS Lookup, IP Info, Currency Converter) may query third-party APIs. Their respective terms and privacy policies apply to those requests.</p>
-      <h4>7. Changes</h4>
-      <p>We reserve the right to update, modify, add, or remove any tool at any time and to revise these terms without prior notice.</p>
-      <h4>8. Limitation of Liability</h4>
-      <p>Jorres Apps and its creator shall not be liable for any direct, indirect, incidental, or consequential damages arising from your use of, or inability to use, the site.</p>
-      <h4>9. Contact</h4>
-      <p>For questions, concerns, or bug reports, use the Bug Report form or contact us at joshuarelatorres28@gmail.com.</p>
+      <h4>1. Acceptance</h4><p>By accessing or using Jorres Apps you agree to these terms.</p>
+      <h4>2. Free Service — No Warranty</h4><p>All tools are provided free of charge and "as is", without any warranty of accuracy or fitness for a particular purpose.</p>
+      <h4>3. Data &amp; Privacy</h4><p>We do not collect, store, or sell any personal data. No color data is ever transmitted to a server.</p>
+      <h4>4. No Account Required</h4><p>No sign-up or personal information is required.</p>
+      <h4>5. Acceptable Use</h4><p>You agree not to use these tools for any unlawful purpose.</p>
+      <h4>6. Changes</h4><p>We reserve the right to update or modify any tool at any time.</p>
+      <h4>7. Limitation of Liability</h4><p>Jorres Apps shall not be liable for any damages arising from your use of the site.</p>
+      <h4>8. Contact</h4><p>For questions or bug reports, use the Bug Report form or contact joshuarelatorres28@gmail.com.</p>
     </div>
   </div>
 </div>
-
-<!-- ── Bug Report Modal ───────────────────────────────── -->
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
-    <div class="ft-modal-head">
-      <h3>Report a Bug</h3>
-      <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
-    </div>
+    <div class="ft-modal-head"><h3>Report a Bug</h3><button class="ft-close" onclick="ftClose('ft-bug')">&#x2715;</button></div>
     <div class="ft-modal-body">
-      <div class="ft-field">
-        <label>App / Page</label>
-        <input id="ft-bug-app" placeholder="e.g. Chess, Flappy Bird, main page…">
-      </div>
-      <div class="ft-field">
-        <label>Issue Type</label>
-        <select id="ft-bug-type">
-          <option value="Bug">Bug / Error</option>
-          <option value="UI">UI / Layout issue</option>
-          <option value="Feature">Feature suggestion</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="ft-field">
-        <label>Description <span style="color:#ef4444">*</span></label>
-        <textarea id="ft-bug-desc" placeholder="What happened? What did you expect? Steps to reproduce?"></textarea>
-      </div>
-      <div class="ft-field">
-        <label>Your email <span style="font-weight:400;color:#475569">(optional — for follow-up)</span></label>
-        <input id="ft-bug-email" type="email" placeholder="you@example.com">
-      </div>
+      <div class="ft-field"><label>App / Page</label><input id="ft-bug-app" placeholder="e.g. Color Studio…"></div>
+      <div class="ft-field"><label>Issue Type</label><select id="ft-bug-type"><option value="Bug">Bug / Error</option><option value="UI">UI / Layout issue</option><option value="Feature">Feature suggestion</option><option value="Other">Other</option></select></div>
+      <div class="ft-field"><label>Description <span style="color:#ef4444">*</span></label><textarea id="ft-bug-desc" placeholder="What happened?"></textarea></div>
+      <div class="ft-field"><label>Your email <span style="font-weight:400;color:#475569">(optional)</span></label><input id="ft-bug-email" type="email" placeholder="you@example.com"></div>
       <button class="ft-submit" id="ft-bug-btn" onclick="ftSubmitBug()">Send Report</button>
       <div id="ft-bug-status"></div>
     </div>
   </div>
 </div>
-
 <script>
 (function(){
   function ftOpen(id){document.getElementById(id).classList.add('open');}
-  function ftClose(id){
-    document.getElementById(id).classList.remove('open');
-    var s=document.getElementById('ft-bug-status');
-    if(s)s.textContent='';
-  }
+  function ftClose(id){document.getElementById(id).classList.remove('open');var s=document.getElementById('ft-bug-status');if(s)s.textContent='';}
   function ftOutside(e,id){if(e.target===document.getElementById(id))ftClose(id);}
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape')
-      document.querySelectorAll('.ft-modal-backdrop.open').forEach(function(m){m.classList.remove('open');});
-  });
-  window.ftOpen=ftOpen;
-  window.ftClose=ftClose;
-  window.ftOutside=ftOutside;
-
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.ft-modal-backdrop.open').forEach(function(m){m.classList.remove('open');});});
+  window.ftOpen=ftOpen;window.ftClose=ftClose;window.ftOutside=ftOutside;
   window.ftSubmitBug=async function(){
     var desc=(document.getElementById('ft-bug-desc').value||'').trim();
-    if(!desc){
-      document.getElementById('ft-bug-status').innerHTML='<span style="color:#f87171">Please describe the issue first.</span>';
-      return;
-    }
-    var btn=document.getElementById('ft-bug-btn');
-    var status=document.getElementById('ft-bug-status');
-    btn.disabled=true; btn.textContent='Sending…'; status.textContent='';
-    try{
-      var resp=await fetch('/api/bug-report',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          app:(document.getElementById('ft-bug-app').value||'').trim()||window.location.pathname,
-          type:(document.getElementById('ft-bug-type').value||'Bug'),
-          desc:desc,
-          email:(document.getElementById('ft-bug-email').value||'').trim(),
-          page:window.location.href
-        })
-      });
-      var data={};try{data=await resp.json();}catch(_){}
-      if(resp.ok&&data.ok){
-        status.innerHTML='<span style="color:#4ade80">Report sent — thank you!</span>';
-        ['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});
-        document.getElementById('ft-bug-type').selectedIndex=0;
-        setTimeout(function(){ftClose('ft-bug');},2200);
-      }else{
-        status.innerHTML='<span style="color:#f87171">'+(data.error||'Server error (HTTP '+resp.status+'). Please try again.')+'</span>';
-      }
-    }catch(e){
-      status.innerHTML='<span style="color:#f87171">Could not reach the server — check your connection and try again.</span>';
-    }
-    btn.disabled=false; btn.textContent='Send Report';
+    if(!desc){document.getElementById('ft-bug-status').innerHTML='<span style="color:#f87171">Please describe the issue first.</span>';return;}
+    var btn=document.getElementById('ft-bug-btn'),status=document.getElementById('ft-bug-status');
+    btn.disabled=true;btn.textContent='Sending…';status.textContent='';
+    try{var resp=await fetch('/api/bug-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:(document.getElementById('ft-bug-app').value||'').trim()||window.location.pathname,type:(document.getElementById('ft-bug-type').value||'Bug'),desc:desc,email:(document.getElementById('ft-bug-email').value||'').trim(),page:window.location.href})});
+    var data={};try{data=await resp.json();}catch(_){}
+    if(resp.ok&&data.ok){status.innerHTML='<span style="color:#4ade80">Report sent — thank you!</span>';['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('ft-bug-type').selectedIndex=0;setTimeout(function(){ftClose('ft-bug');},2200);}
+    else{status.innerHTML='<span style="color:#f87171">'+(data.error||'Server error. Please try again.')+'</span>';}
+    }catch(e){status.innerHTML='<span style="color:#f87171">Could not reach the server.</span>';}
+    btn.disabled=false;btn.textContent='Send Report';
   };
 })();
 </script>
 <!-- /SITE-FOOTER -->
-
 </body>
 </html>

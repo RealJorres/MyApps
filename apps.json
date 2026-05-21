@@ -29,10 +29,10 @@
   },
   {
     "id": "invoice-generator",
-    "name": "Invoice Generator",
-    "description": "Fill in your business details and line items, then download a clean PDF invoice.",
+    "name": "Invoice Manager",
+    "description": "Create professional PDF invoices and track client payment status — all in one place. Generate, log, filter, and monitor outstanding amounts.",
     "port": 5021, "path": "./the-apps/invoice-generator", "entry": "app.py",
-    "icon": "🧾", "color": "#0f766e", "tags": ["Invoice","PDF","Finance"], "category": "Finance & Business"
+    "icon": "🧾", "color": "#0f766e", "tags": ["Invoice","PDF","Finance","Tracker","Billing"], "category": "Finance & Business"
   },
   {
     "id": "ocr-tool",
@@ -85,10 +85,10 @@
   },
   {
     "id": "color-picker",
-    "name": "Color Picker",
-    "description": "Pick colors and convert between HEX, RGB, and HSL. Generate tints and shades.",
+    "name": "Color Studio",
+    "description": "Pick any color and get HEX, RGB, HSL, OKLCH, and CSS variable values instantly. Includes RGB/HSL sliders, Tailwind approximation, and tints & shades.",
     "port": 5011, "path": "./the-apps/color-picker", "entry": "app.py",
-    "icon": "🎨", "color": "#7c3aed", "tags": ["Color","Design","Dev"], "category": "Design & Visuals"
+    "icon": "🎨", "color": "#7c3aed", "tags": ["Color","HEX","RGB","HSL","OKLCH","Design"], "category": "Design & Visuals"
   },
   {
     "id": "color-contrast",
@@ -483,13 +483,6 @@
     "icon": "📉", "color": "#059669", "tags": ["Graph","Math","Science"], "category": "Science & Learning"
   },
   {
-    "id": "quiz-maker",
-    "name": "Quiz Maker",
-    "description": "Create multiple-choice quizzes, save them, and test yourself. Score tracked per attempt.",
-    "port": 5070, "path": "./the-apps/quiz-maker", "entry": "app.py",
-    "icon": "📝", "color": "#d97706", "tags": ["Quiz","Study","Education"], "category": "Science & Learning"
-  },
-  {
     "id": "csv-json-converter",
     "name": "CSV ↔ JSON Converter",
     "description": "Convert CSV to JSON and JSON to CSV instantly. Supports custom delimiters.",
@@ -714,13 +707,6 @@
     "icon": "🌐", "color": "#1e3a5f", "tags": ["HTTP","Status","Reference","Dev"], "category": "Developer Tools"
   },
   {
-    "id": "color-code-converter",
-    "name": "Color Code Converter",
-    "description": "Convert colors between HEX, RGB, HSL, and OKLCH instantly. Live preview with sliders and a color picker.",
-    "port": 5106, "path": "./the-apps/color-code-converter", "entry": "app.py",
-    "icon": "🎨", "color": "#4c1d95", "tags": ["Color","HEX","RGB","HSL","CSS"], "category": "Design & Visuals"
-  },
-  {
     "id": "diff-checker",
     "name": "Diff Checker",
     "description": "Side-by-side visual diff for any two blocks of text. Added and removed lines highlighted in green and red.",
@@ -834,10 +820,10 @@
   },
   {
     "id": "survey-builder",
-    "name": "Survey Builder",
-    "description": "Create surveys with multiple choice, free text, rating, and yes/no questions. Collect and tally responses in your browser.",
+    "name": "Form Builder",
+    "description": "Build surveys with multiple question types and tally responses, or create scored multiple-choice quizzes — two tools in one.",
     "port": 5123, "path": "./the-apps/survey-builder", "entry": "app.py",
-    "icon": "📋", "color": "#7c3aed", "tags": ["Survey","Form","Responses","Productivity"], "category": "Productivity & Planning"
+    "icon": "📋", "color": "#7c3aed", "tags": ["Survey","Quiz","Form","Responses","Productivity"], "category": "Productivity & Planning"
   },
   {
     "id": "gantt-chart",
@@ -908,13 +894,6 @@
     "description": "Calculate Straight-Line, Declining Balance, Double Declining, or SYD depreciation with a full schedule and chart.",
     "port": 5133, "path": "./the-apps/depreciation-calculator", "entry": "app.py",
     "icon": "📉", "color": "#7c3aed", "tags": ["Depreciation","Asset","Finance","Accounting"], "category": "Finance & Business"
-  },
-  {
-    "id": "invoice-tracker",
-    "name": "Invoice Tracker",
-    "description": "Log invoices with client, amount, due date, and status. Track paid, unpaid, and overdue totals. Saved in browser.",
-    "port": 5134, "path": "./the-apps/invoice-tracker", "entry": "app.py",
-    "icon": "🧾", "color": "#0891b2", "tags": ["Invoice","Finance","Tracker","Accounting"], "category": "Finance & Business"
   },
   {
     "id": "meeting-time-planner",
