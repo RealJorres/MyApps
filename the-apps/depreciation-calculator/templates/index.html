@@ -97,56 +97,33 @@ function calc(){
   const life = parseInt(document.getElementById('life').value)||1;
   const method = document.getElementById('method').value;
   const dbRatePct = parseFloat(document.getElementById('dbRate').value)||150;
-  const depBase = cost - salvage;
+  const depBase = Math.max(0, cost - salvage);
 
   document.getElementById('dbRateDiv').style.display = method==='db' ? '' : 'none';
 
-  let schedule = [];
-  let bookValue = cost;
-
-  for(let y=1;y<=life;y++){
-    let dep;
-    if(method==='sl'){
-      dep = depBase / life;
-    } else if(method==='db'){
-      dep = Math.min(bookValue * (dbRatePct/100/life), bookValue - salvage);
-    } else if(method==='ddb'){
-      dep = Math.min(bookValue * (2/life), bookValue - salvage);
-    } else { // syd
-      const sydTotal = life*(life+1)/2;
-      dep = depBase * (life-y+1) / sydTotal;
-    }
-    dep = Math.max(0, dep);
-    const accumulated = cost - bookValue + dep;
-    bookValue -= dep;
-    schedule.push({ year:y, dep, accumulated, bookValue: Math.max(salvage, bookValue+dep-dep) });
-    // Recalculate book value correctly
-    schedule[y-1].bookValue = cost - schedule.reduce((a,s)=>a+s.dep,0);
-    schedule[y-1].accumulated = cost - schedule[y-1].bookValue;
-  }
-
-  // Build table
+  // Build schedule
   let html = `<thead><tr><th>Year</th><th>Depreciation</th><th>Acc. Depreciation</th><th>Book Value</th></tr></thead><tbody>`;
   let accDep = 0;
   let bv = cost;
-  schedule = [];
-  bv = cost;
+  let schedule = [];
   for(let y=1;y<=life;y++){
     let dep;
     if(method==='sl') dep = depBase/life;
-    else if(method==='db') dep = Math.min(bv*(dbRatePct/100/life), bv-salvage);
-    else if(method==='ddb') dep = Math.min(bv*(2/life), bv-salvage);
+    else if(method==='db') dep = Math.min(bv*(dbRatePct/100/life), Math.max(0, bv-salvage));
+    else if(method==='ddb') dep = Math.min(bv*(2/life), Math.max(0, bv-salvage));
     else { const s=life*(life+1)/2; dep = depBase*(life-y+1)/s; }
-    dep = Math.max(0,dep);
+    dep = Math.max(0, dep);
     bv -= dep;
+    if(bv < salvage){ dep += bv - salvage; bv = salvage; }
     accDep += dep;
-    schedule.push({ year:y, dep, accDep, bv: Math.max(salvage,bv) });
+    schedule.push({ year:y, dep, accDep, bv });
   }
 
   schedule.forEach(r => {
     html += `<tr><td>${r.year}</td><td>${fmt$(r.dep)}</td><td>${fmt$(r.accDep)}</td><td>${fmt$(r.bv)}</td></tr>`;
   });
-  html += `<tr><td>Total</td><td>${fmt$(cost-salvage)}</td><td>—</td><td>${fmt$(salvage)}</td></tr>`;
+  const finalBV = schedule.length ? schedule[schedule.length-1].bv : cost;
+  html += `<tr><td>Total</td><td>${fmt$(depBase)}</td><td>—</td><td>${fmt$(finalBV)}</td></tr>`;
   html += '</tbody>';
   document.getElementById('schedTable').innerHTML = html;
 

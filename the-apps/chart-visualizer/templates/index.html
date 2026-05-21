@@ -120,10 +120,10 @@ function parseCSV(text) {
   return { labels, series, headers: headers.slice(1) };
 }
 
-function draw() {
+function draw(silent) {
   const text = document.getElementById('csvInput').value;
   parsed = parseCSV(text);
-  if (!parsed) { alert('Invalid CSV. Need at least a header row and one data row.'); return; }
+  if (!parsed) { if (!silent) alert('Invalid CSV. Need at least a header row and one data row.'); return; }
   render();
 }
 
@@ -157,7 +157,7 @@ function drawBar(ctx, data, palette, title, canvas, horiz) {
   const seriesKeys = data.headers;
   const n = data.labels.length;
   const allVals = seriesKeys.flatMap(k => data.series[k]);
-  const maxVal = Math.max(...allVals) * 1.15;
+  const maxVal = Math.max(...allVals) * 1.15 || 1;
 
   if (!horiz) {
     // Vertical bar
@@ -230,7 +230,7 @@ function drawLine(ctx, data, palette, title, canvas) {
   const seriesKeys = data.headers;
   const n = data.labels.length;
   const allVals = seriesKeys.flatMap(k => data.series[k]);
-  const maxVal = Math.max(...allVals) * 1.15;
+  const maxVal = Math.max(...allVals) * 1.15 || 1;
 
   for (let i = 0; i <= 5; i++) {
     const y = pad.top + ch - (i / 5) * ch;
@@ -284,6 +284,7 @@ function drawPie(ctx, data, palette, title, canvas, doughnut) {
   const k = data.headers[0];
   const vals = data.series[k];
   const total = vals.reduce((a, b) => a + b, 0);
+  if (!total) { ctx.fillStyle='#94a3b8'; ctx.font='14px system-ui'; ctx.textAlign='center'; ctx.fillText('No data to display', W/2, H/2); return; }
   const cx = W / 2, cy = H / 2 + 10;
   const r = Math.min(W, H) / 2 - 60;
   let angle = -Math.PI / 2;
@@ -356,7 +357,7 @@ function download() {
 }
 
 // Auto-render on load with sample data
-window.onload = () => draw();
+window.onload = () => draw(true);
 </script>
 </body>
 </html>

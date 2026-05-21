@@ -124,6 +124,7 @@ input:focus,textarea:focus{border-color:var(--primary)}
   </div>
 </div>
 <script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 let items = JSON.parse(localStorage.getItem('agenda_items') || '[]');
 
 function addItem() {
@@ -172,11 +173,11 @@ function render() {
     <div class="agenda-item">
       <div class="item-num">${i+1}</div>
       <div class="item-body">
-        <strong>${item.topic}</strong>
+        <strong>${esc(item.topic)}</strong>
         <div class="item-meta">
           🕐 ${startStr}–${endStr} (${item.dur} min)
-          ${item.presenter ? ` · 👤 ${item.presenter}` : ''}
-          ${item.notes ? ` · 📝 ${item.notes}` : ''}
+          ${item.presenter ? ` · 👤 ${esc(item.presenter)}` : ''}
+          ${item.notes ? ` · 📝 ${esc(item.notes)}` : ''}
         </div>
       </div>
       <div class="item-actions">

@@ -62,6 +62,7 @@ input:focus,textarea:focus{border-color:var(--primary)}
   <div id="objList"></div>
 </div>
 <script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 const KEY = 'okr_data';
 let objectives = JSON.parse(localStorage.getItem(KEY) || '[]');
 
@@ -172,7 +173,7 @@ function render() {
     return `
     <div class="obj-card">
       <div class="obj-header">
-        <div class="obj-title">${obj.title}</div>
+        <div class="obj-title">${esc(obj.title)}</div>
         <div style="display:flex;align-items:center;gap:.5rem">
           <span class="obj-pct" id="opct_${obj.id}" style="color:${color}">${pct}%</span>
           <button class="btn btn-danger btn-sm" onclick="deleteObjective(${obj.id})">✕</button>
@@ -181,7 +182,7 @@ function render() {
       <div class="progress-bar"><div class="progress-fill" id="fill_${obj.id}" style="width:${pct}%;background:${color}"></div></div>
       ${obj.krs.map(kr => `
         <div class="kr-row">
-          <div class="kr-text">◦ ${kr.text}</div>
+          <div class="kr-text">◦ ${esc(kr.text)}</div>
           <input type="range" class="kr-slider" min="0" max="100" value="${kr.progress}" oninput="updateProgress(${obj.id},${kr.id},this.value)">
           <div class="kr-pct" id="pct_${kr.id}">${kr.progress}%</div>
           <button class="btn btn-danger btn-sm" onclick="deleteKR(${obj.id},${kr.id})">✕</button>

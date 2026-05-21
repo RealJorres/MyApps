@@ -113,13 +113,14 @@ function populateSelects() {
 
 document.getElementById('csv').addEventListener('change', populateSelects);
 document.getElementById('csv').addEventListener('blur', populateSelects);
+document.getElementById('csv').addEventListener('input', populateSelects);
 
 function agg(arr, fn) {
+  if (fn === 'count') return arr.length;
   const nums = arr.map(v => parseFloat(v)).filter(v => !isNaN(v));
   if (!nums.length) return 0;
   switch(fn) {
     case 'sum': return nums.reduce((a,b)=>a+b,0);
-    case 'count': return arr.length;
     case 'avg': return nums.reduce((a,b)=>a+b,0)/nums.length;
     case 'min': return Math.min(...nums);
     case 'max': return Math.max(...nums);

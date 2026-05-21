@@ -100,6 +100,7 @@ header p{color:var(--muted);margin-top:.4rem}
   </div>
 </div>
 <script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 const DATA_KEY = 'swot_data';
 let data = JSON.parse(localStorage.getItem(DATA_KEY) || '{"S":[],"W":[],"O":[],"T":[]}');
 
@@ -122,7 +123,7 @@ function removeItem(q, id) {
 function renderQ(q) {
   const list = document.getElementById('list-'+q);
   list.innerHTML = data[q].map(item =>
-    `<div class="item"><span>${item.text}</span><button onclick="removeItem('${q}',${item.id})" title="Remove">×</button></div>`
+    `<div class="item"><span>${esc(item.text)}</span><button onclick="removeItem('${q}',${item.id})" title="Remove">×</button></div>`
   ).join('');
   document.getElementById('cnt-'+q).textContent = data[q].length;
 }

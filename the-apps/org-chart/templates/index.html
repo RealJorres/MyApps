@@ -170,14 +170,20 @@ const BOX_W = 140, BOX_H = 52, H_GAP = 20, V_GAP = 60;
 
 function calcPositions(nodes) {
   const positions = {};
+  // Each leaf occupies exactly (BOX_W + H_GAP) of horizontal space.
+  // A subtree of width tw occupies tw * (BOX_W + H_GAP) of horizontal space.
+  // The box is placed centered within its subtree region.
   function place(node, x, y) {
+    // x is the left edge of this node's box (already centered within its subtree region)
     positions[node.id] = { x, y };
     if (!node.children.length) return;
     const tw = treeWidth(node);
-    let cx = x - (tw * (BOX_W + H_GAP) - H_GAP) / 2 + (BOX_W + H_GAP) / 2 - BOX_W/2;
+    // cx is the left edge of the first child's subtree region
+    let cx = x + BOX_W / 2 - tw * (BOX_W + H_GAP) / 2;
     node.children.forEach(child => {
       const cw = treeWidth(child);
-      place(child, cx + (cw * (BOX_W + H_GAP) - H_GAP) / 2 - BOX_W/2, y + BOX_H + V_GAP);
+      // Center the child box within its subtree region
+      place(child, cx + cw * (BOX_W + H_GAP) / 2 - BOX_W / 2, y + BOX_H + V_GAP);
       cx += cw * (BOX_W + H_GAP);
     });
   }
@@ -185,7 +191,7 @@ function calcPositions(nodes) {
   let rootX = 0;
   nodes.forEach(root => {
     const tw = treeWidth(root);
-    place(root, rootX + (tw * (BOX_W + H_GAP) - H_GAP) / 2 - BOX_W/2, 20);
+    place(root, rootX + tw * (BOX_W + H_GAP) / 2 - BOX_W / 2, 20);
     rootX += tw * (BOX_W + H_GAP);
   });
   return positions;

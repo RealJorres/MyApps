@@ -88,6 +88,7 @@ canvas{width:100%;height:auto}
   </div>
 </div>
 <script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 const COLORS = ['#1d4ed8','#059669','#7c3aed','#dc2626','#d97706','#0891b2','#be185d','#16a34a'];
 let tasks = JSON.parse(localStorage.getItem('gantt_tasks') || '[]');
 let colorIdx = 0;
@@ -121,7 +122,7 @@ function renderList() {
       const days = Math.round((new Date(t.end)-new Date(t.start))/(86400000)) + 1;
       return `<tr>
         <td><span class="color-dot" style="background:${t.color}"></span></td>
-        <td><strong>${t.name}</strong></td>
+        <td><strong>${esc(t.name)}</strong></td>
         <td>${t.start}</td><td>${t.end}</td>
         <td>${days}d</td>
         <td><button class="btn btn-danger" style="padding:.25rem .6rem;font-size:.8rem" onclick="deleteTask(${t.id})">✕</button></td>
@@ -140,9 +141,10 @@ function render() {
   const allDates = tasks.flatMap(t => [new Date(t.start), new Date(t.end)]);
   let minD = new Date(Math.min(...allDates));
   let maxD = new Date(Math.max(...allDates));
-  // Add padding
-  minD.setDate(minD.getDate() - 1);
-  maxD.setDate(maxD.getDate() + 2);
+  // Add padding — use UTC methods so date-only strings (parsed as UTC midnight)
+  // aren't shifted by the browser's local timezone offset.
+  minD.setUTCDate(minD.getUTCDate() - 1);
+  maxD.setUTCDate(maxD.getUTCDate() + 2);
   const totalDays = Math.round((maxD - minD) / 86400000);
 
   const rowH = 38, labelW = 180;
@@ -162,8 +164,8 @@ function render() {
   const step = Math.max(1, Math.floor(totalDays / 10));
   for (let d = 0; d <= totalDays; d += step) {
     const x = labelW + (d / totalDays) * chartW;
-    const date = new Date(minD); date.setDate(date.getDate() + d);
-    const lbl = (date.getMonth()+1) + '/' + date.getDate();
+    const date = new Date(minD); date.setUTCDate(date.getUTCDate() + d);
+    const lbl = (date.getUTCMonth()+1) + '/' + date.getUTCDate();
     ctx.fillStyle = '#94a3b8'; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
     ctx.fillText(lbl, x, 55);
     ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
@@ -171,7 +173,7 @@ function render() {
   }
 
   // Today line
-  const today = new Date(); today.setHours(0,0,0,0);
+  const today = new Date(); today.setUTCHours(0,0,0,0);
   const todayOff = Math.round((today - minD) / 86400000);
   if (todayOff >= 0 && todayOff <= totalDays) {
     const tx = labelW + (todayOff / totalDays) * chartW;

@@ -119,6 +119,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--primary)}
   </div>
 </div>
 <script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 let questions = JSON.parse(localStorage.getItem('sv_questions') || '[]');
 let responses = JSON.parse(localStorage.getItem('sv_responses') || '[]');
 let surveyTitle = localStorage.getItem('sv_title') || 'Employee Satisfaction Survey';
@@ -172,10 +173,10 @@ function renderQuestions() {
   el.innerHTML = questions.map((q, i) => `
     <div class="qblock">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <h4><span class="qtype-badge">${q.type}</span>${i+1}. ${q.text}</h4>
+        <h4><span class="qtype-badge">${q.type}</span>${i+1}. ${esc(q.text)}</h4>
         <button class="btn btn-danger" style="padding:.3rem .7rem;font-size:.8rem" onclick="deleteQuestion(${q.id})">✕</button>
       </div>
-      ${q.type==='choice' ? '<ul style="margin:.4rem 0 0 1.2rem;color:var(--muted);font-size:.85rem">'+q.choices.map(c=>`<li>${c}</li>`).join('')+'</ul>' : ''}
+      ${q.type==='choice' ? '<ul style="margin:.4rem 0 0 1.2rem;color:var(--muted);font-size:.85rem">'+q.choices.map(c=>`<li>${esc(c)}</li>`).join('')+'</ul>' : ''}
       ${q.type==='rating' ? '<p style="color:var(--muted);font-size:.85rem">★★★★★ (1–5 stars)</p>' : ''}
       ${q.type==='yesno' ? '<p style="color:var(--muted);font-size:.85rem">Yes / No</p>' : ''}
     </div>
@@ -190,7 +191,7 @@ function renderTake() {
   if (!questions.length) { form.innerHTML = '<div class="card empty">No questions yet. Go to Build tab first.</div>'; return; }
   form.innerHTML = questions.map(q => `
     <div class="card">
-      <label style="font-size:.95rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:700;margin-bottom:.6rem">${q.text}</label>
+      <label style="font-size:.95rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:700;margin-bottom:.6rem">${esc(q.text)}</label>
       ${renderInput(q)}
     </div>
   `).join('');
@@ -200,7 +201,7 @@ function renderInput(q) {
   if (q.type === 'text') return `<textarea rows="3" id="ans_${q.id}" style="width:100%" placeholder="Your answer..."></textarea>`;
   if (q.type === 'choice') return q.choices.map(c => `
     <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:500">
-      <input type="radio" name="ans_${q.id}" value="${c}" style="width:auto"> ${c}
+      <input type="radio" name="ans_${q.id}" value="${esc(c)}" style="width:auto"> ${esc(c)}
     </label>`).join('');
   if (q.type === 'yesno') return `
     <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:500"><input type="radio" name="ans_${q.id}" value="Yes" style="width:auto"> Yes</label>
@@ -254,19 +255,24 @@ function renderResults() {
       const ans = responses.map(r => r.answers[q.id]).filter(Boolean);
       content = ans.length ? `<ul style="list-style:none">${ans.slice(-5).map(a=>`<li style="padding:.3rem 0;border-bottom:1px solid var(--border);color:var(--muted);font-size:.875rem">${a}</li>`).join('')}</ul>` : '<p style="color:var(--muted)">No text responses.</p>';
     } else if (q.type === 'rating') {
-      const ans = responses.map(r => r.answers[q.id]).filter(Boolean);
-      const avg = ans.reduce((a,b)=>a+b,0)/ans.length;
-      content = `<p style="font-size:1.2rem;font-weight:800">${avg.toFixed(1)} / 5 <span style="color:#fbbf24">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))}</span></p><p style="color:var(--muted);font-size:.8rem">${ans.length} ratings</p>`;
+      const ans = responses.map(r => r.answers[q.id]).filter(v => v != null && v !== '');
+      if (!ans.length) {
+        content = '<p style="color:var(--muted)">No ratings yet.</p>';
+      } else {
+        const avg = ans.reduce((a,b)=>a+b,0)/ans.length;
+        const rounded = Math.round(avg);
+        content = `<p style="font-size:1.2rem;font-weight:800">${avg.toFixed(1)} / 5 <span style="color:#fbbf24">${'★'.repeat(rounded)}${'☆'.repeat(5-rounded)}</span></p><p style="color:var(--muted);font-size:.8rem">${ans.length} ratings</p>`;
+      }
     } else {
       const opts = q.type === 'yesno' ? ['Yes','No'] : q.choices;
       const total = responses.filter(r => r.answers[q.id]).length;
       content = opts.map(o => {
         const cnt = responses.filter(r => r.answers[q.id] === o).length;
         const pct = total ? Math.round(cnt/total*100) : 0;
-        return `<div class="result-row"><label>${o} <span class="resp-count">${cnt} (${pct}%)</span></label><div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;
+        return `<div class="result-row"><label>${esc(o)} <span class="resp-count">${cnt} (${pct}%)</span></label><div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;
       }).join('');
     }
-    return `<div class="card"><p style="font-weight:700;margin-bottom:.75rem">${q.text}</p>${content}</div>`;
+    return `<div class="card"><p style="font-weight:700;margin-bottom:.75rem">${esc(q.text)}</p>${content}</div>`;
   }).join('');
 }
 
