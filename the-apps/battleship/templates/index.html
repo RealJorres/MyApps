@@ -20,7 +20,7 @@ header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
 .cell.ship { background: #334155; }
 .cell.hit  { background: #dc2626; cursor: default; }
 .cell.miss { background: #1e293b; cursor: default; }
-.cell.hit::after  { content: '💥'; font-size: .85rem; }
+.cell.hit::after  { content: 'X'; font-size: .85rem; }
 .cell.miss::after { content: '·'; font-size: 1.4rem; color: #475569; }
 .cell:not(.hit):not(.miss):hover { background: #2a4a6f; }
 #status { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: .6rem 1.5rem; text-align: center; font-size: .9rem; color: #94a3b8; min-width: 280px; }
@@ -41,7 +41,7 @@ header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
 </style>
 </head>
 <body>
-<header><h1>🚢 Battleship</h1></header>
+<header><h1>Battleship</h1></header>
 <div class="main">
   <div class="side">
     <div id="status">Place your fleet — <strong>Randomize to start</strong></div>
@@ -137,10 +137,10 @@ function checkWin(ships,board){
 function playerShoot(i){
   if(phase!=='playing'||enemyBoard[i]===2||enemyBoard[i]===3) return;
   let hit=false;
-  if(enemyBoard[i]===1){enemyBoard[i]=2;hit=true;setStatus('Hit! 💥 Keep firing.');}
-  else{enemyBoard[i]=3;setStatus('Miss. 🌊 AI\'s turn…');}
+  if(enemyBoard[i]===1){enemyBoard[i]=2;hit=true;setStatus('Hit! Keep firing.');}
+  else{enemyBoard[i]=3;setStatus('Miss. AI\'s turn...');}
   renderGrids();
-  if(checkWin(enemyShips,enemyBoard)){phase='over';setStatus('<strong>You win! 🎉 All enemy ships sunk!</strong>');return;}
+  if(checkWin(enemyShips,enemyBoard)){phase='over';setStatus('<strong>You win! All enemy ships sunk.</strong>');return;}
   if(!hit) setTimeout(aiShoot,600);
 }
 
@@ -160,13 +160,13 @@ function aiShoot(){
     [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].forEach(([nr,nc])=>{
       if(nr>=0&&nr<10&&nc>=0&&nc<10){const ni=idx(nr,nc);if(playerBoard[ni]!==2&&playerBoard[ni]!==3)aiQueue.push(ni);}
     });
-    setStatus('AI hit your ship! 💥');
+    setStatus('AI hit your ship!');
   } else {
     playerBoard[i]=3;
-    setStatus('AI missed. 🌊 Your turn!');
+    setStatus('AI missed. Your turn!');
   }
   renderGrids();
-  if(checkWin(playerShips,playerBoard)){phase='over';setStatus('<strong>AI wins! 😞 Your fleet is sunk.</strong>');}
+  if(checkWin(playerShips,playerBoard)){phase='over';setStatus('<strong>AI wins. Your fleet is sunk.</strong>');}
 }
 
 // Initial render
@@ -209,7 +209,7 @@ renderGrid('enemyGrid',enemyBoard,true);
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-terms')">Terms &amp; Conditions</button>
   <span class="ft-sep">·</span>
-  <button class="ft-btn" onclick="ftOpen('ft-bug')">🐛 Report a Bug</button>
+  <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
 
 <!-- ── Terms & Conditions Modal ───────────────────────── -->
@@ -246,7 +246,7 @@ renderGrid('enemyGrid',enemyBoard,true);
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
     <div class="ft-modal-head">
-      <h3>🐛 Report a Bug</h3>
+      <h3>Report a Bug</h3>
       <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
     </div>
     <div class="ft-modal-body">
@@ -257,10 +257,10 @@ renderGrid('enemyGrid',enemyBoard,true);
       <div class="ft-field">
         <label>Issue Type</label>
         <select id="ft-bug-type">
-          <option value="Bug">🐛 Bug / Error</option>
-          <option value="UI">🎨 UI / Layout issue</option>
-          <option value="Feature">💡 Feature suggestion</option>
-          <option value="Other">📝 Other</option>
+          <option value="Bug">Bug / Error</option>
+          <option value="UI">UI / Layout issue</option>
+          <option value="Feature">Feature suggestion</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="ft-field">

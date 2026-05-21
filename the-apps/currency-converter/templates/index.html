@@ -106,40 +106,40 @@
 
 <script>
 const CURRENCIES = [
-  {code:'USD',flag:'🇺🇸',name:'US Dollar',rate:1},
-  {code:'EUR',flag:'🇪🇺',name:'Euro',rate:0.92},
-  {code:'GBP',flag:'🇬🇧',name:'British Pound',rate:0.79},
-  {code:'JPY',flag:'🇯🇵',name:'Japanese Yen',rate:149.5},
-  {code:'CNY',flag:'🇨🇳',name:'Chinese Yuan',rate:7.24},
-  {code:'KRW',flag:'🇰🇷',name:'South Korean Won',rate:1325},
-  {code:'PHP',flag:'🇵🇭',name:'Philippine Peso',rate:56.5},
-  {code:'SGD',flag:'🇸🇬',name:'Singapore Dollar',rate:1.34},
-  {code:'AUD',flag:'🇦🇺',name:'Australian Dollar',rate:1.53},
-  {code:'CAD',flag:'🇨🇦',name:'Canadian Dollar',rate:1.36},
-  {code:'CHF',flag:'🇨🇭',name:'Swiss Franc',rate:0.90},
-  {code:'HKD',flag:'🇭🇰',name:'Hong Kong Dollar',rate:7.82},
-  {code:'MXN',flag:'🇲🇽',name:'Mexican Peso',rate:17.15},
-  {code:'BRL',flag:'🇧🇷',name:'Brazilian Real',rate:4.97},
-  {code:'INR',flag:'🇮🇳',name:'Indian Rupee',rate:83.1},
-  {code:'IDR',flag:'🇮🇩',name:'Indonesian Rupiah',rate:15700},
-  {code:'THB',flag:'🇹🇭',name:'Thai Baht',rate:35.4},
-  {code:'MYR',flag:'🇲🇾',name:'Malaysian Ringgit',rate:4.72},
-  {code:'VND',flag:'🇻🇳',name:'Vietnamese Dong',rate:24350},
-  {code:'TWD',flag:'🇹🇼',name:'Taiwan Dollar',rate:31.9},
-  {code:'AED',flag:'🇦🇪',name:'UAE Dirham',rate:3.67},
-  {code:'SAR',flag:'🇸🇦',name:'Saudi Riyal',rate:3.75},
-  {code:'EGP',flag:'🇪🇬',name:'Egyptian Pound',rate:30.9},
-  {code:'TRY',flag:'🇹🇷',name:'Turkish Lira',rate:28.7},
-  {code:'RUB',flag:'🇷🇺',name:'Russian Ruble',rate:89.5},
-  {code:'ZAR',flag:'🇿🇦',name:'South African Rand',rate:18.6},
-  {code:'NGN',flag:'🇳🇬',name:'Nigerian Naira',rate:1550},
-  {code:'PKR',flag:'🇵🇰',name:'Pakistani Rupee',rate:278},
-  {code:'BDT',flag:'🇧🇩',name:'Bangladeshi Taka',rate:110},
-  {code:'SEK',flag:'🇸🇪',name:'Swedish Krona',rate:10.42},
-  {code:'NOK',flag:'🇳🇴',name:'Norwegian Krone',rate:10.55},
-  {code:'DKK',flag:'🇩🇰',name:'Danish Krone',rate:6.88},
-  {code:'PLN',flag:'🇵🇱',name:'Polish Zloty',rate:4.03},
-  {code:'CZK',flag:'🇨🇿',name:'Czech Koruna',rate:22.9},
+  {code:'USD',name:'US Dollar',rate:1},
+  {code:'EUR',name:'Euro',rate:0.92},
+  {code:'GBP',name:'British Pound',rate:0.79},
+  {code:'JPY',name:'Japanese Yen',rate:149.5},
+  {code:'CNY',name:'Chinese Yuan',rate:7.24},
+  {code:'KRW',name:'South Korean Won',rate:1325},
+  {code:'PHP',name:'Philippine Peso',rate:56.5},
+  {code:'SGD',name:'Singapore Dollar',rate:1.34},
+  {code:'AUD',name:'Australian Dollar',rate:1.53},
+  {code:'CAD',name:'Canadian Dollar',rate:1.36},
+  {code:'CHF',name:'Swiss Franc',rate:0.90},
+  {code:'HKD',name:'Hong Kong Dollar',rate:7.82},
+  {code:'MXN',name:'Mexican Peso',rate:17.15},
+  {code:'BRL',name:'Brazilian Real',rate:4.97},
+  {code:'INR',name:'Indian Rupee',rate:83.1},
+  {code:'IDR',name:'Indonesian Rupiah',rate:15700},
+  {code:'THB',name:'Thai Baht',rate:35.4},
+  {code:'MYR',name:'Malaysian Ringgit',rate:4.72},
+  {code:'VND',name:'Vietnamese Dong',rate:24350},
+  {code:'TWD',name:'Taiwan Dollar',rate:31.9},
+  {code:'AED',name:'UAE Dirham',rate:3.67},
+  {code:'SAR',name:'Saudi Riyal',rate:3.75},
+  {code:'EGP',name:'Egyptian Pound',rate:30.9},
+  {code:'TRY',name:'Turkish Lira',rate:28.7},
+  {code:'RUB',name:'Russian Ruble',rate:89.5},
+  {code:'ZAR',name:'South African Rand',rate:18.6},
+  {code:'NGN',name:'Nigerian Naira',rate:1550},
+  {code:'PKR',name:'Pakistani Rupee',rate:278},
+  {code:'BDT',name:'Bangladeshi Taka',rate:110},
+  {code:'SEK',name:'Swedish Krona',rate:10.42},
+  {code:'NOK',name:'Norwegian Krone',rate:10.55},
+  {code:'DKK',name:'Danish Krone',rate:6.88},
+  {code:'PLN',name:'Polish Zloty',rate:4.03},
+  {code:'CZK',name:'Czech Koruna',rate:22.9},
 ];
 
 const QUICK = ['USD','EUR','GBP','JPY','PHP'];
@@ -149,7 +149,7 @@ function rateOf(code) { return CURRENCIES.find(c=>c.code===code)?.rate||1; }
 function buildSelects() {
   ['from-cur','to-cur'].forEach(id => {
     const sel = document.getElementById(id);
-    sel.innerHTML = CURRENCIES.map(c => `<option value="${c.code}">${c.flag} ${c.code} — ${c.name}</option>`).join('');
+    sel.innerHTML = CURRENCIES.map(c => `<option value="${c.code}">${c.code} — ${c.name}</option>`).join('');
   });
   document.getElementById('from-cur').value = 'USD';
   document.getElementById('to-cur').value = 'PHP';
@@ -254,7 +254,7 @@ convert();
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-terms')">Terms &amp; Conditions</button>
   <span class="ft-sep">·</span>
-  <button class="ft-btn" onclick="ftOpen('ft-bug')">🐛 Report a Bug</button>
+  <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
 
 <!-- ── Terms & Conditions Modal ───────────────────────── -->
@@ -291,7 +291,7 @@ convert();
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
     <div class="ft-modal-head">
-      <h3>🐛 Report a Bug</h3>
+      <h3>Report a Bug</h3>
       <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
     </div>
     <div class="ft-modal-body">
@@ -302,10 +302,10 @@ convert();
       <div class="ft-field">
         <label>Issue Type</label>
         <select id="ft-bug-type">
-          <option value="Bug">🐛 Bug / Error</option>
-          <option value="UI">🎨 UI / Layout issue</option>
-          <option value="Feature">💡 Feature suggestion</option>
-          <option value="Other">📝 Other</option>
+          <option value="Bug">Bug / Error</option>
+          <option value="UI">UI / Layout issue</option>
+          <option value="Feature">Feature suggestion</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="ft-field">

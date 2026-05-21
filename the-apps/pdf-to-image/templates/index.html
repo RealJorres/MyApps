@@ -329,8 +329,8 @@
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('p2i')">📄 PDF → Images</button>
-    <button class="tab" onclick="switchTab('i2p')">🖼️ Images → PDF</button>
+    <button class="tab active" onclick="switchTab('p2i')">PDF → Images</button>
+    <button class="tab" onclick="switchTab('i2p')">Images → PDF</button>
   </div>
 
   <!-- ===== PDF → Images ===== -->
@@ -338,7 +338,7 @@
     <div class="card">
       <h2>1 — Upload PDFs</h2>
       <div class="drop-zone" id="pdfZone" onclick="pdfInput.click()">
-        <div class="icon">📄</div>
+        <div class="icon"></div>
         <p><strong>Click to choose</strong> or drag &amp; drop PDFs here</p>
         <p style="margin-top:0.3rem">Multiple PDF files supported</p>
       </div>
@@ -388,7 +388,7 @@
     <div class="card">
       <h2>1 — Upload Images</h2>
       <div class="drop-zone" id="imgZone" onclick="imgInput.click()">
-        <div class="icon">🖼️</div>
+        <div class="icon"></div>
         <p><strong>Click to choose</strong> or drag &amp; drop images here</p>
         <p style="margin-top:0.3rem">PNG, JPEG, WEBP, BMP, TIFF &mdash; multiple files OK</p>
       </div>
@@ -468,7 +468,7 @@ function renderPdfFileList() {
     const item = document.createElement('div');
     item.className = 'pdf-file-item';
     item.innerHTML = `
-      <span>📄</span>
+      
       <span class="pfi-name" title="${escHtml(f.name)}">${escHtml(f.name)}</span>
       <span class="pfi-size">${fmt(f.size)}</span>
       <button class="pfi-rm" onclick="removePdf(${i})">✕</button>`;
@@ -529,7 +529,7 @@ function renderPages(data) {
     if (multi) {
       const hdr = document.createElement('div');
       hdr.className = 'pdf-section-header';
-      hdr.innerHTML = `<h4>📄 ${escHtml(fileResult.filename)}</h4><span>${fileResult.total} page${fileResult.total !== 1 ? 's' : ''}</span>`;
+      hdr.innerHTML = `<h4>${escHtml(fileResult.filename)}</h4><span>${fileResult.total} page${fileResult.total !== 1 ? 's' : ''}</span>`;
       section.appendChild(hdr);
     }
 
@@ -699,7 +699,7 @@ async function runImgToPdf() {
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-terms')">Terms &amp; Conditions</button>
   <span class="ft-sep">·</span>
-  <button class="ft-btn" onclick="ftOpen('ft-bug')">🐛 Report a Bug</button>
+  <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
 
 <!-- ── Terms & Conditions Modal ───────────────────────── -->
@@ -736,7 +736,7 @@ async function runImgToPdf() {
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
     <div class="ft-modal-head">
-      <h3>🐛 Report a Bug</h3>
+      <h3>Report a Bug</h3>
       <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
     </div>
     <div class="ft-modal-body">
@@ -747,10 +747,10 @@ async function runImgToPdf() {
       <div class="ft-field">
         <label>Issue Type</label>
         <select id="ft-bug-type">
-          <option value="Bug">🐛 Bug / Error</option>
-          <option value="UI">🎨 UI / Layout issue</option>
-          <option value="Feature">💡 Feature suggestion</option>
-          <option value="Other">📝 Other</option>
+          <option value="Bug">Bug / Error</option>
+          <option value="UI">UI / Layout issue</option>
+          <option value="Feature">Feature suggestion</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="ft-field">

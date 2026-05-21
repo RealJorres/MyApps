@@ -86,12 +86,12 @@
   <div class="card">
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept=".pdf">
-      <div class="icon">📄</div>
+      <div class="icon"></div>
       <p>Drag & drop your PDF here, or <strong onclick="document.getElementById('fileInput').click()">browse</strong></p>
       <p style="margin-top:0.4rem;font-size:0.78rem;color:#94a3b8">Max file size: 100 MB</p>
     </div>
     <div class="file-info hidden" id="fileInfo">
-      <span class="file-icon">📄</span>
+      
       <div class="file-details">
         <div class="file-name" id="fileName"></div>
         <div class="file-meta" id="fileMeta"></div>
@@ -276,7 +276,7 @@ async function doSplit() {
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-terms')">Terms &amp; Conditions</button>
   <span class="ft-sep">·</span>
-  <button class="ft-btn" onclick="ftOpen('ft-bug')">🐛 Report a Bug</button>
+  <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
 
 <!-- ── Terms & Conditions Modal ───────────────────────── -->
@@ -313,7 +313,7 @@ async function doSplit() {
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
     <div class="ft-modal-head">
-      <h3>🐛 Report a Bug</h3>
+      <h3>Report a Bug</h3>
       <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
     </div>
     <div class="ft-modal-body">
@@ -324,10 +324,10 @@ async function doSplit() {
       <div class="ft-field">
         <label>Issue Type</label>
         <select id="ft-bug-type">
-          <option value="Bug">🐛 Bug / Error</option>
-          <option value="UI">🎨 UI / Layout issue</option>
-          <option value="Feature">💡 Feature suggestion</option>
-          <option value="Other">📝 Other</option>
+          <option value="Bug">Bug / Error</option>
+          <option value="UI">UI / Layout issue</option>
+          <option value="Feature">Feature suggestion</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="ft-field">

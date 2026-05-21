@@ -55,14 +55,14 @@
 </style>
 </head>
 <body>
-<header><h1>💣 Minesweeper</h1></header>
+<header><h1>Minesweeper</h1></header>
 <div class="controls">
   <button class="diff-btn active" id="diff-easy" onclick="setDiff('easy')">Easy (9×9)</button>
   <button class="diff-btn" id="diff-medium" onclick="setDiff('medium')">Medium (16×16)</button>
   <button class="diff-btn" id="diff-hard" onclick="setDiff('hard')">Hard (16×30)</button>
   <div class="status-bar">
     <div class="counter" id="mine-counter">010</div>
-    <button class="smiley" id="smiley" onclick="newGame()">🙂</button>
+    <button class="smiley" id="smiley" onclick="newGame()">:)</button>
     <div class="timer" id="timer">000</div>
   </div>
 </div>
@@ -93,7 +93,7 @@ function newGame() {
   flagged = new Set(); revealed = new Set(); mines = new Set();
   updateCounter(cfg.mines);
   updateTimer(0);
-  document.getElementById('smiley').textContent = '🙂';
+  document.getElementById('smiley').textContent = ':)';
   renderBoard();
   renderBestTimes();
 }
@@ -155,10 +155,10 @@ function toggleFlag(idx) {
 
 function gameOver(triggeredIdx) {
   gameState = 'over'; clearInterval(timerInterval);
-  document.getElementById('smiley').textContent = '😵';
+  document.getElementById('smiley').textContent = 'X';
   mines.forEach(m => {
     const el = document.getElementById('c'+m);
-    if (el) { el.classList.add('revealed','mine'); el.textContent = '💣'; }
+    if (el) { el.classList.add('revealed','mine'); el.textContent = '*'; }
   });
   const el = document.getElementById('c'+triggeredIdx);
   if (el) el.style.background = '#7f1d1d';
@@ -167,8 +167,8 @@ function gameOver(triggeredIdx) {
 function checkWin() {
   if (revealed.size === cfg.rows*cfg.cols - cfg.mines) {
     gameState = 'won'; clearInterval(timerInterval);
-    document.getElementById('smiley').textContent = '😎';
-    mines.forEach(m => { const el=document.getElementById('c'+m); if(el){el.classList.add('flagged');el.textContent='🚩';} });
+    document.getElementById('smiley').textContent = ':D';
+    mines.forEach(m => { const el=document.getElementById('c'+m); if(el){el.classList.add('flagged');el.textContent='F';} });
     saveBestTime();
     renderBestTimes();
     document.querySelectorAll('.cell.revealed').forEach(el=>el.classList.add('win'));
@@ -202,7 +202,7 @@ function renderBoard() {
     if (revealed.has(i)) {
       el.classList.add('revealed');
       if (cells[i]>0) { el.textContent=cells[i]; el.classList.add('n'+cells[i]); }
-    } else if (flagged.has(i)) { el.classList.add('flagged'); el.textContent='🚩'; }
+    } else if (flagged.has(i)) { el.classList.add('flagged'); el.textContent='F'; }
     el.addEventListener('click', e => { if(gameState==='over'||gameState==='won')return; reveal(i); });
     el.addEventListener('contextmenu', e => { e.preventDefault(); if(gameState==='over'||gameState==='won')return; toggleFlag(i); });
     let pressTimer;
@@ -266,7 +266,7 @@ window.addEventListener('resize', () => { if (gameState !== 'playing') renderBoa
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-terms')">Terms &amp; Conditions</button>
   <span class="ft-sep">·</span>
-  <button class="ft-btn" onclick="ftOpen('ft-bug')">🐛 Report a Bug</button>
+  <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
 
 <!-- ── Terms & Conditions Modal ───────────────────────── -->
@@ -303,7 +303,7 @@ window.addEventListener('resize', () => { if (gameState !== 'playing') renderBoa
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
     <div class="ft-modal-head">
-      <h3>🐛 Report a Bug</h3>
+      <h3>Report a Bug</h3>
       <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
     </div>
     <div class="ft-modal-body">
@@ -314,10 +314,10 @@ window.addEventListener('resize', () => { if (gameState !== 'playing') renderBoa
       <div class="ft-field">
         <label>Issue Type</label>
         <select id="ft-bug-type">
-          <option value="Bug">🐛 Bug / Error</option>
-          <option value="UI">🎨 UI / Layout issue</option>
-          <option value="Feature">💡 Feature suggestion</option>
-          <option value="Other">📝 Other</option>
+          <option value="Bug">Bug / Error</option>
+          <option value="UI">UI / Layout issue</option>
+          <option value="Feature">Feature suggestion</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="ft-field">

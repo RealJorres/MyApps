@@ -151,8 +151,8 @@
 </div>
 
 <script>
-const INCOME_CATS = [{icon:'💼',name:'Salary'},{icon:'💻',name:'Freelance'},{icon:'📦',name:'Other'}];
-const EXPENSE_CATS = [{icon:'🍔',name:'Food'},{icon:'🚗',name:'Transport'},{icon:'💡',name:'Utilities'},{icon:'🎬',name:'Entertainment'},{icon:'🏥',name:'Health'},{icon:'🛍',name:'Shopping'},{icon:'🏠',name:'Rent'},{icon:'📦',name:'Other'}];
+const INCOME_CATS = [{name:'Salary'},{name:'Freelance'},{name:'Other'}];
+const EXPENSE_CATS = [{name:'Food'},{name:'Transport'},{name:'Utilities'},{name:'Entertainment'},{name:'Health'},{name:'Shopping'},{name:'Rent'},{name:'Other'}];
 
 let txType = 'income';
 let currentDate = new Date();
@@ -225,15 +225,15 @@ function render() {
   const sortedDates = Object.keys(groups).sort().reverse();
   const list = document.getElementById('tx-list');
   if (!sortedDates.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">💸</div><p>No transactions yet.<br>Add your first one!</p></div>';
+    list.innerHTML = '<div class="empty-state"><p>No transactions yet. Add your first one!</p></div>';
   } else {
     list.innerHTML = sortedDates.map(d => {
       const dateStr = new Date(d + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
       const rows = groups[d].map(t => {
         const allCats = [...INCOME_CATS, ...EXPENSE_CATS];
-        const catObj = allCats.find(c=>c.name===t.category) || {icon:'📦'};
+        const catObj = allCats.find(c=>c.name===t.category) || {name:t.category||'Other'};
         return `<div class="tx-row">
-          <div class="tx-icon" style="background:${t.type==='income'?'#d1fae5':'#fee2e2'}">${catObj.icon}</div>
+          <div class="tx-icon" style="background:${t.type==='income'?'#d1fae5':'#fee2e2'};font-size:.75rem;font-weight:700;color:${t.type==='income'?'#065f46':'#991b1b'}">${(catObj.name||'?')[0].toUpperCase()}</div>
           <div class="tx-details">
             <div class="tx-desc">${t.description}</div>
             <div class="tx-cat">${t.category}</div>
@@ -258,9 +258,9 @@ function renderBreakdown(txs, totalExpense) {
   el.innerHTML = sorted.map(([cat, amt]) => {
     const pct = totalExpense > 0 ? (amt/totalExpense*100).toFixed(1) : 0;
     const allCats = [...INCOME_CATS, ...EXPENSE_CATS];
-    const catObj = allCats.find(c=>c.name===cat) || {icon:'📦'};
+    const catObj = allCats.find(c=>c.name===cat) || {name:'Other'};
     return `<div class="cat-row">
-      <div class="cat-name">${catObj.icon} ${cat}</div>
+      <div class="cat-name">${cat}</div>
       <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%"></div></div>
       <div class="cat-amount">${fmt(amt)}</div>
       <div class="cat-pct">${pct}%</div>
@@ -327,7 +327,7 @@ render();
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-terms')">Terms &amp; Conditions</button>
   <span class="ft-sep">·</span>
-  <button class="ft-btn" onclick="ftOpen('ft-bug')">🐛 Report a Bug</button>
+  <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
 
 <!-- ── Terms & Conditions Modal ───────────────────────── -->
@@ -364,7 +364,7 @@ render();
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
     <div class="ft-modal-head">
-      <h3>🐛 Report a Bug</h3>
+      <h3>Report a Bug</h3>
       <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
     </div>
     <div class="ft-modal-body">
@@ -375,10 +375,10 @@ render();
       <div class="ft-field">
         <label>Issue Type</label>
         <select id="ft-bug-type">
-          <option value="Bug">🐛 Bug / Error</option>
-          <option value="UI">🎨 UI / Layout issue</option>
-          <option value="Feature">💡 Feature suggestion</option>
-          <option value="Other">📝 Other</option>
+          <option value="Bug">Bug / Error</option>
+          <option value="UI">UI / Layout issue</option>
+          <option value="Feature">Feature suggestion</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="ft-field">
