@@ -163,9 +163,23 @@
       .hero p {
         color: var(--muted);
         font-size: 0.95rem;
-        max-width: 480px;
-        margin: 0 auto 2rem;
+        max-width: 540px;
+        margin: 0 auto 1rem;
         line-height: 1.6;
+      }
+      .privacy-pills {
+        display: flex; flex-wrap: wrap; gap: 0.4rem;
+        justify-content: center; margin-bottom: 1.75rem;
+      }
+      .privacy-pill {
+        padding: 0.25rem 0.75rem;
+        background: rgba(102,192,244,.1);
+        border: 1px solid rgba(102,192,244,.2);
+        border-radius: 2rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 0.02em;
       }
 
       /* Search bar */
@@ -841,9 +855,14 @@
       <span class="hero-icon">⚡</span>
       <h1>Your Personal <span>App Library</span></h1>
       <p>
-        Productivity tools, games, utilities and more — all running right here,
-        no installs needed.
+        129 free browser tools. No ads. No sign-up. No tracking. All yours.
       </p>
+      <div class="privacy-pills" aria-label="Privacy features">
+        <span class="privacy-pill">No ads</span>
+        <span class="privacy-pill">No sign-up</span>
+        <span class="privacy-pill">No tracking</span>
+        <span class="privacy-pill">Runs in your browser</span>
+      </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
         <input
@@ -1187,6 +1206,11 @@
         "Games",
       ];
 
+      // ── Grid virtualization ─────────────────────────────
+      // Build groups once; render via IntersectionObserver for
+      // deferred card creation — keeps initial DOM small.
+      let _pendingGroups = null;
+
       function renderGrid(apps) {
         const grid = document.getElementById("grid");
         if (!apps.length) {
@@ -1199,7 +1223,6 @@
           if (!groups[cat]) groups[cat] = [];
           groups[cat].push(a);
         });
-        // Sort by defined order, then alphabetically for any unknown categories
         const order = Object.keys(groups).sort((a, b) => {
           const ai = CATEGORY_ORDER.indexOf(a);
           const bi = CATEGORY_ORDER.indexOf(b);
@@ -1208,13 +1231,67 @@
           if (bi === -1) return -1;
           return ai - bi;
         });
-        grid.innerHTML = order
-          .map(
-            (cat) =>
-              `<div class="category-header">${esc(cat)}</div>` +
-              groups[cat].map(cardHTML).join(""),
-          )
-          .join("");
+
+        // Render first category eagerly; defer the rest with placeholders
+        grid.innerHTML = "";
+        order.forEach((cat, idx) => {
+          const header = document.createElement("div");
+          header.className = "category-header";
+          header.textContent = cat;
+          grid.appendChild(header);
+
+          if (idx === 0) {
+            // First category: render immediately
+            groups[cat].forEach(a => grid.insertAdjacentHTML("beforeend", cardHTML(a)));
+          } else {
+            // Remaining: lazy placeholder observed by IntersectionObserver
+            const placeholder = document.createElement("div");
+            placeholder.className = "cat-placeholder";
+            placeholder.dataset.cat = cat;
+            placeholder.style.cssText = `min-height:${groups[cat].length * 60}px`;
+            placeholder.dataset.apps = JSON.stringify(groups[cat].map(a => a.id));
+            grid.appendChild(placeholder);
+            _observer && _observer.observe(placeholder);
+          }
+        });
+
+        // Store for observer callback
+        _pendingGroups = groups;
+      }
+
+      let _observer = null;
+      if ("IntersectionObserver" in window) {
+        _observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const ph = entry.target;
+            const cat = ph.dataset.cat;
+            if (!_pendingGroups || !_pendingGroups[cat]) return;
+            _observer.unobserve(ph);
+            const frag = document.createDocumentFragment();
+            _pendingGroups[cat].forEach(a => {
+              const tmp = document.createElement("div");
+              tmp.innerHTML = cardHTML(a);
+              frag.appendChild(tmp.firstElementChild);
+            });
+            ph.replaceWith(frag);
+          });
+        }, { rootMargin: "200px 0px" });
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        _observer = { observe: function(el) {
+          if (!_pendingGroups) return;
+          const cat = el.dataset.cat;
+          if (_pendingGroups[cat]) {
+            const frag = document.createDocumentFragment();
+            _pendingGroups[cat].forEach(a => {
+              const tmp = document.createElement("div");
+              tmp.innerHTML = cardHTML(a);
+              frag.appendChild(tmp.firstElementChild);
+            });
+            el.replaceWith(frag);
+          }
+        }};
       }
 
       function cardHTML(a) {
