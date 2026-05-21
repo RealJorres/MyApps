@@ -1,151 +1,221 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/password-generator/">
-<meta name="description" content="Generate strong, secure passwords with custom length and character sets. Stay safe online.">
-<meta name="keywords" content="password generator, secure password, random password, strong password">
-<meta name="author" content="Jorres Apps">
-<meta property="og:title" content="Password Generator">
-<meta property="og:description" content="Generate strong, secure passwords with custom length and character sets. Stay safe online.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Password Generator">
-<meta name="twitter:description" content="Generate strong, secure passwords with custom length and character sets. Stay safe online.">
-<title>Password Generator</title>
+<meta name="description" content="Generate secure passwords and check password strength — entropy score, crack time estimate, and actionable tips.">
+<meta name="robots" content="index, follow">
+<title>Password Tools</title>
 <style>
-:root {
-  --primary: #15803d;
-  --primary-h: #166534;
-  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
-  --text: #1e293b; --muted: #64748b;
-  --success-bg: #f0fdf4; --success-fg: #16a34a;
-  --error-bg: #fef2f2;   --error-fg: #dc2626;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
-.container { max-width: 720px; margin: 0 auto; }
-header { text-align: center; margin-bottom: 2rem; }
-header h1 { font-size: 2rem; font-weight: 800; }
-header p { color: var(--muted); margin-top: 0.4rem; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
-.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: 0.5rem; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-h); }
-.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
-.btn-ghost:hover { background: var(--border); }
-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
-input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus { border-color: var(--primary); }
+:root{--primary:#15803d;--primary-h:#166534;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
 
-.slider-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
-.slider-row input[type=range] { flex: 1; accent-color: var(--primary); }
-.slider-val { font-size: 1.1rem; font-weight: 800; color: var(--primary); min-width: 3rem; text-align: center; }
+/* Tabs */
+.tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border)}
+.tab-btn{flex:1;padding:.65rem 1rem;border:none;background:none;font-size:.9rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;font-family:inherit}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-.checkboxes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1.25rem; }
-.check-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
-.check-item input[type=checkbox] { accent-color: var(--primary); width: 1.1rem; height: 1.1rem; }
+/* Generator */
+label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem}
+input[type=range]{width:100%;accent-color:var(--primary)}
+input[type=text],input[type=number],input[type=password]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus{border-color:var(--primary)}
+.slider-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
+.slider-row .slider-val{font-size:1.1rem;font-weight:800;color:var(--primary);min-width:3rem;text-align:center}
+.checkboxes{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.25rem}
+.check-item{display:flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;cursor:pointer}
+.check-item input[type=checkbox]{accent-color:var(--primary);width:1.1rem;height:1.1rem}
+.count-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
+.count-row label{margin-bottom:0;white-space:nowrap}
+.count-row input[type=number]{width:80px}
+.strength-bar-bg{background:var(--bg);border-radius:2rem;height:.5rem;margin-bottom:.4rem;overflow:hidden}
+.strength-bar-fill{height:100%;border-radius:2rem;transition:width .3s,background .3s}
+.strength-label{font-size:.8rem;font-weight:600}
+.actions{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.4rem;border-radius:.5rem;border:none;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-h)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+.btn-sm{padding:.4rem .9rem;font-size:.82rem}
+.results-list{display:flex;flex-direction:column;gap:.6rem}
+.pw-row{display:flex;align-items:center;gap:.75rem;background:var(--bg);border:1px solid var(--border);border-radius:.5rem;padding:.6rem .75rem}
+.pw-text{flex:1;font-family:'Cascadia Code','Fira Code','Courier New',monospace;font-size:.9rem;word-break:break-all;color:var(--text);user-select:all}
+.error-msg{background:#fef2f2;color:#dc2626;padding:.7rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:500;margin-top:1rem}
 
-.count-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
-.count-row label { margin-bottom: 0; white-space: nowrap; }
-.count-row input[type=number] { width: 80px; }
+/* Checker */
+.input-wrap{position:relative;margin-bottom:1.5rem}
+.input-wrap input{padding:.85rem 3rem .85rem 1rem;font-size:1.05rem;border:2px solid var(--border);border-radius:.6rem;font-family:monospace}
+.input-wrap input:focus{border-color:var(--primary)}
+.toggle-eye{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted);font-size:1.1rem;background:none;border:none;padding:.2rem;line-height:1}
+.toggle-eye:hover{color:var(--text)}
+.meter-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.9rem}
+.meter-label .strength-name{font-weight:700;font-size:1rem}
+.meter-label .entropy-text{color:var(--muted);font-size:.82rem}
+.meter-segs{display:flex;gap:4px;margin-bottom:.75rem}
+.meter-seg{flex:1;height:8px;border-radius:4px;background:#e2e8f0;transition:background .3s}
+.crack-time{font-size:.875rem;color:var(--muted);margin-bottom:1.25rem}
+.crack-time strong{color:var(--text)}
+.checklist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-bottom:1.25rem}
+.checklist li{display:flex;align-items:center;gap:.45rem;font-size:.85rem;padding:.4rem .6rem;border-radius:.4rem;background:#f8fafc}
+.checklist li .ck-icon{font-size:.9rem;flex-shrink:0}
+.checklist li.pass{color:#065f46;background:#d1fae5}
+.checklist li.fail{color:#94a3b8}
+.tips-section h3{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem}
+.tip-item{font-size:.875rem;color:#b45309;background:#fffbeb;border-left:3px solid #f59e0b;padding:.5rem .75rem;border-radius:0 .4rem .4rem 0;margin-bottom:.4rem}
+.no-tips{font-size:.875rem;color:#059669;font-weight:600}
 
-.strength-bar-bg { background: var(--bg); border-radius: 2rem; height: 0.5rem; margin-bottom: 0.4rem; overflow: hidden; }
-.strength-bar-fill { height: 100%; border-radius: 2rem; transition: width 0.3s, background 0.3s; }
-.strength-label { font-size: 0.8rem; font-weight: 600; }
+/* Cross-tab button */
+.check-this-row{display:flex;justify-content:flex-end;margin-top:.75rem}
 
-.actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-
-.results-list { display: flex; flex-direction: column; gap: 0.6rem; }
-.pw-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 0.6rem 0.75rem;
-}
-.pw-text {
-  flex: 1;
-  font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
-  font-size: 0.9rem;
-  word-break: break-all;
-  color: var(--text);
-  user-select: all;
-}
-.pw-copy { flex-shrink: 0; }
-
-.error-msg { background: var(--error-bg); color: var(--error-fg); padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; margin-top: 1rem; }
-@media (max-width: 600px) {
-  body { overflow-x: hidden; }
-  .checkboxes { grid-template-columns: 1fr !important; }
-  input[type=text], input[type=number] { width: 100% !important; min-width: 0 !important; }
+@media(max-width:600px){
+  body{overflow-x:hidden}
+  .checkboxes,.checklist{grid-template-columns:1fr}
+  input[type=text],input[type=number]{width:100%!important;min-width:0!important}
 }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>Password Generator</h1>
-    <p>Generate secure passwords using your browser's crypto API</p>
+    <h1>Password Tools</h1>
+    <p>Generate secure passwords or analyze the strength of any existing one.</p>
   </header>
 
-  <div class="card">
-    <div>
-      <label>Length — <span id="lengthDisplay">16</span> characters</label>
-      <div class="slider-row">
-        <span style="font-size:0.75rem;color:var(--muted);">8</span>
-        <input type="range" id="lengthSlider" min="8" max="128" value="16" oninput="onLengthChange()">
-        <span style="font-size:0.75rem;color:var(--muted);">128</span>
-        <span class="slider-val" id="lengthVal">16</span>
-      </div>
-    </div>
-
-    <div>
-      <label style="margin-bottom:0.6rem;">Character Sets</label>
-      <div class="checkboxes">
-        <label class="check-item"><input type="checkbox" id="chkUpper" checked onchange="updateStrength()"> Uppercase (A–Z)</label>
-        <label class="check-item"><input type="checkbox" id="chkLower" checked onchange="updateStrength()"> Lowercase (a–z)</label>
-        <label class="check-item"><input type="checkbox" id="chkNumbers" checked onchange="updateStrength()"> Numbers (0–9)</label>
-        <label class="check-item"><input type="checkbox" id="chkSymbols" checked onchange="updateStrength()"> Symbols (!@#$…)</label>
-      </div>
-    </div>
-
-    <div class="count-row">
-      <label for="countInput">Count</label>
-      <input type="number" id="countInput" value="5" min="1" max="20">
-    </div>
-
-    <div style="margin-bottom:1.25rem;">
-      <div class="strength-bar-bg"><div class="strength-bar-fill" id="strengthFill" style="width:0%;background:#dc2626;"></div></div>
-      <div class="strength-label" id="strengthLabel" style="color:var(--muted);">Select character sets to see strength</div>
-    </div>
-
-    <div class="actions">
-      <button class="btn btn-primary" id="generateBtn" onclick="generate()">Generate Passwords</button>
-      <button class="btn btn-ghost" id="regenBtn" onclick="generate()" style="display:none;">Regenerate</button>
-    </div>
-    <div id="errorMsg"></div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('generate', this)">Generate</button>
+    <button class="tab-btn" onclick="switchTab('check', this)">Check Strength</button>
   </div>
 
-  <div class="card" id="resultsCard" style="display:none;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
-      <strong style="font-size:1rem;">Generated Passwords</strong>
-      <button class="btn btn-ghost" style="font-size:0.8rem;padding:0.35rem 0.85rem;" onclick="copyAll()">Copy All</button>
+  <!-- ── GENERATE TAB ───────────────────────────────── -->
+  <div id="tab-generate" class="tab-panel active">
+    <div class="card">
+      <div>
+        <label>Length — <span id="lengthDisplay">16</span> characters</label>
+        <div class="slider-row">
+          <span style="font-size:.75rem;color:var(--muted)">8</span>
+          <input type="range" id="lengthSlider" min="8" max="128" value="16" oninput="onLengthChange()">
+          <span style="font-size:.75rem;color:var(--muted)">128</span>
+          <span class="slider-val" id="lengthVal">16</span>
+        </div>
+      </div>
+
+      <div>
+        <label style="margin-bottom:.6rem">Character Sets</label>
+        <div class="checkboxes">
+          <label class="check-item"><input type="checkbox" id="chkUpper" checked onchange="updateGenStrength()"> Uppercase (A–Z)</label>
+          <label class="check-item"><input type="checkbox" id="chkLower" checked onchange="updateGenStrength()"> Lowercase (a–z)</label>
+          <label class="check-item"><input type="checkbox" id="chkNumbers" checked onchange="updateGenStrength()"> Numbers (0–9)</label>
+          <label class="check-item"><input type="checkbox" id="chkSymbols" checked onchange="updateGenStrength()"> Symbols (!@#$…)</label>
+        </div>
+      </div>
+
+      <div class="count-row">
+        <label for="countInput">Count</label>
+        <input type="number" id="countInput" value="5" min="1" max="20">
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <div class="strength-bar-bg"><div class="strength-bar-fill" id="genStrengthFill" style="width:0%;background:#dc2626"></div></div>
+        <div class="strength-label" id="genStrengthLabel" style="color:var(--muted)">Select character sets to see strength</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="generateBtn" onclick="generate()">Generate Passwords</button>
+        <button class="btn btn-ghost" id="regenBtn" onclick="generate()" style="display:none">Regenerate</button>
+      </div>
+      <div id="errorMsg"></div>
     </div>
-    <div class="results-list" id="resultsList"></div>
+
+    <div class="card" id="resultsCard" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+        <strong style="font-size:1rem">Generated Passwords</strong>
+        <button class="btn btn-ghost btn-sm" onclick="copyAll()">Copy All</button>
+      </div>
+      <div class="results-list" id="resultsList"></div>
+      <div class="check-this-row">
+        <button class="btn btn-ghost btn-sm" id="checkThisBtn" onclick="sendToChecker()" style="display:none">
+          Check strength of first password →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHECK STRENGTH TAB ─────────────────────────── -->
+  <div id="tab-check" class="tab-panel">
+    <div class="card">
+      <div class="input-wrap">
+        <input type="password" id="pwInput" placeholder="Enter a password to analyze…" autocomplete="off" spellcheck="false" oninput="analyze()">
+        <button class="toggle-eye" id="toggleEye" title="Show / hide" onclick="toggleShow()">&#128065;</button>
+      </div>
+
+      <div>
+        <div class="meter-label">
+          <span class="strength-name" id="strengthName" style="color:var(--muted)">Enter a password</span>
+          <span class="entropy-text" id="entropyText"></span>
+        </div>
+        <div class="meter-segs" id="meterSegs">
+          <div class="meter-seg" id="seg0"></div>
+          <div class="meter-seg" id="seg1"></div>
+          <div class="meter-seg" id="seg2"></div>
+          <div class="meter-seg" id="seg3"></div>
+          <div class="meter-seg" id="seg4"></div>
+        </div>
+      </div>
+
+      <div class="crack-time" id="crackTime"></div>
+
+      <ul class="checklist" id="checklist">
+        <li id="chk8"><span class="ck-icon">&#9898;</span> At least 8 characters</li>
+        <li id="chk12"><span class="ck-icon">&#9898;</span> At least 12 characters</li>
+        <li id="chkUp"><span class="ck-icon">&#9898;</span> Uppercase letters</li>
+        <li id="chkLow"><span class="ck-icon">&#9898;</span> Lowercase letters</li>
+        <li id="chkNum"><span class="ck-icon">&#9898;</span> Numbers</li>
+        <li id="chkSpec"><span class="ck-icon">&#9898;</span> Special characters</li>
+        <li id="chkPat"><span class="ck-icon">&#9898;</span> No common patterns</li>
+        <li id="chkCom"><span class="ck-icon">&#9898;</span> Not a common password</li>
+      </ul>
+
+      <div class="tips-section">
+        <h3>Tips</h3>
+        <div id="tipsArea"><p style="color:var(--muted);font-size:.875rem">Start typing to see personalized tips.</p></div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
+/* ── Tab switching ─────────────────────────────────── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── Send a generated password to the checker ─────── */
+function sendToChecker() {
+  const first = document.querySelector('.pw-text');
+  if (!first) return;
+  document.getElementById('pwInput').value = first.textContent;
+  switchTab('check', document.querySelectorAll('.tab-btn')[1]);
+  analyze();
+}
+
+/* ─────────────────────────────────────────────────── */
+/*   GENERATOR                                         */
+/* ─────────────────────────────────────────────────── */
 const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const LOWER = 'abcdefghijklmnopqrstuvwxyz';
 const NUMS  = '0123456789';
@@ -155,44 +225,36 @@ function onLengthChange() {
   const v = document.getElementById('lengthSlider').value;
   document.getElementById('lengthDisplay').textContent = v;
   document.getElementById('lengthVal').textContent = v;
-  updateStrength();
+  updateGenStrength();
 }
 
 function getCharset() {
   let cs = '';
-  if (document.getElementById('chkUpper').checked) cs += UPPER;
-  if (document.getElementById('chkLower').checked) cs += LOWER;
+  if (document.getElementById('chkUpper').checked)   cs += UPPER;
+  if (document.getElementById('chkLower').checked)   cs += LOWER;
   if (document.getElementById('chkNumbers').checked) cs += NUMS;
   if (document.getElementById('chkSymbols').checked) cs += SYMS;
   return cs;
 }
 
-function getEntropy() {
+function updateGenStrength() {
   const len = parseInt(document.getElementById('lengthSlider').value);
   const cs = getCharset();
-  if (!cs) return 0;
-  return len * Math.log2(cs.length);
-}
-
-function updateStrength() {
-  const entropy = getEntropy();
-  const fill = document.getElementById('strengthFill');
-  const label = document.getElementById('strengthLabel');
-  if (entropy === 0) {
-    fill.style.width = '0%';
-    fill.style.background = '#dc2626';
+  const fill = document.getElementById('genStrengthFill');
+  const label = document.getElementById('genStrengthLabel');
+  if (!cs) {
+    fill.style.width = '0%'; fill.style.background = '#dc2626';
     label.textContent = 'Select at least one character set';
-    label.style.color = 'var(--muted)';
-    return;
+    label.style.color = 'var(--muted)'; return;
   }
+  const entropy = len * Math.log2(cs.length);
   let pct, color, text;
-  if (entropy < 40) { pct = 15; color = '#dc2626'; text = 'Very Weak'; }
-  else if (entropy < 60) { pct = 35; color = '#f97316'; text = 'Weak'; }
-  else if (entropy < 80) { pct = 55; color = '#eab308'; text = 'Fair'; }
-  else if (entropy < 100) { pct = 75; color = '#22c55e'; text = 'Strong'; }
-  else { pct = 100; color = '#15803d'; text = 'Very Strong'; }
-  fill.style.width = pct + '%';
-  fill.style.background = color;
+  if (entropy < 40)       { pct=15; color='#dc2626'; text='Very Weak'; }
+  else if (entropy < 60)  { pct=35; color='#f97316'; text='Weak'; }
+  else if (entropy < 80)  { pct=55; color='#eab308'; text='Fair'; }
+  else if (entropy < 100) { pct=75; color='#22c55e'; text='Strong'; }
+  else                    { pct=100;color='#15803d'; text='Very Strong'; }
+  fill.style.width = pct + '%'; fill.style.background = color;
   label.textContent = `${text} — ~${Math.round(entropy)} bits of entropy`;
   label.style.color = color;
 }
@@ -207,35 +269,29 @@ function generate() {
   const errorEl = document.getElementById('errorMsg');
   errorEl.innerHTML = '';
   const cs = getCharset();
-  if (!cs) {
-    errorEl.innerHTML = '<div class="error-msg">Please select at least one character set.</div>';
-    return;
-  }
+  if (!cs) { errorEl.innerHTML = '<div class="error-msg">Please select at least one character set.</div>'; return; }
   const len = parseInt(document.getElementById('lengthSlider').value);
   const count = Math.max(1, Math.min(20, parseInt(document.getElementById('countInput').value) || 5));
   const passwords = Array.from({ length: count }, () => generateOne(cs, len));
 
-  const list = document.getElementById('resultsList');
-  list.innerHTML = passwords.map((pw, i) => `
+  document.getElementById('resultsList').innerHTML = passwords.map((pw, i) => `
     <div class="pw-row" id="pwrow${i}">
       <span class="pw-text" id="pw${i}">${pw}</span>
-      <button class="btn btn-ghost pw-copy" style="padding:0.35rem 0.75rem;font-size:0.8rem;" onclick="copyPw(${i})">Copy</button>
-    </div>
-  `).join('');
+      <button class="btn btn-ghost btn-sm pw-copy" onclick="copyPw(${i})">Copy</button>
+    </div>`).join('');
 
   document.getElementById('resultsCard').style.display = 'block';
   document.getElementById('regenBtn').style.display = 'inline-flex';
+  document.getElementById('checkThisBtn').style.display = 'inline-flex';
 }
 
 function copyPw(i) {
-  const text = document.getElementById('pw' + i).textContent;
-  navigator.clipboard.writeText(text).then(() => {
+  navigator.clipboard.writeText(document.getElementById('pw'+i).textContent).then(() => {
     const btn = document.querySelector(`#pwrow${i} .pw-copy`);
     btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = 'Copy', 1500);
   });
 }
-
 function copyAll() {
   const texts = Array.from(document.querySelectorAll('.pw-text')).map(el => el.textContent);
   navigator.clipboard.writeText(texts.join('\n')).then(() => {
@@ -245,7 +301,129 @@ function copyAll() {
   });
 }
 
-updateStrength();
+/* ─────────────────────────────────────────────────── */
+/*   STRENGTH CHECKER                                  */
+/* ─────────────────────────────────────────────────── */
+const COMMON_PASSWORDS = [
+  'password','123456','123456789','12345678','12345','1234567','qwerty','abc123',
+  'password1','111111','iloveyou','admin','welcome','monkey','dragon','master',
+  'sunshine','princess','letmein','football'
+];
+const COMMON_PATTERNS = [
+  /012345/,/123456/,/234567/,/345678/,/456789/,/567890/,
+  /abcdef/i,/qwerty/i,/qazwsx/i,/zxcvbn/i,/password/i,/passw0rd/i,/abc123/i,/aaaaaa/,/111111/,/000000/
+];
+const STRENGTH_LEVELS = [
+  { name:'Very Weak', color:'#ef4444' },
+  { name:'Weak',      color:'#f97316' },
+  { name:'Fair',      color:'#eab308' },
+  { name:'Strong',    color:'#22c55e' },
+  { name:'Very Strong',color:'#10b981'}
+];
+const segs = [0,1,2,3,4].map(i => document.getElementById('seg'+i));
+
+function toggleShow() {
+  const inp = document.getElementById('pwInput');
+  const isText = inp.type === 'text';
+  inp.type = isText ? 'password' : 'text';
+  document.getElementById('toggleEye').innerHTML = isText ? '&#128065;' : '&#128274;';
+}
+
+function charsetSize(pw) {
+  let s = 0;
+  if (/[a-z]/.test(pw)) s += 26;
+  if (/[A-Z]/.test(pw)) s += 26;
+  if (/[0-9]/.test(pw)) s += 10;
+  if (/[^a-zA-Z0-9]/.test(pw)) s += 32;
+  return s || 1;
+}
+
+function calcEntropy(pw) {
+  let e = pw.length * Math.log2(charsetSize(pw));
+  e -= (pw.length - new Set(pw).size) * 1.5;
+  COMMON_PATTERNS.forEach(p => { if (p.test(pw)) e -= 12; });
+  if (COMMON_PASSWORDS.includes(pw.toLowerCase())) e = Math.min(e, 8);
+  return Math.max(0, Math.round(e));
+}
+
+function entropyToScore(e) {
+  if (e < 20) return 0; if (e < 40) return 1;
+  if (e < 60) return 2; if (e < 80) return 3; return 4;
+}
+
+function crackTimeStr(e) {
+  const s = Math.pow(2, e) / 1e10;
+  if (s < 1) return 'Instantly';
+  const m=s/60, h=m/60, d=h/24, y=d/365;
+  if (s<60) return Math.round(s)+'s';
+  if (m<60) return Math.round(m)+' min';
+  if (h<24) return Math.round(h)+' hr';
+  if (d<365) return Math.round(d)+' day'+(Math.round(d)!==1?'s':'');
+  if (y<100) return Math.round(y)+' yr'+(Math.round(y)!==1?'s':'');
+  if (y<1e6) return 'centuries';
+  if (y<1e12) return 'millions of years';
+  return 'longer than the universe';
+}
+
+function setCheck(id, pass) {
+  const li = document.getElementById(id);
+  li.className = pass ? 'pass' : 'fail';
+  li.querySelector('.ck-icon').innerHTML = pass ? '&#10003;' : '&#10007;';
+}
+
+function analyze() {
+  const pw = document.getElementById('pwInput').value;
+  const sn = document.getElementById('strengthName');
+  const et = document.getElementById('entropyText');
+  const ct = document.getElementById('crackTime');
+  const ta = document.getElementById('tipsArea');
+
+  if (!pw) {
+    sn.textContent='Enter a password'; sn.style.color='var(--muted)';
+    et.textContent=''; ct.innerHTML='';
+    segs.forEach(s => s.style.background='#e2e8f0');
+    ['chk8','chk12','chkUp','chkLow','chkNum','chkSpec','chkPat','chkCom'].forEach(id=>{
+      const li=document.getElementById(id); li.className='';
+      li.querySelector('.ck-icon').innerHTML='&#9898;';
+    });
+    ta.innerHTML='<p style="color:var(--muted);font-size:.875rem">Start typing to see personalized tips.</p>';
+    return;
+  }
+
+  const has8=pw.length>=8, has12=pw.length>=12;
+  const hasUp=/[A-Z]/.test(pw), hasLow=/[a-z]/.test(pw);
+  const hasNum=/[0-9]/.test(pw), hasSpec=/[^a-zA-Z0-9]/.test(pw);
+  const noPat=!COMMON_PATTERNS.some(p=>p.test(pw));
+  const notCom=!COMMON_PASSWORDS.includes(pw.toLowerCase());
+
+  setCheck('chk8',has8); setCheck('chk12',has12);
+  setCheck('chkUp',hasUp); setCheck('chkLow',hasLow);
+  setCheck('chkNum',hasNum); setCheck('chkSpec',hasSpec);
+  setCheck('chkPat',noPat); setCheck('chkCom',notCom);
+
+  const entropy=calcEntropy(pw), score=entropyToScore(entropy), level=STRENGTH_LEVELS[score];
+  sn.textContent=level.name; sn.style.color=level.color;
+  et.textContent='~'+entropy+' bits';
+  segs.forEach((s,i)=>s.style.background=i<=score?level.color:'#e2e8f0');
+  ct.innerHTML='Estimated crack time (offline, 10B guesses/sec): <strong>'+crackTimeStr(entropy)+'</strong>';
+
+  const tips=[];
+  if(!has8)  tips.push('Use at least 8 characters for basic security.');
+  if(!has12) tips.push('Aim for 12+ characters for strong protection.');
+  if(!hasUp) tips.push('Add uppercase letters (A–Z).');
+  if(!hasLow)tips.push('Add lowercase letters (a–z).');
+  if(!hasNum)tips.push('Include at least one number (0–9).');
+  if(!hasSpec)tips.push('Include special characters like !@#$%^&*.');
+  if(!noPat) tips.push('Avoid sequences like "123", "abc", "qwerty".');
+  if(!notCom)tips.push('This is a very common password — choose something unique.');
+  if(pw.length - new Set(pw).size > pw.length*0.4) tips.push('Avoid repeating the same characters too many times.');
+
+  ta.innerHTML = tips.length===0
+    ? '<p class="no-tips">Great password! No improvements needed.</p>'
+    : tips.map(t=>`<div class="tip-item">${t}</div>`).join('');
+}
+
+updateGenStrength();
 </script>
 <!-- SITE-FOOTER-START -->
 <style>
@@ -276,7 +454,6 @@ updateStrength();
 .ft-submit:disabled{background:#1e3a5f;color:#475569;cursor:not-allowed}
 #ft-bug-status{margin-top:.75rem;font-size:.8rem;text-align:center;min-height:1.4em}
 </style>
-
 <footer class="site-footer">
   <span>© 2025 Jorres Apps</span>
   <span class="ft-sep">·</span>
@@ -284,127 +461,56 @@ updateStrength();
   <span class="ft-sep">·</span>
   <button class="ft-btn" onclick="ftOpen('ft-bug')">Report a Bug</button>
 </footer>
-
-<!-- ── Terms & Conditions Modal ───────────────────────── -->
 <div class="ft-modal-backdrop" id="ft-terms" onclick="ftOutside(event,'ft-terms')">
   <div class="ft-modal" role="dialog" aria-modal="true">
-    <div class="ft-modal-head">
-      <h3>Terms &amp; Conditions</h3>
-      <button class="ft-close" onclick="ftClose('ft-terms')">✕</button>
-    </div>
+    <div class="ft-modal-head"><h3>Terms &amp; Conditions</h3><button class="ft-close" onclick="ftClose('ft-terms')">&#x2715;</button></div>
     <div class="ft-modal-body">
-      <h4>1. Acceptance</h4>
-      <p>By accessing or using Jorres Apps you agree to these terms. If you do not agree, please discontinue use of the site.</p>
-      <h4>2. Free Service — No Warranty</h4>
-      <p>All tools are provided free of charge and "as is", without any warranty of accuracy, completeness, fitness for a particular purpose, or uninterrupted availability.</p>
-      <h4>3. Data &amp; Privacy</h4>
-      <p>We do not collect, store, or sell any personal data. Some apps save data to your browser's localStorage — this data stays on your device only and can be cleared at any time through your browser settings.</p>
-      <h4>4. No Account Required</h4>
-      <p>No sign-up, login, or personal information is required to use any tool on this site.</p>
-      <h4>5. Acceptable Use</h4>
-      <p>You agree not to use these tools for any unlawful or harmful purpose. Automated scraping or abuse of the service is prohibited.</p>
-      <h4>6. Third-Party Services</h4>
-      <p>Certain tools (e.g. DNS Lookup, IP Info, Currency Converter) may query third-party APIs. Their respective terms and privacy policies apply to those requests.</p>
-      <h4>7. Changes</h4>
-      <p>We reserve the right to update, modify, add, or remove any tool at any time and to revise these terms without prior notice.</p>
-      <h4>8. Limitation of Liability</h4>
-      <p>Jorres Apps and its creator shall not be liable for any direct, indirect, incidental, or consequential damages arising from your use of, or inability to use, the site.</p>
-      <h4>9. Contact</h4>
-      <p>For questions, concerns, or bug reports, use the Bug Report form or contact us at joshuarelatorres28@gmail.com.</p>
+      <h4>1. Acceptance</h4><p>By accessing or using Jorres Apps you agree to these terms.</p>
+      <h4>2. Free Service — No Warranty</h4><p>All tools are provided free of charge and "as is", without any warranty of accuracy or fitness for a particular purpose.</p>
+      <h4>3. Data &amp; Privacy</h4><p>We do not collect, store, or sell any personal data. All analysis runs locally in your browser. No passwords are ever transmitted.</p>
+      <h4>4. No Account Required</h4><p>No sign-up or personal information is required.</p>
+      <h4>5. Acceptable Use</h4><p>You agree not to use these tools for any unlawful purpose.</p>
+      <h4>6. Changes</h4><p>We reserve the right to update or modify any tool at any time.</p>
+      <h4>7. Limitation of Liability</h4><p>Jorres Apps shall not be liable for any damages arising from your use of the site.</p>
+      <h4>8. Contact</h4><p>For questions or bug reports, use the Bug Report form or contact joshuarelatorres28@gmail.com.</p>
     </div>
   </div>
 </div>
-
-<!-- ── Bug Report Modal ───────────────────────────────── -->
 <div class="ft-modal-backdrop" id="ft-bug" onclick="ftOutside(event,'ft-bug')">
   <div class="ft-modal" role="dialog" aria-modal="true">
-    <div class="ft-modal-head">
-      <h3>Report a Bug</h3>
-      <button class="ft-close" onclick="ftClose('ft-bug')">✕</button>
-    </div>
+    <div class="ft-modal-head"><h3>Report a Bug</h3><button class="ft-close" onclick="ftClose('ft-bug')">&#x2715;</button></div>
     <div class="ft-modal-body">
-      <div class="ft-field">
-        <label>App / Page</label>
-        <input id="ft-bug-app" placeholder="e.g. Chess, Flappy Bird, main page…">
-      </div>
-      <div class="ft-field">
-        <label>Issue Type</label>
-        <select id="ft-bug-type">
-          <option value="Bug">Bug / Error</option>
-          <option value="UI">UI / Layout issue</option>
-          <option value="Feature">Feature suggestion</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="ft-field">
-        <label>Description <span style="color:#ef4444">*</span></label>
-        <textarea id="ft-bug-desc" placeholder="What happened? What did you expect? Steps to reproduce?"></textarea>
-      </div>
-      <div class="ft-field">
-        <label>Your email <span style="font-weight:400;color:#475569">(optional — for follow-up)</span></label>
-        <input id="ft-bug-email" type="email" placeholder="you@example.com">
-      </div>
+      <div class="ft-field"><label>App / Page</label><input id="ft-bug-app" placeholder="e.g. Password Tools…"></div>
+      <div class="ft-field"><label>Issue Type</label><select id="ft-bug-type"><option value="Bug">Bug / Error</option><option value="UI">UI / Layout issue</option><option value="Feature">Feature suggestion</option><option value="Other">Other</option></select></div>
+      <div class="ft-field"><label>Description <span style="color:#ef4444">*</span></label><textarea id="ft-bug-desc" placeholder="What happened? What did you expect?"></textarea></div>
+      <div class="ft-field"><label>Your email <span style="font-weight:400;color:#475569">(optional)</span></label><input id="ft-bug-email" type="email" placeholder="you@example.com"></div>
       <button class="ft-submit" id="ft-bug-btn" onclick="ftSubmitBug()">Send Report</button>
       <div id="ft-bug-status"></div>
     </div>
   </div>
 </div>
-
 <script>
 (function(){
   function ftOpen(id){document.getElementById(id).classList.add('open');}
-  function ftClose(id){
-    document.getElementById(id).classList.remove('open');
-    var s=document.getElementById('ft-bug-status');
-    if(s)s.textContent='';
-  }
+  function ftClose(id){document.getElementById(id).classList.remove('open');var s=document.getElementById('ft-bug-status');if(s)s.textContent='';}
   function ftOutside(e,id){if(e.target===document.getElementById(id))ftClose(id);}
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape')
-      document.querySelectorAll('.ft-modal-backdrop.open').forEach(function(m){m.classList.remove('open');});
-  });
-  window.ftOpen=ftOpen;
-  window.ftClose=ftClose;
-  window.ftOutside=ftOutside;
-
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.ft-modal-backdrop.open').forEach(function(m){m.classList.remove('open');});});
+  window.ftOpen=ftOpen;window.ftClose=ftClose;window.ftOutside=ftOutside;
   window.ftSubmitBug=async function(){
     var desc=(document.getElementById('ft-bug-desc').value||'').trim();
-    if(!desc){
-      document.getElementById('ft-bug-status').innerHTML='<span style="color:#f87171">Please describe the issue first.</span>';
-      return;
-    }
-    var btn=document.getElementById('ft-bug-btn');
-    var status=document.getElementById('ft-bug-status');
-    btn.disabled=true; btn.textContent='Sending…'; status.textContent='';
+    if(!desc){document.getElementById('ft-bug-status').innerHTML='<span style="color:#f87171">Please describe the issue first.</span>';return;}
+    var btn=document.getElementById('ft-bug-btn'),status=document.getElementById('ft-bug-status');
+    btn.disabled=true;btn.textContent='Sending…';status.textContent='';
     try{
-      var resp=await fetch('/api/bug-report',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          app:(document.getElementById('ft-bug-app').value||'').trim()||window.location.pathname,
-          type:(document.getElementById('ft-bug-type').value||'Bug'),
-          desc:desc,
-          email:(document.getElementById('ft-bug-email').value||'').trim(),
-          page:window.location.href
-        })
-      });
+      var resp=await fetch('/api/bug-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:(document.getElementById('ft-bug-app').value||'').trim()||window.location.pathname,type:(document.getElementById('ft-bug-type').value||'Bug'),desc:desc,email:(document.getElementById('ft-bug-email').value||'').trim(),page:window.location.href})});
       var data={};try{data=await resp.json();}catch(_){}
-      if(resp.ok&&data.ok){
-        status.innerHTML='<span style="color:#4ade80">Report sent — thank you!</span>';
-        ['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});
-        document.getElementById('ft-bug-type').selectedIndex=0;
-        setTimeout(function(){ftClose('ft-bug');},2200);
-      }else{
-        status.innerHTML='<span style="color:#f87171">'+(data.error||'Server error (HTTP '+resp.status+'). Please try again.')+'</span>';
-      }
-    }catch(e){
-      status.innerHTML='<span style="color:#f87171">Could not reach the server — check your connection and try again.</span>';
-    }
-    btn.disabled=false; btn.textContent='Send Report';
+      if(resp.ok&&data.ok){status.innerHTML='<span style="color:#4ade80">Report sent — thank you!</span>';['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('ft-bug-type').selectedIndex=0;setTimeout(function(){ftClose('ft-bug');},2200);}
+      else{status.innerHTML='<span style="color:#f87171">'+(data.error||'Server error. Please try again.')+'</span>';}
+    }catch(e){status.innerHTML='<span style="color:#f87171">Could not reach the server.</span>';}
+    btn.disabled=false;btn.textContent='Send Report';
   };
 })();
 </script>
 <!-- /SITE-FOOTER -->
-
 </body>
 </html>

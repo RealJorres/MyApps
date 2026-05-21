@@ -21,13 +21,6 @@
     "icon": "📊", "color": "#059669", "tags": ["CSV","Excel","Data"], "category": "Data & Analysis"
   },
   {
-    "id": "text-diff",
-    "name": "Text Diff",
-    "description": "Compare two blocks of text side-by-side with highlighted added and removed lines.",
-    "port": 5016, "path": "./the-apps/text-diff", "entry": "app.py",
-    "icon": "⇄", "color": "#4f46e5", "tags": ["Diff","Compare","Text"], "category": "Documents & Writing"
-  },
-  {
     "id": "base64-tool",
     "name": "Base64 Tool",
     "description": "Encode and decode text or files to and from Base64.",
@@ -117,13 +110,6 @@
     "description": "Test Python regular expressions with live match highlighting and group capture.",
     "port": 5007, "path": "./the-apps/regex-tester", "entry": "app.py",
     "icon": ".*", "color": "#be185d", "tags": ["Regex","Dev","Python"], "category": "Developer Tools"
-  },
-  {
-    "id": "jwt-decoder",
-    "name": "JWT Decoder",
-    "description": "Paste a JWT to decode the header and payload. Shows expiry status instantly.",
-    "port": 5012, "path": "./the-apps/jwt-decoder", "entry": "app.py",
-    "icon": "🔓", "color": "#0891b2", "tags": ["JWT","Auth","Dev"], "category": "Developer Tools"
   },
   {
     "id": "timestamp-converter",
@@ -252,18 +238,11 @@
     "icon": "⏳", "color": "#0f766e", "tags": ["Countdown","Timer","Productivity"], "category": "Productivity & Planning"
   },
   {
-    "id": "password-strength",
-    "name": "Password Strength Checker",
-    "description": "Live entropy score, crack time estimate, and tips on what makes your password weak.",
-    "port": 5056, "path": "./the-apps/password-strength", "entry": "app.py",
-    "icon": "🛡️", "color": "#dc2626", "tags": ["Password","Security"], "category": "Security & Network"
-  },
-  {
     "id": "password-generator",
-    "name": "Password Generator",
-    "description": "Generate secure passwords with configurable length and character sets.",
+    "name": "Password Tools",
+    "description": "Generate secure passwords and check the strength of any password — entropy score, crack time estimate, and actionable tips. All analysis runs locally.",
     "port": 5010, "path": "./the-apps/password-generator", "entry": "app.py",
-    "icon": "🔑", "color": "#15803d", "tags": ["Password","Security"], "category": "Security & Network"
+    "icon": "🔑", "color": "#15803d", "tags": ["Password","Security","Generator","Strength"], "category": "Security & Network"
   },
   {
     "id": "hash-generator",
@@ -610,8 +589,8 @@
   },
   {
     "id": "jwt-generator",
-    "name": "JWT Generator",
-    "description": "Generate and sign JWTs with custom payload and secret. Decode any token too.",
+    "name": "JWT Tools",
+    "description": "Generate and sign JWTs with a custom payload and secret. Decode and inspect any existing token instantly.",
     "port": 5088, "path": "./the-apps/jwt-generator", "entry": "app.py",
     "icon": "🔏", "color": "#be185d", "tags": ["JWT","Auth","Dev"], "category": "Developer Tools"
   },
