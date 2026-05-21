@@ -1,75 +1,127 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="canonical" href="https://jorresapps.onrender.com/resume-builder/">
-<meta name="description" content="Build a professional resume online and export it as a polished PDF. Completely free, no sign-up.">
-<meta name="keywords" content="resume builder, CV maker, free resume, PDF resume, online CV">
-<meta name="author" content="Jorres Apps">
-<meta property="og:title" content="Resume Builder">
-<meta property="og:description" content="Build a professional resume online and export it as a polished PDF. Completely free, no sign-up.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Resume Builder">
-<meta name="twitter:description" content="Build a professional resume online and export it as a polished PDF. Completely free, no sign-up.">
 <title>Resume Builder</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f0fdf9; color: #1e293b; min-height: 100vh; }
-  header { background: #0f766e; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(15,118,110,.3); display: flex; align-items: center; justify-content: space-between; }
-  header h1 { font-size: 1.4rem; font-weight: 700; }
-  header p { font-size: .85rem; opacity: .85; }
-  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
-  .form-panel { display: flex; flex-direction: column; gap: 1rem; }
-  .card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
-  .card-title { font-size: .9rem; font-weight: 700; color: #0f766e; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: .05em; border-bottom: 2px solid #ccfbf1; padding-bottom: .5rem; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
-  .form-group { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .75rem; }
-  .form-group:last-child { margin-bottom: 0; }
-  label { font-size: .78rem; font-weight: 600; color: #475569; }
-  input, textarea, select { border: 1px solid #e2e8f0; border-radius: 6px; padding: .5rem .75rem; font-size: .875rem; color: #1e293b; background: #fff; transition: border-color .15s; font-family: inherit; }
-  input:focus, textarea:focus, select:focus { outline: none; border-color: #0f766e; }
-  textarea { resize: vertical; min-height: 70px; }
-  .repeatable-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: .75rem; position: relative; }
-  .repeatable-item .remove-btn { position: absolute; top: .5rem; right: .5rem; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.1rem; line-height: 1; }
-  .repeatable-item .remove-btn:hover { color: #dc2626; }
-  .add-btn { width: 100%; padding: .5rem; background: #f0fdf9; border: 1.5px dashed #6ee7b7; color: #0f766e; border-radius: 6px; cursor: pointer; font-size: .85rem; font-weight: 600; transition: all .2s; }
-  .add-btn:hover { background: #ccfbf1; }
-  .color-row { display: flex; align-items: center; gap: .75rem; }
-  .color-row input[type=color] { width: 44px; height: 36px; border: none; padding: 2px; cursor: pointer; border-radius: 6px; }
-  .download-btn { width: 100%; padding: .9rem; background: #0f766e; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; margin-top: .5rem; }
-  .download-btn:hover { background: #0d6b63; }
-  .preview-panel { position: sticky; top: 1.5rem; height: fit-content; }
-  .preview-box { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); min-height: 600px; overflow-y: auto; }
-  .preview-inner { padding: 2rem 2.2rem; font-family: 'Georgia', serif; font-size: 10px; line-height: 1.5; }
-  .preview-name { font-size: 22px; font-weight: bold; margin-bottom: 2px; }
-  .preview-jobtitle { font-size: 11px; color: #64748b; margin-bottom: 3px; }
-  .preview-contact { font-size: 9px; color: #475569; margin-bottom: 6px; }
-  .preview-hr { border: none; border-top: 1.5px solid; margin: 6px 0; }
-  .preview-hr-thin { border: none; border-top: 0.5px solid #e2e8f0; margin: 4px 0; }
-  .preview-section { font-size: 11px; font-weight: bold; margin-top: 10px; margin-bottom: 2px; }
-  .preview-item-title { font-size: 9.5px; font-weight: bold; margin-bottom: 1px; }
-  .preview-item-date { font-size: 8.5px; color: #94a3b8; font-style: italic; margin-bottom: 2px; }
-  .preview-bullet { font-size: 9.5px; padding-left: 10px; margin-bottom: 1px; }
-  .preview-body { font-size: 9.5px; color: #1e293b; line-height: 1.5; }
-  .preview-label { font-size: .75rem; color: #94a3b8; text-align: center; padding: .4rem; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 10px 10px; }
-  @media (max-width: 900px) { body { overflow-x: hidden; } .layout { grid-template-columns: 1fr; } .preview-panel { position: static; } .form-row { grid-template-columns: 1fr !important; } input[type=text], input[type=email], textarea { width: 100% !important; min-width: 0 !important; } }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0fdf9; color: #1e293b; min-height: 100vh; overflow-x: hidden; }
+header { background: #0f766e; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(15,118,110,.3); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; }
+header h1 { font-size: 1.4rem; font-weight: 700; }
+header p  { font-size: .85rem; opacity: .85; }
+.layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+.form-panel { display: flex; flex-direction: column; gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+.card-title { font-size: .9rem; font-weight: 700; color: #0f766e; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: .05em; border-bottom: 2px solid #ccfbf1; padding-bottom: .5rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.form-group { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .75rem; }
+.form-group:last-child { margin-bottom: 0; }
+label { font-size: .78rem; font-weight: 600; color: #475569; }
+input, textarea, select { border: 1px solid #e2e8f0; border-radius: 6px; padding: .5rem .75rem; font-size: .875rem; color: #1e293b; background: #fff; transition: border-color .15s; font-family: inherit; width: 100%; min-width: 0; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: #0f766e; }
+textarea { resize: vertical; min-height: 70px; }
+
+/* ── Layout selector ── */
+.layout-opts { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: .85rem; }
+.lo-btn { flex: 1; min-width: 90px; padding: .6rem .5rem; border: 2px solid #e2e8f0; border-radius: 8px; background: #f8fafc; color: #475569; font-size: .82rem; font-weight: 600; cursor: pointer; transition: all .15s; text-align: center; font-family: inherit; }
+.lo-btn:hover { border-color: #0f766e; color: #0f766e; }
+.lo-btn.active { border-color: #0f766e; background: #f0fdf9; color: #0f766e; }
+.lo-btn .lo-icon { display: block; font-size: 1.3rem; margin-bottom: 3px; }
+.sample-btn { width: 100%; padding: .55rem; background: #f0fdf9; border: 1.5px dashed #6ee7b7; color: #0f766e; border-radius: 6px; cursor: pointer; font-size: .85rem; font-weight: 600; transition: all .2s; font-family: inherit; margin-top: .5rem; }
+.sample-btn:hover { background: #ccfbf1; }
+
+/* ── Repeatable items ── */
+.repeatable-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: .75rem; position: relative; }
+.remove-btn { position: absolute; top: .5rem; right: .5rem; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.1rem; line-height: 1; }
+.remove-btn:hover { color: #dc2626; }
+.add-btn { width: 100%; padding: .5rem; background: #f0fdf9; border: 1.5px dashed #6ee7b7; color: #0f766e; border-radius: 6px; cursor: pointer; font-size: .85rem; font-weight: 600; transition: all .2s; font-family: inherit; }
+.add-btn:hover { background: #ccfbf1; }
+.color-row { display: flex; align-items: center; gap: .75rem; }
+.color-row input[type=color] { width: 44px; height: 36px; border: none; padding: 2px; cursor: pointer; border-radius: 6px; flex-shrink: 0; }
+.download-btn { width: 100%; padding: .9rem; background: #0f766e; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; margin-top: .5rem; font-family: inherit; }
+.download-btn:hover { background: #0d6b63; }
+
+/* ── Preview panel ── */
+.preview-panel { position: sticky; top: 1.5rem; height: fit-content; }
+.preview-box { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow: hidden; min-height: 600px; }
+.preview-inner { font-family: 'Georgia', serif; font-size: 10px; line-height: 1.5; }
+.preview-label { font-size: .75rem; color: #94a3b8; text-align: center; padding: .4rem; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+
+/* ── Classic preview styles ── */
+.pv-classic-body    { padding: 2rem 2.2rem; }
+.pv-name            { font-size: 22px; font-weight: bold; margin-bottom: 3px; line-height: 1.2; }
+.pv-jobtitle        { font-size: 11px; color: #64748b; margin-bottom: 3px; }
+.pv-contact         { font-size: 9px; color: #475569; margin-bottom: 6px; }
+.pv-hr              { border: none; border-top: 1.5px solid; margin: 6px 0 8px; }
+.pv-hr-thin         { border: none; border-top: 0.5px solid #e2e8f0; margin: 3px 0 5px; }
+.pv-section         { font-size: 11px; font-weight: bold; margin: 10px 0 2px; }
+.pv-item-title      { font-size: 9.5px; font-weight: bold; margin-bottom: 1px; }
+.pv-item-date       { font-size: 8.5px; color: #94a3b8; font-style: italic; margin-bottom: 2px; }
+.pv-bullet          { font-size: 9.5px; padding-left: 10px; margin-bottom: 1px; }
+.pv-body-text       { font-size: 9.5px; color: #1e293b; line-height: 1.5; }
+
+/* ── Modern preview styles ── */
+.pv-modern-header   { padding: 18px 22px; }
+.pv-modern-name     { font-size: 22px; font-weight: bold; color: #fff; margin-bottom: 3px; line-height: 1.2; }
+.pv-modern-title    { font-size: 11px; color: #e2e8f0; margin-bottom: 4px; }
+.pv-modern-contact  { font-size: 9px; color: #cbd5e1; }
+.pv-modern-body     { padding: 12px 22px; }
+.pv-modern-section  { font-size: 11px; font-weight: bold; margin: 8px 0 1px; }
+.pv-modern-hr       { border: none; border-top: 2px solid; margin: 2px 0 6px; }
+
+/* ── Sidebar preview styles ── */
+.pv-sidebar-wrap    { display: grid; grid-template-columns: 36% 64%; min-height: 600px; }
+.pv-sidebar-left    { padding: 20px 14px; }
+.pv-sidebar-name    { font-size: 16px; font-weight: bold; color: #fff; line-height: 1.2; margin-bottom: 3px; }
+.pv-sidebar-title   { font-size: 9px; color: #e2e8f0; margin-bottom: 12px; }
+.pv-sidebar-lhead   { font-size: 8px; font-weight: bold; color: #fff; letter-spacing: .07em; border-bottom: 1px solid rgba(255,255,255,.3); padding-bottom: 2px; margin: 10px 0 5px; }
+.pv-sidebar-lbody   { font-size: 8.5px; color: #e2e8f0; margin-bottom: 2px; }
+.pv-sidebar-right   { padding: 16px 14px; }
+.pv-sidebar-rsec    { font-size: 11px; font-weight: bold; margin: 8px 0 2px; }
+.pv-sidebar-rhr     { border: none; border-top: 0.5px solid #e2e8f0; margin: 2px 0 5px; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .preview-panel { position: static; }
+  .form-row { grid-template-columns: 1fr !important; }
+  .pv-sidebar-wrap { grid-template-columns: 1fr; }
+  .pv-sidebar-left { padding-bottom: 10px; }
+}
+@media (max-width: 500px) {
+  header { flex-direction: column; align-items: flex-start; }
+  .layout { padding: 1rem; gap: 1rem; }
+}
 </style>
 </head>
 <body>
 <header>
-  <div><h1>Resume Builder</h1><p>Build and download a professional PDF resume</p></div>
-  <button class="download-btn" style="width:auto;padding:.6rem 1.5rem;font-size:.9rem" onclick="downloadPDF()">Download PDF</button>
+  <div><h1>📋 Resume Builder</h1><p>Build and download a professional PDF resume</p></div>
+  <button class="download-btn" style="width:auto;padding:.6rem 1.5rem;font-size:.9rem;margin:0" onclick="downloadPDF()">⬇ Download PDF</button>
 </header>
+
 <div class="layout">
   <div class="form-panel">
+
+    <!-- Layout & Sample -->
+    <div class="card">
+      <div class="card-title">Design &amp; Layout</div>
+      <div class="layout-opts">
+        <button class="lo-btn active" data-layout="classic" onclick="setLayout('classic',this)">
+          <span class="lo-icon">📄</span>Classic
+        </button>
+        <button class="lo-btn" data-layout="modern" onclick="setLayout('modern',this)">
+          <span class="lo-icon">✨</span>Modern
+        </button>
+        <button class="lo-btn" data-layout="sidebar" onclick="setLayout('sidebar',this)">
+          <span class="lo-icon">◧</span>Sidebar
+        </button>
+      </div>
+      <button class="sample-btn" onclick="loadSample()">🎲 Load Sample Resume</button>
+    </div>
+
+    <!-- Personal Info -->
     <div class="card">
       <div class="card-title">Personal Info</div>
       <div class="form-row">
@@ -82,183 +134,365 @@
       </div>
       <div class="form-row">
         <div class="form-group"><label>Location</label><input id="f_location" placeholder="New York, NY" oninput="updatePreview()"></div>
-        <div class="form-group"><label>LinkedIn</label><input id="f_linkedin" placeholder="linkedin.com/in/jane" oninput="updatePreview()"></div>
+        <div class="form-group"><label>LinkedIn / Website</label><input id="f_linkedin" placeholder="linkedin.com/in/jane" oninput="updatePreview()"></div>
       </div>
     </div>
+
+    <!-- Summary -->
     <div class="card">
       <div class="card-title">Summary</div>
       <textarea id="f_summary" placeholder="Brief professional summary..." rows="3" oninput="updatePreview()"></textarea>
     </div>
+
+    <!-- Experience -->
     <div class="card">
       <div class="card-title">Experience</div>
       <div id="experience-list"></div>
       <button class="add-btn" onclick="addItem('experience')">+ Add Experience</button>
     </div>
+
+    <!-- Education -->
     <div class="card">
       <div class="card-title">Education</div>
       <div id="education-list"></div>
       <button class="add-btn" onclick="addItem('education')">+ Add Education</button>
     </div>
+
+    <!-- Projects -->
     <div class="card">
       <div class="card-title">Projects</div>
       <div id="projects-list"></div>
       <button class="add-btn" onclick="addItem('projects')">+ Add Project</button>
     </div>
+
+    <!-- Skills -->
     <div class="card">
       <div class="card-title">Skills</div>
       <textarea id="f_skills" placeholder="JavaScript, Python, React, Node.js, SQL..." rows="3" oninput="updatePreview()"></textarea>
     </div>
+
+    <!-- Accent Color -->
     <div class="card">
       <div class="card-title">Accent Color</div>
       <div class="color-row">
         <input type="color" id="f_color" value="#0f766e" onchange="updatePreview()">
-        <span style="font-size:.85rem;color:#475569">Choose accent color for headings</span>
+        <span style="font-size:.85rem;color:#475569">Choose accent color used in headings &amp; header</span>
       </div>
     </div>
-    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+
+    <button class="download-btn" onclick="downloadPDF()">⬇ Download PDF</button>
   </div>
+
+  <!-- Preview -->
   <div class="preview-panel">
     <div class="preview-box">
       <div class="preview-inner" id="previewInner"></div>
     </div>
-    <div class="preview-label">Live Preview</div>
+    <div class="preview-label">Live Preview — <span id="layoutLabel">Classic</span></div>
   </div>
 </div>
+
 <script>
-  const sections = { experience: [], education: [], projects: [] };
+// ── State ─────────────────────────────────────────────
+const sections = { experience: [], education: [], projects: [] };
+let currentLayout = 'classic';
 
-  function addItem(type) {
-    const id = Date.now();
-    sections[type].push({ id });
-    renderSectionList(type);
+// ── Layout selector ───────────────────────────────────
+function setLayout(l, btn) {
+  currentLayout = l;
+  document.querySelectorAll('.lo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('layoutLabel').textContent =
+    l === 'classic' ? 'Classic' : l === 'modern' ? 'Modern' : 'Sidebar';
+  updatePreview();
+}
+
+// ── Sample resume ─────────────────────────────────────
+function loadSample() {
+  document.getElementById('f_name').value     = 'Alex Johnson';
+  document.getElementById('f_title').value    = 'Senior Software Engineer';
+  document.getElementById('f_email').value    = 'alex.johnson@email.com';
+  document.getElementById('f_phone').value    = '+1 (555) 123-4567';
+  document.getElementById('f_location').value = 'San Francisco, CA';
+  document.getElementById('f_linkedin').value = 'linkedin.com/in/alexjohnson';
+  document.getElementById('f_summary').value  =
+    'Results-driven software engineer with 6+ years of experience building scalable web applications. ' +
+    'Passionate about clean code, performance, and delivering great user experiences.';
+  document.getElementById('f_skills').value   =
+    'JavaScript, TypeScript, React, Node.js, Python, AWS, Docker, PostgreSQL, GraphQL, Git';
+
+  sections.experience = [
+    { id: 1, title: 'Senior Software Engineer', org: 'TechCorp Inc.',
+      date: 'Jan 2021 – Present',
+      desc: 'Led development of customer-facing React dashboard used by 50k+ users\nReduced API response time by 40% through caching and query optimization\nMentored a team of 3 junior engineers' },
+    { id: 2, title: 'Software Engineer', org: 'StartupXYZ',
+      date: 'Jun 2018 – Dec 2020',
+      desc: 'Built RESTful APIs with Node.js and Express serving 10M+ requests/day\nImplemented CI/CD pipelines using GitHub Actions and Docker' }
+  ];
+  sections.education = [
+    { id: 3, title: 'B.S. Computer Science', org: 'University of California, Berkeley',
+      date: '2014 – 2018' }
+  ];
+  sections.projects = [
+    { id: 4, title: 'Open-Source CLI Tool',
+      desc: 'Built a developer productivity tool with 1.2k GitHub stars\nPublished to npm with 5k+ weekly downloads' }
+  ];
+
+  renderSectionList('experience');
+  renderSectionList('education');
+  renderSectionList('projects');
+
+  // Fill input values for repeatable items
+  setTimeout(() => {
+    fillItemInputs('experience', sections.experience);
+    fillItemInputs('education',  sections.education);
+    fillItemInputs('projects',   sections.projects);
     updatePreview();
-  }
+  }, 0);
+}
 
-  function removeItem(type, id) {
-    sections[type] = sections[type].filter(i => i.id !== id);
-    renderSectionList(type);
-    updatePreview();
-  }
+function fillItemInputs(type, items) {
+  items.forEach(item => {
+    const el = document.getElementById('item_' + item.id);
+    if (!el) return;
+    el.querySelectorAll('[data-field]').forEach(inp => {
+      const v = item[inp.dataset.field];
+      if (v !== undefined) inp.value = v;
+    });
+  });
+}
 
-  function renderSectionList(type) {
-    const container = document.getElementById(type + '-list');
-    container.innerHTML = '';
-    sections[type].forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'repeatable-item';
-      div.id = 'item_' + item.id;
-      if (type === 'experience') {
-        div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})">✕</button>
-          <div class="form-row">
-            <div class="form-group"><label>Job Title</label><input data-field="title" placeholder="Software Engineer" oninput="syncItem('${type}',${item.id},this)"></div>
-            <div class="form-group"><label>Company</label><input data-field="org" placeholder="Acme Corp" oninput="syncItem('${type}',${item.id},this)"></div>
-          </div>
-          <div class="form-group"><label>Date Range</label><input data-field="date" placeholder="Jan 2022 – Present" oninput="syncItem('${type}',${item.id},this)"></div>
-          <div class="form-group"><label>Description (one bullet per line)</label><textarea data-field="desc" rows="3" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
-      } else if (type === 'education') {
-        div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})">✕</button>
-          <div class="form-row">
-            <div class="form-group"><label>Degree</label><input data-field="title" placeholder="B.S. Computer Science" oninput="syncItem('${type}',${item.id},this)"></div>
-            <div class="form-group"><label>Institution</label><input data-field="org" placeholder="MIT" oninput="syncItem('${type}',${item.id},this)"></div>
-          </div>
-          <div class="form-group"><label>Date</label><input data-field="date" placeholder="2018 – 2022" oninput="syncItem('${type}',${item.id},this)"></div>`;
-      } else {
-        div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})">✕</button>
-          <div class="form-group"><label>Project Name</label><input data-field="title" placeholder="My Project" oninput="syncItem('${type}',${item.id},this)"></div>
-          <div class="form-group"><label>Description</label><textarea data-field="desc" rows="2" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
-      }
-      container.appendChild(div);
+// ── Repeatable sections ───────────────────────────────
+function addItem(type) {
+  const id = Date.now();
+  sections[type].push({ id });
+  renderSectionList(type);
+  updatePreview();
+}
+
+function removeItem(type, id) {
+  sections[type] = sections[type].filter(i => i.id !== id);
+  renderSectionList(type);
+  updatePreview();
+}
+
+function renderSectionList(type) {
+  const container = document.getElementById(type + '-list');
+  container.innerHTML = '';
+  sections[type].forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'repeatable-item';
+    div.id = 'item_' + item.id;
+    if (type === 'experience') {
+      div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})">✕</button>
+        <div class="form-row">
+          <div class="form-group"><label>Job Title</label><input data-field="title" placeholder="Software Engineer" oninput="syncItem('${type}',${item.id},this)"></div>
+          <div class="form-group"><label>Company</label><input data-field="org" placeholder="Acme Corp" oninput="syncItem('${type}',${item.id},this)"></div>
+        </div>
+        <div class="form-group"><label>Date Range</label><input data-field="date" placeholder="Jan 2022 – Present" oninput="syncItem('${type}',${item.id},this)"></div>
+        <div class="form-group"><label>Description (one bullet per line)</label><textarea data-field="desc" rows="3" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
+    } else if (type === 'education') {
+      div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})">✕</button>
+        <div class="form-row">
+          <div class="form-group"><label>Degree</label><input data-field="title" placeholder="B.S. Computer Science" oninput="syncItem('${type}',${item.id},this)"></div>
+          <div class="form-group"><label>Institution</label><input data-field="org" placeholder="MIT" oninput="syncItem('${type}',${item.id},this)"></div>
+        </div>
+        <div class="form-group"><label>Date</label><input data-field="date" placeholder="2018 – 2022" oninput="syncItem('${type}',${item.id},this)"></div>`;
+    } else {
+      div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})">✕</button>
+        <div class="form-group"><label>Project Name</label><input data-field="title" placeholder="My Project" oninput="syncItem('${type}',${item.id},this)"></div>
+        <div class="form-group"><label>Description</label><textarea data-field="desc" rows="2" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
+    }
+    container.appendChild(div);
+  });
+}
+
+function syncItem(type, id, el) {
+  const item = sections[type].find(i => i.id === id);
+  if (item) item[el.dataset.field] = el.value;
+  updatePreview();
+}
+
+// ── Preview builders ──────────────────────────────────
+function getColor()   { return document.getElementById('f_color').value || '#0f766e'; }
+function gv(id)       { return document.getElementById(id).value; }
+function esc(str)     { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function getFormData() {
+  return {
+    name:     gv('f_name')     || 'Your Name',
+    title:    gv('f_title'),
+    email:    gv('f_email'),
+    phone:    gv('f_phone'),
+    location: gv('f_location'),
+    linkedin: gv('f_linkedin'),
+    summary:  gv('f_summary'),
+    skills:   gv('f_skills'),
+    color:    getColor(),
+    experience: sections.experience,
+    education:  sections.education,
+    projects:   sections.projects
+  };
+}
+
+function updatePreview() {
+  const d = getFormData();
+  let html = '';
+  if (currentLayout === 'modern')  html = buildModernPreview(d);
+  else if (currentLayout === 'sidebar') html = buildSidebarPreview(d);
+  else html = buildClassicPreview(d);
+  document.getElementById('previewInner').innerHTML = html;
+}
+
+// ── Classic ───────────────────────────────────────────
+function buildClassicPreview(d) {
+  const c = d.color;
+  const contact = [d.email, d.phone, d.location, d.linkedin].filter(Boolean).join(' · ');
+  let html = `<div class="pv-classic-body">`;
+  html += `<div class="pv-name" style="color:${c}">${esc(d.name)}</div>`;
+  if (d.title)   html += `<div class="pv-jobtitle">${esc(d.title)}</div>`;
+  if (contact)   html += `<div class="pv-contact">${esc(contact)}</div>`;
+  html += `<hr class="pv-hr" style="border-color:${c}">`;
+  html += classicSections(d, c);
+  html += `</div>`;
+  return html;
+}
+
+function classicSections(d, c) {
+  let html = '';
+  if (d.summary) {
+    html += `<div class="pv-section" style="color:${c}">SUMMARY</div><hr class="pv-hr-thin">`;
+    html += `<div class="pv-body-text">${esc(d.summary)}</div>`;
+  }
+  html += classicGroup('EXPERIENCE', d.experience, c);
+  html += classicGroup('EDUCATION',  d.education,  c);
+  html += classicGroup('PROJECTS',   d.projects,   c);
+  if (d.skills) {
+    html += `<div class="pv-section" style="color:${c}">SKILLS</div><hr class="pv-hr-thin">`;
+    html += `<div class="pv-body-text">${esc(d.skills)}</div>`;
+  }
+  return html;
+}
+
+function classicGroup(heading, items, c) {
+  if (!items.length) return '';
+  let s = `<div class="pv-section" style="color:${c}">${heading}</div><hr class="pv-hr-thin">`;
+  items.forEach(item => {
+    let line = item.title || '';
+    if (item.org) line += ` — ${item.org}`;
+    if (line) s += `<div class="pv-item-title">${esc(line)}</div>`;
+    if (item.date) s += `<div class="pv-item-date">${esc(item.date)}</div>`;
+    (item.desc || '').split('\n').filter(l => l.trim()).forEach(l => {
+      s += `<div class="pv-bullet">• ${esc(l.trim())}</div>`;
+    });
+  });
+  return s;
+}
+
+// ── Modern ────────────────────────────────────────────
+function buildModernPreview(d) {
+  const c = d.color;
+  const contact = [d.email, d.phone, d.location, d.linkedin].filter(Boolean).join(' · ');
+  let html = `<div class="pv-modern-header" style="background:${c}">`;
+  html += `<div class="pv-modern-name">${esc(d.name)}</div>`;
+  if (d.title)  html += `<div class="pv-modern-title">${esc(d.title)}</div>`;
+  if (contact)  html += `<div class="pv-modern-contact">${esc(contact)}</div>`;
+  html += `</div>`;
+  html += `<div class="pv-modern-body">`;
+  if (d.summary) {
+    html += `<div class="pv-modern-section" style="color:${c}">SUMMARY</div>`;
+    html += `<hr class="pv-modern-hr" style="border-color:${c}">`;
+    html += `<div class="pv-body-text">${esc(d.summary)}</div>`;
+  }
+  ['EXPERIENCE','EDUCATION','PROJECTS'].forEach((h, i) => {
+    const key = ['experience','education','projects'][i];
+    if (!d[key].length) return;
+    html += `<div class="pv-modern-section" style="color:${c}">${h}</div>`;
+    html += `<hr class="pv-modern-hr" style="border-color:${c}">`;
+    d[key].forEach(item => {
+      let line = item.title || '';
+      if (item.org) line += ` — ${item.org}`;
+      if (line) html += `<div class="pv-item-title">${esc(line)}</div>`;
+      if (item.date) html += `<div class="pv-item-date">${esc(item.date)}</div>`;
+      (item.desc || '').split('\n').filter(l => l.trim()).forEach(l => {
+        html += `<div class="pv-bullet">• ${esc(l.trim())}</div>`;
+      });
+    });
+  });
+  if (d.skills) {
+    html += `<div class="pv-modern-section" style="color:${c}">SKILLS</div>`;
+    html += `<hr class="pv-modern-hr" style="border-color:${c}">`;
+    html += `<div class="pv-body-text">${esc(d.skills)}</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ── Sidebar ───────────────────────────────────────────
+function buildSidebarPreview(d) {
+  const c = d.color;
+
+  // Left column
+  let left = `<div class="pv-sidebar-left" style="background:${c}">`;
+  left += `<div class="pv-sidebar-name">${esc(d.name)}</div>`;
+  if (d.title) left += `<div class="pv-sidebar-title">${esc(d.title)}</div>`;
+  left += `<div class="pv-sidebar-lhead">CONTACT</div>`;
+  [d.email, d.phone, d.location, d.linkedin].filter(Boolean).forEach(v => {
+    left += `<div class="pv-sidebar-lbody">${esc(v)}</div>`;
+  });
+  if (d.skills) {
+    left += `<div class="pv-sidebar-lhead">SKILLS</div>`;
+    d.skills.split(',').filter(s => s.trim()).forEach(s => {
+      left += `<div class="pv-sidebar-lbody">• ${esc(s.trim())}</div>`;
     });
   }
+  left += `</div>`;
 
-  function syncItem(type, id, el) {
-    const item = sections[type].find(i => i.id === id);
-    if (item) item[el.dataset.field] = el.value;
-    updatePreview();
+  // Right column
+  let right = `<div class="pv-sidebar-right">`;
+  if (d.summary) {
+    right += `<div class="pv-sidebar-rsec" style="color:${c}">SUMMARY</div><hr class="pv-sidebar-rhr">`;
+    right += `<div class="pv-body-text">${esc(d.summary)}</div>`;
   }
-
-  function getColor() { return document.getElementById('f_color').value || '#0f766e'; }
-
-  function updatePreview() {
-    const color = getColor();
-    const name = document.getElementById('f_name').value || 'Your Name';
-    const title = document.getElementById('f_title').value;
-    const email = document.getElementById('f_email').value;
-    const phone = document.getElementById('f_phone').value;
-    const location = document.getElementById('f_location').value;
-    const linkedin = document.getElementById('f_linkedin').value;
-    const summary = document.getElementById('f_summary').value;
-    const skills = document.getElementById('f_skills').value;
-    const contact = [email, phone, location, linkedin].filter(Boolean).join(' · ');
-
-    let html = `<div class="preview-name" style="color:${color}">${esc(name)}</div>`;
-    if (title) html += `<div class="preview-jobtitle">${esc(title)}</div>`;
-    if (contact) html += `<div class="preview-contact">${esc(contact)}</div>`;
-    html += `<hr class="preview-hr" style="border-color:${color}">`;
-
-    if (summary) {
-      html += `<div class="preview-section" style="color:${color}">SUMMARY</div><hr class="preview-hr-thin">`;
-      html += `<div class="preview-body">${esc(summary)}</div>`;
-    }
-
-    function renderSection(title, items, fields) {
-      if (!items.length) return '';
-      let s = `<div class="preview-section" style="color:${color}">${title}</div><hr class="preview-hr-thin">`;
-      items.forEach(item => {
-        let line = item.title || '';
-        if (item.org) line += ` — ${item.org}`;
-        if (line) s += `<div class="preview-item-title">${esc(line)}</div>`;
-        if (item.date) s += `<div class="preview-item-date">${esc(item.date)}</div>`;
-        if (item.desc) item.desc.split('\n').filter(l => l.trim()).forEach(l => {
-          s += `<div class="preview-bullet">• ${esc(l.trim())}</div>`;
-        });
+  ['EXPERIENCE','EDUCATION','PROJECTS'].forEach((h, i) => {
+    const key = ['experience','education','projects'][i];
+    if (!d[key].length) return;
+    right += `<div class="pv-sidebar-rsec" style="color:${c}">${h}</div><hr class="pv-sidebar-rhr">`;
+    d[key].forEach(item => {
+      let line = item.title || '';
+      if (item.org) line += ` — ${item.org}`;
+      if (line) right += `<div class="pv-item-title">${esc(line)}</div>`;
+      if (item.date) right += `<div class="pv-item-date">${esc(item.date)}</div>`;
+      (item.desc || '').split('\n').filter(l => l.trim()).forEach(l => {
+        right += `<div class="pv-bullet">• ${esc(l.trim())}</div>`;
       });
-      return s;
-    }
+    });
+  });
+  right += `</div>`;
 
-    html += renderSection('EXPERIENCE', sections.experience);
-    html += renderSection('EDUCATION', sections.education);
-    html += renderSection('PROJECTS', sections.projects);
+  return `<div class="pv-sidebar-wrap">${left}${right}</div>`;
+}
 
-    if (skills) {
-      html += `<div class="preview-section" style="color:${color}">SKILLS</div><hr class="preview-hr-thin">`;
-      html += `<div class="preview-body">${esc(skills)}</div>`;
-    }
+// ── Download PDF ──────────────────────────────────────
+async function downloadPDF() {
+  const payload = { ...getFormData(), layout: currentLayout };
+  try {
+    const resp = await fetch('api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!resp.ok) { const dd = await resp.json(); alert('Error: ' + dd.error); return; }
+    const blob = await resp.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'resume.pdf'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) { alert('Error: ' + e.message); }
+}
 
-    document.getElementById('previewInner').innerHTML = html;
-  }
-
-  function esc(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  async function downloadPDF() {
-    const color = getColor();
-    const payload = {
-      name: document.getElementById('f_name').value,
-      title: document.getElementById('f_title').value,
-      email: document.getElementById('f_email').value,
-      phone: document.getElementById('f_phone').value,
-      location: document.getElementById('f_location').value,
-      linkedin: document.getElementById('f_linkedin').value,
-      summary: document.getElementById('f_summary').value,
-      skills: document.getElementById('f_skills').value,
-      color: color,
-      experience: sections.experience,
-      education: sections.education,
-      projects: sections.projects
-    };
-    try {
-      const resp = await fetch('api/generate', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      if (!resp.ok) { const d = await resp.json(); alert('Error: ' + d.error); return; }
-      const blob = await resp.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'resume.pdf'; a.click();
-      URL.revokeObjectURL(url);
-    } catch(e) { alert('Error: ' + e.message); }
-  }
-
-  updatePreview();
+// ── Init ──────────────────────────────────────────────
+updatePreview();
 </script>
 </body>
 </html>
