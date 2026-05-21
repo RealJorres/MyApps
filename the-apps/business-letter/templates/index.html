@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/business-letter/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Letter Generator</title>
+<style>
+:root{--primary:#1d4ed8;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:960px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+@media(max-width:700px){.layout{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+input,select,textarea{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit;margin-bottom:.9rem}
+input:focus,textarea:focus,select:focus{border-color:var(--primary)}
+.btn{padding:.55rem 1.2rem;border:none;border-radius:.5rem;font-weight:600;font-size:.9rem;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.87}
+
+/* Letter preview */
+.letter-preview{background:#fff;border:1px solid var(--border);border-radius:1rem;padding:0;overflow:hidden}
+.letter-actions{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;gap:.5rem}
+#letterDoc{
+  padding: 60px 70px;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #000;
+  min-height: 500px;
+  background: #fff;
+}
+#letterDoc .sender-block{margin-bottom:1.5em}
+#letterDoc .date-block{margin-bottom:1.5em}
+#letterDoc .recipient-block{margin-bottom:1.5em}
+#letterDoc .subject-line{margin-bottom:1.5em;font-weight:bold;text-decoration:underline}
+#letterDoc .salutation{margin-bottom:1em}
+#letterDoc .body-text{margin-bottom:1.5em;white-space:pre-wrap}
+#letterDoc .closing-block{margin-top:1.5em}
+#letterDoc .sig-space{height:3em}
+
+@media print{
+  body{background:#fff;padding:0}
+  .layout{display:block}
+  .card,.letter-actions,header{display:none}
+  .letter-preview{border:none;border-radius:0}
+  #letterDoc{padding:40px 60px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>✉️ Business Letter Generator</h1>
+    <p>Fill in the form and print or download your formatted letter.</p>
+  </header>
+
+  <div class="layout">
+    <div>
+      <div class="card" style="margin-bottom:1.25rem">
+        <p style="font-weight:700;margin-bottom:.9rem">Sender</p>
+        <label>Full Name / Company</label>
+        <input type="text" id="senderName" value="Acme Corporation" oninput="update()">
+        <label>Address Line 1</label>
+        <input type="text" id="senderAddr1" value="123 Business Ave, Suite 400" oninput="update()">
+        <label>Address Line 2 (City, State, ZIP)</label>
+        <input type="text" id="senderAddr2" value="New York, NY 10001" oninput="update()">
+        <label>Email / Phone (optional)</label>
+        <input type="text" id="senderContact" value="info@acme.com | (212) 555-0100" oninput="update()">
+      </div>
+
+      <div class="card" style="margin-bottom:1.25rem">
+        <p style="font-weight:700;margin-bottom:.9rem">Recipient</p>
+        <label>Full Name</label>
+        <input type="text" id="recipName" value="Mr. John Smith" oninput="update()">
+        <label>Title / Company</label>
+        <input type="text" id="recipTitle" value="Procurement Manager, Global Supplies Inc." oninput="update()">
+        <label>Address</label>
+        <input type="text" id="recipAddr" value="456 Corporate Blvd, Chicago, IL 60601" oninput="update()">
+      </div>
+
+      <div class="card">
+        <p style="font-weight:700;margin-bottom:.9rem">Letter Content</p>
+        <label>Date</label>
+        <input type="date" id="letterDate" oninput="update()">
+        <label>Subject / Re:</label>
+        <input type="text" id="subject" value="Proposal for Partnership Agreement" oninput="update()">
+        <label>Salutation</label>
+        <select id="salutation" onchange="update()">
+          <option>Dear Mr./Ms. [Surname],</option>
+          <option>Dear Sir or Madam,</option>
+          <option>To Whom It May Concern,</option>
+          <option>Dear [First Name],</option>
+        </select>
+        <label>Body</label>
+        <textarea id="bodyText" rows="7" oninput="update()">I am writing to express our interest in establishing a mutually beneficial partnership between our organizations.
+
+We have reviewed your company's portfolio and believe there is a significant opportunity for collaboration. Our team would be delighted to schedule a meeting at your earliest convenience to discuss the details further.
+
+Please do not hesitate to contact us should you require any additional information. We look forward to hearing from you.</textarea>
+        <label>Closing</label>
+        <select id="closing" onchange="update()">
+          <option>Sincerely,</option>
+          <option>Best regards,</option>
+          <option>Yours faithfully,</option>
+          <option>Respectfully,</option>
+          <option>Kind regards,</option>
+        </select>
+        <label>Signatory Name</label>
+        <input type="text" id="sigName" value="Jane Doe, CEO" oninput="update()">
+      </div>
+    </div>
+
+    <div>
+      <div class="letter-preview">
+        <div class="letter-actions">
+          <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save PDF</button>
+          <button class="btn btn-outline" onclick="copyText()">📋 Copy Text</button>
+        </div>
+        <div id="letterDoc"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function update() {
+  const g = id => document.getElementById(id).value;
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  const salut = g('salutation').includes('[Surname]')
+    ? g('salutation').replace('[Surname]', g('recipName').split(' ').pop())
+    : g('salutation').replace('[First Name]', g('recipName').split(' ')[0]);
+
+  document.getElementById('letterDoc').innerHTML = `
+    <div class="sender-block">
+      <strong>${esc(g('senderName'))}</strong><br>
+      ${esc(g('senderAddr1'))}<br>
+      ${esc(g('senderAddr2'))}<br>
+      ${g('senderContact') ? esc(g('senderContact')) : ''}
+    </div>
+    <div class="date-block">${g('letterDate') ? new Date(g('letterDate')+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</div>
+    <div class="recipient-block">
+      ${esc(g('recipName'))}<br>
+      ${esc(g('recipTitle'))}<br>
+      ${esc(g('recipAddr'))}
+    </div>
+    ${g('subject') ? `<div class="subject-line">Re: ${esc(g('subject'))}</div>` : ''}
+    <div class="salutation">${esc(salut)}</div>
+    <div class="body-text">${esc(g('bodyText'))}</div>
+    <div class="closing-block">
+      ${esc(g('closing'))}<br>
+      <div class="sig-space"></div>
+      ${esc(g('sigName'))}
+    </div>
+  `;
+}
+
+function copyText() {
+  const doc = document.getElementById('letterDoc');
+  const text = doc.innerText;
+  navigator.clipboard.writeText(text).then(() => alert('Letter copied to clipboard!'));
+}
+
+// Set today's date
+document.getElementById('letterDate').value = new Date().toISOString().split('T')[0];
+update();
+</script>
+</body>
+</html>

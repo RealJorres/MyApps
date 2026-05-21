@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/survey-builder/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey Builder</title>
+<style>
+:root{--primary:#7c3aed;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+input,select,textarea{width:100%;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--primary)}
+.btn{padding:.6rem 1.25rem;border:none;border-radius:.5rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.87}
+.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:2px solid var(--border);padding-bottom:.5rem}
+.tab{padding:.5rem 1.1rem;border:none;background:none;font-size:.9rem;font-weight:600;color:var(--muted);cursor:pointer;border-radius:.4rem}
+.tab.active{color:var(--primary);background:#f0f0ff}
+.qblock{background:var(--bg);border:1px solid var(--border);border-radius:.75rem;padding:1.1rem;margin-bottom:.75rem}
+.qblock h4{font-size:.95rem;font-weight:700;margin-bottom:.5rem}
+.qtype-badge{display:inline-block;font-size:.7rem;background:var(--primary);color:#fff;padding:.15rem .5rem;border-radius:.3rem;font-weight:700;margin-right:.4rem}
+.option-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.35rem}
+.option-row input{flex:1}
+.q-actions{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.rating-row{display:flex;gap:.5rem}
+.star-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;padding:0}
+.bar-wrap{height:22px;background:#e2e8f0;border-radius:.4rem;overflow:hidden;margin-top:.25rem}
+.bar-fill{height:100%;background:var(--primary);border-radius:.4rem;transition:width .3s}
+.result-row{margin-bottom:.75rem}
+.result-row label{margin-bottom:.2rem;color:var(--text);text-transform:none;letter-spacing:0;font-size:.85rem}
+.empty{text-align:center;color:var(--muted);padding:2rem}
+.resp-count{font-size:.78rem;color:var(--muted);float:right}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📋 Survey Builder</h1>
+    <p>Create surveys, collect responses, and view results — all in your browser.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('build',this)">🔨 Build</button>
+    <button class="tab" onclick="showTab('take',this)">✏️ Take Survey</button>
+    <button class="tab" onclick="showTab('results',this)">📊 Results</button>
+  </div>
+
+  <!-- BUILD TAB -->
+  <div id="tab-build">
+    <div class="card">
+      <label>Survey Title</label>
+      <input type="text" id="surveyTitle" value="Employee Satisfaction Survey" placeholder="Survey Title">
+      <div style="margin-top:.75rem">
+        <label>Description</label>
+        <textarea id="surveyDesc" rows="2" placeholder="Optional description..."></textarea>
+      </div>
+    </div>
+    <div id="questionList"></div>
+    <div class="card">
+      <p style="font-weight:700;margin-bottom:.75rem">Add Question</p>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end">
+        <div style="flex:2;min-width:200px">
+          <label>Question Text</label>
+          <input type="text" id="newQText" placeholder="Enter question...">
+        </div>
+        <div style="flex:1;min-width:130px">
+          <label>Type</label>
+          <select id="newQType">
+            <option value="choice">Multiple Choice</option>
+            <option value="text">Free Text</option>
+            <option value="rating">Rating (1–5)</option>
+            <option value="yesno">Yes / No</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="addQuestion()">+ Add</button>
+        </div>
+      </div>
+      <div id="choiceEditor" style="margin-top:.75rem">
+        <label>Choices (one per line)</label>
+        <textarea id="choicesText" rows="3" placeholder="Option A&#10;Option B&#10;Option C"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAKE TAB -->
+  <div id="tab-take" style="display:none">
+    <div class="card">
+      <h2 id="takeTitle" style="font-size:1.4rem;font-weight:800"></h2>
+      <p id="takeDesc" style="color:var(--muted);margin-top:.4rem"></p>
+    </div>
+    <div id="takeForm"></div>
+    <div class="card" style="text-align:center">
+      <button class="btn btn-primary" onclick="submitResponse()" style="font-size:1rem;padding:.7rem 2.5rem">Submit Response</button>
+    </div>
+  </div>
+
+  <!-- RESULTS TAB -->
+  <div id="tab-results" style="display:none">
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+      <div>
+        <p style="font-size:1.1rem;font-weight:800" id="resTitle"></p>
+        <p style="color:var(--muted);font-size:.85rem"><span id="resCount">0</span> responses collected</p>
+      </div>
+      <button class="btn btn-danger" onclick="clearResults()">Clear Responses</button>
+    </div>
+    <div id="resultsDiv"></div>
+  </div>
+</div>
+<script>
+let questions = JSON.parse(localStorage.getItem('sv_questions') || '[]');
+let responses = JSON.parse(localStorage.getItem('sv_responses') || '[]');
+let surveyTitle = localStorage.getItem('sv_title') || 'Employee Satisfaction Survey';
+let surveyDesc = localStorage.getItem('sv_desc') || '';
+
+function save() {
+  surveyTitle = document.getElementById('surveyTitle').value;
+  surveyDesc = document.getElementById('surveyDesc').value;
+  localStorage.setItem('sv_questions', JSON.stringify(questions));
+  localStorage.setItem('sv_title', surveyTitle);
+  localStorage.setItem('sv_desc', surveyDesc);
+}
+
+function showTab(tab, btn) {
+  ['build','take','results'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab==='take') renderTake();
+  if (tab==='results') renderResults();
+}
+
+document.getElementById('newQType').addEventListener('change', function() {
+  document.getElementById('choiceEditor').style.display = this.value==='choice' ? '' : 'none';
+});
+
+function addQuestion() {
+  const text = document.getElementById('newQText').value.trim();
+  const type = document.getElementById('newQType').value;
+  if (!text) return;
+  const q = { id: Date.now(), text, type };
+  if (type === 'choice') {
+    q.choices = document.getElementById('choicesText').value.split('\n').map(c=>c.trim()).filter(Boolean);
+    if (!q.choices.length) q.choices = ['Option A','Option B','Option C'];
+  }
+  questions.push(q);
+  save();
+  renderQuestions();
+  document.getElementById('newQText').value = '';
+}
+
+function deleteQuestion(id) {
+  questions = questions.filter(q => q.id !== id);
+  save(); renderQuestions();
+}
+
+function renderQuestions() {
+  const el = document.getElementById('questionList');
+  if (!questions.length) { el.innerHTML = '<div class="card empty">No questions yet. Add one below.</div>'; return; }
+  el.innerHTML = questions.map((q, i) => `
+    <div class="qblock">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <h4><span class="qtype-badge">${q.type}</span>${i+1}. ${q.text}</h4>
+        <button class="btn btn-danger" style="padding:.3rem .7rem;font-size:.8rem" onclick="deleteQuestion(${q.id})">✕</button>
+      </div>
+      ${q.type==='choice' ? '<ul style="margin:.4rem 0 0 1.2rem;color:var(--muted);font-size:.85rem">'+q.choices.map(c=>`<li>${c}</li>`).join('')+'</ul>' : ''}
+      ${q.type==='rating' ? '<p style="color:var(--muted);font-size:.85rem">★★★★★ (1–5 stars)</p>' : ''}
+      ${q.type==='yesno' ? '<p style="color:var(--muted);font-size:.85rem">Yes / No</p>' : ''}
+    </div>
+  `).join('');
+}
+
+function renderTake() {
+  save();
+  document.getElementById('takeTitle').textContent = surveyTitle;
+  document.getElementById('takeDesc').textContent = surveyDesc;
+  const form = document.getElementById('takeForm');
+  if (!questions.length) { form.innerHTML = '<div class="card empty">No questions yet. Go to Build tab first.</div>'; return; }
+  form.innerHTML = questions.map(q => `
+    <div class="card">
+      <label style="font-size:.95rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:700;margin-bottom:.6rem">${q.text}</label>
+      ${renderInput(q)}
+    </div>
+  `).join('');
+}
+
+function renderInput(q) {
+  if (q.type === 'text') return `<textarea rows="3" id="ans_${q.id}" style="width:100%" placeholder="Your answer..."></textarea>`;
+  if (q.type === 'choice') return q.choices.map(c => `
+    <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:500">
+      <input type="radio" name="ans_${q.id}" value="${c}" style="width:auto"> ${c}
+    </label>`).join('');
+  if (q.type === 'yesno') return `
+    <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:500"><input type="radio" name="ans_${q.id}" value="Yes" style="width:auto"> Yes</label>
+    <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:500"><input type="radio" name="ans_${q.id}" value="No" style="width:auto"> No</label>`;
+  if (q.type === 'rating') return `
+    <div class="rating-row" id="stars_${q.id}" data-val="0">
+      ${[1,2,3,4,5].map(n=>`<button class="star-btn" onclick="setRating(${q.id},${n})">☆</button>`).join('')}
+    </div>`;
+  return '';
+}
+
+function setRating(qId, val) {
+  const cont = document.getElementById('stars_' + qId);
+  cont.dataset.val = val;
+  cont.querySelectorAll('.star-btn').forEach((b, i) => b.textContent = i < val ? '★' : '☆');
+}
+
+function submitResponse() {
+  const resp = { ts: Date.now(), answers: {} };
+  let valid = true;
+  questions.forEach(q => {
+    if (q.type === 'text') resp.answers[q.id] = document.getElementById('ans_'+q.id).value.trim();
+    else if (q.type === 'rating') {
+      const v = parseInt(document.getElementById('stars_'+q.id).dataset.val);
+      if (!v) { valid = false; alert('Please rate: ' + q.text); return; }
+      resp.answers[q.id] = v;
+    } else {
+      const sel = document.querySelector(`input[name="ans_${q.id}"]:checked`);
+      if (!sel) { valid = false; alert('Please answer: ' + q.text); return; }
+      resp.answers[q.id] = sel.value;
+    }
+  });
+  if (!valid) return;
+  responses.push(resp);
+  localStorage.setItem('sv_responses', JSON.stringify(responses));
+  alert('Response submitted! Thank you.');
+  renderTake();
+}
+
+function renderResults() {
+  save();
+  document.getElementById('resTitle').textContent = surveyTitle;
+  document.getElementById('resCount').textContent = responses.length;
+  const div = document.getElementById('resultsDiv');
+  if (!questions.length || !responses.length) {
+    div.innerHTML = '<div class="card empty">No responses yet.</div>'; return;
+  }
+  div.innerHTML = questions.map(q => {
+    let content = '';
+    if (q.type === 'text') {
+      const ans = responses.map(r => r.answers[q.id]).filter(Boolean);
+      content = ans.length ? `<ul style="list-style:none">${ans.slice(-5).map(a=>`<li style="padding:.3rem 0;border-bottom:1px solid var(--border);color:var(--muted);font-size:.875rem">${a}</li>`).join('')}</ul>` : '<p style="color:var(--muted)">No text responses.</p>';
+    } else if (q.type === 'rating') {
+      const ans = responses.map(r => r.answers[q.id]).filter(Boolean);
+      const avg = ans.reduce((a,b)=>a+b,0)/ans.length;
+      content = `<p style="font-size:1.2rem;font-weight:800">${avg.toFixed(1)} / 5 <span style="color:#fbbf24">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))}</span></p><p style="color:var(--muted);font-size:.8rem">${ans.length} ratings</p>`;
+    } else {
+      const opts = q.type === 'yesno' ? ['Yes','No'] : q.choices;
+      const total = responses.filter(r => r.answers[q.id]).length;
+      content = opts.map(o => {
+        const cnt = responses.filter(r => r.answers[q.id] === o).length;
+        const pct = total ? Math.round(cnt/total*100) : 0;
+        return `<div class="result-row"><label>${o} <span class="resp-count">${cnt} (${pct}%)</span></label><div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;
+      }).join('');
+    }
+    return `<div class="card"><p style="font-weight:700;margin-bottom:.75rem">${q.text}</p>${content}</div>`;
+  }).join('');
+}
+
+renderQuestions();
+document.getElementById('surveyTitle').value = surveyTitle;
+document.getElementById('surveyDesc').value = surveyDesc;
+</script>
+</body>
+</html>

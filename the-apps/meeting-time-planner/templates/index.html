@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/meeting-time-planner/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Time Planner</title>
+<style>
+:root{--primary:#0891b2;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:900px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+select,input{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+select:focus,input:focus{border-color:var(--primary)}
+.btn{padding:.5rem 1.1rem;border:none;border-radius:.5rem;font-size:.875rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-sm{padding:.28rem .65rem;font-size:.78rem}
+.add-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end}
+.tz-chip{display:flex;align-items:center;gap:.4rem;background:#e0f2fe;color:#0c4a6e;border-radius:.5rem;padding:.4rem .75rem;font-size:.875rem;font-weight:600}
+.tz-chip button{background:none;border:none;cursor:pointer;font-size:.9rem;color:#0c4a6e}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.grid-wrap{overflow-x:auto;margin-top:.75rem}
+.grid-table{border-collapse:collapse;font-size:.8rem;min-width:600px}
+.grid-table th,.grid-table td{border:1px solid var(--border);padding:.3rem .4rem;text-align:center;white-space:nowrap}
+.grid-table th{background:#f8fafc;font-weight:700}
+.cell-work{background:#d1fae5;color:#065f46;font-weight:600}
+.cell-overlap{background:#059669;color:#fff;font-weight:800}
+.cell-off{background:#f1f5f9;color:#94a3b8}
+.cell-night{background:#1e293b;color:#475569}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.78rem;margin-top:.5rem}
+.leg{display:flex;align-items:center;gap:.35rem}
+.leg-box{width:16px;height:16px;border-radius:.25rem;border:1px solid #ccc}
+.best-times{margin-top:.75rem}
+.best-slot{background:#e0f2fe;border:1px solid #0891b2;border-radius:.5rem;padding:.5rem .9rem;display:inline-block;margin:.2rem;font-size:.85rem;font-weight:600;color:#0c4a6e}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🌍 Meeting Time Planner</h1>
+    <p>Find the best time to meet across multiple timezones.</p>
+  </header>
+
+  <div class="card">
+    <div class="add-row">
+      <div style="flex:1;min-width:220px">
+        <label>Add City / Timezone</label>
+        <select id="tzSelect" style="width:100%"></select>
+      </div>
+      <div>
+        <label>Work Hours</label>
+        <div style="display:flex;gap:.3rem;align-items:center">
+          <input type="number" id="workStart" value="9" min="0" max="23" style="width:55px">
+          <span style="color:var(--muted)">–</span>
+          <input type="number" id="workEnd" value="17" min="1" max="24" style="width:55px">
+        </div>
+      </div>
+      <div style="align-self:flex-end"><button class="btn btn-primary" onclick="addTZ()">+ Add</button></div>
+    </div>
+    <div class="chips" id="tzChips"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+      <p style="font-weight:700">24-Hour Overlap Grid</p>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <label style="text-transform:none;font-size:.85rem;color:var(--text);margin:0">Date:</label>
+        <input type="date" id="gridDate" style="width:150px" onchange="renderGrid()">
+      </div>
+    </div>
+    <div class="legend" style="margin-top:.75rem">
+      <div class="leg"><div class="leg-box cell-overlap"></div>All available</div>
+      <div class="leg"><div class="leg-box cell-work"></div>Work hours</div>
+      <div class="leg"><div class="leg-box cell-off"></div>Off hours</div>
+      <div class="leg"><div class="leg-box cell-night"></div>Night</div>
+    </div>
+    <div class="grid-wrap" id="gridWrap">
+      <p style="color:var(--muted);text-align:center;padding:1.5rem">Add timezones above to see the grid.</p>
+    </div>
+    <div class="best-times" id="bestTimes"></div>
+  </div>
+</div>
+<script>
+const TIMEZONES = [
+  {label:'New York (UTC-5/-4)',tz:'America/New_York'},
+  {label:'Chicago (UTC-6/-5)',tz:'America/Chicago'},
+  {label:'Denver (UTC-7/-6)',tz:'America/Denver'},
+  {label:'Los Angeles (UTC-8/-7)',tz:'America/Los_Angeles'},
+  {label:'London (UTC+0/+1)',tz:'Europe/London'},
+  {label:'Paris / Berlin (UTC+1/+2)',tz:'Europe/Paris'},
+  {label:'Moscow (UTC+3)',tz:'Europe/Moscow'},
+  {label:'Dubai (UTC+4)',tz:'Asia/Dubai'},
+  {label:'Karachi (UTC+5)',tz:'Asia/Karachi'},
+  {label:'Mumbai (UTC+5:30)',tz:'Asia/Kolkata'},
+  {label:'Dhaka (UTC+6)',tz:'Asia/Dhaka'},
+  {label:'Bangkok (UTC+7)',tz:'Asia/Bangkok'},
+  {label:'Singapore / Manila (UTC+8)',tz:'Asia/Singapore'},
+  {label:'Tokyo (UTC+9)',tz:'Asia/Tokyo'},
+  {label:'Sydney (UTC+10/+11)',tz:'Australia/Sydney'},
+  {label:'Auckland (UTC+12/+13)',tz:'Pacific/Auckland'},
+  {label:'São Paulo (UTC-3)',tz:'America/Sao_Paulo'},
+  {label:'Toronto (UTC-5/-4)',tz:'America/Toronto'},
+  {label:'Mexico City (UTC-6/-5)',tz:'America/Mexico_City'},
+  {label:'UTC (UTC+0)',tz:'UTC'},
+];
+
+let selectedTZs = [
+  {tz:'America/New_York',label:'New York'},
+  {tz:'Europe/London',label:'London'},
+  {tz:'Asia/Singapore',label:'Singapore'},
+];
+
+// Populate select
+const sel = document.getElementById('tzSelect');
+TIMEZONES.forEach(tz => {
+  const opt = document.createElement('option');
+  opt.value = tz.tz; opt.textContent = tz.label;
+  sel.appendChild(opt);
+});
+
+function addTZ() {
+  const tz = sel.value;
+  if (selectedTZs.find(t=>t.tz===tz)) return;
+  const entry = TIMEZONES.find(t=>t.tz===tz);
+  selectedTZs.push({ tz, label: entry ? entry.label.split(' (')[0] : tz });
+  renderChips(); renderGrid();
+}
+
+function removeTZ(tz) {
+  selectedTZs = selectedTZs.filter(t=>t.tz!==tz); renderChips(); renderGrid();
+}
+
+function renderChips() {
+  document.getElementById('tzChips').innerHTML = selectedTZs.map(t=>
+    `<span class="tz-chip">${t.label}<button onclick="removeTZ('${t.tz}')">×</button></span>`
+  ).join('');
+}
+
+function getHourInTZ(utcHour, dateStr, tz) {
+  // Get the local hour for a UTC hour on a given date
+  try {
+    const utcDate = new Date(dateStr + 'T' + String(utcHour).padStart(2,'0') + ':00:00Z');
+    const local = new Date(utcDate.toLocaleString('en-US', {timeZone: tz}));
+    return local.getHours();
+  } catch(e) { return utcHour; }
+}
+
+function renderGrid() {
+  const dateStr = document.getElementById('gridDate').value || new Date().toISOString().split('T')[0];
+  const workStart = parseInt(document.getElementById('workStart').value)||9;
+  const workEnd = parseInt(document.getElementById('workEnd').value)||17;
+
+  if (!selectedTZs.length) {
+    document.getElementById('gridWrap').innerHTML = '<p style="color:var(--muted);text-align:center;padding:1.5rem">Add timezones above.</p>';
+    return;
+  }
+
+  const hours = Array.from({length:24},(_,i)=>i);
+
+  // For each UTC hour, compute local hour for each TZ
+  const grid = selectedTZs.map(tzEntry => ({
+    label: tzEntry.label,
+    tz: tzEntry.tz,
+    hours: hours.map(h => getHourInTZ(h, dateStr, tzEntry.tz))
+  }));
+
+  // Find overlap hours (all TZs in work hours)
+  const overlapHours = hours.filter(h => {
+    return grid.every(row => {
+      const lh = row.hours[h];
+      return lh >= workStart && lh < workEnd;
+    });
+  });
+
+  // Build table
+  let html = '<table class="grid-table"><thead><tr><th>Timezone</th>';
+  hours.forEach(h => html += `<th>${String(h).padStart(2,'0')}:00</th>`);
+  html += '<th>Local Now</th></tr></thead><tbody>';
+
+  const nowUTC = new Date().getUTCHours();
+
+  grid.forEach(row => {
+    const nowLocal = getHourInTZ(nowUTC, dateStr, row.tz);
+    html += `<tr><td style="text-align:left;font-weight:700;padding:.3rem .6rem">${row.label}</td>`;
+    hours.forEach(h => {
+      const lh = row.hours[h];
+      const isWork = lh >= workStart && lh < workEnd;
+      const isOverlap = overlapHours.includes(h);
+      const isNight = lh < 6 || lh >= 22;
+      const cls = isOverlap ? 'cell-overlap' : isWork ? 'cell-work' : isNight ? 'cell-night' : 'cell-off';
+      const isCurrent = h === nowUTC;
+      html += `<td class="${cls}" style="${isCurrent?'outline:2px solid #f59e0b;outline-offset:-2px;':''}">${String(lh).padStart(2,'0')}:00</td>`;
+    });
+    html += `<td style="font-weight:700;color:var(--primary)">${String(nowLocal).padStart(2,'0')}:00</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('gridWrap').innerHTML = html;
+
+  // Best times
+  const bestDiv = document.getElementById('bestTimes');
+  if (overlapHours.length) {
+    bestDiv.innerHTML = '<p style="font-weight:700;margin-bottom:.4rem;color:#059669">✅ Suggested Meeting Times (UTC):</p>' +
+      overlapHours.map(h => `<span class="best-slot">${String(h).padStart(2,'0')}:00 UTC</span>`).join('');
+  } else {
+    bestDiv.innerHTML = '<p style="color:#dc2626;font-weight:600;margin-top:.5rem">⚠️ No overlapping work hours found. Consider adjusting work hour settings.</p>';
+  }
+}
+
+document.getElementById('gridDate').value = new Date().toISOString().split('T')[0];
+renderChips(); renderGrid();
+</script>
+</body>
+</html>

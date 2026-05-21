@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/gantt-chart/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gantt Chart Maker</title>
+<style>
+:root{--primary:#1d4ed8;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:1000px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+input,select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus,select:focus{border-color:var(--primary)}
+.btn{padding:.55rem 1.1rem;border:none;border-radius:.5rem;font-size:.9rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.add-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end}
+.add-row .field{flex:1;min-width:130px;display:flex;flex-direction:column}
+.task-list table{width:100%;border-collapse:collapse;font-size:.875rem}
+.task-list th{padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border)}
+.task-list td{padding:.5rem .75rem;border-bottom:1px solid var(--border)}
+.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block}
+canvas{width:100%;height:auto}
+.canvas-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:.75rem;background:#fff;padding:.75rem}
+.dl-row{display:flex;justify-content:flex-end;margin-top:.75rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📅 Gantt Chart Maker</h1>
+    <p>Add tasks with dates to generate a visual project timeline.</p>
+  </header>
+
+  <div class="card">
+    <p style="font-weight:700;margin-bottom:.75rem">Add Task</p>
+    <div class="add-row">
+      <div class="field">
+        <label>Task Name</label>
+        <input type="text" id="tName" placeholder="Design mockup">
+      </div>
+      <div class="field">
+        <label>Start Date</label>
+        <input type="date" id="tStart">
+      </div>
+      <div class="field">
+        <label>End Date</label>
+        <input type="date" id="tEnd">
+      </div>
+      <div class="field" style="flex:0 0 auto">
+        <label>Color</label>
+        <input type="color" id="tColor" value="#1d4ed8" style="width:48px;padding:.3rem;height:36px">
+      </div>
+      <div class="field" style="flex:0 0 auto">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" onclick="addTask()">+ Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card task-list">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <p style="font-weight:700">Tasks (<span id="taskCount">0</span>)</p>
+      <div style="display:flex;gap:.5rem">
+        <input type="text" id="chartTitle" placeholder="Project title..." style="width:200px">
+        <button class="btn btn-primary" onclick="render()">Draw Chart</button>
+      </div>
+    </div>
+    <div id="taskTable"><p style="color:var(--muted);text-align:center;padding:1rem">No tasks yet.</p></div>
+  </div>
+
+  <div class="card">
+    <div class="canvas-wrap">
+      <canvas id="gantt" width="900" height="300"></canvas>
+    </div>
+    <div class="dl-row">
+      <button class="btn btn-outline" onclick="download()">⬇ Download PNG</button>
+    </div>
+  </div>
+</div>
+<script>
+const COLORS = ['#1d4ed8','#059669','#7c3aed','#dc2626','#d97706','#0891b2','#be185d','#16a34a'];
+let tasks = JSON.parse(localStorage.getItem('gantt_tasks') || '[]');
+let colorIdx = 0;
+
+function addTask() {
+  const name = document.getElementById('tName').value.trim();
+  const start = document.getElementById('tStart').value;
+  const end = document.getElementById('tEnd').value;
+  const color = document.getElementById('tColor').value;
+  if (!name || !start || !end) { alert('Fill in task name, start, and end date.'); return; }
+  if (start > end) { alert('End date must be after start date.'); return; }
+  tasks.push({ id: Date.now(), name, start, end, color });
+  colorIdx = (colorIdx + 1) % COLORS.length;
+  document.getElementById('tColor').value = COLORS[colorIdx];
+  save(); renderList(); render();
+  document.getElementById('tName').value = '';
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id); save(); renderList(); render();
+}
+
+function save() { localStorage.setItem('gantt_tasks', JSON.stringify(tasks)); }
+
+function renderList() {
+  document.getElementById('taskCount').textContent = tasks.length;
+  if (!tasks.length) { document.getElementById('taskTable').innerHTML = '<p style="color:var(--muted);text-align:center;padding:1rem">No tasks yet.</p>'; return; }
+  document.getElementById('taskTable').innerHTML = `<table>
+    <thead><tr><th></th><th>Task</th><th>Start</th><th>End</th><th>Duration</th><th></th></tr></thead>
+    <tbody>${tasks.map(t => {
+      const days = Math.round((new Date(t.end)-new Date(t.start))/(86400000)) + 1;
+      return `<tr>
+        <td><span class="color-dot" style="background:${t.color}"></span></td>
+        <td><strong>${t.name}</strong></td>
+        <td>${t.start}</td><td>${t.end}</td>
+        <td>${days}d</td>
+        <td><button class="btn btn-danger" style="padding:.25rem .6rem;font-size:.8rem" onclick="deleteTask(${t.id})">✕</button></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function render() {
+  if (!tasks.length) return;
+  const canvas = document.getElementById('gantt');
+  const ctx = canvas.getContext('2d');
+  const title = document.getElementById('chartTitle').value || 'Project Timeline';
+
+  // Date range
+  const allDates = tasks.flatMap(t => [new Date(t.start), new Date(t.end)]);
+  let minD = new Date(Math.min(...allDates));
+  let maxD = new Date(Math.max(...allDates));
+  // Add padding
+  minD.setDate(minD.getDate() - 1);
+  maxD.setDate(maxD.getDate() + 2);
+  const totalDays = Math.round((maxD - minD) / 86400000);
+
+  const rowH = 38, labelW = 180;
+  const pad = { top: 70, bottom: 30 };
+  const H = pad.top + tasks.length * rowH + pad.bottom;
+  canvas.height = H;
+  const W = canvas.width;
+  const chartW = W - labelW - 20;
+
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+
+  // Title
+  ctx.fillStyle = '#1e293b'; ctx.font = 'bold 17px system-ui'; ctx.textAlign = 'center';
+  ctx.fillText(title, W/2, 35);
+
+  // Date header
+  const step = Math.max(1, Math.floor(totalDays / 10));
+  for (let d = 0; d <= totalDays; d += step) {
+    const x = labelW + (d / totalDays) * chartW;
+    const date = new Date(minD); date.setDate(date.getDate() + d);
+    const lbl = (date.getMonth()+1) + '/' + date.getDate();
+    ctx.fillStyle = '#94a3b8'; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(lbl, x, 55);
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, 58); ctx.lineTo(x, H - pad.bottom); ctx.stroke();
+  }
+
+  // Today line
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayOff = Math.round((today - minD) / 86400000);
+  if (todayOff >= 0 && todayOff <= totalDays) {
+    const tx = labelW + (todayOff / totalDays) * chartW;
+    ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 1.5; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(tx, 58); ctx.lineTo(tx, H - pad.bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#dc2626'; ctx.font = 'bold 9px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText('TODAY', tx, 68);
+  }
+
+  // Tasks
+  tasks.forEach((t, i) => {
+    const y = pad.top + i * rowH;
+    const startOff = Math.round((new Date(t.start) - minD) / 86400000);
+    const endOff = Math.round((new Date(t.end) - minD) / 86400000);
+    const bx = labelW + (startOff / totalDays) * chartW;
+    const bw = Math.max(4, ((endOff - startOff + 1) / totalDays) * chartW);
+    const bh = rowH - 8;
+
+    // Row background
+    if (i % 2 === 0) { ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, y, W, rowH); }
+
+    // Label
+    ctx.fillStyle = '#1e293b'; ctx.font = '12px system-ui'; ctx.textAlign = 'left';
+    const lbl = t.name.length > 22 ? t.name.slice(0, 21) + '…' : t.name;
+    ctx.fillText(lbl, 8, y + rowH/2 + 4);
+
+    // Bar
+    ctx.fillStyle = t.color;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(bx, y + 4, bw, bh, 4) : ctx.rect(bx, y + 4, bw, bh);
+    ctx.fill();
+
+    // Bar label
+    const days = endOff - startOff + 1;
+    if (bw > 30) {
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText(days + 'd', bx + bw/2, y + rowH/2 + 4);
+    }
+  });
+
+  // Border
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(labelW, pad.top - 10); ctx.lineTo(labelW, H - pad.bottom); ctx.stroke();
+}
+
+function download() {
+  const a = document.createElement('a');
+  a.download = 'gantt.png';
+  a.href = document.getElementById('gantt').toDataURL();
+  a.click();
+}
+
+// Set default dates
+const today = new Date().toISOString().split('T')[0];
+const nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate() + 14);
+document.getElementById('tStart').value = today;
+document.getElementById('tEnd').value = nextMonth.toISOString().split('T')[0];
+
+renderList(); render();
+</script>
+</body>
+</html>

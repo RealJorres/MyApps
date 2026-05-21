@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/okr-tracker/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKR Tracker</title>
+<style>
+:root{--primary:#16a34a;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:780px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+.btn{padding:.5rem 1.1rem;border:none;border-radius:.5rem;font-size:.875rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-sm{padding:.3rem .65rem;font-size:.78rem}
+input,textarea{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus,textarea:focus{border-color:var(--primary)}
+.overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-bottom:1.25rem}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem;text-align:center}
+.stat .val{font-size:1.6rem;font-weight:800;color:var(--primary)}
+.stat .lbl{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem}
+.obj-card{border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:1rem;background:#fff}
+.obj-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;margin-bottom:.75rem}
+.obj-title{font-size:1rem;font-weight:800;flex:1}
+.obj-pct{font-size:1.2rem;font-weight:800;color:var(--primary);white-space:nowrap}
+.progress-bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-bottom:.75rem}
+.progress-fill{height:100%;background:var(--primary);border-radius:4px;transition:width .3s}
+.kr-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
+.kr-text{flex:1;min-width:160px;font-size:.875rem}
+.kr-slider{flex:1;min-width:100px;accent-color:var(--primary)}
+.kr-pct{font-size:.85rem;font-weight:700;color:var(--primary);min-width:36px;text-align:right}
+.add-kr{display:flex;gap:.5rem;margin-top:.5rem}
+.add-kr input{flex:1}
+.add-obj{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.add-obj input{flex:1;min-width:200px}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🎯 OKR Tracker</h1>
+    <p>Define Objectives and Key Results, track your progress.</p>
+  </header>
+
+  <div class="overview" id="overview"></div>
+
+  <div class="card">
+    <p style="font-weight:700;margin-bottom:.75rem">Add Objective</p>
+    <div class="add-obj">
+      <input type="text" id="objInput" placeholder="e.g. Launch new product line by Q3..." onkeydown="if(event.key==='Enter')addObjective()">
+      <button class="btn btn-primary" onclick="addObjective()">+ Add Objective</button>
+    </div>
+  </div>
+
+  <div id="objList"></div>
+</div>
+<script>
+const KEY = 'okr_data';
+let objectives = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+// Sample data if empty
+if (!objectives.length) {
+  objectives = [
+    {id:1, title:'Grow monthly revenue by 30%', krs:[
+      {id:11, text:'Close 10 new enterprise contracts', progress:60},
+      {id:12, text:'Launch upsell campaign to existing customers', progress:40},
+      {id:13, text:'Reduce churn rate below 3%', progress:80},
+    ]},
+    {id:2, title:'Improve team productivity', krs:[
+      {id:21, text:'Implement weekly sprint reviews', progress:100},
+      {id:22, text:'Reduce average ticket resolution time by 20%', progress:50},
+    ]},
+  ];
+  save();
+}
+
+function save() { localStorage.setItem(KEY, JSON.stringify(objectives)); }
+
+function objProgress(obj) {
+  if (!obj.krs.length) return 0;
+  return Math.round(obj.krs.reduce((a,k)=>a+k.progress,0) / obj.krs.length);
+}
+
+function overallProgress() {
+  if (!objectives.length) return 0;
+  const total = objectives.reduce((a,o)=>a+objProgress(o), 0);
+  return Math.round(total / objectives.length);
+}
+
+function renderOverview() {
+  const overall = overallProgress();
+  const done = objectives.filter(o=>objProgress(o)===100).length;
+  const totalKRs = objectives.reduce((a,o)=>a+o.krs.length,0);
+  document.getElementById('overview').innerHTML = `
+    <div class="stat"><div class="val">${overall}%</div><div class="lbl">Overall</div></div>
+    <div class="stat"><div class="val">${objectives.length}</div><div class="lbl">Objectives</div></div>
+    <div class="stat"><div class="val">${totalKRs}</div><div class="lbl">Key Results</div></div>
+    <div class="stat"><div class="val">${done}</div><div class="lbl">Completed</div></div>
+  `;
+}
+
+function addObjective() {
+  const text = document.getElementById('objInput').value.trim();
+  if (!text) return;
+  objectives.push({ id: Date.now(), title: text, krs: [] });
+  document.getElementById('objInput').value = '';
+  save(); render();
+}
+
+function deleteObjective(id) {
+  if (!confirm('Delete this objective?')) return;
+  objectives = objectives.filter(o => o.id !== id);
+  save(); render();
+}
+
+function addKR(objId) {
+  const inp = document.getElementById('kr_inp_'+objId);
+  const text = inp.value.trim();
+  if (!text) return;
+  const obj = objectives.find(o=>o.id===objId);
+  if (!obj) return;
+  obj.krs.push({ id: Date.now(), text, progress: 0 });
+  inp.value = '';
+  save(); render();
+}
+
+function deleteKR(objId, krId) {
+  const obj = objectives.find(o=>o.id===objId);
+  if (!obj) return;
+  obj.krs = obj.krs.filter(k=>k.id!==krId);
+  save(); render();
+}
+
+function updateProgress(objId, krId, val) {
+  const obj = objectives.find(o=>o.id===objId);
+  if (!obj) return;
+  const kr = obj.krs.find(k=>k.id===krId);
+  if (!kr) return;
+  kr.progress = parseInt(val);
+  // Update display
+  document.getElementById('pct_'+krId).textContent = val+'%';
+  const pct = objProgress(obj);
+  const fill = document.getElementById('fill_'+objId);
+  const opct = document.getElementById('opct_'+objId);
+  if (fill) fill.style.width = pct+'%';
+  if (opct) opct.textContent = pct+'%';
+  fill && (fill.style.background = pct===100?'#059669':pct>=70?'#16a34a':pct>=40?'#d97706':'#dc2626');
+  save(); renderOverview();
+}
+
+function colorForProgress(p) {
+  return p===100?'#059669':p>=70?'#16a34a':p>=40?'#d97706':'#dc2626';
+}
+
+function render() {
+  renderOverview();
+  const list = document.getElementById('objList');
+  if (!objectives.length) {
+    list.innerHTML = '<div class="card" style="text-align:center;color:var(--muted)">No objectives yet. Add one above.</div>';
+    return;
+  }
+  list.innerHTML = objectives.map(obj => {
+    const pct = objProgress(obj);
+    const color = colorForProgress(pct);
+    return `
+    <div class="obj-card">
+      <div class="obj-header">
+        <div class="obj-title">${obj.title}</div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <span class="obj-pct" id="opct_${obj.id}" style="color:${color}">${pct}%</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteObjective(${obj.id})">✕</button>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="fill_${obj.id}" style="width:${pct}%;background:${color}"></div></div>
+      ${obj.krs.map(kr => `
+        <div class="kr-row">
+          <div class="kr-text">◦ ${kr.text}</div>
+          <input type="range" class="kr-slider" min="0" max="100" value="${kr.progress}" oninput="updateProgress(${obj.id},${kr.id},this.value)">
+          <div class="kr-pct" id="pct_${kr.id}">${kr.progress}%</div>
+          <button class="btn btn-danger btn-sm" onclick="deleteKR(${obj.id},${kr.id})">✕</button>
+        </div>
+      `).join('')}
+      <div class="add-kr">
+        <input type="text" id="kr_inp_${obj.id}" placeholder="Add key result..." onkeydown="if(event.key==='Enter')addKR(${obj.id})">
+        <button class="btn btn-primary btn-sm" onclick="addKR(${obj.id})">+ KR</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+render();
+</script>
+</body>
+</html>

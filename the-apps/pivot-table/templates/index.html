@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/pivot-table/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pivot Table Builder</title>
+<style>
+:root{--primary:#059669;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:960px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+textarea,select,input{width:100%;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+textarea:focus,select:focus{border-color:var(--primary)}
+.row{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end}
+.field{flex:1;min-width:140px}
+.btn{padding:.6rem 1.25rem;border:none;border-radius:.5rem;font-size:.9rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.hint{font-size:.78rem;color:var(--muted);margin-top:.35rem}
+.pivot-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+th,td{padding:.6rem .9rem;border:1px solid var(--border);text-align:right;white-space:nowrap}
+th{background:#f8fafc;font-weight:700;text-align:center}
+th.row-header,td.row-header{text-align:left;font-weight:600}
+tr:hover td{background:#f8fafc}
+.grand-total td{background:#e0f2fe;font-weight:700}
+.col-total{background:#e0f2fe;font-weight:700}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🔢 Pivot Table Builder</h1>
+    <p>Paste CSV data, choose fields, and summarize with aggregation.</p>
+  </header>
+
+  <div class="card">
+    <label>CSV Data</label>
+    <textarea id="csv" rows="7" placeholder="Region,Product,Sales,Units&#10;North,Widget A,1200,30&#10;South,Widget B,850,20&#10;North,Widget B,2100,50&#10;South,Widget A,940,25&#10;East,Widget A,1600,40&#10;East,Widget B,720,18"></textarea>
+    <div class="hint">Include a header row. All columns will be available as fields.</div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label>Row Field</label>
+        <select id="rowField"></select>
+      </div>
+      <div class="field">
+        <label>Column Field (optional)</label>
+        <select id="colField"><option value="">(none)</option></select>
+      </div>
+      <div class="field">
+        <label>Value Field</label>
+        <select id="valField"></select>
+      </div>
+      <div class="field">
+        <label>Aggregation</label>
+        <select id="aggFunc">
+          <option value="sum">Sum</option>
+          <option value="count">Count</option>
+          <option value="avg">Average</option>
+          <option value="min">Min</option>
+          <option value="max">Max</option>
+        </select>
+      </div>
+      <div class="field" style="flex:0 0 auto">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" onclick="buildPivot()">Build Pivot</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="output"><p style="color:var(--muted);text-align:center">Configure the fields above and click Build Pivot.</p></div>
+  </div>
+</div>
+<script>
+let headers = [], rows = [];
+
+function parseCSV() {
+  const lines = document.getElementById('csv').value.trim().split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length < 2) return false;
+  headers = lines[0].split(',').map(h => h.trim());
+  rows = lines.slice(1).map(l => {
+    const cols = l.split(',').map(c => c.trim());
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = cols[i] ?? '');
+    return obj;
+  });
+  return true;
+}
+
+function populateSelects() {
+  if (!parseCSV()) return;
+  const numHeaders = headers.filter(h => rows.some(r => !isNaN(parseFloat(r[h]))));
+  ['rowField','colField','valField'].forEach(id => {
+    const sel = document.getElementById(id);
+    const hasNone = id === 'colField';
+    sel.innerHTML = hasNone ? '<option value="">(none)</option>' : '';
+    headers.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`);
+  });
+  // Default value field to first numeric
+  if (numHeaders.length) document.getElementById('valField').value = numHeaders[0];
+}
+
+document.getElementById('csv').addEventListener('change', populateSelects);
+document.getElementById('csv').addEventListener('blur', populateSelects);
+
+function agg(arr, fn) {
+  const nums = arr.map(v => parseFloat(v)).filter(v => !isNaN(v));
+  if (!nums.length) return 0;
+  switch(fn) {
+    case 'sum': return nums.reduce((a,b)=>a+b,0);
+    case 'count': return arr.length;
+    case 'avg': return nums.reduce((a,b)=>a+b,0)/nums.length;
+    case 'min': return Math.min(...nums);
+    case 'max': return Math.max(...nums);
+  }
+}
+
+function fmt(v,fn) {
+  if (fn==='count') return v;
+  return typeof v === 'number' ? v.toLocaleString(undefined,{maximumFractionDigits:2}) : v;
+}
+
+function buildPivot() {
+  if (!parseCSV()) { alert('Invalid CSV'); return; }
+  const rowF = document.getElementById('rowField').value;
+  const colF = document.getElementById('colField').value;
+  const valF = document.getElementById('valField').value;
+  const aggFn = document.getElementById('aggFunc').value;
+  if (!rowF || !valF) { alert('Select row and value fields.'); return; }
+
+  const rowVals = [...new Set(rows.map(r => r[rowF]))].sort();
+  const colVals = colF ? [...new Set(rows.map(r => r[colF]))].sort() : [];
+
+  // Build data map
+  const map = {};
+  rows.forEach(r => {
+    const rk = r[rowF];
+    const ck = colF ? r[colF] : '_';
+    if (!map[rk]) map[rk] = {};
+    if (!map[rk][ck]) map[rk][ck] = [];
+    map[rk][ck].push(r[valF]);
+  });
+
+  let html = '<div class="pivot-wrap"><table>';
+  // Header
+  html += '<thead><tr><th class="row-header">' + rowF + '</th>';
+  if (colF) colVals.forEach(c => html += `<th>${c}</th>`);
+  else html += `<th>${valF}</th>`;
+  html += '<th class="col-total">Total</th></tr></thead>';
+
+  // Body
+  html += '<tbody>';
+  rowVals.forEach(rv => {
+    html += `<tr><td class="row-header">${rv}</td>`;
+    let rowTotal = [];
+    const keys = colF ? colVals : ['_'];
+    keys.forEach(ck => {
+      const vals = (map[rv] && map[rv][ck]) ? map[rv][ck] : [];
+      const v = agg(vals, aggFn);
+      rowTotal.push(...vals);
+      html += `<td>${vals.length ? fmt(v, aggFn) : ''}</td>`;
+    });
+    html += `<td class="col-total">${fmt(agg(rowTotal, aggFn), aggFn)}</td></tr>`;
+  });
+
+  // Grand total
+  html += '<tr class="grand-total"><td class="row-header">Grand Total</td>';
+  const keys2 = colF ? colVals : ['_'];
+  let grandAll = [];
+  keys2.forEach(ck => {
+    const vals = rowVals.flatMap(rv => (map[rv] && map[rv][ck]) ? map[rv][ck] : []);
+    grandAll.push(...vals);
+    html += `<td>${fmt(agg(vals, aggFn), aggFn)}</td>`;
+  });
+  html += `<td class="col-total">${fmt(agg(grandAll, aggFn), aggFn)}</td></tr>`;
+  html += '</tbody></table></div>';
+
+  document.getElementById('output').innerHTML = html;
+}
+
+// Init selects on load
+window.onload = populateSelects;
+</script>
+</body>
+</html>

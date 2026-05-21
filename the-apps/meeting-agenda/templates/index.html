@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/meeting-agenda/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Agenda Builder</title>
+<style>
+:root{--primary:#be185d;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:800px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+input,textarea,select{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus,textarea:focus{border-color:var(--primary)}
+.row{display:flex;gap:.75rem;flex-wrap:wrap}
+.field{flex:1;min-width:140px;display:flex;flex-direction:column;gap:.35rem}
+.btn{padding:.5rem 1.1rem;border:none;border-radius:.5rem;font-size:.875rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn-danger{background:#dc2626;color:#fff}
+.btn:hover{opacity:.87}
+.agenda-item{display:flex;gap:.75rem;align-items:flex-start;background:var(--bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.6rem}
+.item-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;margin-top:.15rem}
+.item-body{flex:1}
+.item-body strong{font-size:.95rem}
+.item-meta{font-size:.8rem;color:var(--muted);margin-top:.2rem}
+.item-actions{display:flex;gap:.35rem;flex-shrink:0}
+.total-time{font-weight:700;color:var(--primary)}
+
+/* Print styles */
+@media print{
+  body{background:#fff;padding:0}
+  .card{border:none;box-shadow:none;padding:.5rem 0}
+  .btn,.add-section{display:none}
+  .agenda-item{border:none;background:none;padding:.3rem 0;border-bottom:1px solid #eee}
+  header p{display:none}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📋 Meeting Agenda Builder</h1>
+    <p>Create structured agendas with timed items. Copy or print.</p>
+  </header>
+
+  <!-- Meeting Info -->
+  <div class="card">
+    <div class="row" style="margin-bottom:.75rem">
+      <div class="field" style="flex:2">
+        <label>Meeting Title</label>
+        <input type="text" id="meetTitle" value="Q2 Planning Meeting" oninput="updatePreview()">
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="meetDate" oninput="updatePreview()">
+      </div>
+      <div class="field">
+        <label>Start Time</label>
+        <input type="time" id="meetTime" value="09:00" oninput="updatePreview()">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Location / Link</label>
+        <input type="text" id="meetLoc" value="Conference Room A" oninput="updatePreview()">
+      </div>
+      <div class="field">
+        <label>Facilitator</label>
+        <input type="text" id="meetFac" value="Jane Doe" oninput="updatePreview()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Item -->
+  <div class="card add-section">
+    <p style="font-weight:700;margin-bottom:.75rem">Add Agenda Item</p>
+    <div class="row">
+      <div class="field" style="flex:3">
+        <label>Topic</label>
+        <input type="text" id="itemTopic" placeholder="e.g. Review Q1 results" onkeydown="if(event.key==='Enter')addItem()">
+      </div>
+      <div class="field" style="flex:1;min-width:100px">
+        <label>Duration (min)</label>
+        <input type="number" id="itemDur" value="15" min="1" max="120">
+      </div>
+    </div>
+    <div class="row" style="margin-top:.5rem">
+      <div class="field">
+        <label>Presenter</label>
+        <input type="text" id="itemPres" placeholder="Name (optional)">
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <input type="text" id="itemNotes" placeholder="e.g. Bring last quarter data">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn btn-primary" onclick="addItem()">+ Add Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agenda List -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
+      <div>
+        <span style="font-weight:700">Agenda (<span id="itemCount">0</span> items)</span>
+        &nbsp;·&nbsp;
+        <span class="total-time">Total: <span id="totalTime">0</span> min</span>
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-outline" onclick="copyAgenda()">📋 Copy Text</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+      </div>
+    </div>
+    <div id="agendaList"><p style="color:var(--muted);text-align:center;padding:1.5rem">No agenda items yet.</p></div>
+  </div>
+</div>
+<script>
+let items = JSON.parse(localStorage.getItem('agenda_items') || '[]');
+
+function addItem() {
+  const topic = document.getElementById('itemTopic').value.trim();
+  const dur = parseInt(document.getElementById('itemDur').value) || 15;
+  if (!topic) { alert('Enter a topic.'); return; }
+  items.push({ id: Date.now(), topic, dur, presenter: document.getElementById('itemPres').value.trim(), notes: document.getElementById('itemNotes').value.trim() });
+  document.getElementById('itemTopic').value = '';
+  document.getElementById('itemPres').value = '';
+  document.getElementById('itemNotes').value = '';
+  save(); render();
+}
+
+function deleteItem(id) { items = items.filter(i=>i.id!==id); save(); render(); }
+
+function moveItem(id, dir) {
+  const idx = items.findIndex(i=>i.id===id);
+  if (dir===-1 && idx===0) return;
+  if (dir===1 && idx===items.length-1) return;
+  const tmp = items[idx]; items[idx] = items[idx+dir]; items[idx+dir] = tmp;
+  save(); render();
+}
+
+function save() { localStorage.setItem('agenda_items', JSON.stringify(items)); }
+
+function render() {
+  const count = items.length;
+  const total = items.reduce((a,i)=>a+i.dur, 0);
+  document.getElementById('itemCount').textContent = count;
+  document.getElementById('totalTime').textContent = total;
+
+  if (!count) {
+    document.getElementById('agendaList').innerHTML = '<p style="color:var(--muted);text-align:center;padding:1.5rem">No agenda items yet.</p>';
+    return;
+  }
+
+  let startTime = document.getElementById('meetTime').value || '09:00';
+  let [sh, sm] = startTime.split(':').map(Number);
+  let mins = sh*60 + sm;
+
+  document.getElementById('agendaList').innerHTML = items.map((item, i) => {
+    const startStr = pad(Math.floor(mins/60))+':'+pad(mins%60);
+    mins += item.dur;
+    const endStr = pad(Math.floor(mins/60))+':'+pad(mins%60);
+    return `
+    <div class="agenda-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <strong>${item.topic}</strong>
+        <div class="item-meta">
+          🕐 ${startStr}–${endStr} (${item.dur} min)
+          ${item.presenter ? ` · 👤 ${item.presenter}` : ''}
+          ${item.notes ? ` · 📝 ${item.notes}` : ''}
+        </div>
+      </div>
+      <div class="item-actions">
+        ${i>0?`<button class="btn btn-outline" style="padding:.25rem .5rem" onclick="moveItem(${item.id},-1)">↑</button>`:''}
+        ${i<items.length-1?`<button class="btn btn-outline" style="padding:.25rem .5rem" onclick="moveItem(${item.id},1)">↓</button>`:''}
+        <button class="btn btn-danger" style="padding:.25rem .6rem;font-size:.8rem" onclick="deleteItem(${item.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pad(n) { return String(n).padStart(2,'0'); }
+
+function updatePreview() { render(); }
+
+function copyAgenda() {
+  const title = document.getElementById('meetTitle').value;
+  const date = document.getElementById('meetDate').value;
+  const time = document.getElementById('meetTime').value;
+  const loc = document.getElementById('meetLoc').value;
+  const fac = document.getElementById('meetFac').value;
+  let text = `${title}\n`;
+  if (date) text += `Date: ${date}  |  Time: ${time}\n`;
+  if (loc) text += `Location: ${loc}\n`;
+  if (fac) text += `Facilitator: ${fac}\n`;
+  text += '\n--- AGENDA ---\n\n';
+
+  let mins = (document.getElementById('meetTime').value||'09:00').split(':').map(Number).reduce((h,m,i)=>i===0?h+m*60:h+m,0);
+  items.forEach((item,i) => {
+    const s = pad(Math.floor(mins/60))+':'+pad(mins%60); mins+=item.dur;
+    const e = pad(Math.floor(mins/60))+':'+pad(mins%60);
+    text += `${i+1}. ${item.topic} (${s}–${e}, ${item.dur} min)`;
+    if (item.presenter) text += ` — ${item.presenter}`;
+    if (item.notes) text += `\n   Notes: ${item.notes}`;
+    text += '\n';
+  });
+  text += `\nTotal time: ${items.reduce((a,i)=>a+i.dur,0)} minutes`;
+  navigator.clipboard.writeText(text).then(()=>alert('Agenda copied to clipboard!'));
+}
+
+document.getElementById('meetDate').value = new Date().toISOString().split('T')[0];
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/decision-matrix/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Matrix</title>
+<style>
+:root{--primary:#0f766e;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:960px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+input{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus{border-color:var(--primary)}
+.btn{padding:.55rem 1.1rem;border:none;border-radius:.5rem;font-size:.9rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-sm{padding:.3rem .7rem;font-size:.8rem}
+.btn-danger{background:#dc2626;color:#fff}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.chip-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+.chip{display:flex;align-items:center;gap:.35rem;background:#e0f2fe;color:#0c4a6e;padding:.3rem .7rem;border-radius:2rem;font-size:.85rem;font-weight:600}
+.chip button{background:none;border:none;cursor:pointer;font-size:.9rem;color:#0c4a6e;padding:0;line-height:1}
+.matrix-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+th,td{padding:.65rem .9rem;border:1px solid var(--border);text-align:center}
+th{background:#f8fafc;font-weight:700}
+th.opt-header{text-align:left;min-width:140px}
+td.opt-name{text-align:left;font-weight:600}
+.score-input{width:60px;text-align:center}
+.total-cell{font-weight:800;font-size:1rem}
+.best{background:#d1fae5 !important;color:#065f46}
+.weight-input{width:55px;text-align:center}
+.winner-badge{display:inline-flex;align-items:center;gap:.4rem;background:#d1fae5;color:#065f46;padding:.4rem 1rem;border-radius:2rem;font-weight:700;font-size:.95rem;margin-top:.5rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>⚖️ Decision Matrix</h1>
+    <p>Score options against weighted criteria to find the best choice.</p>
+  </header>
+
+  <div class="two-col">
+    <div class="card">
+      <label>Options <span style="color:var(--muted);font-weight:400;text-transform:none">(e.g. vendors, tools)</span></label>
+      <div style="display:flex;gap:.5rem">
+        <input type="text" id="optInput" placeholder="Option name..." style="flex:1" onkeydown="if(event.key==='Enter')addOption()">
+        <button class="btn btn-primary btn-sm" onclick="addOption()">+</button>
+      </div>
+      <div class="chip-list" id="optChips"></div>
+    </div>
+    <div class="card">
+      <label>Criteria <span style="color:var(--muted);font-weight:400;text-transform:none">(e.g. price, speed)</span></label>
+      <div style="display:flex;gap:.5rem">
+        <input type="text" id="criInput" placeholder="Criterion name..." style="flex:1" onkeydown="if(event.key==='Enter')addCriterion()">
+        <button class="btn btn-primary btn-sm" onclick="addCriterion()">+</button>
+      </div>
+      <div class="chip-list" id="criChips"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+      <p style="font-weight:700">Score Matrix <span style="font-weight:400;font-size:.85rem;color:var(--muted)">(1–10 per cell)</span></p>
+      <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    </div>
+    <div class="matrix-wrap" id="matrixWrap">
+      <p style="color:var(--muted);text-align:center;padding:1.5rem">Add options and criteria to build the matrix.</p>
+    </div>
+    <div id="winnerDiv" style="margin-top:.75rem;display:none">
+      <span class="winner-badge">🏆 Best Choice: <span id="winnerName"></span></span>
+    </div>
+  </div>
+</div>
+<script>
+let options = ['Option A','Option B','Option C'];
+let criteria = [{name:'Cost',w:3},{name:'Quality',w:5},{name:'Speed',w:4}];
+let scores = {};
+
+function addOption() {
+  const v = document.getElementById('optInput').value.trim();
+  if (!v || options.includes(v)) return;
+  options.push(v);
+  document.getElementById('optInput').value = '';
+  render();
+}
+function removeOption(n) { options = options.filter(o=>o!==n); render(); }
+
+function addCriterion() {
+  const v = document.getElementById('criInput').value.trim();
+  if (!v || criteria.find(c=>c.name===v)) return;
+  criteria.push({name:v, w:3});
+  document.getElementById('criInput').value = '';
+  render();
+}
+function removeCriterion(n) { criteria = criteria.filter(c=>c.name!==n); render(); }
+
+function render() {
+  // Chips
+  document.getElementById('optChips').innerHTML = options.map(o =>
+    `<span class="chip">${o}<button onclick="removeOption('${o.replace(/'/g,"\\'")}')">×</button></span>`).join('');
+  document.getElementById('criChips').innerHTML = criteria.map(c =>
+    `<span class="chip">${c.name} (w:${c.w})<button onclick="removeCriterion('${c.name.replace(/'/g,"\\'")}')">×</button></span>`).join('');
+
+  if (!options.length || !criteria.length) {
+    document.getElementById('matrixWrap').innerHTML = '<p style="color:var(--muted);text-align:center;padding:1.5rem">Add options and criteria to build the matrix.</p>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th class="opt-header">Option</th>';
+  criteria.forEach(c => html += `<th>${c.name}<br><small style="font-weight:400;color:var(--muted)">Weight: <input type="number" class="weight-input" min="1" max="10" value="${c.w}" onchange="setCriterionWeight('${c.name}',this.value)"></small></th>`);
+  html += '<th>Weighted Total</th></tr></thead><tbody>';
+
+  options.forEach(o => {
+    html += `<tr><td class="opt-name">${o}</td>`;
+    criteria.forEach(c => {
+      const key = o+'|'+c.name;
+      const v = scores[key] ?? 5;
+      html += `<td><input type="number" class="score-input" min="1" max="10" value="${v}" onchange="setScore('${o.replace(/'/g,"\\'")}','${c.name.replace(/'/g,"\\'")}',this.value)"></td>`;
+    });
+    html += '<td class="total-cell" id="tot_'+encodeId(o)+'">—</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('matrixWrap').innerHTML = html;
+}
+
+function encodeId(s) { return btoa(encodeURIComponent(s)).replace(/=/g,''); }
+
+function setCriterionWeight(name, val) {
+  const c = criteria.find(c=>c.name===name);
+  if (c) c.w = Math.max(1, Math.min(10, parseInt(val)||1));
+  calculate();
+}
+
+function setScore(opt, cri, val) {
+  scores[opt+'|'+cri] = Math.max(1, Math.min(10, parseInt(val)||1));
+}
+
+function calculate() {
+  if (!options.length || !criteria.length) return;
+  const totals = {};
+  options.forEach(o => {
+    let sum = 0;
+    criteria.forEach(c => {
+      const key = o+'|'+c.name;
+      sum += (scores[key] ?? 5) * c.w;
+    });
+    totals[o] = sum;
+  });
+
+  const maxTotal = Math.max(...Object.values(totals));
+  options.forEach(o => {
+    const el = document.getElementById('tot_'+encodeId(o));
+    if (el) {
+      el.textContent = totals[o];
+      el.parentElement.classList.toggle('best', totals[o] === maxTotal);
+    }
+  });
+
+  const winner = options.find(o => totals[o] === maxTotal);
+  document.getElementById('winnerName').textContent = winner;
+  document.getElementById('winnerDiv').style.display = '';
+}
+
+render(); calculate();
+</script>
+</body>
+</html>

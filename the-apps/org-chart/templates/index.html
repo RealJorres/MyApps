@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/org-chart/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Org Chart Builder</title>
+<style>
+:root{--primary:#1d4ed8;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:960px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+input,select{padding:.5rem .7rem;border:1px solid var(--border);border-radius:.5rem;font-size:.875rem;background:#fff;color:var(--text);outline:none;font-family:inherit;width:100%}
+input:focus,select:focus{border-color:var(--primary)}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end}
+.field{flex:1;min-width:120px;display:flex;flex-direction:column;gap:.35rem}
+.btn{padding:.5rem 1.1rem;border:none;border-radius:.5rem;font-size:.875rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.87}
+.btn-sm{padding:.28rem .65rem;font-size:.78rem}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+th{padding:.45rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border)}
+td{padding:.5rem .75rem;border-bottom:1px solid var(--border)}
+.canvas-wrap{overflow:auto;background:#f8fafc;border:1px solid var(--border);border-radius:.75rem;padding:1rem;min-height:300px}
+canvas{display:block}
+.dl-row{display:flex;justify-content:flex-end;gap:.5rem;margin-top:.75rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🏢 Org Chart Builder</h1>
+    <p>Add people with roles, define the hierarchy, and export as PNG.</p>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div class="field" style="flex:2">
+        <label>Name</label>
+        <input type="text" id="pName" placeholder="Jane Doe" onkeydown="if(event.key==='Enter')addPerson()">
+      </div>
+      <div class="field" style="flex:2">
+        <label>Title / Role</label>
+        <input type="text" id="pTitle" placeholder="Chief Executive Officer">
+      </div>
+      <div class="field">
+        <label>Department</label>
+        <input type="text" id="pDept" placeholder="Executive">
+      </div>
+      <div class="field">
+        <label>Reports To</label>
+        <select id="pParent"><option value="">(No one — root)</option></select>
+      </div>
+      <div class="field" style="flex:0 0 auto">
+        <label>Color</label>
+        <input type="color" id="pColor" value="#1d4ed8" style="width:44px;height:36px;padding:.2rem">
+      </div>
+      <div style="align-self:flex-end"><button class="btn btn-primary" onclick="addPerson()">+ Add</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+      <p style="font-weight:700">People (<span id="pCount">0</span>)</p>
+      <button class="btn btn-primary" onclick="renderChart()">Draw Chart</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Name</th><th>Title</th><th>Dept</th><th>Reports To</th><th></th></tr></thead>
+        <tbody id="personList"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="orgCanvas"></canvas>
+    </div>
+    <div class="dl-row">
+      <button class="btn btn-outline" onclick="download()">⬇ Download PNG</button>
+    </div>
+  </div>
+</div>
+<script>
+const KEY = 'orgchart_v1';
+let people = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+if (!people.length) {
+  people = [
+    {id:1,name:'Alice Johnson',title:'CEO',dept:'Executive',parent:null,color:'#1d4ed8'},
+    {id:2,name:'Bob Smith',title:'CTO',dept:'Engineering',parent:1,color:'#7c3aed'},
+    {id:3,name:'Carol White',title:'CMO',dept:'Marketing',parent:1,color:'#059669'},
+    {id:4,name:'Dan Lee',title:'VP Engineering',dept:'Engineering',parent:2,color:'#7c3aed'},
+    {id:5,name:'Eva Brown',title:'Sr. Developer',dept:'Engineering',parent:4,color:'#7c3aed'},
+    {id:6,name:'Frank Kim',title:'Marketing Lead',dept:'Marketing',parent:3,color:'#059669'},
+  ];
+  save();
+}
+
+function save() { localStorage.setItem(KEY, JSON.stringify(people)); }
+
+function addPerson() {
+  const name = document.getElementById('pName').value.trim();
+  if (!name) return;
+  const parent = document.getElementById('pParent').value;
+  people.push({ id: Date.now(), name, title: document.getElementById('pTitle').value.trim(), dept: document.getElementById('pDept').value.trim(), parent: parent ? parseInt(parent) : null, color: document.getElementById('pColor').value });
+  document.getElementById('pName').value = ''; document.getElementById('pTitle').value = '';
+  save(); render();
+}
+
+function deletePerson(id) {
+  // Remove and re-parent children
+  people = people.filter(p => p.id !== id);
+  people.forEach(p => { if (p.parent === id) p.parent = null; });
+  save(); render();
+}
+
+function render() {
+  // Update select
+  const sel = document.getElementById('pParent');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">(No one — root)</option>';
+  people.forEach(p => sel.innerHTML += `<option value="${p.id}">${p.name}</option>`);
+  if (cur) sel.value = cur;
+
+  // Update table
+  document.getElementById('pCount').textContent = people.length;
+  const tbody = document.getElementById('personList');
+  if (!people.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted)">No people yet.</td></tr>'; return; }
+  tbody.innerHTML = people.map(p => {
+    const parent = people.find(x=>x.id===p.parent);
+    return `<tr>
+      <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:.4rem"></span><strong>${p.name}</strong></td>
+      <td>${p.title||'—'}</td>
+      <td>${p.dept||'—'}</td>
+      <td>${parent?parent.name:'—'}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deletePerson(${p.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+  renderChart();
+}
+
+function buildTree() {
+  // Build adjacency
+  const nodes = {};
+  people.forEach(p => nodes[p.id] = { ...p, children: [] });
+  const roots = [];
+  people.forEach(p => {
+    if (p.parent && nodes[p.parent]) nodes[p.parent].children.push(nodes[p.id]);
+    else roots.push(nodes[p.id]);
+  });
+  return roots;
+}
+
+function treeWidth(node) {
+  if (!node.children.length) return 1;
+  return node.children.reduce((a,c)=>a+treeWidth(c),0);
+}
+
+const BOX_W = 140, BOX_H = 52, H_GAP = 20, V_GAP = 60;
+
+function calcPositions(nodes) {
+  const positions = {};
+  function place(node, x, y) {
+    positions[node.id] = { x, y };
+    if (!node.children.length) return;
+    const tw = treeWidth(node);
+    let cx = x - (tw * (BOX_W + H_GAP) - H_GAP) / 2 + (BOX_W + H_GAP) / 2 - BOX_W/2;
+    node.children.forEach(child => {
+      const cw = treeWidth(child);
+      place(child, cx + (cw * (BOX_W + H_GAP) - H_GAP) / 2 - BOX_W/2, y + BOX_H + V_GAP);
+      cx += cw * (BOX_W + H_GAP);
+    });
+  }
+  // Place all roots
+  let rootX = 0;
+  nodes.forEach(root => {
+    const tw = treeWidth(root);
+    place(root, rootX + (tw * (BOX_W + H_GAP) - H_GAP) / 2 - BOX_W/2, 20);
+    rootX += tw * (BOX_W + H_GAP);
+  });
+  return positions;
+}
+
+function renderChart() {
+  if (!people.length) return;
+  const roots = buildTree();
+  const positions = calcPositions(roots);
+
+  // Calculate canvas size
+  const xs = Object.values(positions).map(p=>p.x);
+  const ys = Object.values(positions).map(p=>p.y);
+  const W = Math.max(...xs) + BOX_W + 40;
+  const H = Math.max(...ys) + BOX_H + 40;
+
+  const canvas = document.getElementById('orgCanvas');
+  canvas.width = Math.max(W, 400);
+  canvas.height = Math.max(H, 200);
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw connections
+  function drawConnections(node) {
+    const pos = positions[node.id];
+    node.children.forEach(child => {
+      const cpos = positions[child.id];
+      const x1 = pos.x + BOX_W/2, y1 = pos.y + BOX_H;
+      const x2 = cpos.x + BOX_W/2, y2 = cpos.y;
+      const midy = (y1+y2)/2;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.bezierCurveTo(x1, midy, x2, midy, x2, y2);
+      ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.stroke();
+      drawConnections(child);
+    });
+  }
+  roots.forEach(r => drawConnections(r));
+
+  // Draw boxes
+  function drawBoxes(node) {
+    const pos = positions[node.id];
+    const x = pos.x, y = pos.y;
+    const color = node.color || '#1d4ed8';
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,.07)';
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x+3, y+3, BOX_W, BOX_H, 8) : ctx.rect(x+3, y+3, BOX_W, BOX_H);
+    ctx.fill();
+
+    // Box
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, BOX_W, BOX_H, 8) : ctx.rect(x, y, BOX_W, BOX_H);
+    ctx.fill();
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, BOX_W, BOX_H, 8) : ctx.rect(x, y, BOX_W, BOX_H);
+    ctx.stroke();
+
+    // Color accent bar
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, BOX_W, 7, [8,8,0,0]) : ctx.rect(x, y, BOX_W, 7);
+    ctx.fill();
+
+    // Name
+    ctx.fillStyle = '#1e293b'; ctx.font = 'bold 11px system-ui'; ctx.textAlign = 'center';
+    const name = node.name.length > 17 ? node.name.slice(0,16)+'…' : node.name;
+    ctx.fillText(name, x + BOX_W/2, y + 24);
+
+    // Title
+    if (node.title) {
+      ctx.fillStyle = '#64748b'; ctx.font = '10px system-ui';
+      const title = node.title.length > 20 ? node.title.slice(0,19)+'…' : node.title;
+      ctx.fillText(title, x + BOX_W/2, y + 38);
+    }
+
+    node.children.forEach(drawBoxes);
+  }
+  roots.forEach(r => drawBoxes(r));
+}
+
+function download() {
+  const a = document.createElement('a'); a.download = 'org-chart.png';
+  a.href = document.getElementById('orgCanvas').toDataURL(); a.click();
+}
+
+render();
+</script>
+</body>
+</html>

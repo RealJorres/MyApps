@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/chart-visualizer/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart / Data Visualizer</title>
+<style>
+:root{--primary:#0891b2;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:900px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+textarea,select,input{width:100%;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+textarea:focus,select:focus,input:focus{border-color:var(--primary)}
+.row{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end}
+.row .field{flex:1;min-width:140px}
+.btn{padding:.6rem 1.25rem;border:none;border-radius:.5rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{opacity:.87}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{background:var(--bg)}
+.type-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.type-btns button{padding:.45rem 1rem;border:1px solid var(--border);border-radius:.5rem;font-size:.85rem;font-weight:600;cursor:pointer;background:#fff;color:var(--muted)}
+.type-btns button.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+canvas{display:block;width:100%;height:auto;border-radius:.5rem}
+.canvas-wrap{position:relative;background:#fff;border:1px solid var(--border);border-radius:.75rem;padding:.75rem}
+.dl-row{display:flex;justify-content:flex-end;margin-top:.75rem}
+.hint{font-size:.78rem;color:var(--muted);margin-top:.35rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📊 Chart / Data Visualizer</h1>
+    <p>Paste CSV data and instantly generate bar, pie, or line charts.</p>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div class="field" style="flex:2">
+        <label>CSV Data</label>
+        <textarea id="csvInput" rows="6" placeholder="Label,Value&#10;Q1,42000&#10;Q2,58000&#10;Q3,61000&#10;Q4,75000"></textarea>
+        <div class="hint">First row = headers. First column = labels, remaining columns = series.</div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:1rem">
+      <div class="field">
+        <label>Chart Title</label>
+        <input type="text" id="chartTitle" placeholder="My Chart">
+      </div>
+      <div class="field">
+        <label>Color Palette</label>
+        <select id="palette">
+          <option value="ocean">Ocean</option>
+          <option value="sunset">Sunset</option>
+          <option value="forest">Forest</option>
+          <option value="candy">Candy</option>
+        </select>
+      </div>
+      <div class="field" style="flex:0 0 auto">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" onclick="draw()">Generate</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="type-btns">
+      <button class="active" onclick="setType('bar',this)">Bar</button>
+      <button onclick="setType('hbar',this)">Horizontal Bar</button>
+      <button onclick="setType('line',this)">Line</button>
+      <button onclick="setType('pie',this)">Pie</button>
+      <button onclick="setType('doughnut',this)">Doughnut</button>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="chart" width="800" height="420"></canvas>
+    </div>
+    <div class="dl-row">
+      <button class="btn btn-outline" onclick="download()">⬇ Download PNG</button>
+    </div>
+  </div>
+</div>
+<script>
+const PALETTES = {
+  ocean:  ['#0891b2','#0e7490','#06b6d4','#67e8f9','#164e63','#a5f3fc','#0284c7','#0369a1'],
+  sunset: ['#f97316','#ea580c','#fb923c','#fbbf24','#b45309','#fde68a','#dc2626','#ef4444'],
+  forest: ['#16a34a','#15803d','#4ade80','#86efac','#166534','#bbf7d0','#65a30d','#84cc16'],
+  candy:  ['#7c3aed','#8b5cf6','#a78bfa','#ec4899','#db2777','#f9a8d4','#6366f1','#4f46e5'],
+};
+let chartType = 'bar';
+let parsed = null;
+
+function setType(t, btn) {
+  chartType = t;
+  document.querySelectorAll('.type-btns button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (parsed) render();
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length < 2) return null;
+  const headers = lines[0].split(',').map(h => h.trim());
+  const labels = [], series = {};
+  headers.slice(1).forEach(h => series[h] = []);
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim());
+    labels.push(cols[0] || '');
+    headers.slice(1).forEach((h, j) => {
+      series[h].push(parseFloat(cols[j+1]) || 0);
+    });
+  }
+  return { labels, series, headers: headers.slice(1) };
+}
+
+function draw() {
+  const text = document.getElementById('csvInput').value;
+  parsed = parseCSV(text);
+  if (!parsed) { alert('Invalid CSV. Need at least a header row and one data row.'); return; }
+  render();
+}
+
+function render() {
+  if (!parsed) return;
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const palette = PALETTES[document.getElementById('palette').value];
+  const title = document.getElementById('chartTitle').value || '';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (chartType === 'bar') drawBar(ctx, parsed, palette, title, canvas, false);
+  else if (chartType === 'hbar') drawBar(ctx, parsed, palette, title, canvas, true);
+  else if (chartType === 'line') drawLine(ctx, parsed, palette, title, canvas);
+  else if (chartType === 'pie') drawPie(ctx, parsed, palette, title, canvas, false);
+  else if (chartType === 'doughnut') drawPie(ctx, parsed, palette, title, canvas, true);
+}
+
+function drawBar(ctx, data, palette, title, canvas, horiz) {
+  const W = canvas.width, H = canvas.height;
+  const pad = { top: 60, right: 30, bottom: 70, left: horiz ? 120 : 60 };
+  const cw = W - pad.left - pad.right, ch = H - pad.top - pad.bottom;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+
+  // Title
+  if (title) {
+    ctx.fillStyle = '#1e293b'; ctx.font = 'bold 18px system-ui';
+    ctx.textAlign = 'center'; ctx.fillText(title, W/2, 35);
+  }
+
+  const seriesKeys = data.headers;
+  const n = data.labels.length;
+  const allVals = seriesKeys.flatMap(k => data.series[k]);
+  const maxVal = Math.max(...allVals) * 1.15;
+
+  if (!horiz) {
+    // Vertical bar
+    const groupW = cw / n, barW = (groupW * 0.7) / seriesKeys.length;
+    // Grid
+    for (let i = 0; i <= 5; i++) {
+      const y = pad.top + ch - (i / 5) * ch;
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px system-ui'; ctx.textAlign = 'right';
+      ctx.fillText(fmt(maxVal * i / 5), pad.left - 6, y + 4);
+    }
+    // Bars
+    data.labels.forEach((lbl, i) => {
+      seriesKeys.forEach((k, s) => {
+        const val = data.series[k][i];
+        const x = pad.left + i * groupW + (groupW - barW * seriesKeys.length) / 2 + s * barW;
+        const bh = (val / maxVal) * ch;
+        const y = pad.top + ch - bh;
+        ctx.fillStyle = palette[s % palette.length];
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(x, y, barW - 2, bh, [3,3,0,0]) : ctx.rect(x, y, barW - 2, bh);
+        ctx.fill();
+        // value label
+        if (bh > 18) {
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'center';
+          ctx.fillText(fmt(val), x + (barW-2)/2, y + 13);
+        }
+      });
+      // x label
+      ctx.fillStyle = '#64748b'; ctx.font = '11px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText(lbl, pad.left + i * groupW + groupW / 2, pad.top + ch + 18);
+    });
+  } else {
+    // Horizontal bar
+    const groupH = ch / n, barH = (groupH * 0.7) / seriesKeys.length;
+    for (let i = 0; i <= 5; i++) {
+      const x = pad.left + (i / 5) * cw;
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, pad.top + ch); ctx.stroke();
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText(fmt(maxVal * i / 5), x, pad.top + ch + 18);
+    }
+    data.labels.forEach((lbl, i) => {
+      seriesKeys.forEach((k, s) => {
+        const val = data.series[k][i];
+        const y = pad.top + i * groupH + (groupH - barH * seriesKeys.length) / 2 + s * barH;
+        const bw = (val / maxVal) * cw;
+        ctx.fillStyle = palette[s % palette.length];
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(pad.left, y, bw, barH - 2, [0,3,3,0]) : ctx.rect(pad.left, y, bw, barH - 2);
+        ctx.fill();
+      });
+      ctx.fillStyle = '#64748b'; ctx.font = '11px system-ui'; ctx.textAlign = 'right';
+      ctx.fillText(lbl, pad.left - 6, pad.top + i * groupH + groupH / 2 + 4);
+    });
+  }
+
+  // Legend
+  if (seriesKeys.length > 1) drawLegend(ctx, seriesKeys, palette, W, H);
+}
+
+function drawLine(ctx, data, palette, title, canvas) {
+  const W = canvas.width, H = canvas.height;
+  const pad = { top: 60, right: 30, bottom: 70, left: 60 };
+  const cw = W - pad.left - pad.right, ch = H - pad.top - pad.bottom;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+  if (title) { ctx.fillStyle = '#1e293b'; ctx.font = 'bold 18px system-ui'; ctx.textAlign = 'center'; ctx.fillText(title, W/2, 35); }
+
+  const seriesKeys = data.headers;
+  const n = data.labels.length;
+  const allVals = seriesKeys.flatMap(k => data.series[k]);
+  const maxVal = Math.max(...allVals) * 1.15;
+
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.top + ch - (i / 5) * ch;
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+    ctx.fillStyle = '#94a3b8'; ctx.font = '11px system-ui'; ctx.textAlign = 'right';
+    ctx.fillText(fmt(maxVal * i / 5), pad.left - 6, y + 4);
+  }
+
+  seriesKeys.forEach((k, s) => {
+    const color = palette[s % palette.length];
+    const pts = data.series[k].map((v, i) => ({
+      x: pad.left + (n === 1 ? cw / 2 : i / (n - 1) * cw),
+      y: pad.top + ch - (v / maxVal) * ch
+    }));
+    // Area fill
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pad.top + ch);
+    pts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.lineTo(pts[pts.length-1].x, pad.top + ch);
+    ctx.closePath();
+    ctx.fillStyle = color + '22';
+    ctx.fill();
+    // Line
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
+    // Dots
+    pts.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#fff'; ctx.fill();
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+    });
+  });
+
+  data.labels.forEach((lbl, i) => {
+    const x = pad.left + (n === 1 ? cw / 2 : i / (n - 1) * cw);
+    ctx.fillStyle = '#64748b'; ctx.font = '11px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(lbl, x, pad.top + ch + 18);
+  });
+
+  if (seriesKeys.length > 1) drawLegend(ctx, seriesKeys, palette, W, H);
+}
+
+function drawPie(ctx, data, palette, title, canvas, doughnut) {
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+  if (title) { ctx.fillStyle = '#1e293b'; ctx.font = 'bold 18px system-ui'; ctx.textAlign = 'center'; ctx.fillText(title, W/2, 35); }
+
+  // Use only first series
+  const k = data.headers[0];
+  const vals = data.series[k];
+  const total = vals.reduce((a, b) => a + b, 0);
+  const cx = W / 2, cy = H / 2 + 10;
+  const r = Math.min(W, H) / 2 - 60;
+  let angle = -Math.PI / 2;
+
+  vals.forEach((v, i) => {
+    const slice = (v / total) * Math.PI * 2;
+    const color = palette[i % palette.length];
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = color; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+
+    // Percent label
+    const mid = angle + slice / 2;
+    const labelR = doughnut ? r * 0.65 : r * 0.65;
+    const lx = cx + Math.cos(mid) * labelR;
+    const ly = cy + Math.sin(mid) * labelR;
+    if (slice > 0.2) {
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText((v / total * 100).toFixed(1) + '%', lx, ly + 4);
+    }
+    angle += slice;
+  });
+
+  if (doughnut) {
+    ctx.beginPath(); ctx.arc(cx, cy, r * 0.45, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.fillStyle = '#1e293b'; ctx.font = 'bold 16px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(fmt(total), cx, cy + 6);
+  }
+
+  // Legend
+  const lx0 = 24, ly0 = H - 40;
+  data.labels.forEach((lbl, i) => {
+    const lx = lx0 + i * 110;
+    if (lx + 100 > W) return;
+    ctx.fillStyle = palette[i % palette.length];
+    ctx.fillRect(lx, ly0, 12, 12);
+    ctx.fillStyle = '#64748b'; ctx.font = '11px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText(lbl, lx + 16, ly0 + 10);
+  });
+}
+
+function drawLegend(ctx, keys, palette, W, H) {
+  const lx0 = 24, ly0 = H - 40;
+  keys.forEach((k, i) => {
+    const lx = lx0 + i * 120;
+    if (lx + 110 > W) return;
+    ctx.fillStyle = palette[i % palette.length];
+    ctx.fillRect(lx, ly0, 12, 12);
+    ctx.fillStyle = '#64748b'; ctx.font = '11px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText(k, lx + 16, ly0 + 10);
+  });
+}
+
+function fmt(v) {
+  if (Math.abs(v) >= 1e6) return (v/1e6).toFixed(1) + 'M';
+  if (Math.abs(v) >= 1e3) return (v/1e3).toFixed(1) + 'K';
+  return v % 1 === 0 ? v : v.toFixed(1);
+}
+
+function download() {
+  const canvas = document.getElementById('chart');
+  const a = document.createElement('a');
+  a.download = 'chart.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// Auto-render on load with sample data
+window.onload = () => draw();
+</script>
+</body>
+</html>

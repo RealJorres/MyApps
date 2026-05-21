@@ -838,5 +838,117 @@
     "description": "Enter any number to get its prime factorization, all divisors, and properties like perfect number check.",
     "port": 5120, "path": "./the-apps/prime-factorizer", "entry": "app.py",
     "icon": "🔢", "color": "#7c3aed", "tags": ["Prime", "Factors", "Math", "Science"], "category": "Science / Education"
+  },
+  {
+    "id": "chart-visualizer",
+    "name": "Chart / Data Visualizer",
+    "description": "Paste CSV data and instantly generate bar, horizontal bar, line, pie, or doughnut charts. Download as PNG.",
+    "port": 5121, "path": "./the-apps/chart-visualizer", "entry": "app.py",
+    "icon": "📊", "color": "#0891b2", "tags": ["Chart", "Data", "Visualize", "CSV"], "category": "Finance / Math"
+  },
+  {
+    "id": "pivot-table",
+    "name": "Pivot Table Builder",
+    "description": "Upload or paste CSV data, choose row, column, and value fields with aggregation to generate a pivot table summary.",
+    "port": 5122, "path": "./the-apps/pivot-table", "entry": "app.py",
+    "icon": "🔢", "color": "#059669", "tags": ["CSV", "Pivot", "Data", "Aggregate"], "category": "Document / File"
+  },
+  {
+    "id": "survey-builder",
+    "name": "Survey Builder",
+    "description": "Create surveys with multiple choice, free text, rating, and yes/no questions. Collect and tally responses in your browser.",
+    "port": 5123, "path": "./the-apps/survey-builder", "entry": "app.py",
+    "icon": "📋", "color": "#7c3aed", "tags": ["Survey", "Form", "Responses", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "gantt-chart",
+    "name": "Gantt Chart Maker",
+    "description": "Add tasks with start and end dates to generate a visual project timeline. Highlights today and shows durations. Export as PNG.",
+    "port": 5124, "path": "./the-apps/gantt-chart", "entry": "app.py",
+    "icon": "📅", "color": "#1d4ed8", "tags": ["Gantt", "Project", "Timeline", "Planning"], "category": "Text / Productivity"
+  },
+  {
+    "id": "decision-matrix",
+    "name": "Decision Matrix",
+    "description": "Score options against weighted criteria to find the best choice objectively. Great for vendor, tool, or strategy selection.",
+    "port": 5125, "path": "./the-apps/decision-matrix", "entry": "app.py",
+    "icon": "⚖️", "color": "#0f766e", "tags": ["Decision", "Matrix", "Analysis", "Strategy"], "category": "Text / Productivity"
+  },
+  {
+    "id": "swot-analysis",
+    "name": "SWOT Analysis Board",
+    "description": "Build a 4-quadrant SWOT board — Strengths, Weaknesses, Opportunities, Threats. Add items and print.",
+    "port": 5126, "path": "./the-apps/swot-analysis", "entry": "app.py",
+    "icon": "🔍", "color": "#d97706", "tags": ["SWOT", "Strategy", "Analysis", "Planning"], "category": "Text / Productivity"
+  },
+  {
+    "id": "okr-tracker",
+    "name": "OKR Tracker",
+    "description": "Define Objectives and Key Results, set target progress per KR, and track overall completion percentage.",
+    "port": 5127, "path": "./the-apps/okr-tracker", "entry": "app.py",
+    "icon": "🎯", "color": "#16a34a", "tags": ["OKR", "Goals", "KPI", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "business-letter",
+    "name": "Business Letter Generator",
+    "description": "Fill in sender, recipient, subject, and body to generate a clean formatted business letter. Print or download as PDF.",
+    "port": 5128, "path": "./the-apps/business-letter", "entry": "app.py",
+    "icon": "✉️", "color": "#1d4ed8", "tags": ["Letter", "Business", "Document", "Print"], "category": "Document / File"
+  },
+  {
+    "id": "certificate-generator",
+    "name": "Certificate Generator",
+    "description": "Create certificates of completion, appreciation, achievement, or participation. Customize colors and download as PNG.",
+    "port": 5129, "path": "./the-apps/certificate-generator", "entry": "app.py",
+    "icon": "🏆", "color": "#d97706", "tags": ["Certificate", "Award", "Document", "HR"], "category": "Document / File"
+  },
+  {
+    "id": "barcode-generator",
+    "name": "Barcode Generator",
+    "description": "Generate Code 128 barcodes from any printable text. Customize bar height, color, and module width. Download as PNG.",
+    "port": 5130, "path": "./the-apps/barcode-generator", "entry": "app.py",
+    "icon": "▦", "color": "#0f766e", "tags": ["Barcode", "Code128", "Scanner", "Inventory"], "category": "Document / File"
+  },
+  {
+    "id": "meeting-agenda",
+    "name": "Meeting Agenda Builder",
+    "description": "Create structured meeting agendas with timed items, presenters, and notes. Auto-calculates time slots. Copy or print.",
+    "port": 5131, "path": "./the-apps/meeting-agenda", "entry": "app.py",
+    "icon": "📋", "color": "#be185d", "tags": ["Meeting", "Agenda", "Timer", "Productivity"], "category": "Text / Productivity"
+  },
+  {
+    "id": "break-even-calculator",
+    "name": "Break-Even Calculator",
+    "description": "Enter fixed costs, variable cost per unit, and price per unit to find the break-even point with a visual chart.",
+    "port": 5132, "path": "./the-apps/break-even-calculator", "entry": "app.py",
+    "icon": "📉", "color": "#dc2626", "tags": ["Break-Even", "Finance", "Business", "Analysis"], "category": "Finance / Math"
+  },
+  {
+    "id": "depreciation-calculator",
+    "name": "Depreciation Calculator",
+    "description": "Calculate Straight-Line, Declining Balance, Double Declining, or SYD depreciation with a full schedule and chart.",
+    "port": 5133, "path": "./the-apps/depreciation-calculator", "entry": "app.py",
+    "icon": "📉", "color": "#7c3aed", "tags": ["Depreciation", "Asset", "Finance", "Accounting"], "category": "Finance / Math"
+  },
+  {
+    "id": "invoice-tracker",
+    "name": "Invoice Tracker",
+    "description": "Log invoices with client, amount, due date, and status. Track paid, unpaid, and overdue totals. Saved in browser.",
+    "port": 5134, "path": "./the-apps/invoice-tracker", "entry": "app.py",
+    "icon": "🧾", "color": "#0891b2", "tags": ["Invoice", "Finance", "Tracker", "Accounting"], "category": "Finance / Math"
+  },
+  {
+    "id": "meeting-time-planner",
+    "name": "Meeting Time Planner",
+    "description": "Add cities or timezones and see a 24-hour color-coded overlap grid to find the best meeting time across regions.",
+    "port": 5135, "path": "./the-apps/meeting-time-planner", "entry": "app.py",
+    "icon": "🌍", "color": "#0891b2", "tags": ["Meeting", "Timezone", "Schedule", "Global"], "category": "Text / Productivity"
+  },
+  {
+    "id": "org-chart",
+    "name": "Org Chart Builder",
+    "description": "Add people with names, titles, and reporting lines to build a visual organization chart. Export as PNG.",
+    "port": 5136, "path": "./the-apps/org-chart", "entry": "app.py",
+    "icon": "🏢", "color": "#1d4ed8", "tags": ["Org Chart", "Team", "HR", "Structure"], "category": "Text / Productivity"
   }
 ]

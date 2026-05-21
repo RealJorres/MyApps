@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://jorresapps.onrender.com/certificate-generator/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate Generator</title>
+<style>
+:root{--primary:#d97706;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+.container{max-width:900px;margin:0 auto}
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:1.25rem}
+@media(max-width:700px){.layout{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+input,select{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit;margin-bottom:.8rem}
+input:focus,select:focus{border-color:var(--primary)}
+.btn{padding:.6rem 1.2rem;border:none;border-radius:.5rem;font-weight:600;font-size:.9rem;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.87}
+.canvas-wrap{background:#e2e8f0;border-radius:.75rem;padding:.75rem;text-align:center}
+canvas{max-width:100%;border-radius:.4rem;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.dl-row{display:flex;justify-content:center;gap:.5rem;margin-top:.75rem}
+.palette{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+.swatch{width:28px;height:28px;border-radius:.4rem;cursor:pointer;border:3px solid transparent;transition:border-color .15s}
+.swatch.active{border-color:#1e293b}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🏆 Certificate Generator</h1>
+    <p>Create certificates of completion or appreciation and download as PNG.</p>
+  </header>
+
+  <div class="layout">
+    <div class="card">
+      <label>Certificate Type</label>
+      <select id="certType" onchange="render()">
+        <option value="completion">Certificate of Completion</option>
+        <option value="appreciation">Certificate of Appreciation</option>
+        <option value="achievement">Certificate of Achievement</option>
+        <option value="participation">Certificate of Participation</option>
+        <option value="excellence">Certificate of Excellence</option>
+      </select>
+
+      <label>Recipient Name</label>
+      <input type="text" id="recipName" value="Jane Doe" oninput="render()">
+
+      <label>For / Award Description</label>
+      <input type="text" id="awardDesc" value="Completing the Advanced Leadership Training Program" oninput="render()">
+
+      <label>Issued By</label>
+      <input type="text" id="issuedBy" value="Acme Corporation" oninput="render()">
+
+      <label>Signatory</label>
+      <input type="text" id="signatory" value="John Smith, CEO" oninput="render()">
+
+      <label>Date</label>
+      <input type="date" id="certDate" oninput="render()">
+
+      <label>Color Theme</label>
+      <div class="palette">
+        <div class="swatch active" style="background:#b45309" data-colors='["#b45309","#92400e","#fef3c7","#fbbf24"]' onclick="setTheme(this)"></div>
+        <div class="swatch" style="background:#1d4ed8" data-colors='["#1d4ed8","#1e3a8a","#dbeafe","#3b82f6"]' onclick="setTheme(this)"></div>
+        <div class="swatch" style="background:#7c3aed" data-colors='["#7c3aed","#4c1d95","#ede9fe","#a78bfa"]' onclick="setTheme(this)"></div>
+        <div class="swatch" style="background:#059669" data-colors='["#059669","#064e3b","#d1fae5","#34d399"]' onclick="setTheme(this)"></div>
+        <div class="swatch" style="background:#dc2626" data-colors='["#dc2626","#7f1d1d","#fee2e2","#f87171"]' onclick="setTheme(this)"></div>
+        <div class="swatch" style="background:#374151" data-colors='["#374151","#111827","#f3f4f6","#6b7280"]' onclick="setTheme(this)"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="canvas-wrap">
+        <canvas id="cert" width="800" height="560"></canvas>
+      </div>
+      <div class="dl-row">
+        <button class="btn btn-primary" onclick="download()">⬇ Download PNG</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+let theme = ['#b45309','#92400e','#fef3c7','#fbbf24'];
+
+function setTheme(el) {
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  theme = JSON.parse(el.dataset.colors);
+  render();
+}
+
+function g(id) { return document.getElementById(id).value; }
+
+function render() {
+  const canvas = document.getElementById('cert');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const [c1,c2,c3,c4] = theme;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = c3;
+  ctx.fillRect(0, 0, W, H);
+
+  // Decorative border - outer
+  ctx.strokeStyle = c1;
+  ctx.lineWidth = 12;
+  ctx.strokeRect(12, 12, W-24, H-24);
+
+  // Inner border double line
+  ctx.strokeStyle = c4;
+  ctx.lineWidth = 3;
+  ctx.strokeRect(28, 28, W-56, H-56);
+  ctx.strokeStyle = c1;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(34, 34, W-68, H-68);
+
+  // Corner decorations
+  const corners = [[44,44],[W-44,44],[44,H-44],[W-44,H-44]];
+  corners.forEach(([cx,cy]) => {
+    ctx.fillStyle = c1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = c4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // Decorative header band
+  ctx.fillStyle = c1;
+  ctx.fillRect(44, 44, W-88, 5);
+
+  // Seal / medallion
+  const sx = W/2, sy = 110;
+  for (let i = 0; i < 12; i++) {
+    const a = (i/12) * Math.PI*2;
+    ctx.beginPath();
+    ctx.moveTo(sx + Math.cos(a)*30, sy + Math.sin(a)*30);
+    ctx.lineTo(sx + Math.cos(a)*42, sy + Math.sin(a)*42);
+    ctx.strokeStyle = c4; ctx.lineWidth = 5; ctx.stroke();
+  }
+  ctx.beginPath(); ctx.arc(sx, sy, 32, 0, Math.PI*2);
+  ctx.fillStyle = c1; ctx.fill();
+  ctx.beginPath(); ctx.arc(sx, sy, 26, 0, Math.PI*2);
+  ctx.fillStyle = c4; ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 20px serif'; ctx.textAlign = 'center';
+  ctx.fillText('★', sx, sy + 7);
+
+  // Certificate type heading
+  const types = {
+    completion:'Certificate of Completion', appreciation:'Certificate of Appreciation',
+    achievement:'Certificate of Achievement', participation:'Certificate of Participation',
+    excellence:'Certificate of Excellence'
+  };
+  ctx.fillStyle = c2;
+  ctx.font = `bold 13px 'Times New Roman', serif`;
+  ctx.textAlign = 'center';
+  ctx.letterSpacing = '0.15em';
+  ctx.fillText((types[g('certType')]||'Certificate').toUpperCase(), W/2, 170);
+
+  // Decorative line
+  ctx.strokeStyle = c4; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(W/2-120,182); ctx.lineTo(W/2+120,182); ctx.stroke();
+
+  // "This is to certify that"
+  ctx.fillStyle = c1; ctx.font = `italic 16px 'Times New Roman', serif`;
+  ctx.fillText('This is to certify that', W/2, 215);
+
+  // Recipient name
+  ctx.fillStyle = c2; ctx.font = `bold 36px 'Times New Roman', serif`;
+  ctx.fillText(g('recipName') || 'Recipient Name', W/2, 265);
+
+  // Underline for name
+  const nameW = ctx.measureText(g('recipName')||'Recipient Name').width;
+  ctx.strokeStyle = c1; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(W/2 - nameW/2, 272); ctx.lineTo(W/2 + nameW/2, 272); ctx.stroke();
+
+  // "has successfully completed"
+  ctx.fillStyle = c2; ctx.font = `italic 15px 'Times New Roman', serif`;
+  ctx.fillText('has successfully completed', W/2, 308);
+
+  // Award description
+  ctx.fillStyle = c2; ctx.font = `bold 17px 'Times New Roman', serif`;
+  const desc = g('awardDesc') || 'the program';
+  // Word-wrap if needed
+  wrapText(ctx, desc, W/2, 338, W-140, 22);
+
+  // Issued by
+  ctx.fillStyle = '#555'; ctx.font = `13px 'Times New Roman', serif`;
+  ctx.fillText('Awarded by', W/2, 415);
+  ctx.fillStyle = c2; ctx.font = `bold 16px 'Times New Roman', serif`;
+  ctx.fillText(g('issuedBy') || 'Organization', W/2, 436);
+
+  // Bottom row: signatory and date
+  const dateStr = g('certDate') ? new Date(g('certDate')+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  // Signature line left
+  ctx.strokeStyle = c1; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(140, 494); ctx.lineTo(340, 494); ctx.stroke();
+  ctx.fillStyle = c2; ctx.font = `bold 12px 'Times New Roman', serif`; ctx.textAlign = 'center';
+  ctx.fillText(g('signatory') || 'Authorized Signatory', 240, 510);
+  ctx.fillStyle = '#777'; ctx.font = `11px 'Times New Roman', serif`;
+  ctx.fillText('Signature', 240, 524);
+
+  // Date right
+  ctx.strokeStyle = c1;
+  ctx.beginPath(); ctx.moveTo(460, 494); ctx.lineTo(660, 494); ctx.stroke();
+  ctx.fillStyle = c2; ctx.font = `bold 12px 'Times New Roman', serif`;
+  ctx.fillText(dateStr, 560, 510);
+  ctx.fillStyle = '#777'; ctx.font = `11px 'Times New Roman', serif`;
+  ctx.fillText('Date', 560, 524);
+
+  // Footer band
+  ctx.fillStyle = c1;
+  ctx.fillRect(44, H-49, W-88, 5);
+}
+
+function wrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split(' ');
+  let line = '';
+  for (let n = 0; n < words.length; n++) {
+    const test = line + words[n] + ' ';
+    if (ctx.measureText(test).width > maxW && n > 0) {
+      ctx.fillText(line, x, y); y += lineH; line = words[n] + ' ';
+    } else { line = test; }
+  }
+  ctx.fillText(line, x, y);
+}
+
+function download() {
+  const a = document.createElement('a');
+  a.download = 'certificate.png';
+  a.href = document.getElementById('cert').toDataURL();
+  a.click();
+}
+
+document.getElementById('certDate').value = new Date().toISOString().split('T')[0];
+render();
+</script>
+</body>
+</html>
