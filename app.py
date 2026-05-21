@@ -159,39 +159,135 @@ def bug_report():
         return jsonify({'ok': False, 'error': 'Description is required.'}), 400
 
     subject = f'[Jorres Apps] {issue_type}: {app_name}'
-    body = (
+
+    # ── Plain-text fallback ───────────────────────────────────────────────
+    text_body = (
         f'Bug Report — Jorres Apps\n'
         f'{"="*44}\n'
-        f'App / Page:   {app_name}\n'
-        f'URL:          {page}\n'
-        f'Issue type:   {issue_type}\n'
-        f'Reporter:     {reporter}\n'
+        f'App / Page:  {app_name}\n'
+        f'URL:         {page}\n'
+        f'Issue type:  {issue_type}\n'
+        f'Reporter:    {reporter}\n'
         f'{"="*44}\n\n'
         f'{desc}\n'
     )
 
-    # Always log to Render console — visible under Logs even without email
-    print(f'[BUG REPORT] {subject}\n{body}', flush=True)
+    # ── Badge colour per issue type ───────────────────────────────────────
+    badge_colours = {
+        'Bug':     ('#fee2e2', '#dc2626', '🐛'),
+        'UI':      ('#ede9fe', '#7c3aed', '🎨'),
+        'Feature': ('#dcfce7', '#16a34a', '💡'),
+        'Other':   ('#f1f5f9', '#475569', '📝'),
+    }
+    bg, fg, icon = badge_colours.get(issue_type, badge_colours['Other'])
+
+    def esc(s):
+        return (str(s)
+                .replace('&', '&amp;')
+                .replace('<', '&lt;')
+                .replace('>', '&gt;')
+                .replace('\n', '<br>'))
+
+    # ── HTML email ────────────────────────────────────────────────────────
+    html_body = f"""<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+        <!-- Header -->
+        <tr><td style="background:#0f172a;border-radius:12px 12px 0 0;padding:28px 32px;">
+          <p style="margin:0;font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">
+            🛠️ Jorres Apps
+          </p>
+          <p style="margin:6px 0 0;font-size:13px;color:#94a3b8;">Bug &amp; Feedback Report</p>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="background:#ffffff;padding:28px 32px;">
+
+          <!-- Badge -->
+          <p style="margin:0 0 20px;">
+            <span style="display:inline-block;background:{bg};color:{fg};font-size:12px;font-weight:700;
+                         padding:4px 12px;border-radius:20px;letter-spacing:.04em;">
+              {icon}&nbsp; {esc(issue_type)}
+            </span>
+          </p>
+
+          <!-- Meta table -->
+          <table width="100%" cellpadding="0" cellspacing="0"
+                 style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;
+                        margin-bottom:24px;overflow:hidden;">
+            <tr>
+              <td style="padding:11px 16px;font-size:12px;font-weight:700;color:#64748b;
+                         text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #e2e8f0;
+                         width:110px;">App</td>
+              <td style="padding:11px 16px;font-size:14px;color:#1e293b;
+                         border-bottom:1px solid #e2e8f0;">{esc(app_name)}</td>
+            </tr>
+            <tr>
+              <td style="padding:11px 16px;font-size:12px;font-weight:700;color:#64748b;
+                         text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #e2e8f0;">
+                Reporter</td>
+              <td style="padding:11px 16px;font-size:14px;color:#1e293b;
+                         border-bottom:1px solid #e2e8f0;">{esc(reporter)}</td>
+            </tr>
+            <tr>
+              <td style="padding:11px 16px;font-size:12px;font-weight:700;color:#64748b;
+                         text-transform:uppercase;letter-spacing:.06em;">Page URL</td>
+              <td style="padding:11px 16px;font-size:13px;color:#2563eb;word-break:break-all;">
+                <a href="{esc(page)}" style="color:#2563eb;">{esc(page)}</a></td>
+            </tr>
+          </table>
+
+          <!-- Description -->
+          <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#64748b;
+                    text-transform:uppercase;letter-spacing:.06em;">Description</p>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid {fg};
+                      border-radius:0 8px 8px 0;padding:16px;font-size:14px;
+                      color:#1e293b;line-height:1.7;">
+            {esc(desc)}
+          </div>
+
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="background:#f8fafc;border-top:1px solid #e2e8f0;
+                        border-radius:0 0 12px 12px;padding:16px 32px;text-align:center;">
+          <p style="margin:0;font-size:12px;color:#94a3b8;">
+            Sent from <strong style="color:#64748b;">jorresapps.onrender.com</strong>
+            &nbsp;·&nbsp; Jorres Apps Bug Report System
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>"""
+
+    # Always log to Render console
+    print(f'[BUG REPORT] {subject}\n{text_body}', flush=True)
 
     resend_key = os.environ.get('RESEND_API_KEY', '')
     if not resend_key:
-        # No key configured yet — report is safely in the server log
         return jsonify({'ok': True})
 
     try:
         import resend as _resend
         _resend.api_key = resend_key
 
-        # NOTE: with onboarding@resend.dev, Resend only delivers to the email
-        # you signed up with. Set RESEND_TO on Render to that address.
-        to_addr    = os.environ.get('RESEND_TO', 'joshuarelatorres28@gmail.com')
-        from_addr  = os.environ.get('EMAIL_FROM', 'Jorres Apps <onboarding@resend.dev>')
+        to_addr   = os.environ.get('RESEND_TO', 'joshuarelatorres28@gmail.com')
+        from_addr = os.environ.get('EMAIL_FROM', 'Jorres Apps <onboarding@resend.dev>')
 
         result = _resend.Emails.send({
             'from':    from_addr,
             'to':      [to_addr],
             'subject': subject,
-            'text':    body,
+            'html':    html_body,
+            'text':    text_body,
         })
 
         print(f'[BUG REPORT] Resend OK — id={result.get("id")} → {to_addr}', flush=True)
