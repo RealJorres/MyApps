@@ -87,6 +87,8 @@ function initBoard(){
 }
 
 function newGame(){
+  // Kill any running AI search so stale results don't arrive after reset
+  if(aiWorker){aiWorker.terminate();aiWorker=null;}
   initBoard();
   turn=W; selected=null; legalMoves=[]; history=[]; captured={W:[],BL:[]};
   lastMove=null; gameOver=false;
@@ -279,11 +281,81 @@ function getAllMoves(bd,c){
   return mv;
 }
 
+// ── Web Worker (inline Blob) so AI never freezes the UI ─────
+const WORKER_SRC=`
+const P=1,N=2,B=3,R=4,Q=5,K=6,W=8,BL=16;
+const color=p=>p&8?8:p&16?16:0;
+const type=p=>p&7;
+const dirs={[N]:[-17,-15,-10,-6,6,10,15,17],[B]:[-9,-7,7,9],[R]:[-8,-1,1,8],[Q]:[-9,-8,-7,-1,1,7,8,9]};
+const sliders=new Set([B,R,Q]);
+function inBounds(sq){return sq>=0&&sq<64;}
+function pseudoMoves(bd,sq){
+  const p=bd[sq],c=color(p),t=type(p),mv=[];
+  if(!p)return mv;
+  if(t===P){
+    const dir=c===W?-8:8,startRow=c===W?6:1,row=Math.floor(sq/8);
+    const fwd=sq+dir;
+    if(inBounds(fwd)&&!bd[fwd]){mv.push(fwd);const f2=sq+2*dir;if(row===startRow&&!bd[f2])mv.push(f2);}
+    for(const cap of[sq+dir-1,sq+dir+1]){if(inBounds(cap)&&Math.abs((cap%8)-(sq%8))===1&&bd[cap]&&color(bd[cap])!==c)mv.push(cap);}
+    return mv;
+  }
+  if(sliders.has(t)){
+    for(const d of dirs[t]){let cur=sq+d;while(inBounds(cur)){if((d===1||d===-1)&&Math.floor(cur/8)!==Math.floor((cur-d)/8))break;if(bd[cur]){if(color(bd[cur])!==c)mv.push(cur);break;}mv.push(cur);cur+=d;}}
+    return mv;
+  }
+  for(const d of dirs[t===K?Q:N]){const to=sq+d;if(!inBounds(to))continue;if(t===K&&Math.abs((to%8)-(sq%8))>1)continue;if(t===N){const dr=Math.abs(Math.floor(to/8)-Math.floor(sq/8)),dc=Math.abs((to%8)-(sq%8));if(dr+dc!==3||dr===0||dc===0)continue;}if(!bd[to]||color(bd[to])!==c)mv.push(to);}
+  return mv;
+}
+function isInCheck(bd,c){
+  const kSq=bd.findIndex(p=>p===(c|K));if(kSq<0)return true;
+  const opp=c===W?BL:W;
+  for(let sq=0;sq<64;sq++){if(color(bd[sq])===opp&&pseudoMoves(bd,sq).includes(kSq))return true;}
+  return false;
+}
+function legalFor(bd,sq){
+  return pseudoMoves(bd,sq).filter(to=>{const nb=[...bd];nb[to]=nb[sq];nb[sq]=0;return !isInCheck(nb,color(bd[sq]));});
+}
+const VALS={[P]:100,[N]:320,[B]:330,[R]:500,[Q]:900,[K]:20000};
+const PST={[P]:[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0],
+           [N]:[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50]};
+function evaluate(bd){
+  let s=0;for(let i=0;i<64;i++){const p=bd[i];if(!p)continue;const t=type(p),c=color(p),v=VALS[t]||0;const pst=PST[t]||(new Array(64).fill(0));s+=(c===W?1:-1)*(v+(pst[c===W?i:63-i]||0));}return s;
+}
+function minimax(bd,depth,alpha,beta,max){
+  if(depth===0)return evaluate(bd);
+  const c=max?W:BL;const moves=[];
+  for(let sq=0;sq<64;sq++){if(color(bd[sq])===c)for(const to of legalFor(bd,sq))moves.push({from:sq,to});}
+  if(!moves.length)return isInCheck(bd,c)?(max?-20000:20000):0;
+  if(max){let v=-Infinity;for(const m of moves){const nb=[...bd];nb[m.to]=nb[m.from];nb[m.from]=0;v=Math.max(v,minimax(nb,depth-1,alpha,beta,false));alpha=Math.max(alpha,v);if(beta<=alpha)break;}return v;}
+  else{let v=Infinity;for(const m of moves){const nb=[...bd];nb[m.to]=nb[m.from];nb[m.from]=0;v=Math.min(v,minimax(nb,depth-1,alpha,beta,true));beta=Math.min(beta,v);if(beta<=alpha)break;}return v;}
+}
+function bestMove(bd,depth){
+  let best=null,bestVal=Infinity;
+  for(let sq=0;sq<64;sq++){if(color(bd[sq])!==BL)continue;for(const to of legalFor(bd,sq)){const nb=[...bd];nb[to]=nb[sq];nb[sq]=0;const v=minimax(nb,depth-1,-Infinity,Infinity,true);if(v<bestVal){bestVal=v;best={from:sq,to};}}}
+  return best;
+}
+self.onmessage=function(e){self.postMessage(bestMove(e.data.board,e.data.depth));};
+`;
+
+let aiWorker=null;
+function getWorker(){
+  if(!aiWorker){
+    const blob=new Blob([WORKER_SRC],{type:'application/javascript'});
+    aiWorker=new Worker(URL.createObjectURL(blob));
+  }
+  return aiWorker;
+}
+
 function aiMove(){
   const depth=parseInt(document.getElementById('diffSel').value);
-  const mv=bestMove(board,depth);
-  if(!mv){gameOver=true;updateStatus('Checkmate! White wins ♙','');return;}
-  doMove(mv.from,mv.to,false);
+  const worker=getWorker();
+  // Remove any previous listener before attaching a new one
+  worker.onmessage=function(e){
+    const mv=e.data;
+    if(!mv){gameOver=true;updateStatus('Checkmate! White wins ♙','');return;}
+    doMove(mv.from,mv.to,false);
+  };
+  worker.postMessage({board:[...board],depth});
 }
 
 function updateStatus(msg,who){
