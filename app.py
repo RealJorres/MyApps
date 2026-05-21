@@ -37,7 +37,7 @@ LAUNCHER_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def load_registry():
-    with open(os.path.join(LAUNCHER_DIR, 'apps.json'), encoding='utf-8') as f:
+    with open(os.path.join(LAUNCHER_DIR, 'apps.json'), encoding='utf-8-sig') as f:
         apps = json.load(f)
     for a in apps:
         if not os.path.isabs(a['path']):
