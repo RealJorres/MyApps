@@ -2,9 +2,6 @@ from flask import Flask, jsonify, render_template, make_response, request
 import sys
 import json
 import os
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from json import dumps as _json_dumps
 import importlib.util
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -152,7 +149,6 @@ def sitemap():
 @flask_app.route('/api/bug-report', methods=['POST'])
 def bug_report():
     import urllib.request as _urlreq
-    import urllib.error  as _urlerr
 
     data       = request.json or {}
     app_name   = data.get('app',   '').strip() or '(not specified)'
@@ -176,57 +172,35 @@ def bug_report():
         f'{desc}\n'
     )
 
-    # ── Always log to server console (visible in Render logs) ──────────────
-    print(f'[BUG REPORT] {subject}\n{body}')
+    # Always log to Render console — visible under Logs even without email
+    print(f'[BUG REPORT] {subject}\n{body}', flush=True)
 
-    # ── 1. Try Resend (HTTP API — works on any host, no SMTP needed) ───────
     resend_key = os.environ.get('RESEND_API_KEY', '')
-    if resend_key:
-        try:
-            payload = json.dumps({
-                'from':    'Jorres Apps Bug Report <onboarding@resend.dev>',
-                'to':      ['joshuarelatorres28@gmail.com'],
-                'subject': subject,
-                'text':    body,
-            }).encode()
-            req = _urlreq.Request(
-                'https://api.resend.com/emails',
-                data=payload,
-                headers={
-                    'Authorization': f'Bearer {resend_key}',
-                    'Content-Type':  'application/json',
-                },
-                method='POST',
-            )
-            with _urlreq.urlopen(req, timeout=15) as resp:
-                if resp.status in (200, 201):
-                    return jsonify({'ok': True})
-        except Exception as e:
-            print(f'[BUG REPORT] Resend failed: {e}')
+    if not resend_key:
+        # No key configured yet — report is safely in the server log
+        return jsonify({'ok': True})
 
-    # ── 2. Fallback: Gmail SMTP ────────────────────────────────────────────
-    mail_user = os.environ.get('MAIL_USER', '')
-    mail_pass = os.environ.get('MAIL_PASS', '')
-    if mail_user and mail_pass:
-        try:
-            msg = MIMEMultipart()
-            msg['From']    = mail_user
-            msg['To']      = 'joshuarelatorres28@gmail.com'
-            msg['Subject'] = subject
-            msg.attach(MIMEText(body, 'plain'))
-            with smtplib.SMTP('smtp.gmail.com', 587, timeout=15) as server:
-                server.ehlo()
-                server.starttls()
-                server.ehlo()
-                server.login(mail_user, mail_pass)
-                server.sendmail(mail_user, 'joshuarelatorres28@gmail.com', msg.as_string())
+    try:
+        payload = json.dumps({
+            'from':    'Jorres Apps <onboarding@resend.dev>',
+            'to':      ['joshuarelatorres28@gmail.com'],
+            'subject': subject,
+            'text':    body,
+        }).encode()
+        req = _urlreq.Request(
+            'https://api.resend.com/emails',
+            data=payload,
+            headers={
+                'Authorization': f'Bearer {resend_key}',
+                'Content-Type':  'application/json',
+            },
+            method='POST',
+        )
+        with _urlreq.urlopen(req, timeout=15) as resp:
             return jsonify({'ok': True})
-        except Exception as e:
-            print(f'[BUG REPORT] SMTP failed: {e}')
-            return jsonify({'ok': False, 'error': f'Email delivery failed: {e}'}), 500
-
-    # ── 3. No credentials configured — report is in the server log ─────────
-    return jsonify({'ok': True})
+    except Exception as e:
+        print(f'[BUG REPORT] Resend error: {e}', flush=True)
+        return jsonify({'ok': False, 'error': 'Could not deliver the report. Please try again shortly.'}), 500
 
 
 @flask_app.route('/api/apps')
