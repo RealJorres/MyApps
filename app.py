@@ -181,9 +181,15 @@ def bug_report():
         return jsonify({'ok': True})
 
     try:
+        import urllib.error as _urlerr
+        # RESEND_TO lets you override the recipient (useful if your Resend
+        # account email differs from joshuarelatorres28@gmail.com).
+        # On the free plan with onboarding@resend.dev you can only send TO
+        # the email you signed up with — set RESEND_TO to that address if needed.
+        to_addr = os.environ.get('RESEND_TO', 'joshuarelatorres28@gmail.com')
         payload = json.dumps({
             'from':    'Jorres Apps <onboarding@resend.dev>',
-            'to':      ['joshuarelatorres28@gmail.com'],
+            'to':      [to_addr],
             'subject': subject,
             'text':    body,
         }).encode()
@@ -196,11 +202,17 @@ def bug_report():
             },
             method='POST',
         )
-        with _urlreq.urlopen(req, timeout=15) as resp:
-            return jsonify({'ok': True})
+        try:
+            with _urlreq.urlopen(req, timeout=15) as resp:
+                print(f'[BUG REPORT] Resend OK (to={to_addr})', flush=True)
+                return jsonify({'ok': True})
+        except _urlerr.HTTPError as http_err:
+            err_body = http_err.read().decode('utf-8', errors='replace')
+            print(f'[BUG REPORT] Resend HTTP {http_err.code}: {err_body}', flush=True)
+            return jsonify({'ok': False, 'error': f'Resend error {http_err.code}: {err_body}'}), 500
     except Exception as e:
-        print(f'[BUG REPORT] Resend error: {e}', flush=True)
-        return jsonify({'ok': False, 'error': 'Could not deliver the report. Please try again shortly.'}), 500
+        print(f'[BUG REPORT] Resend exception: {e}', flush=True)
+        return jsonify({'ok': False, 'error': f'Delivery error: {e}'}), 500
 
 
 @flask_app.route('/api/apps')
