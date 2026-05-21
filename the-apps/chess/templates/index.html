@@ -128,7 +128,7 @@ function pseudoMoves(bd,sq){
     for(const d of dirs[t]){
       let cur=sq+d;
       while(inBounds(cur)){
-        if((d===1||d===-1)&&Math.floor(cur/8)!==Math.floor((cur-d)/8)) break;
+        if(Math.abs((cur%8)-((cur-d)%8))>1) break; // prevent wrapping across board edge
         if(bd[cur]){if(color(bd[cur])!==c)mv.push(cur);break;}
         mv.push(cur); cur+=d;
       }
@@ -310,7 +310,7 @@ function pseudoMoves(bd,sq){
     return mv;
   }
   if(sliders.has(t)){
-    for(const d of dirs[t]){let cur=sq+d;while(inBounds(cur)){if((d===1||d===-1)&&Math.floor(cur/8)!==Math.floor((cur-d)/8))break;if(bd[cur]){if(color(bd[cur])!==c)mv.push(cur);break;}mv.push(cur);cur+=d;}}
+    for(const d of dirs[t]){let cur=sq+d;while(inBounds(cur)){if(Math.abs((cur%8)-((cur-d)%8))>1)break;if(bd[cur]){if(color(bd[cur])!==c)mv.push(cur);break;}mv.push(cur);cur+=d;}}
     return mv;
   }
   for(const d of dirs[t===K?Q:N]){const to=sq+d;if(!inBounds(to))continue;if(t===K&&Math.abs((to%8)-(sq%8))>1)continue;if(t===N){const dr=Math.abs(Math.floor(to/8)-Math.floor(sq/8)),dc=Math.abs((to%8)-(sq%8));if(dr+dc!==3||dr===0||dc===0)continue;}if(!bd[to]||color(bd[to])!==c)mv.push(to);}
