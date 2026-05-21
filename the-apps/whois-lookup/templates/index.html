@@ -339,17 +339,17 @@ function copyResults() {
           page:window.location.href
         })
       });
-      var data=await resp.json();
+      var data={};try{data=await resp.json();}catch(_){}
       if(resp.ok&&data.ok){
         status.innerHTML='<span style="color:#4ade80">✓ Report sent — thank you!</span>';
         ['ft-bug-app','ft-bug-desc','ft-bug-email'].forEach(function(id){document.getElementById(id).value='';});
         document.getElementById('ft-bug-type').selectedIndex=0;
         setTimeout(function(){ftClose('ft-bug');},2200);
       }else{
-        status.innerHTML='<span style="color:#f87171">'+((data&&data.error)||'Something went wrong. Please try again.')+'</span>';
+        status.innerHTML='<span style="color:#f87171">'+(data.error||'Server error (HTTP '+resp.status+'). Please try again.')+'</span>';
       }
     }catch(e){
-      status.innerHTML='<span style="color:#f87171">Network error — please try again.</span>';
+      status.innerHTML='<span style="color:#f87171">Could not reach the server — check your connection and try again.</span>';
     }
     btn.disabled=false; btn.textContent='Send Report';
   };

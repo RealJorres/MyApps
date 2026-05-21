@@ -186,7 +186,10 @@ def bug_report():
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'plain'))
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=15) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
             server.login(mail_user, mail_pass)
             server.sendmail(mail_user, 'joshuarelatorres28@gmail.com', msg.as_string())
 

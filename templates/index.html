@@ -1088,17 +1088,18 @@
               email: document.getElementById('bug_email').value.trim()
             })
           });
-          const data = await resp.json();
+          let data = {};
+          try { data = await resp.json(); } catch(_) {}
           if (resp.ok && data.ok) {
             showBugMsg('✅ Report sent! Thank you for the feedback.', true);
             ['bug_app','bug_desc','bug_email'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('bug_type').selectedIndex = 0;
           } else {
-            showBugMsg('❌ ' + (data.error || 'Something went wrong. Try again.'), false);
+            showBugMsg('❌ ' + (data.error || `Server error (HTTP ${resp.status}). Try again.`), false);
             btn.disabled = false;
           }
         } catch(e) {
-          showBugMsg('❌ Network error. Please try again.', false);
+          showBugMsg('❌ Could not reach the server — check your connection and try again.', false);
           btn.disabled = false;
         }
         btn.textContent = 'Send Report';
