@@ -7,7 +7,7 @@
 <title>Chess vs AI</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
 header { width: 100%; background: #1e3a5f; padding: .8rem 2rem; text-align: center; }
 header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
 .container { display: flex; gap: 1.5rem; padding: 1.5rem 1rem; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
@@ -25,8 +25,8 @@ header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
 .sq.last    { background: rgba(255,230,0,.35) !important; }
 .sq:hover   { filter: brightness(1.1); }
 .coords { display: grid; grid-template-columns: repeat(8,56px); font-size: .65rem; color: #64748b; text-align: center; }
-.side-panel { display: flex; flex-direction: column; gap: .75rem; min-width: 180px; }
-.panel-box { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1rem; }
+.side-panel { display: flex; flex-direction: column; gap: .75rem; min-width: 180px; max-width: 220px; width: 220px; }
+.panel-box { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1rem; overflow: hidden; }
 .panel-box h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: #64748b; margin-bottom: .6rem; }
 .btn { width: 100%; padding: .55rem; border: none; border-radius: 6px; font-size: .85rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
 .btn-new  { background: #2563eb; color: #fff; }
@@ -34,8 +34,10 @@ header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
 .btn-undo { background: #374151; color: #e2e8f0; margin-top: .4rem; }
 .btn-undo:hover { background: #4b5563; }
 select { width: 100%; padding: .45rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: .85rem; font-family: inherit; margin-bottom: .5rem; }
-.move-list { max-height: 220px; overflow-y: auto; font-size: .78rem; color: #94a3b8; line-height: 1.8; }
-.move-list span { display: inline-block; width: 46%; }
+.move-list { max-height: 220px; overflow-y: auto; overflow-x: hidden; font-size: .78rem; color: #94a3b8; line-height: 1.8; }
+.move-row { display: grid; grid-template-columns: 28px 1fr 1fr; gap: 2px; white-space: nowrap; overflow: hidden; }
+.move-row b { color: #64748b; }
+.move-row span { overflow: hidden; text-overflow: ellipsis; }
 .captured { display: flex; flex-wrap: wrap; gap: 2px; font-size: 1.1rem; min-height: 24px; }
 </style>
 </head>
@@ -228,7 +230,7 @@ function render(){
   ml.innerHTML='';
   for(let i=0;i<history.length;i+=2){
     const n=Math.floor(i/2)+1;
-    ml.innerHTML+=`<b style="color:#64748b">${n}.</b> <span>${history[i]||''}</span><span>${history[i+1]||''}</span>`;
+    ml.innerHTML+=`<div class="move-row"><b>${n}.</b><span>${history[i]||''}</span><span>${history[i+1]||''}</span></div>`;
   }
   ml.scrollTop=ml.scrollHeight;
 }
