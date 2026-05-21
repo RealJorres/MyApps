@@ -63,6 +63,11 @@ details[open] summary::before { transform: rotate(90deg); }
 .no-exif { color: var(--muted); font-style: italic; font-size: 0.9rem; padding: 1rem 0; }
 .error-msg { background: var(--error-bg); color: var(--error-fg); border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.875rem; }
 .hidden { display: none; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .info-grid { grid-template-columns: 1fr !important; }
+  table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

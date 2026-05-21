@@ -76,6 +76,11 @@
   .stoggle::before { content: ''; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
   input:checked + .stoggle { background: #d97706; }
   input:checked + .stoggle::before { transform: translateX(18px); }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .options-grid { grid-template-columns: 1fr !important; }
+  input[type=text], textarea, select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

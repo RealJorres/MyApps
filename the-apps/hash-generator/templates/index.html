@@ -85,6 +85,11 @@ textarea#textInput { min-height: 120px; resize: vertical; }
 .results-table tr:last-child td { border-bottom: none; }
 .algo-badge { display: inline-block; background: #ede9fe; color: var(--primary); border-radius: 0.35rem; padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; }
 .hash-val { font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace; font-size: 0.78rem; color: #334155; word-break: break-all; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], textarea { width: 100% !important; min-width: 0 !important; }
+  .results-table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

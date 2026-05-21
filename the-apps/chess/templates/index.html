@@ -39,6 +39,12 @@ select { width: 100%; padding: .45rem; background: #0f172a; border: 1px solid #3
 .move-row b { color: #64748b; }
 .move-row span { overflow: hidden; text-overflow: ellipsis; }
 .captured { display: flex; flex-wrap: wrap; gap: 2px; font-size: 1.1rem; min-height: 24px; }
+@media (max-width: 500px) {
+  #board { grid-template-columns: repeat(8, 40px) !important; grid-template-rows: repeat(8, 40px) !important; }
+  .sq { width: 40px !important; height: 40px !important; font-size: 1.5rem !important; }
+  .coords { grid-template-columns: repeat(8, 40px) !important; }
+  .container { flex-direction: column; align-items: center; }
+}
 </style>
 </head>
 <body>

@@ -30,6 +30,12 @@ header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
 .ships-legend h3 { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: #64748b; margin-bottom: .5rem; }
 .ship-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .25rem; }
 .ship-block { display: inline-block; width: 14px; height: 14px; background: #334155; border-radius: 2px; }
+@media (max-width: 500px) {
+  body { overflow-x: hidden; }
+  .grid { grid-template-columns: repeat(10, 28px) !important; grid-template-rows: repeat(10, 28px) !important; }
+  .cell { width: 28px !important; height: 28px !important; font-size: 0.7rem; }
+  .main { flex-direction: column; align-items: center; }
+}
 </style>
 </head>
 <body>

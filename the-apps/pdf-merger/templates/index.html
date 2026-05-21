@@ -72,6 +72,10 @@ header p { color: var(--muted); margin-top: 0.4rem; }
 .stats-bar span strong { color: var(--text); }
 
 .toolbar { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .toolbar .btn { width: 100%; }
+}
 </style>
 </head>
 <body>

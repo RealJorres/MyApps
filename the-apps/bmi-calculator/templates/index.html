@@ -86,6 +86,11 @@
 
     .context-card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.25rem; margin-bottom: 1.25rem; font-size: 0.9rem; color: var(--text); line-height: 1.6; }
     .context-card strong { color: var(--primary); }
+  @media (max-width: 600px) {
+    body { overflow-x: hidden; }
+    .input-row.cols-2, .input-row.cols-3 { grid-template-columns: 1fr !important; }
+    input[type=number], select { width: 100% !important; min-width: 0 !important; }
+  }
   </style>
 </head>
 <body>

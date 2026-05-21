@@ -63,7 +63,7 @@
   .preview td { padding: 0.45rem 0.75rem; border-bottom: 1px solid #e2e8f0; }
   .preview tr:nth-child(even) { background: #f8fafc; }
   .error-toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #fef2f2; border: 1.5px solid #fca5a5; color: #dc2626; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.85rem; max-width: 350px; display: none; z-index: 100; }
-  @media (max-width: 768px) { .main { grid-template-columns: 1fr; } .pane { height: 50vh; } }
+  @media (max-width: 768px) { body { overflow-x: hidden; } .main { grid-template-columns: 1fr; } .pane { height: 50vh; } textarea { min-width: 0 !important; } }
 </style>
 </head>
 <body>

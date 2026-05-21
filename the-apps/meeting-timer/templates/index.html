@@ -44,6 +44,11 @@ input:focus{border-color:var(--primary)}
 .controls{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.75rem}
 .meeting-total{text-align:center;font-size:.85rem;color:var(--muted);margin-top:.5rem}
 .empty{text-align:center;color:var(--muted);padding:1rem 0;font-size:.875rem}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=number] { width: 100% !important; min-width: 0 !important; }
+  .controls .btn { width: 100%; }
+}
 </style>
 </head>
 <body>

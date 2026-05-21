@@ -54,6 +54,10 @@
   canvas { display: block; cursor: crosshair; image-rendering: pixelated; }
   .recent-colors { display: flex; flex-wrap: wrap; gap: 3px; }
   .current-color-show { width: 100%; height: 36px; border-radius: 7px; border: 2px solid #e2e8f0; margin-bottom: 0.5rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  canvas { max-width: 100% !important; height: auto !important; }
+}
 </style>
 </head>
 <body>

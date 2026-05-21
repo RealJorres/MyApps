@@ -56,6 +56,11 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
 .copy-btn-small { padding: 0.25rem 0.65rem; font-size: 0.72rem; }
 .words-box { background: var(--bg); border-radius: 0.65rem; padding: 1rem 1.25rem; margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); font-style: italic; min-height: 2.5rem; }
 .words-box span { color: var(--text); font-style: normal; font-weight: 600; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .bases-grid { grid-template-columns: 1fr 1fr !important; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

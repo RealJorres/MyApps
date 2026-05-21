@@ -88,6 +88,12 @@
     .progress-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
 
     .macro-note { text-align: center; font-size: 0.78rem; color: var(--muted); margin-bottom: 1.25rem; }
+  @media (max-width: 600px) {
+    body { overflow-x: hidden; }
+    .input-row.cols-2, .input-row.cols-3 { grid-template-columns: 1fr !important; }
+    .stats-row, .macros-grid { grid-template-columns: 1fr 1fr !important; }
+    input[type=number], select { width: 100% !important; min-width: 0 !important; }
+  }
   </style>
 </head>
 <body>

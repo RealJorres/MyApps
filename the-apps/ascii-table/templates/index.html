@@ -28,6 +28,12 @@ tbody tr:hover td{background:#f8fafc}
 .char-cell{font-size:1rem;font-weight:700;color:var(--primary);min-width:32px;display:inline-block;text-align:center}
 .ctrl-badge{background:#f1f5f9;border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.72rem;color:var(--muted);font-family:monospace}
 .count{color:var(--muted);font-size:.8rem}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .search-row { flex-direction: column; align-items: stretch; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+  .filter-btn { width: 100%; }
+}
 </style>
 </head>
 <body>

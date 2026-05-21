@@ -61,6 +61,10 @@ input:focus, select:focus { border-color: var(--primary); }
 
 details summary { cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 0.5rem 0; color: var(--muted); }
 details summary:hover { color: var(--text); }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

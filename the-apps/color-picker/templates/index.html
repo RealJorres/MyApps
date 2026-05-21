@@ -74,6 +74,11 @@ input[type=color]::-webkit-color-swatch { border: none; border-radius: 0.75rem; 
 .swatch:hover { transform: scale(1.1); border-color: var(--text); }
 .swatch .swatch-hex { position: absolute; bottom: -1.4rem; left: 50%; transform: translateX(-50%); font-size: 0.6rem; font-family: monospace; color: var(--muted); white-space: nowrap; }
 .swatch-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .values-grid { grid-template-columns: 1fr !important; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

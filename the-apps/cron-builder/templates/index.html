@@ -66,6 +66,12 @@ details[open] summary::before { transform: rotate(90deg); }
 .ref-table tr:last-child td { border-bottom: none; }
 .ref-table td:first-child { font-weight: 700; color: var(--primary); }
 code { font-family: 'Courier New', monospace; background: var(--bg); padding: 0.1rem 0.3rem; border-radius: 0.25rem; font-size: 0.85em; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .fields-row { grid-template-columns: 1fr 1fr !important; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+  .ref-table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

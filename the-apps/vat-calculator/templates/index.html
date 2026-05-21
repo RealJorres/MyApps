@@ -56,6 +56,11 @@ input:focus { border-color: var(--primary); }
 .formula-box { background: var(--bg); border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.85rem; text-align: center; color: var(--muted); }
 .formula-box strong { color: var(--text); }
 .formula-box .plus { color: var(--primary); font-weight: 800; margin: 0 0.35rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .results-grid { grid-template-columns: 1fr 1fr !important; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

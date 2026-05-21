@@ -25,6 +25,11 @@ input[type=color] { width: 44px; height: 36px; padding: 2px; background: #0f172a
 input[type=range] { width: 100%; accent-color: #7c3aed; }
 input.num { width: 48px; padding: .3rem .4rem; text-align: center; font-size: .82rem; }
 .section-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin: 1.25rem 0 .5rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .sliders { grid-template-columns: auto 1fr 48px !important; }
+  input[type=text], input.num { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

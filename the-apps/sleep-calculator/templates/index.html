@@ -184,6 +184,11 @@
   td:last-child { color: var(--accent); font-weight: 600; text-align: right; }
 
   footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=time] { width: 100% !important; min-width: 0 !important; }
+  table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

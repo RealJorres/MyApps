@@ -60,6 +60,11 @@ header p { color: var(--muted); margin-top: 0.4rem; }
 .preview-item span { font-size: 0.7rem; color: var(--muted); }
 .hidden { display: none; }
 .error-msg { background: var(--error-bg); color: var(--error-fg); border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.875rem; margin-top: 0.75rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  canvas { max-width: 100%; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

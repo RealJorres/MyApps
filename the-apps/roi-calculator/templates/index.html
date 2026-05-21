@@ -31,6 +31,10 @@ input:focus,select:focus{border-color:var(--primary)}
 .bar-loss{background:#dc2626}
 .legend{display:flex;gap:1.25rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
 .leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;display:inline-block;vertical-align:middle;margin-right:4px}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=number] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

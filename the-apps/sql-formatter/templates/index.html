@@ -54,6 +54,12 @@ textarea[readonly] { background: #f8fafc; }
 .opt-group { display: flex; flex-direction: column; gap: 0.25rem; }
 .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .error-msg { background: var(--error-bg); color: var(--error-fg); border-radius: 0.5rem; padding: 0.65rem 0.9rem; font-size: 0.84rem; margin-top: 0.75rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .editors { grid-template-columns: 1fr !important; }
+  textarea { min-width: 0 !important; }
+  select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

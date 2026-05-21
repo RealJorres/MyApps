@@ -69,6 +69,10 @@ input:focus { border-color: var(--primary); }
 .hm-day.missed { background: #d1fae5; }
 .hm-day.future { background: #f1f5f9; border: 1px solid var(--border); }
 .hm-day.today { border: 1.5px solid #15803d; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

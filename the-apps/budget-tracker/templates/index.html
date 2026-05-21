@@ -81,6 +81,12 @@
   .cat-amount { font-size: 0.8rem; font-weight: 700; color: #374151; width: 90px; text-align: right; flex-shrink: 0; }
   .cat-pct { font-size: 0.75rem; color: #6b7280; width: 35px; text-align: right; flex-shrink: 0; }
   @media (max-width: 768px) { .main { grid-template-columns: 1fr; } .transactions { grid-column: 1; } .breakdown { grid-column: 1; } }
+  @media (max-width: 600px) {
+    body { overflow-x: hidden; }
+    .summary-row { grid-template-columns: 1fr !important; }
+    .month-nav { flex-direction: column; align-items: stretch; }
+    input, select { width: 100% !important; min-width: 0 !important; }
+  }
 </style>
 </head>
 <body>

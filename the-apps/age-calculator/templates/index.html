@@ -74,6 +74,11 @@
     .sign-icon { font-size: 2rem; }
     .sign-name { font-size: 1rem; font-weight: 700; color: var(--text); margin-top: 0.3rem; }
     .sign-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-top: 0.15rem; }
+  @media (max-width: 600px) {
+    body { overflow-x: hidden; }
+    .input-row, .fun-grid, .signs-row { grid-template-columns: 1fr !important; }
+    input[type=date], input[type=number], input[type=text], select { width: 100% !important; min-width: 0 !important; }
+  }
   </style>
 </head>
 <body>

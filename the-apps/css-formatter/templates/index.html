@@ -40,7 +40,7 @@ select:focus { border-color: var(--primary); }
 .status.success { background: var(--success-bg); color: var(--success-fg); }
 
 .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-@media (max-width: 700px) { .editor-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { body { overflow-x: hidden; } .editor-grid { grid-template-columns: 1fr; } textarea { min-width: 0 !important; } }
 
 .editor-panel { display: flex; flex-direction: column; }
 .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }

@@ -56,7 +56,7 @@
   .preview-panel { display: flex; flex-direction: column; }
   .canvas-wrap { background: #1e293b; border-radius: 10px; display: flex; align-items: center; justify-content: center; min-height: 300px; overflow: hidden; }
   canvas { max-width: 100%; border-radius: 6px; display: block; }
-  @media (max-width: 700px) { main { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) { body { overflow-x: hidden; } main { grid-template-columns: 1fr; } input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; } }
 </style>
 </head>
 <body>

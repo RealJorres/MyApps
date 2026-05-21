@@ -54,7 +54,7 @@
   .rate-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid #e2e8f0; }
   .rate-table tr:nth-child(even) td { background: #f8fafc; }
   .rate-table tr:hover td { background: #eff6ff; }
-  @media (max-width: 500px) { .converter-row { grid-template-columns: 1fr; } .swap-btn { width: 100%; border-radius: 8px; } }
+  @media (max-width: 500px) { body { overflow-x: hidden; } .converter-row { grid-template-columns: 1fr; } .swap-btn { width: 100%; border-radius: 8px; } input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; } .rate-table { display: block; overflow-x: auto; } }
 </style>
 </head>
 <body>

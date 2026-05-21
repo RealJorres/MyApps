@@ -66,6 +66,11 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
 .copy-cell button { padding: 0.2rem 0.6rem; font-size: 0.7rem; }
 
 .section-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 1.25rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=number] { width: 100% !important; min-width: 0 !important; }
+  table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

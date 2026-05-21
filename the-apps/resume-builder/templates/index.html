@@ -60,7 +60,7 @@
   .preview-bullet { font-size: 9.5px; padding-left: 10px; margin-bottom: 1px; }
   .preview-body { font-size: 9.5px; color: #1e293b; line-height: 1.5; }
   .preview-label { font-size: .75rem; color: #94a3b8; text-align: center; padding: .4rem; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 10px 10px; }
-  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .preview-panel { position: static; } }
+  @media (max-width: 900px) { body { overflow-x: hidden; } .layout { grid-template-columns: 1fr; } .preview-panel { position: static; } .form-row { grid-template-columns: 1fr !important; } input[type=text], input[type=email], textarea { width: 100% !important; min-width: 0 !important; } }
 </style>
 </head>
 <body>

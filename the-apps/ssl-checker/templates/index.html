@@ -76,6 +76,11 @@
   .san-list { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.25rem; }
   .san-tag { padding: 0.15rem 0.55rem; background: #f1f5f9; border-radius: 99px; font-size: 0.78rem; color: #475569; font-family: monospace; }
   .hidden { display: none !important; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+  table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

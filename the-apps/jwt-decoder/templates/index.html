@@ -66,6 +66,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
 .meta-text { font-size: 0.82rem; color: var(--muted); }
 .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
 #results { display: none; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  textarea { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

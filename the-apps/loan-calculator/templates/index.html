@@ -64,6 +64,12 @@ details[open] summary::before { transform: rotate(90deg); }
 .amort-table td { padding: 0.4rem 0.75rem; text-align: right; border-bottom: 1px solid var(--border); }
 .amort-table td:first-child { text-align: left; font-weight: 600; }
 .amort-table tr:last-child td { border-bottom: none; font-weight: 700; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .form-grid, .form-grid.four, .results-grid { grid-template-columns: 1fr 1fr !important; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+  .amort-table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

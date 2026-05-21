@@ -57,6 +57,12 @@ textarea:focus { border-color: var(--primary); }
 .ref-table .name { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--primary); }
 .ref-table .num { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--muted); }
 .ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .main-layout { grid-template-columns: 1fr !important; }
+  textarea { width: 100% !important; min-width: 0 !important; }
+  .ref-table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

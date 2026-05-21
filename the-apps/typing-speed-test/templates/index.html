@@ -114,6 +114,11 @@ h1 { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0
 .hist-table tr:last-child td { border-bottom: none; }
 .hist-table td:first-child { color: var(--accent); font-weight: 700; }
 .empty { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 0.5rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .results-grid { grid-template-columns: 1fr 1fr !important; }
+  .hist-table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

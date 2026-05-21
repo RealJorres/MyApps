@@ -44,6 +44,10 @@ textarea:focus { border-color: var(--primary); }
 .result-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
 .result-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--primary); }
 .result-text { font-size: 0.875rem; color: var(--text); word-break: break-all; min-height: 1.5rem; line-height: 1.5; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  textarea { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

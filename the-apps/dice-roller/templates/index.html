@@ -70,6 +70,10 @@
   .sound-toggle { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: #6b7280; cursor: pointer; margin-left: auto; }
   .sound-toggle input { accent-color: #dc2626; cursor: pointer; }
   .custom-label { font-size: 0.82rem; color: #6b7280; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

@@ -60,11 +60,13 @@
   }
   .touch-btn:active { background: #2d2d6b; }
   @media (max-width: 600px) {
+    body { overflow-x: hidden; }
     .touch-controls { display: flex; }
     .controls-hint { display: none; }
     .side-panel { flex-direction: row; flex-wrap: wrap; width: 100%; min-width: 0; }
     .panel-box { flex: 1; min-width: 80px; }
     .game-area { gap: 0.75rem; padding: 0.75rem 0.5rem; }
+    canvas { max-width: 100%; }
   }
 </style>
 </head>

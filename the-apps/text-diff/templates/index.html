@@ -55,6 +55,11 @@ textarea:focus{border-color:var(--primary)}
 .line-rem .line-sign{color:var(--rem-fg)}
 .line-text{padding:.05rem .5rem;white-space:pre;flex:1}
 .no-diff{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .split { grid-template-columns: 1fr !important; }
+  textarea { min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

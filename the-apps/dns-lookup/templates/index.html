@@ -34,8 +34,11 @@
   .btn { padding: .65rem 1.4rem; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
   .btn:hover { background: #6d28d9; }
   @media (max-width: 480px) {
+    body { overflow-x: hidden; }
     .input-row { flex-direction: column; }
     .input-row .btn { width: 100%; }
+    input[type=text] { width: 100% !important; min-width: 0 !important; }
+    table { display: block; overflow-x: auto; }
   }
   .btn-all { background: #6d28d9; }
   .btn-outline { background: #ede9fe; color: #7c3aed; border: 1.5px solid #ddd6fe; }

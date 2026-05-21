@@ -53,6 +53,12 @@ select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;
 .char-count{font-size:.75rem;color:var(--muted);margin-left:auto}
 .status{padding:.65rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:500;margin-top:.75rem}
 .status.error{background:var(--error-bg);color:var(--error-fg)}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .actions { flex-direction: column; }
+  .actions .btn { width: 100%; }
+  input[type=text], textarea, select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

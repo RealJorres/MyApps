@@ -61,7 +61,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted)
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
-@media (max-width: 700px) { .editors { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { body { overflow-x: hidden; } .editors { grid-template-columns: 1fr; } textarea { min-width: 0 !important; } }
 
 .editor-pane { display: flex; flex-direction: column; gap: 0.5rem; }
 .editor-pane label { font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }

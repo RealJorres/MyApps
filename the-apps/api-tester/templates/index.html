@@ -93,6 +93,16 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 .resp-headers-table th { font-weight: 700; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
 .resp-headers-table td:first-child { font-weight: 600; white-space: nowrap; }
 .resp-headers-table td:last-child { word-break: break-all; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .url-bar { flex-wrap: wrap; }
+  .url-bar select { width: 100% !important; }
+  .url-bar input { min-width: 0; }
+  .url-bar .btn { width: 100% !important; }
+  .kv-row { grid-template-columns: 1fr 1fr auto !important; }
+  input[type=text], input[type=number], textarea, select { width: 100% !important; min-width: 0 !important; }
+  .resp-headers-table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

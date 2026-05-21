@@ -45,7 +45,7 @@
   .mobile-controls { display: none; grid-template-columns: repeat(3, 52px); gap: .3rem; margin-top: .5rem; }
   .mc-btn { width: 52px; height: 44px; background: #1e293b; border: 1.5px solid #334155; color: #94a3b8; border-radius: 8px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .mc-btn:hover { background: #334155; color: #e2e8f0; }
-  @media (max-width: 540px) { .mobile-controls { display: grid; } canvas { width: 360px !important; height: 360px !important; } }
+  @media (max-width: 540px) { body { overflow-x: hidden; } .mobile-controls { display: grid; } canvas { width: 360px !important; height: 360px !important; max-width: 100% !important; } }
 </style>
 </head>
 <body>

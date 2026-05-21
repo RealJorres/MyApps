@@ -118,7 +118,7 @@
   .crack-time strong { color: var(--text); }
 
   .checklist { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1.2rem; }
-  @media (max-width: 480px) { .checklist { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) { body { overflow-x: hidden; } .checklist { grid-template-columns: 1fr; } input[type=text], input[type=password] { width: 100% !important; min-width: 0 !important; } }
   .checklist li {
     display: flex;
     align-items: center;

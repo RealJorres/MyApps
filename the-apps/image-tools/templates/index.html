@@ -110,6 +110,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 .quality-val { font-size: 0.9rem; font-weight: 700; color: var(--primary); min-width: 2.5rem; text-align: right; }
 
 .actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; align-items: center; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .meta-grid { grid-template-columns: 1fr !important; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+  .actions .btn { width: 100%; }
+}
 </style>
 </head>
 <body>

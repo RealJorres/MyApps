@@ -52,6 +52,10 @@ input:focus, select:focus { border-color: var(--primary); }
 .uuid-row { display: flex; align-items: center; gap: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem 0.9rem; }
 .uuid-text { flex: 1; font-family: 'Courier New', monospace; font-size: 0.9rem; letter-spacing: 0.03em; color: var(--text); word-break: break-all; }
 .copy-flash { color: var(--success-fg) !important; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=number], select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

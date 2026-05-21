@@ -26,6 +26,12 @@ textarea { flex: 1; width: 100%; min-height: 420px; background: #0a1120; border:
 .arr-btn { padding: .5rem .7rem; border: 1px solid #334155; border-radius: 8px; background: #1e293b; color: #e2e8f0; font-size: .85rem; cursor: pointer; transition: background .12s; font-family: inherit; }
 .arr-btn:hover { background: #334155; }
 .error { color: #f87171; font-size: .78rem; padding: .4rem 1rem; background: rgba(239,68,68,.08); border-top: 1px solid rgba(239,68,68,.2); min-height: 32px; font-family: monospace; white-space: pre-wrap; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .layout { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important; }
+  .mid { flex-direction: row !important; justify-content: center; border-left: none; border-right: none; border-top: 1px solid #1e293b; border-bottom: 1px solid #1e293b; }
+  textarea { min-width: 0 !important; min-height: 150px; }
+}
 </style>
 </head>
 <body>

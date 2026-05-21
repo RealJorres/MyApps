@@ -48,6 +48,11 @@ select:focus{border-color:var(--primary)}
 .conv-item{display:flex;justify-content:space-between;align-items:center;padding:.4rem .65rem;background:var(--bg);border-radius:.4rem;font-size:.82rem}
 .conv-item .unit-label{color:var(--muted)}
 .conv-item .unit-val{font-weight:600;font-family:'Courier New',monospace}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .conv-row { grid-template-columns: 1fr !important; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

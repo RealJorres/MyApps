@@ -90,6 +90,12 @@ textarea#testText { min-height: 150px; resize: vertical; font-family: 'Cascadia 
   border-radius: 0.15rem;
   padding: 0.05rem 0;
 }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+  textarea { min-width: 0 !important; }
+  table { display: block; overflow-x: auto; }
+}
 </style>
 </head>
 <body>

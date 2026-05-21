@@ -83,6 +83,14 @@
   .del-btn:hover { color: #dc2626; }
   .no-food { color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 1rem 0; }
   .hidden { display: none !important; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .add-form { flex-direction: column; }
+  .add-form input, .add-form select { width: 100% !important; min-width: 0 !important; }
+  .btn-add-food { width: 100%; }
+  .goal-row { flex-direction: column; align-items: stretch; }
+  .goal-row input { width: 100% !important; }
+}
 </style>
 </head>
 <body>

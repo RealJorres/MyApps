@@ -31,6 +31,11 @@ input:focus{border-color:var(--primary)}
 .bit.host{background:#e2e8f0;color:#64748b}
 .error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:.5rem;padding:.75rem 1rem;font-size:.875rem;display:none}
 #output{display:none}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .results-grid { grid-template-columns: 1fr !important; }
+  input[type=text] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

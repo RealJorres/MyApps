@@ -51,6 +51,10 @@
   .btn-primary:disabled { background: #7dd3fc; cursor: not-allowed; }
   .hidden { display: none !important; }
   .info-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  canvas { max-width: 100% !important; height: auto !important; }
+}
 </style>
 </head>
 <body>

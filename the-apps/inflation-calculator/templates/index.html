@@ -33,6 +33,12 @@ tbody tr:hover td{background:#f8fafc}
 details summary{cursor:pointer;font-size:.875rem;font-weight:600;color:var(--muted);padding:.5rem 0}
 details summary:hover{color:var(--text)}
 .note{font-size:.75rem;color:var(--muted);margin-top:.75rem}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .grid, .results { grid-template-columns: 1fr 1fr !important; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+  .table-wrap table { min-width: 100%; }
+}
 </style>
 </head>
 <body>

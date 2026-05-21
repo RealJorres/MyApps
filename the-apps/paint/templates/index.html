@@ -20,10 +20,11 @@ label { font-size: .75rem; color: #94a3b8; }
 .btn-sm { padding: .3rem .7rem; border: 1px solid #334155; border-radius: 6px; background: #1e293b; color: #e2e8f0; font-size: .8rem; cursor: pointer; font-family: inherit; transition: background .12s; }
 .btn-sm:hover { background: #334155; }
 .canvas-wrap { flex: 1; overflow: auto; display: flex; align-items: flex-start; justify-content: center; padding: 1rem; }
-canvas { background: #fff; cursor: crosshair; display: block; border: 2px solid #334155; border-radius: 4px; }
+canvas { background: #fff; cursor: crosshair; display: block; border: 2px solid #334155; border-radius: 4px; max-width: 100%; }
 .palette { display: flex; gap: 4px; align-items: center; }
 .swatch { width: 22px; height: 22px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: transform .1s; }
 .swatch:hover { transform: scale(1.2); }
+@media (max-width: 600px) { body { overflow-x: hidden; } }
 </style>
 </head>
 <body>

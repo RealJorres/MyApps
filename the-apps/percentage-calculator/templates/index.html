@@ -53,6 +53,10 @@ input:focus { border-color: var(--primary); }
 .result-badge { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 0.25rem; }
 .badge-up { background: var(--success-bg); color: var(--success-fg); }
 .badge-down { background: var(--error-bg); color: #dc2626; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=number] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

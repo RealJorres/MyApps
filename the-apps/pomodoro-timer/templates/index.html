@@ -62,6 +62,11 @@ details summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; list-sty
 details summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
 details[open] summary::before { transform: rotate(90deg); }
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .settings-grid { grid-template-columns: 1fr 1fr !important; }
+  input[type=number] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

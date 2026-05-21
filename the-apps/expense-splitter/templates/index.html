@@ -49,7 +49,7 @@ input:focus, select:focus { border-color: var(--primary); }
 
 .expense-item { border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem; background: var(--bg); }
 .expense-row { display: grid; grid-template-columns: 1fr 100px 120px; gap: 0.5rem; align-items: start; }
-@media (max-width: 600px) { .expense-row { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { body { overflow-x: hidden; } .expense-row { grid-template-columns: 1fr; } input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; } table { display: block; overflow-x: auto; } }
 .expense-bottom { margin-top: 0.65rem; }
 .split-checks { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
 .split-check { display: flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; }

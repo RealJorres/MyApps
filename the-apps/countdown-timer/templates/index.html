@@ -53,6 +53,12 @@ input:focus { border-color: var(--primary); }
 .done-badge { background: var(--success-bg); color: var(--success-fg); border: 1px solid #bbf7d0; border-radius: 0.5rem; padding: 0.75rem 1rem; text-align: center; font-weight: 700; font-size: 1.1rem; }
 .target-date { font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; }
 .empty-msg { text-align: center; color: var(--muted); font-style: italic; padding: 1.5rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .add-form { grid-template-columns: 1fr !important; }
+  input[type=text], input[type=number], input[type=date], select { width: 100% !important; min-width: 0 !important; }
+  .btn { width: 100%; justify-content: center; }
+}
 </style>
 </head>
 <body>

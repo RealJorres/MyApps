@@ -72,6 +72,10 @@ textarea#textInput { min-height: 100px; resize: vertical; }
 .preview-card { text-align: center; display: none; }
 .preview-card.show { display: block; }
 .qr-preview { max-width: 300px; margin: 0 auto 1rem; display: block; border: 1px solid var(--border); border-radius: 0.5rem; image-rendering: pixelated; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=url], input[type=number], select, textarea { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

@@ -44,6 +44,11 @@ textarea{width:100%;padding:.75rem;border:1px solid var(--border);border-radius:
 textarea:focus{border-color:var(--primary)}
 .actions{display:flex;gap:.5rem;margin-top:.75rem;align-items:center;flex-wrap:wrap}
 .meta{font-size:.78rem;color:var(--muted);margin-left:auto}
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+  .actions .btn { width: 100%; }
+}
 </style>
 </head>
 <body>

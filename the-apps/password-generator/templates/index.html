@@ -84,6 +84,11 @@ input:focus { border-color: var(--primary); }
 .pw-copy { flex-shrink: 0; }
 
 .error-msg { background: var(--error-bg); color: var(--error-fg); padding: 0.7rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; margin-top: 1rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .checkboxes { grid-template-columns: 1fr !important; }
+  input[type=text], input[type=number] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>

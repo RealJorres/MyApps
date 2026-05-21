@@ -94,6 +94,10 @@
   .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
   .stats-row { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.82rem; color: #64748b; align-items: center; }
   .hidden { display: none !important; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  input[type=text], input[type=url] { width: 100% !important; min-width: 0 !important; }
+}
 </style>
 </head>
 <body>
