@@ -15,7 +15,9 @@ header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
 #status span { color: #60a5fa; font-weight: 700; }
 .board-wrap { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
 #board { display: grid; grid-template-columns: repeat(8,56px); grid-template-rows: repeat(8,56px); border: 2px solid #475569; }
-.sq { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; user-select: none; position: relative; transition: background .1s; }
+.sq { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 2.1rem; cursor: pointer; user-select: none; position: relative; transition: background .1s; }
+.pw { color: #fff; text-shadow: 0 1px 0 #333, 0 -1px 0 #333, 1px 0 0 #333, -1px 0 0 #333; }
+.pb { color: #1a1a1a; text-shadow: 0 1px 0 rgba(255,255,255,.6), 0 -1px 0 rgba(255,255,255,.6), 1px 0 0 rgba(255,255,255,.6), -1px 0 0 rgba(255,255,255,.6); }
 .sq.light { background: #f0d9b5; }
 .sq.dark  { background: #b58863; }
 .sq.selected { outline: 3px solid #f59e0b; outline-offset: -3px; }
@@ -210,7 +212,7 @@ function render(){
       if(lastMove&&(sq===lastMove.from||sq===lastMove.to)) div.classList.add('last');
       if(sq===selected) div.classList.add('selected');
       if(legalMoves.includes(sq)) div.classList.add('legal');
-      const p=board[sq]; if(p) div.textContent=GLYPHS[p]||'';
+      const p=board[sq]; if(p){const sp=document.createElement('span');sp.textContent=GLYPHS[p]||'';sp.className=color(p)===W?'pw':'pb';div.appendChild(sp);}
       div.onclick=()=>clickSq(sq);
       bel.appendChild(div);
     }
@@ -281,7 +283,7 @@ function getAllMoves(bd,c){
   return mv;
 }
 
-// ── Web Worker (inline Blob) so AI never freezes the UI ─────
+// ── Web Worker (inline Blob) — non-blocking AI with hard time limit ─────
 const WORKER_SRC=`
 const P=1,N=2,B=3,R=4,Q=5,K=6,W=8,BL=16;
 const color=p=>p&8?8:p&16?16:0;
@@ -321,7 +323,11 @@ const PST={[P]:[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,
 function evaluate(bd){
   let s=0;for(let i=0;i<64;i++){const p=bd[i];if(!p)continue;const t=type(p),c=color(p),v=VALS[t]||0;const pst=PST[t]||(new Array(64).fill(0));s+=(c===W?1:-1)*(v+(pst[c===W?i:63-i]||0));}return s;
 }
+
+// deadline is set before each search; minimax cuts off when exceeded
+let _deadline=0;
 function minimax(bd,depth,alpha,beta,max){
+  if(Date.now()>_deadline)return evaluate(bd); // hard time cut-off
   if(depth===0)return evaluate(bd);
   const c=max?W:BL;const moves=[];
   for(let sq=0;sq<64;sq++){if(color(bd[sq])===c)for(const to of legalFor(bd,sq))moves.push({from:sq,to});}
@@ -329,12 +335,28 @@ function minimax(bd,depth,alpha,beta,max){
   if(max){let v=-Infinity;for(const m of moves){const nb=[...bd];nb[m.to]=nb[m.from];nb[m.from]=0;v=Math.max(v,minimax(nb,depth-1,alpha,beta,false));alpha=Math.max(alpha,v);if(beta<=alpha)break;}return v;}
   else{let v=Infinity;for(const m of moves){const nb=[...bd];nb[m.to]=nb[m.from];nb[m.from]=0;v=Math.min(v,minimax(nb,depth-1,alpha,beta,true));beta=Math.min(beta,v);if(beta<=alpha)break;}return v;}
 }
-function bestMove(bd,depth){
-  let best=null,bestVal=Infinity;
-  for(let sq=0;sq<64;sq++){if(color(bd[sq])!==BL)continue;for(const to of legalFor(bd,sq)){const nb=[...bd];nb[to]=nb[sq];nb[sq]=0;const v=minimax(nb,depth-1,-Infinity,Infinity,true);if(v<bestVal){bestVal=v;best={from:sq,to};}}}
+
+// Iterative deepening: search depth 1..maxDepth, keep best result, stop if deadline hit
+function bestMoveIter(bd,maxDepth,msLimit){
+  _deadline=Date.now()+msLimit;
+  let best=null;
+  for(let d=1;d<=maxDepth;d++){
+    if(Date.now()>=_deadline)break;
+    let candidate=null,bestVal=Infinity;
+    for(let sq=0;sq<64;sq++){
+      if(color(bd[sq])!==BL)continue;
+      for(const to of legalFor(bd,sq)){
+        if(Date.now()>_deadline)break;
+        const nb=[...bd];nb[to]=nb[sq];nb[sq]=0;
+        const v=minimax(nb,d-1,-Infinity,Infinity,true);
+        if(v<bestVal){bestVal=v;candidate={from:sq,to};}
+      }
+    }
+    if(candidate)best=candidate; // only commit a full-depth result
+  }
   return best;
 }
-self.onmessage=function(e){self.postMessage(bestMove(e.data.board,e.data.depth));};
+self.onmessage=function(e){self.postMessage(bestMoveIter(e.data.board,e.data.depth,e.data.ms));};
 `;
 
 let aiWorker=null;
@@ -346,16 +368,19 @@ function getWorker(){
   return aiWorker;
 }
 
+// Time limits per difficulty (ms) — AI always responds within this window
+const THINK_MS={1:800,2:1500,3:2500};
+
 function aiMove(){
   const depth=parseInt(document.getElementById('diffSel').value);
+  const ms=THINK_MS[depth]||1500;
   const worker=getWorker();
-  // Remove any previous listener before attaching a new one
   worker.onmessage=function(e){
     const mv=e.data;
     if(!mv){gameOver=true;updateStatus('Checkmate! White wins ♙','');return;}
     doMove(mv.from,mv.to,false);
   };
-  worker.postMessage({board:[...board],depth});
+  worker.postMessage({board:[...board],depth,ms});
 }
 
 function updateStatus(msg,who){
