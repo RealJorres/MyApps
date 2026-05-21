@@ -191,9 +191,9 @@
   {
     "id": "markdown-editor",
     "name": "Markdown Editor",
-    "description": "Write Markdown with a live preview side-by-side. Download as HTML.",
+    "description": "Write Markdown with a live side-by-side preview. Export as HTML or download a styled PDF directly from the toolbar.",
     "port": 5008, "path": "./the-apps/markdown-editor", "entry": "app.py",
-    "icon": "M↓", "color": "#0f766e", "tags": ["Markdown","Editor","Writing"], "category": "Developer Tools"
+    "icon": "M↓", "color": "#0f766e", "tags": ["Markdown","Editor","PDF","Writing","Export"], "category": "Developer Tools"
   },
   {
     "id": "word-counter",
@@ -488,13 +488,6 @@
     "description": "Convert CSV to JSON and JSON to CSV instantly. Supports custom delimiters.",
     "port": 5074, "path": "./the-apps/csv-json-converter", "entry": "app.py",
     "icon": "↔", "color": "#059669", "tags": ["CSV","JSON","Convert"], "category": "Data & Analysis"
-  },
-  {
-    "id": "markdown-to-pdf",
-    "name": "Markdown to PDF",
-    "description": "Write Markdown with a live preview and download it as a styled PDF.",
-    "port": 5075, "path": "./the-apps/markdown-to-pdf", "entry": "app.py",
-    "icon": "📑", "color": "#0f766e", "tags": ["Markdown","PDF","Convert"], "category": "Developer Tools"
   },
   {
     "id": "color-gradient-generator",

@@ -263,6 +263,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   </div>
   <button class="btn btn-ghost" onclick="copyHTML()">Copy HTML</button>
   <button class="btn btn-ghost" onclick="downloadHTML()">Download HTML</button>
+  <div style="display:flex;align-items:center;gap:.4rem">
+    <input type="text" id="pdfTitle" placeholder="Document title" value="My Document"
+           style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:.4rem;font-size:.8rem;width:140px;font-family:inherit;background:#fff;color:var(--text);outline:none">
+    <button class="btn btn-primary" onclick="downloadPDF()" title="Export as PDF">Download PDF</button>
+  </div>
   <button class="btn-help" onclick="openHelp()" title="Markdown cheatsheet">?</button>
 </div>
 
@@ -423,6 +428,32 @@ function copyHTML() {
     btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = 'Copy HTML', 1500);
   });
+}
+
+async function downloadPDF() {
+  const btn = document.querySelector('[onclick="downloadPDF()"]');
+  const text = document.getElementById('editorArea').value;
+  const title = document.getElementById('pdfTitle').value || 'Document';
+  const orig = btn.textContent;
+  btn.textContent = 'Generating…'; btn.disabled = true;
+  try {
+    const r = await fetch('api/convert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, title, font_size: 11 })
+    });
+    if (!r.ok) {
+      const d = await r.json().catch(()=>({}));
+      alert('PDF error: ' + (d.error || 'Server error'));
+      return;
+    }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = title.replace(/[^\w\- ]/g,'_').substring(0,40) + '.pdf';
+    a.click(); URL.revokeObjectURL(url);
+  } catch(e) { alert('PDF error: ' + e.message); }
+  finally { btn.textContent = orig; btn.disabled = false; }
 }
 
 function downloadHTML() {

@@ -750,6 +750,78 @@
       .bug-msg { font-size: .82rem; text-align: center; margin-top: .75rem; padding: .5rem; border-radius: 6px; }
       .bug-msg.ok  { background: rgba(74,222,128,.1); color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
       .bug-msg.err { background: rgba(248,113,113,.1); color: #f87171; border: 1px solid rgba(248,113,113,.2); }
+
+      /* ── Category nav bar ── */
+      .cat-nav {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: .5rem 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        position: sticky;
+        top: 54px;
+        z-index: 40;
+      }
+      .cat-nav::-webkit-scrollbar { display: none; }
+      .cat-pill {
+        flex-shrink: 0;
+        padding: .35rem .9rem;
+        border: 1px solid var(--border);
+        border-radius: 2rem;
+        font-size: .78rem;
+        font-weight: 600;
+        color: var(--muted);
+        background: none;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all .15s;
+        font-family: inherit;
+      }
+      .cat-pill:hover { border-color: var(--accent); color: var(--accent); }
+      .cat-pill.active { background: var(--accent); color: #0a1520; border-color: var(--accent); font-weight: 700; }
+
+      /* ── Quick Tools & Recently Used ── */
+      .shelf-section {
+        padding: 1.25rem 1.75rem .75rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .shelf-title {
+        font-size: .7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: var(--muted);
+        margin-bottom: .75rem;
+      }
+      .shelf-row {
+        display: flex;
+        gap: .6rem;
+        flex-wrap: wrap;
+      }
+      .shelf-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .4rem .85rem;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: .5rem;
+        font-size: .8rem;
+        font-weight: 600;
+        color: var(--text);
+        text-decoration: none;
+        transition: border-color .15s, background .15s;
+        white-space: nowrap;
+      }
+      .shelf-chip:hover { border-color: var(--accent); background: #1e3448; color: #fff; }
+      .shelf-chip .chip-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
     </style>
   </head>
   <body>
@@ -823,6 +895,15 @@
         </div>
       </div>
     </div>
+
+    <!-- Category nav bar -->
+    <nav class="cat-nav" id="catNav" aria-label="Filter by category"></nav>
+
+    <!-- Quick Tools shelf -->
+    <div class="shelf-section" id="quickSection"></div>
+
+    <!-- Recently Used shelf -->
+    <div class="shelf-section" id="recentSection" style="display:none"></div>
 
     <!-- Favorites -->
     <section class="fav-section" id="favSection" style="display:none">
@@ -993,25 +1074,103 @@
         return "#" + c(n >> 16) + c((n >> 8) & 0xff) + c(n & 0xff);
       }
 
+      // ── Category filter state ──────────────────────────
+      let activeCat = "All";
+
+      // ── Quick Tools: most broadly-useful apps ──────────
+      const QUICK_TOOL_IDS = [
+        "json-formatter", "password-generator", "qr-generator",
+        "tip-calculator", "pomodoro-timer", "color-picker"
+      ];
+
+      // ── Recently Used (localStorage) ───────────────────
+      const RECENT_KEY = "jorres_recent_v1";
+      function getRecent() {
+        try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+        catch(e) { return []; }
+      }
+      function trackClick(id) {
+        let r = getRecent().filter(x => x !== id);
+        r.unshift(id);
+        r = r.slice(0, 8);
+        localStorage.setItem(RECENT_KEY, JSON.stringify(r));
+        renderRecentlyUsed();
+      }
+
       function fetchApps() {
         allApps = {{ apps_json | safe }};
         const cats = new Set(allApps.map((a) => a.category || "Other"));
         document.getElementById("statApps").textContent = allApps.length;
         document.getElementById("statCats").textContent = cats.size;
+        renderCategoryNav();
+        renderQuickTools();
+        renderRecentlyUsed();
         applyFilters();
         renderFavorites();
       }
 
+      // ── Category nav bar ───────────────────────────────
+      function renderCategoryNav() {
+        const nav = document.getElementById("catNav");
+        const cats = ["All", ...CATEGORY_ORDER.filter(c =>
+          allApps.some(a => a.category === c)
+        )];
+        nav.innerHTML = cats.map(c =>
+          `<button class="cat-pill${c === activeCat ? " active" : ""}"
+            onclick="filterByCategory('${c.replace(/'/g, "\\'")}')">${c}</button>`
+        ).join("");
+      }
+
+      function filterByCategory(cat) {
+        activeCat = cat;
+        document.getElementById("searchInput").value = "";
+        renderCategoryNav();
+        applyFilters();
+      }
+
+      // ── Quick Tools shelf ──────────────────────────────
+      function renderQuickTools() {
+        const el = document.getElementById("quickSection");
+        const apps = QUICK_TOOL_IDS.map(id => allApps.find(a => a.id === id)).filter(Boolean);
+        if (!apps.length) { el.style.display = "none"; return; }
+        el.style.display = "";
+        el.innerHTML = `<div class="shelf-title">Quick Tools</div>
+          <div class="shelf-row">${apps.map(a =>
+            `<a class="shelf-chip" href="${a.url}" onclick="trackClick('${a.id}')">
+              <span class="chip-dot" style="background:${a.color}"></span>${esc(a.name)}
+            </a>`).join("")}</div>`;
+      }
+
+      // ── Recently Used shelf ────────────────────────────
+      function renderRecentlyUsed() {
+        const el = document.getElementById("recentSection");
+        const ids = getRecent();
+        const apps = ids.map(id => allApps.find(a => a.id === id)).filter(Boolean).slice(0, 6);
+        if (!apps.length) { el.style.display = "none"; return; }
+        el.style.display = "";
+        el.innerHTML = `<div class="shelf-title">Recently Used</div>
+          <div class="shelf-row">${apps.map(a =>
+            `<a class="shelf-chip" href="${a.url}" onclick="trackClick('${a.id}')">
+              <span class="chip-dot" style="background:${a.color}"></span>${esc(a.name)}
+            </a>`).join("")}</div>`;
+      }
+
       function applyFilters() {
         const q = document.getElementById("searchInput").value.toLowerCase();
-        const visible = q
-          ? allApps.filter((a) =>
-              [a.name, a.description, ...a.tags]
-                .join(" ")
-                .toLowerCase()
-                .includes(q),
-            )
-          : allApps;
+        let visible = allApps;
+        // Text search overrides category filter
+        if (q) {
+          visible = allApps.filter((a) =>
+            [a.name, a.description, ...a.tags].join(" ").toLowerCase().includes(q)
+          );
+          // Reset category pill to All when searching
+          if (activeCat !== "All") {
+            activeCat = "All";
+            renderCategoryNav();
+          }
+        } else if (activeCat !== "All") {
+          visible = allApps.filter((a) => (a.category || "Other") === activeCat);
+        }
         renderGrid(visible);
       }
 
@@ -1072,7 +1231,7 @@
           <div class="card-tags">${tags}</div>
           <div class="card-footer">
             <button class="btn-star ${favorites.has(a.id) ? 'active' : ''}" data-id="${esc(a.id)}" onclick="toggleFavorite('${esc(a.id)}')" title="${favorites.has(a.id) ? 'Remove from favorites' : 'Add to favorites'}">★</button>
-            <div class="card-actions"><a class="btn-open" href="${a.url}" target="_blank">↗ Open</a></div>
+            <div class="card-actions"><a class="btn-open" href="${a.url}" target="_blank" onclick="trackClick('${esc(a.id)}')">↗ Open</a></div>
           </div>
         </div>
       </div>`;
