@@ -148,8 +148,6 @@ def sitemap():
 
 @flask_app.route('/api/bug-report', methods=['POST'])
 def bug_report():
-    import urllib.request as _urlreq
-
     data       = request.json or {}
     app_name   = data.get('app',   '').strip() or '(not specified)'
     issue_type = data.get('type',  'Bug').strip()
@@ -181,36 +179,27 @@ def bug_report():
         return jsonify({'ok': True})
 
     try:
-        import urllib.error as _urlerr
-        # 'to' must match the email you used to sign up on resend.com.
-        # Set RESEND_TO on Render if that email differs from joshuarelatorres28@gmail.com.
-        to_addr = os.environ.get('RESEND_TO', 'joshuarelatorres28@gmail.com')
-        payload = json.dumps({
-            'from':    'Jorres Apps <onboarding@resend.dev>',
+        import resend as _resend
+        _resend.api_key = resend_key
+
+        # NOTE: with onboarding@resend.dev, Resend only delivers to the email
+        # you signed up with. Set RESEND_TO on Render to that address.
+        to_addr    = os.environ.get('RESEND_TO', 'joshuarelatorres28@gmail.com')
+        from_addr  = os.environ.get('EMAIL_FROM', 'Jorres Apps <onboarding@resend.dev>')
+
+        result = _resend.Emails.send({
+            'from':    from_addr,
             'to':      [to_addr],
             'subject': subject,
             'text':    body,
-        }).encode()
-        req = _urlreq.Request(
-            'https://api.resend.com/emails',
-            data=payload,
-            headers={
-                'Authorization': f'Bearer {resend_key}',
-                'Content-Type':  'application/json',
-            },
-            method='POST',
-        )
-        try:
-            with _urlreq.urlopen(req, timeout=15) as resp:
-                print(f'[BUG REPORT] Resend OK → {to_addr}', flush=True)
-                return jsonify({'ok': True})
-        except _urlerr.HTTPError as http_err:
-            err_body = http_err.read().decode('utf-8', errors='replace')
-            print(f'[BUG REPORT] Resend HTTP {http_err.code}: {err_body}', flush=True)
-            return jsonify({'ok': False, 'error': f'Resend {http_err.code}: {err_body}'}), 500
+        })
+
+        print(f'[BUG REPORT] Resend OK — id={result.get("id")} → {to_addr}', flush=True)
+        return jsonify({'ok': True})
+
     except Exception as e:
-        print(f'[BUG REPORT] Resend exception: {e}', flush=True)
-        return jsonify({'ok': False, 'error': f'Delivery error: {e}'}), 500
+        print(f'[BUG REPORT] Resend error: {e}', flush=True)
+        return jsonify({'ok': False, 'error': str(e)}), 500
 
 
 @flask_app.route('/api/apps')

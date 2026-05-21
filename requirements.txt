@@ -1,5 +1,6 @@
 flask
 gunicorn
+resend
 PyMuPDF
 Pillow
 qrcode[pil]
