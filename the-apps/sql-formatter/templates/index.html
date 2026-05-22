@@ -178,8 +178,8 @@ function hideError() { document.getElementById('errorMsg').style.display = 'none
 document.getElementById('sqlInput').value = `SELECT u.id, u.name, u.email, COUNT(o.id) as order_count, SUM(o.total) as total_spent FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.active = 1 AND u.created_at > '2024-01-01' GROUP BY u.id, u.name, u.email HAVING order_count > 5 ORDER BY total_spent DESC LIMIT 10;`;
 updateLineCounts();
 </script>
-<script src="/static/footer.js"></script>
+<script src="/static/footer.js?v=3"></script>
 
-<script src="/static/app-nav.js"></script>
+<script src="/static/app-nav.js?v=3"></script>
 </body>
 </html>

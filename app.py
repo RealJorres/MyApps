@@ -243,10 +243,19 @@ app = SecurityHeadersMiddleware(
 
 
 # ── Static assets (design system) ────────────────────────────────────────────
+# These shared JS files change with every deployment fix. Never let browsers
+# cache them — stale versions cause "properties of null" errors site-wide.
+_NO_CACHE_ASSETS = {'app-nav.js', 'footer.js'}
+
 @flask_app.route('/static/<path:filename>')
 def serve_static(filename):
     """Serve shared static assets to all sub-apps."""
-    return send_from_directory(flask_app.static_folder, filename)
+    resp = send_from_directory(flask_app.static_folder, filename)
+    if filename in _NO_CACHE_ASSETS:
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        resp.headers['Pragma']  = 'no-cache'
+        resp.headers['Expires'] = '0'
+    return resp
 
 
 # ── Privacy page ──────────────────────────────────────────────────────────────
