@@ -882,6 +882,41 @@
         border-radius: 50%;
         flex-shrink: 0;
       }
+      .shelf-title-row {
+        display: flex; align-items: center; gap: .6rem; margin-bottom: .75rem;
+      }
+      .shelf-title-row .shelf-title { margin-bottom: 0; }
+      .shelf-reset {
+        font-size: .68rem; font-weight: 600; color: var(--muted);
+        background: none; border: 1px solid var(--border);
+        border-radius: .35rem; padding: .15rem .5rem;
+        cursor: pointer; font-family: inherit; transition: all .15s;
+      }
+      .shelf-reset:hover { color: var(--accent); border-color: var(--accent); }
+
+      /* ── Pin button on cards ── */
+      .btn-pin {
+        background: none; border: none; cursor: pointer;
+        color: var(--muted); font-size: .85rem; line-height: 1;
+        padding: .2rem .3rem; border-radius: .25rem;
+        transition: color .15s; flex-shrink: 0;
+      }
+      .btn-pin:hover { color: var(--accent); }
+      .btn-pin.active { color: #f59e0b; }
+      .btn-pin svg { display: block; }
+
+      /* ── Like/rating button on cards ── */
+      .btn-like {
+        background: none; border: none; cursor: pointer;
+        color: var(--muted); font-size: .75rem; font-weight: 600;
+        display: inline-flex; align-items: center; gap: .2rem;
+        padding: .2rem .35rem; border-radius: .25rem;
+        transition: color .15s; font-family: inherit; flex-shrink: 0;
+      }
+      .btn-like:hover { color: #059669; }
+      .btn-like.active { color: #059669; }
+      .btn-like svg { display: block; }
+      .like-count { font-size: .7rem; }
     </style>
   </head>
   <body>
@@ -1230,11 +1265,50 @@
         ],
       };
 
-      // ── Quick Tools: most broadly-useful apps ──────────
-      const QUICK_TOOL_IDS = [
+      // ── Quick Tools: defaults + user-pinned ────────────
+      const DEFAULT_QUICK_IDS = [
         "json-formatter", "password-generator", "qr-generator",
         "tip-calculator", "pomodoro-timer", "color-picker"
       ];
+      const PINNED_KEY  = "jorres_pinned_v1";
+      const RATINGS_KEY = "jorres_ratings_v1";
+
+      function getPinned() {
+        try { const v = JSON.parse(localStorage.getItem(PINNED_KEY)); return Array.isArray(v) ? v : null; }
+        catch(e) { return null; }
+      }
+      function savePinned(arr) { localStorage.setItem(PINNED_KEY, JSON.stringify(arr)); }
+      function isPinned(id) { const p = getPinned(); return p ? p.includes(id) : DEFAULT_QUICK_IDS.includes(id); }
+      function togglePin(id) {
+        let pins = getPinned() || [...DEFAULT_QUICK_IDS];
+        if (pins.includes(id)) { pins = pins.filter(x => x !== id); }
+        else { pins = [...pins, id]; if (pins.length > 12) pins = pins.slice(-12); }
+        savePinned(pins);
+        renderQuickTools();
+        // Re-render just that card's pin button state without full grid re-render
+        const btn = document.querySelector(`.btn-pin[data-id="${id}"]`);
+        if (btn) {
+          const active = isPinned(id);
+          btn.classList.toggle("active", active);
+          btn.setAttribute("title", active ? "Unpin from Quick Tools" : "Pin to Quick Tools");
+        }
+      }
+      function resetPins() { localStorage.removeItem(PINNED_KEY); renderQuickTools(); }
+
+      function getRatings() {
+        try { return JSON.parse(localStorage.getItem(RATINGS_KEY)) || {}; }
+        catch(e) { return {}; }
+      }
+      function likeApp(id, btn) {
+        const r = getRatings();
+        r[id] = (r[id] || 0) + 1;
+        localStorage.setItem(RATINGS_KEY, JSON.stringify(r));
+        if (btn) {
+          btn.classList.add("active");
+          const span = btn.querySelector(".like-count");
+          if (span) span.textContent = r[id] > 1 ? r[id] : "";
+        }
+      }
 
       // ── Recently Used (localStorage) ───────────────────
       const RECENT_KEY = "jorres_recent_v1";
@@ -1309,14 +1383,24 @@
       // ── Quick Tools shelf ──────────────────────────────
       function renderQuickTools() {
         const el = document.getElementById("quickSection");
-        const apps = QUICK_TOOL_IDS.map(id => allApps.find(a => a.id === id)).filter(Boolean);
+        const ids = getPinned() || DEFAULT_QUICK_IDS;
+        const isCustom = getPinned() !== null;
+        const apps = ids.map(id => allApps.find(a => a.id === id)).filter(Boolean);
         if (!apps.length) { el.style.display = "none"; return; }
         el.style.display = "";
-        el.innerHTML = `<div class="shelf-title">Quick Tools</div>
+        const resetBtn = isCustom
+          ? `<button class="shelf-reset" onclick="resetPins()" title="Reset to defaults">Reset</button>`
+          : "";
+        el.innerHTML = `<div class="shelf-title-row">
+            <div class="shelf-title">Quick Tools</div>${resetBtn}
+          </div>
           <div class="shelf-row">${apps.map(a =>
             `<a class="shelf-chip" href="${a.url}" onclick="trackClick('${a.id}')">
               <span class="chip-dot" style="background:${a.color}"></span>${esc(a.name)}
-            </a>`).join("")}</div>`;
+            </a>`).join("")}</div>
+          <p style="font-size:.65rem;color:var(--muted);margin-top:.5rem">Pin tools to this shelf using the
+            <svg style="display:inline;vertical-align:-1px" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
+            button on any app card.</p>`;
       }
 
       // ── Recently Used shelf ────────────────────────────
@@ -1475,6 +1559,11 @@
         const tags = a.tags
           .map((t) => `<span class="tag">${esc(t)}</span>`)
           .join("");
+        const pinned = isPinned(a.id);
+        const ratings = getRatings();
+        const likeCount = ratings[a.id] || 0;
+        const pinSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="${pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>`;
+        const thumbSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="${likeCount > 0 ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>`;
         return `
       <div class="card" id="card-${esc(a.id)}">
         <div class="card-cover" style="background:${grad}">${a.icon}</div>
@@ -1483,7 +1572,9 @@
           <div class="card-desc">${esc(a.description)}</div>
           <div class="card-tags">${tags}</div>
           <div class="card-footer">
-            <button class="btn-star ${favorites.has(a.id) ? 'active' : ''}" data-id="${esc(a.id)}" onclick="toggleFavorite('${esc(a.id)}')" title="${favorites.has(a.id) ? 'Remove from favorites' : 'Add to favorites'}">★</button>
+            <button class="btn-star ${favorites.has(a.id) ? 'active' : ''}" data-id="${esc(a.id)}" onclick="toggleFavorite('${esc(a.id)}')" title="${favorites.has(a.id) ? 'Remove from favorites' : 'Add to favorites'}" aria-label="${favorites.has(a.id) ? 'Remove from favorites' : 'Add to favorites'}">★</button>
+            <button class="btn-pin ${pinned ? 'active' : ''}" data-id="${esc(a.id)}" onclick="togglePin('${esc(a.id)}')" title="${pinned ? 'Unpin from Quick Tools' : 'Pin to Quick Tools'}" aria-label="${pinned ? 'Unpin from Quick Tools' : 'Pin to Quick Tools'}">${pinSvg}</button>
+            <button class="btn-like ${likeCount > 0 ? 'active' : ''}" data-id="${esc(a.id)}" onclick="likeApp('${esc(a.id)}',this)" title="Mark as helpful" aria-label="Mark as helpful">${thumbSvg}<span class="like-count">${likeCount > 1 ? likeCount : ''}</span></button>
             <div class="card-actions"><a class="btn-open" href="${a.url}" target="_blank" onclick="trackClick('${esc(a.id)}')">↗ Open</a></div>
           </div>
         </div>
