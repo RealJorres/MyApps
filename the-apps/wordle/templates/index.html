@@ -292,9 +292,11 @@ function openModal(id) {
     document.getElementById('stat-streak').textContent = stats.streak||0;
     document.getElementById('stat-maxstreak').textContent = stats.maxStreak||0;
   }
-  document.getElementById(id).classList.remove('hidden');
+  var _m=document.getElementById(id); _m.classList.remove('hidden'); _trapFocus(_m);
 }
-function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.add('hidden')); }
+function _trapFocus(el){var sel='button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';var nodes=Array.from(el.querySelectorAll(sel));var first=nodes[0],last=nodes[nodes.length-1];if(first)setTimeout(function(){first.focus();},50);function h(e){if(e.key!=='Tab')return;if(!nodes.length){e.preventDefault();return;}if(e.shiftKey){if(document.activeElement===first){e.preventDefault();if(last)last.focus();}}else{if(document.activeElement===last){e.preventDefault();if(first)first.focus();}}}el._trapH=h;el.addEventListener('keydown',h);}
+function _releaseFocus(el){if(el&&el._trapH){el.removeEventListener('keydown',el._trapH);el._trapH=null;}}
+function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m=>{_releaseFocus(m);m.classList.add('hidden');}); }
 
 function closeShareEmoji() {
   let emoji = '';

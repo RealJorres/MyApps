@@ -30,7 +30,7 @@ header h1 { font-size: 2rem; font-weight: 800; }
 header p { color: var(--muted); margin-top: 0.4rem; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
 .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
-.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+ 
 .btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
 .status { padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; margin-top: 0.75rem; }
 .status.error { background: var(--error-bg); color: var(--error-fg); }
@@ -167,7 +167,7 @@ function renderList() {
       </span>
       <span class="file-name" title="${item.name}">${i + 1}. ${item.name}</span>
       <span class="file-pages">${formatSize(item.size)}</span>
-      <button class="file-remove" data-idx="${i}" title="Remove">
+      <button class="file-remove" data-idx="${i}" title="Remove" aria-label="Remove file">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     `;

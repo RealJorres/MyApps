@@ -36,10 +36,10 @@ header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
 header p { color: var(--muted); margin-top: 0.4rem; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
 .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
-.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+ 
 .btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
 .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
-.btn-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; } .btn-danger:hover { background: #fee2e2; }
+ 
 .btn-success { background: var(--success-bg); color: var(--success-fg); border: 1px solid #bbf7d0; }
 input[type=text], textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
 textarea { resize: vertical; min-height: 60px; }
@@ -222,8 +222,11 @@ function editDeck(id) {
   const d = decks[id];
   document.getElementById('editModalTitle').textContent = 'Edit: ' + d.name;
   renderCardEditList(d.cards);
-  document.getElementById('editModal').classList.remove('hidden');
+  var _em=document.getElementById('editModal'); _em.classList.remove('hidden'); _trapFocus(_em);
 }
+
+function _trapFocus(el){var sel='button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';var nodes=Array.from(el.querySelectorAll(sel));var first=nodes[0],last=nodes[nodes.length-1];if(first)setTimeout(function(){first.focus();},50);function h(e){if(e.key!=='Tab')return;if(!nodes.length){e.preventDefault();return;}if(e.shiftKey){if(document.activeElement===first){e.preventDefault();if(last)last.focus();}}else{if(document.activeElement===last){e.preventDefault();if(first)first.focus();}}}el._trapH=h;el.addEventListener('keydown',h);}
+function _releaseFocus(el){if(el&&el._trapH){el.removeEventListener('keydown',el._trapH);el._trapH=null;}}
 
 function renderCardEditList(cards) {
   const container = document.getElementById('cardEditList');
@@ -274,7 +277,7 @@ function saveDeck() {
 }
 
 function closeModal() {
-  document.getElementById('editModal').classList.add('hidden');
+  var _em=document.getElementById('editModal'); if(_em){_releaseFocus(_em);_em.classList.add('hidden');}
   editingDeckId = null;
 }
 

@@ -251,7 +251,32 @@
   function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
   selectDate(toKey(today));
+
+function exportData() {
+  var out = {}; for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k){if(k.startsWith('journal_'))out[k]=localStorage.getItem(k);}}
+  var b = new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  var a = document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download='journal-backup.json'; a.click(); URL.revokeObjectURL(a.href);
+}
+function importData() {
+  var inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange=function(e){
+    var file=e.target.files[0]; if(!file)return;
+    var r=new FileReader();
+    r.onload=function(ev){
+      try{var d=JSON.parse(ev.target.result);Object.keys(d).forEach(function(k){localStorage.setItem(k,d[k]);});location.reload();}
+      catch(err){alert('Invalid backup file.');}
+    };r.readAsText(file);
+  };inp.click();
+}
 </script>
+<div class="card" style="margin-top:0">
+  <p style="font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem">Data</p>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <button class="btn btn-ghost" onclick="exportData()">Export</button>
+    <button class="btn btn-ghost" onclick="importData()">Import</button>
+  </div>
+</div>
 <script src="/static/footer.js?v=3"></script>
 
 <script src="/static/app-nav.js?v=3"></script>

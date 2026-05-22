@@ -44,8 +44,8 @@ body { display: flex; flex-direction: column; }
 .top-bar h1 span { color: var(--primary); }
 
 .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-h); }
+
+
 .btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
 .btn-ghost:hover { background: var(--border); }
 .btn-ghost.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -540,8 +540,10 @@ setView('split');
 document.getElementById('btnSplit').classList.add('active');
 setTimeout(renderPreview, 100);
 
-function openHelp() { document.getElementById('helpModal').classList.add('open'); }
-function closeHelp() { document.getElementById('helpModal').classList.remove('open'); }
+function _trapFocus(el){var sel='button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';var nodes=Array.from(el.querySelectorAll(sel));var first=nodes[0],last=nodes[nodes.length-1];if(first)setTimeout(function(){first.focus();},50);function h(e){if(e.key!=='Tab')return;if(!nodes.length){e.preventDefault();return;}if(e.shiftKey){if(document.activeElement===first){e.preventDefault();if(last)last.focus();}}else{if(document.activeElement===last){e.preventDefault();if(first)first.focus();}}}el._trapH=h;el.addEventListener('keydown',h);}
+function _releaseFocus(el){if(el&&el._trapH){el.removeEventListener('keydown',el._trapH);el._trapH=null;}}
+function openHelp() { var m=document.getElementById('helpModal'); if(m){m.classList.add('open');_trapFocus(m);} }
+function closeHelp() { var m=document.getElementById('helpModal'); if(m){_releaseFocus(m);m.classList.remove('open');} }
 function closeHelpOutside(e) { if (e.target === document.getElementById('helpModal')) closeHelp(); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelp(); });
 </script>

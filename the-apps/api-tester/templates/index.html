@@ -30,7 +30,7 @@ header h1 { font-size: 2rem; font-weight: 800; }
 header p { color: var(--muted); margin-top: 0.4rem; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
 .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
-.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+ 
 .btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
 .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.78rem; }
 input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
@@ -209,7 +209,7 @@ function renderHeaderRows() {
     div.innerHTML = `
       <input type="text" placeholder="Header name" value="${escHtml(row.key)}" data-field="key" data-idx="${i}">
       <input type="text" placeholder="Value" value="${escHtml(row.val)}" data-field="val" data-idx="${i}">
-      <button class="kv-remove" data-idx="${i}" title="Remove">
+      <button class="kv-remove" data-idx="${i}" title="Remove" aria-label="Remove row">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     `;

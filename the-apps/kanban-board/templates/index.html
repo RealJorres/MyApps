@@ -236,10 +236,12 @@
     document.getElementById('editTitle').value = card.title;
     document.getElementById('editDesc').value = card.desc || '';
     document.getElementById('editPriority').value = card.priority || '';
-    document.getElementById('modalOverlay').classList.add('open');
+    var _mo=document.getElementById('modalOverlay'); _mo.classList.add('open'); _trapFocus(_mo);
   }
 
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); editCardId = null; }
+  function _trapFocus(el){var sel='button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';var nodes=Array.from(el.querySelectorAll(sel));var first=nodes[0],last=nodes[nodes.length-1];if(first)setTimeout(function(){first.focus();},50);function h(e){if(e.key!=='Tab')return;if(!nodes.length){e.preventDefault();return;}if(e.shiftKey){if(document.activeElement===first){e.preventDefault();if(last)last.focus();}}else{if(document.activeElement===last){e.preventDefault();if(first)first.focus();}}}el._trapH=h;el.addEventListener('keydown',h);}
+  function _releaseFocus(el){if(el&&el._trapH){el.removeEventListener('keydown',el._trapH);el._trapH=null;}}
+  function closeModal() { var _mo=document.getElementById('modalOverlay');if(_mo){_releaseFocus(_mo);_mo.classList.remove('open');}editCardId = null; }
 
   function saveCard() {
     if (!editCardId) return;

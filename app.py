@@ -431,7 +431,7 @@ def robots():
     retired = [
         '/text-diff/', '/jwt-decoder/', '/password-strength/',
         '/invoice-tracker/', '/quiz-maker/', '/color-code-converter/',
-        '/markdown-to-pdf/', '/countdown-timer/',
+        '/markdown-to-pdf/', '/countdown-timer/', '/percentage-calculator/',
     ]
     disallow_retired = ''.join(f'Disallow: {p}\n' for p in retired)
     body = (
