@@ -363,3 +363,11 @@ input[type=checkbox], input[type=radio] { accent-color: var(--brand); width: aut
   .page-title { font-size: var(--text-2xl); }
   .btn { padding: 0.5rem 0.85rem; }
 }
+
+/* ── Loading spinner (used by heavy-operation buttons) ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin-icon {
+  animation: spin 0.8s linear infinite;
+  vertical-align: -3px;
+  flex-shrink: 0;
+}

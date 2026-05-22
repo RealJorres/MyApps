@@ -947,6 +947,8 @@
       .btn-like svg { display: block; }
       .like-count { font-size: .7rem; }
     </style>
+  <!-- Fuse.js — lightweight fuzzy search with weighted fields -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -965,7 +967,7 @@
         </svg>
         <div class="logo-text">
           <span class="logo-name">Jorres Apps</span>
-          <span class="logo-tag">100 tools · one workspace</span>
+          <span class="logo-tag">130 tools · free · instant</span>
         </div>
       </a>
       <div class="header-right">
@@ -985,9 +987,9 @@
         <rect x="14" y="46" width="12" height="12" rx="3" fill="#2f57ff"/>
         <rect x="30" y="46" width="12" height="12" rx="3" fill="#ffffff"/>
       </svg>
-      <h1>100 tools. <span>One workspace.</span></h1>
+      <h1>Every tool you reach for — <span>free, instant, no sign-up.</span></h1>
       <p>
-        Free browser tools — no ads, no sign-up, no tracking.
+        130 browser tools across 10 categories. No install, no account, no tracking. Open one and go.
       </p>
       <div class="privacy-pills" aria-label="Privacy features">
         <span class="privacy-pill">No ads</span>
@@ -1362,6 +1364,7 @@
         renderSubcatNav();
         renderQuickTools();
         renderRecentlyUsed();
+        buildSearchIndex();
         applyFilters();
         renderFavorites();
       }
@@ -1446,15 +1449,37 @@
             </a>`).join("")}</div>`;
       }
 
+      // ── Fuse.js index (built once after apps load) ─────────────────────────
+      let _fuse = null;
+      function buildSearchIndex() {
+        _fuse = new Fuse(allApps, {
+          includeScore: true,
+          threshold: 0.4,        // 0 = exact, 1 = anything — 0.4 tolerates typos
+          ignoreLocation: true,  // match anywhere in the string, not just the start
+          keys: [
+            { name: "name",        weight: 3.0 },  // app name is the strongest signal
+            { name: "tags",        weight: 1.5 },  // tags beat description
+            { name: "description", weight: 0.8 },  // description last
+            { name: "category",    weight: 0.3 },
+          ],
+        });
+      }
+
       function applyFilters() {
-        const q = document.getElementById("searchInput").value.toLowerCase();
+        const q = document.getElementById("searchInput").value.trim();
         let visible = allApps;
 
         if (q) {
-          // Text search overrides all category/subcategory filters
-          visible = allApps.filter((a) =>
-            [a.name, a.description, ...a.tags].join(" ").toLowerCase().includes(q)
-          );
+          // Fuzzy search via Fuse.js — tolerates typos, weighted by field
+          if (_fuse) {
+            visible = _fuse.search(q).map(r => r.item);
+          } else {
+            // Fallback if Fuse hasn't loaded yet
+            const ql = q.toLowerCase();
+            visible = allApps.filter((a) =>
+              [a.name, a.description, ...(a.tags||[])].join(" ").toLowerCase().includes(ql)
+            );
+          }
           if (activeCat !== "All") {
             activeCat = "All";
             activeSubcat = "All";
