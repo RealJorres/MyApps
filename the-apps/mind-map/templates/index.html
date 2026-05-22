@@ -273,9 +273,30 @@ canvas.addEventListener('touchend', e => {
   _t1 = null; _t2 = null;
 }, {passive: false});
 
-canvas.addEventListener('dblclick', e => {
-  // On mobile, double-tap adds a node (same as desktop double-click)
-});
+// Mobile double-tap to add node (mirrors desktop dblclick)
+let _lastTap = 0;
+canvas.addEventListener('touchend', function(e) {
+  const now = Date.now();
+  if (now - _lastTap < 280 && e.changedTouches.length === 1) {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    const rect = canvas.getBoundingClientRect();
+    const wx = (t.clientX - rect.left - pan.x) / scale;
+    const wy = (t.clientY - rect.top - pan.y) / scale;
+    const hit = nodes.find(n => wx >= n.x && wx <= n.x + n.w && wy >= n.y && wy <= n.y + n.h);
+    if (hit) {
+      startEditing(hit);
+    } else {
+      const color = NODE_COLORS[nodes.length % NODE_COLORS.length];
+      const n = createNode(wx - 60, wy - 20, 'New Node', selectedId, color);
+      measureNode(n);
+      draw();
+    }
+    _lastTap = 0;
+  } else {
+    _lastTap = now;
+  }
+}, { passive: false });
 
 function startEditing(n) {
   editingId = n.id;

@@ -295,11 +295,11 @@
         box-shadow: 0 8px 24px rgba(47,87,255, 0.12);
       }
       .card-cover {
-        height: 155px;
+        height: 120px;   /* reduced from 155px — less dead space */
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 3.8rem;
+        font-size: 3rem;   /* slightly smaller icon */
         position: relative;
         overflow: hidden;
       }
@@ -317,13 +317,17 @@
         padding: 0.9rem;
       }
       .card-name {
-        font-size: 0.92rem;
+        font-size: 0.88rem;
         font-weight: 700;
         color: var(--text);
-        white-space: nowrap;
+        /* Allow wrapping up to 2 lines — prevents truncation of longer names */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
-        margin-bottom: 0.3rem;
+        min-height: 2.4em;
+        line-height: 1.3;
+        margin-bottom: 0.25rem;
       }
       .card-desc {
         font-size: 0.77rem;
@@ -1381,7 +1385,11 @@
       function renderGrid(apps) {
         const grid = document.getElementById("grid");
         if (!apps.length) {
-          grid.innerHTML = `<div class="empty"><p>No apps match your search.</p></div>`;
+          const q = document.getElementById("searchInput").value.trim();
+          const msg = q
+            ? `No results for "<strong>${esc(q)}</strong>" — try a shorter term, check the spelling, or browse by category.`
+            : `Nothing here yet.`;
+          grid.innerHTML = `<div class="empty"><p>${msg}</p></div>`;
           return;
         }
         const groups = {};
@@ -1509,8 +1517,35 @@
       });
 
       // ── Modal helpers ─────────────────────────────────
-      function openModal(id)  { document.getElementById(id).classList.add('open'); }
-      function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+      /* ── Focus trapping for accessibility (#5) ─────────── */
+      const FOCUSABLE = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      let _trapCleanup = null;
+
+      function trapFocus(modalEl) {
+        if (_trapCleanup) _trapCleanup();
+        const els = Array.from(modalEl.querySelectorAll(FOCUSABLE)).filter(el => !el.closest('[style*="display:none"]'));
+        if (!els.length) return;
+        // Focus first element
+        setTimeout(() => els[0].focus(), 50);
+        function handler(e) {
+          if (e.key !== 'Tab') return;
+          const first = els[0], last = els[els.length - 1];
+          if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+          else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+        }
+        modalEl.addEventListener('keydown', handler);
+        _trapCleanup = () => modalEl.removeEventListener('keydown', handler);
+      }
+
+      function openModal(id) {
+        const el = document.getElementById(id);
+        el.classList.add('open');
+        trapFocus(el);
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+        if (_trapCleanup) { _trapCleanup(); _trapCleanup = null; }
+      }
       function closeModalOutside(e, id) {
         if (e.target === document.getElementById(id)) closeModal(id);
       }

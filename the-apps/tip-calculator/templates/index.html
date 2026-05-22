@@ -2,195 +2,259 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/static/base.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/tip-calculator/">
-<meta name="description" content="Calculate the tip and split the bill among friends at restaurants. Quick, easy, and accurate.">
-<meta name="keywords" content="tip calculator, bill splitter, restaurant tip, gratuity calculator, split bill">
-<meta name="author" content="Jorres Apps">
-<meta property="og:title" content="Tip Calculator">
-<meta property="og:description" content="Calculate the tip and split the bill among friends at restaurants. Quick, easy, and accurate.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tip Calculator">
-<meta name="twitter:description" content="Calculate the tip and split the bill among friends at restaurants. Quick, easy, and accurate.">
-<title>Tip Calculator | Jorres Apps</title>
+<meta name="description" content="Split the bill with tip calculations and solve any percentage problem — all in one quick tool.">
+<meta name="robots" content="index, follow">
+<title>Quick Calculator | Jorres Apps</title>
 <style>
-:root {
-  --primary: #059669; --brand: var(--primary); --primary-h: #047857;
-  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
-  --text: #1e293b; --muted: #64748b;
-  --success-bg: #f0fdf4; --success-fg: #16a34a;
-  --error-bg: #fef2f2; --error-fg: #dc2626;
+:root{--primary:#059669; --primary-h:#047857; --brand:var(--primary);
+  --bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;
+  --success-bg:#f0fdf4;--success-fg:#16a34a;--error-bg:#fef2f2;--error-fg:#dc2626}
+body{padding:2rem 1rem 4rem}
+.container{max-width:620px;margin:0 auto}
+header{text-align:center;margin-bottom:1.75rem}
+header h1{font-size:2rem;font-weight:800}
+header p{color:var(--muted);margin-top:.4rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border-radius:.5rem;border:none;font-size:.875rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-h)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
+.btn-sm{padding:.3rem .7rem;font-size:.8rem}
+input[type=number]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
+input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(5,150,105,.1)}
+.section-title{font-size:.82rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border)}
+/* Tabs */
+.tabs{display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:.3rem;margin-bottom:1.5rem}
+.tab-btn{flex:1;padding:.6rem;border:none;background:none;font-size:.9rem;font-weight:700;cursor:pointer;border-radius:.5rem;font-family:inherit;transition:all .15s;color:var(--muted)}
+.tab-btn.active{background:var(--primary);color:#fff}
+/* Tip tab */
+.tip-btns{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem}
+.tip-btn{padding:.45rem 1rem;border-radius:.4rem;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.875rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.tip-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.form-row{margin-bottom:1rem}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.result-card{background:var(--bg);border:1px solid var(--border);border-radius:.5rem;padding:1rem;text-align:center}
+.result-card.highlight{background:var(--primary);border-color:var(--primary-h)}
+.result-card.highlight .rl{color:rgba(255,255,255,.8)}
+.result-card.highlight .rv{color:#fff}
+.rl{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem}
+.rv{font-size:1.6rem;font-weight:800;color:var(--primary)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-top:1px solid var(--border);margin-top:.5rem}
+.toggle-label{font-size:.875rem;font-weight:600}
+.toggle-switch{position:relative;display:inline-block;width:42px;height:24px}
+.toggle-switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;border-radius:24px;transition:.2s}
+.slider:before{position:absolute;content:'';height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+input:checked + .slider{background:var(--primary)}
+input:checked + .slider:before{transform:translateX(18px)}
+/* Percentage tab */
+.calc-row{display:flex;align-items:flex-end;flex-wrap:wrap;gap:.6rem;font-size:1rem;font-weight:500;margin-bottom:.75rem}
+.op-text{font-size:1rem;color:var(--muted);padding:0 .2rem;white-space:nowrap;padding-bottom:.55rem}
+.inline-field{display:flex;flex-direction:column;gap:.2rem;align-items:flex-start}
+.inline-field input{width:120px}
+.result-box{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:.5rem}
+.result-eq{font-size:.9rem;color:var(--muted)}
+.result-num{font-size:1.6rem;font-weight:800;color:var(--primary)}
+.result-num.increase{color:#16a34a}
+.result-num.decrease{color:#dc2626}
+@media(max-width:600px){
+  body{overflow-x:hidden}
+  .results-grid{grid-template-columns:1fr!important}
+  .calc-row{flex-direction:column;align-items:flex-start}
+  .inline-field input{width:100%!important;min-width:0}
+  input[type=number]{font-size:16px!important}
 }
-body { padding: 2rem 1rem 4rem; }
-.container { max-width: 560px; margin: 0 auto; }
-header { text-align: center; margin-bottom: 2rem; }
-header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
-header p { color: var(--muted); margin-top: 0.4rem; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
-.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 0.5rem; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: inherit; }
-.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
-.btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); } .btn-ghost:hover { background: var(--border); }
-input[type=number], input[type=text] { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus { border-color: var(--primary); }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
-.tip-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
-.tip-btn { padding: 0.45rem 1rem; border-radius: 0.4rem; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 0.875rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-.tip-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-.tip-btn:hover:not(.active) { background: var(--border); }
-.custom-tip { display: none; margin-top: 0.4rem; }
-.custom-tip.show { display: block; }
-.form-row { margin-bottom: 1rem; }
-.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; text-align: center; }
-.result-card.highlight { background: var(--primary); border-color: var(--primary-h); }
-.result-card.highlight .result-label { color: rgba(255,255,255,0.8); }
-.result-card.highlight .result-value { color: white; }
-.result-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 0.4rem; }
-.result-value { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
-.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-top: 1px solid var(--border); margin-top: 0.5rem; }
-.toggle-label { font-size: 0.875rem; font-weight: 600; }
-.toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; }
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #cbd5e1; border-radius: 24px; transition: 0.2s; }
-.slider:before { position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
-input:checked + .slider { background: var(--primary); }
-input:checked + .slider:before { transform: translateX(18px); }
-@media (max-width: 600px) {
-  body { overflow-x: hidden; }
-  .results-grid { grid-template-columns: 1fr !important; }
-  input[type=text], input[type=number] { width: 100% !important; min-width: 0 !important; }
-}
-@media (max-width: 600px) { input[type=text], input[type=number], input[type=email], input[type=date], input[type=password], input[type=search], select, textarea { font-size: 16px !important; } }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>Tip Calculator</h1>
-    <p>Split the bill with ease</p>
+    <h1>Quick Calculator</h1>
+    <p>Tip splitting and percentage calculations.</p>
   </header>
 
-  <div class="card">
-    <div class="section-title">Bill Details</div>
-    <div class="form-row">
-      <label for="billAmount">Bill Amount ($)</label>
-      <input type="number" id="billAmount" value="75.00" min="0" step="0.01" oninput="calculate()">
-    </div>
-    <div class="form-row">
-      <p id="tipPctLabel" style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Tip Percentage</p>
-      <div class="tip-btns" role="group" aria-labelledby="tipPctLabel">
-        <button class="tip-btn" onclick="selectTip(10)">10%</button>
-        <button class="tip-btn" onclick="selectTip(15)">15%</button>
-        <button class="tip-btn active" onclick="selectTip(18)">18%</button>
-        <button class="tip-btn" onclick="selectTip(20)">20%</button>
-        <button class="tip-btn" onclick="selectTip(25)">25%</button>
-        <button class="tip-btn" id="customBtn" onclick="selectCustom()">Custom</button>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tip',this)">Tip Split</button>
+    <button class="tab-btn" onclick="switchTab('pct',this)">Percentage</button>
+  </div>
+
+  <!-- ── TIP SPLIT TAB ─────────────────────────── -->
+  <div id="tab-tip">
+    <div class="card">
+      <div class="section-title">Bill Details</div>
+      <div class="form-row">
+        <label for="billAmount">Bill Amount ($)</label>
+        <input type="number" id="billAmount" value="75.00" min="0" step="0.01" oninput="calculate()">
       </div>
-      <div class="custom-tip" id="customTip">
-        <input type="number" id="customPct" value="" min="0" max="200" step="0.5" placeholder="Enter tip %" oninput="calculate()">
+      <div class="form-row">
+        <p id="tipPctLabel" style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Tip Percentage</p>
+        <div class="tip-btns" role="group" aria-labelledby="tipPctLabel">
+          <button class="tip-btn" onclick="selectTip(10)">10%</button>
+          <button class="tip-btn" onclick="selectTip(15)">15%</button>
+          <button class="tip-btn active" onclick="selectTip(18)">18%</button>
+          <button class="tip-btn" onclick="selectTip(20)">20%</button>
+          <button class="tip-btn" onclick="selectTip(25)">25%</button>
+          <button class="tip-btn" id="customBtn" onclick="selectCustom()">Custom</button>
+        </div>
+        <div id="customTip" style="display:none;margin-top:.4rem">
+          <input type="number" id="customPct" min="0" max="200" step="0.5" placeholder="Enter tip %" oninput="calculate()">
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="numPeople">Number of People</label>
+        <input type="number" id="numPeople" value="2" min="1" step="1" oninput="calculate()">
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Round up per person</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="roundUp" onchange="calculate()">
+          <span class="slider"></span>
+        </label>
       </div>
     </div>
-    <div class="form-row">
-      <label for="numPeople">Number of People</label>
-      <input type="number" id="numPeople" value="2" min="1" step="1" oninput="calculate()">
-    </div>
-    <div class="toggle-row">
-      <span class="toggle-label">Round up per person</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="roundUp" onchange="calculate()">
-        <span class="slider"></span>
-      </label>
+    <div class="card" id="resultsCard">
+      <div class="section-title">Results</div>
+      <div class="results-grid">
+        <div class="result-card"><div class="rl">Tip Amount</div><div class="rv" id="tipAmount">$13.50</div></div>
+        <div class="result-card highlight"><div class="rl">Per Person</div><div class="rv" id="perPerson">$44.25</div></div>
+        <div class="result-card"><div class="rl">Total Bill</div><div class="rv" id="totalBill">$88.50</div></div>
+        <div class="result-card"><div class="rl">Tip Per Person</div><div class="rv" id="tipPerPerson">$6.75</div></div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="section-title">Results</div>
-    <div class="results-grid">
-      <div class="result-card">
-        <div class="result-label">Tip Amount</div>
-        <div class="result-value" id="tipAmount">—</div>
+  <!-- ── PERCENTAGE TAB ─────────────────────────── -->
+  <div id="tab-pct" style="display:none">
+    <div class="card">
+      <div class="section-title">Mode 1 — What is X% of Y?</div>
+      <div class="calc-row">
+        <span class="op-text">What is</span>
+        <div class="inline-field"><label for="m1x">Percent</label><input type="number" id="m1x" value="20" step="any" oninput="calc1()"></div>
+        <span class="op-text">% of</span>
+        <div class="inline-field"><label for="m1y">Value</label><input type="number" id="m1y" value="150" step="any" oninput="calc1()"></div>
       </div>
-      <div class="result-card">
-        <div class="result-label">Total Bill</div>
-        <div class="result-value" id="totalBill">—</div>
+      <div class="result-box">
+        <span class="result-eq" id="m1eq">20% of 150 =</span>
+        <span class="result-num" id="m1result">30</span>
+        <button class="btn btn-ghost btn-sm" onclick="copyResult('m1result')">Copy</button>
       </div>
-      <div class="result-card">
-        <div class="result-label">Per Person (tip)</div>
-        <div class="result-value" id="perTip">—</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Mode 2 — X is what % of Y?</div>
+      <div class="calc-row">
+        <div class="inline-field"><label for="m2x">Value X</label><input type="number" id="m2x" value="45" step="any" oninput="calc2()"></div>
+        <span class="op-text">is what % of</span>
+        <div class="inline-field"><label for="m2y">Value Y</label><input type="number" id="m2y" value="180" step="any" oninput="calc2()"></div>
       </div>
-      <div class="result-card highlight">
-        <div class="result-label">Per Person (total)</div>
-        <div class="result-value" id="perTotal">—</div>
+      <div class="result-box">
+        <span class="result-eq" id="m2eq">45 / 180 =</span>
+        <span class="result-num" id="m2result">25%</span>
+        <button class="btn btn-ghost btn-sm" onclick="copyResult('m2result')">Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Mode 3 — Percentage change from X to Y</div>
+      <div class="calc-row">
+        <div class="inline-field"><label for="m3x">From</label><input type="number" id="m3x" value="80" step="any" oninput="calc3()"></div>
+        <span class="op-text">to</span>
+        <div class="inline-field"><label for="m3y">To</label><input type="number" id="m3y" value="100" step="any" oninput="calc3()"></div>
+      </div>
+      <div class="result-box">
+        <span class="result-eq" id="m3eq">Change:</span>
+        <span class="result-num increase" id="m3result">+25%</span>
+        <button class="btn btn-ghost btn-sm" onclick="copyResult('m3result')">Copy</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-let selectedTip = 18;
-let isCustom = false;
-
-function selectTip(pct) {
-  selectedTip = pct;
-  isCustom = false;
-  document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
-  const btns = document.querySelectorAll('.tip-btn');
-  const tipMap = [10, 15, 18, 20, 25];
-  const idx = tipMap.indexOf(pct);
-  if (idx >= 0) btns[idx].classList.add('active');
-  document.getElementById('customTip').classList.remove('show');
-  calculate();
+/* ── Tab switching ──────────────────────── */
+function switchTab(tab, btn) {
+  document.getElementById('tab-tip').style.display = tab==='tip' ? '' : 'none';
+  document.getElementById('tab-pct').style.display = tab==='pct' ? '' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
+/* ── Tip Calculator ─────────────────────── */
+let tipPct = 18, usingCustom = false;
+function selectTip(p) {
+  tipPct = p; usingCustom = false;
+  document.getElementById('customTip').style.display = 'none';
+  document.getElementById('customBtn').classList.remove('active');
+  document.querySelectorAll('.tip-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === p + '%');
+  });
+  calculate();
+}
 function selectCustom() {
-  isCustom = true;
+  usingCustom = true;
+  document.getElementById('customTip').style.display = 'block';
   document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('customBtn').classList.add('active');
-  document.getElementById('customTip').classList.add('show');
-  document.getElementById('customPct').focus();
   calculate();
 }
-
-function getTipPct() {
-  if (isCustom) return parseFloat(document.getElementById('customPct').value) || 0;
-  return selectedTip;
-}
-
-function fmt(n) { return '$' + n.toFixed(2); }
-
 function calculate() {
-  const bill = parseFloat(document.getElementById('billAmount').value) || 0;
-  const tipPct = getTipPct();
+  const bill   = parseFloat(document.getElementById('billAmount').value) || 0;
   const people = Math.max(1, parseInt(document.getElementById('numPeople').value) || 1);
-  const roundUp = document.getElementById('roundUp').checked;
-
-  const tip = bill * tipPct / 100;
-  const total = bill + tip;
-  let perTip = tip / people;
-  let perTotal = total / people;
-
-  if (roundUp) { perTotal = Math.ceil(perTotal); perTip = perTotal - (bill / people); }
-
-  document.getElementById('tipAmount').textContent = fmt(tip);
-  document.getElementById('totalBill').textContent = fmt(total);
-  document.getElementById('perTip').textContent = fmt(perTip);
-  document.getElementById('perTotal').textContent = fmt(perTotal);
+  const round  = document.getElementById('roundUp').checked;
+  const pct    = usingCustom ? (parseFloat(document.getElementById('customPct').value) || 0) : tipPct;
+  const tip    = bill * pct / 100;
+  const total  = bill + tip;
+  let perPerson = total / people;
+  if (round) perPerson = Math.ceil(perPerson * 100) / 100;
+  const fmt = v => '$' + v.toFixed(2);
+  document.getElementById('tipAmount').textContent  = fmt(tip);
+  document.getElementById('totalBill').textContent  = fmt(total);
+  document.getElementById('perPerson').textContent  = fmt(perPerson);
+  document.getElementById('tipPerPerson').textContent = fmt(tip / people);
 }
-
-// Init
-document.querySelectorAll('.tip-btn')[2].classList.add('active');
 calculate();
+
+/* ── Percentage Calculator ──────────────── */
+function fmt(v) {
+  const n = parseFloat(v);
+  if (isNaN(n)) return '—';
+  return Math.abs(n) < 0.0001 ? '0' : n % 1 === 0 ? n.toLocaleString() : n.toLocaleString(undefined,{maximumFractionDigits:4});
+}
+function calc1() {
+  const x = parseFloat(document.getElementById('m1x').value);
+  const y = parseFloat(document.getElementById('m1y').value);
+  const r = x * y / 100;
+  document.getElementById('m1eq').textContent = `${x}% of ${y} =`;
+  document.getElementById('m1result').textContent = fmt(r);
+}
+function calc2() {
+  const x = parseFloat(document.getElementById('m2x').value);
+  const y = parseFloat(document.getElementById('m2y').value);
+  const r = (x / y) * 100;
+  document.getElementById('m2eq').textContent = `${x} / ${y} =`;
+  document.getElementById('m2result').textContent = isNaN(r) ? '—' : fmt(r) + '%';
+}
+function calc3() {
+  const x = parseFloat(document.getElementById('m3x').value);
+  const y = parseFloat(document.getElementById('m3y').value);
+  const r = ((y - x) / Math.abs(x)) * 100;
+  const el = document.getElementById('m3result');
+  document.getElementById('m3eq').textContent = 'Change:';
+  el.textContent = isNaN(r) || !isFinite(r) ? '—' : (r >= 0 ? '+' : '') + fmt(r) + '%';
+  el.className = 'result-num ' + (r > 0 ? 'increase' : r < 0 ? 'decrease' : '');
+}
+function copyResult(id) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
+    const btn = event.target; btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+calc1(); calc2(); calc3();
 </script>
 <script src="/static/footer.js"></script>
-
 <script src="/static/app-nav.js"></script>
 </body>
 </html>

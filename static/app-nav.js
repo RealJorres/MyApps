@@ -53,7 +53,51 @@
     var favs = getFavorites();
     var isFav = favs.has(appId);
 
-    // ── Skip-to-content link (accessibility) ──────────────
+    // ── Cross-app recommendations ─────────────────────────
+  // Shows 2-3 related tools below the nav bar (hidden on small screens)
+  var RELATED = {
+    'json-formatter':    ['json-to-yaml','diff-checker','regex-tester'],
+    'markdown-editor':   ['diff-checker','word-counter','markdown-table-generator'],
+    'password-generator':['hash-generator','jwt-generator','cipher-tool'],
+    'color-picker':      ['color-contrast','color-palette-extractor','color-gradient-generator'],
+    'csv-viewer':        ['csv-json-converter','pivot-table','chart-visualizer'],
+    'gantt-chart':       ['okr-tracker','kanban-board','decision-matrix'],
+    'okr-tracker':       ['gantt-chart','kanban-board','swot-analysis'],
+    'kanban-board':      ['todo-list','gantt-chart','okr-tracker'],
+    'invoice-generator': ['budget-tracker','expense-splitter','roi-calculator'],
+    'tip-calculator':    ['loan-calculator','vat-calculator','currency-converter'],
+    'hash-generator':    ['password-generator','cipher-tool','jwt-generator'],
+    'api-tester':        ['jwt-generator','url-parser','diff-checker'],
+    'resume-builder':    ['certificate-generator','business-letter','word-counter'],
+    'bmi-calculator':    ['tdee-calculator','sleep-calculator','habit-tracker'],
+    'chart-visualizer':  ['statistics-calculator','pivot-table','csv-viewer'],
+    'survey-builder':    ['meeting-agenda','form-builder','okr-tracker'],
+  };
+
+  function buildRelatedBar(appId) {
+    var ids = RELATED[appId];
+    if (!ids || window.innerWidth < 600) return null;
+    // Build chips using app registry from localStorage cache (best-effort)
+    var chips = ids.map(function(id) {
+      var a = document.createElement('a');
+      a.href = '/' + id + '/';
+      a.className = 'app-nav-rel';
+      a.textContent = id.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+      a.setAttribute('aria-label', 'Related tool: ' + a.textContent);
+      return a;
+    });
+    if (!chips.length) return null;
+    var bar = document.createElement('div');
+    bar.id = 'app-rel-bar';
+    var lbl = document.createElement('span');
+    lbl.className = 'app-rel-label';
+    lbl.textContent = 'Related:';
+    bar.appendChild(lbl);
+    chips.forEach(function(c){ bar.appendChild(c); });
+    return bar;
+  }
+
+  // ── Skip-to-content link (accessibility) ──────────────
     var skip = document.createElement('a');
     skip.className = 'skip-link';
     skip.href = '#app-main-content';
@@ -110,6 +154,9 @@
     bar.appendChild(title);
     bar.appendChild(star);
 
+    // ── Related tools bar ────────────────────────────────
+    var relBar = buildRelatedBar(appId);
+
     // ── Main content anchor (skip link target) ───────────
     var anchor = document.createElement('a');
     anchor.id = 'app-main-content';
@@ -117,11 +164,12 @@
     anchor.setAttribute('aria-hidden', 'true');
     anchor.style.cssText = 'position:absolute;top:0;left:0;width:0;height:0;overflow:hidden';
 
-    // Insert: skip-link → nav-bar → anchor → rest of body
+    // Insert: skip → nav-bar → related-bar (optional) → anchor → rest
     var body = document.body;
     if (body) {
       body.insertBefore(anchor, body.firstChild);
-      body.insertBefore(bar, anchor);
+      if (relBar) body.insertBefore(relBar, anchor);
+      body.insertBefore(bar, relBar || anchor);
       body.insertBefore(skip, bar);
     } else {
       document.addEventListener('DOMContentLoaded', function () {

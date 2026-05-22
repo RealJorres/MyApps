@@ -260,17 +260,10 @@
   },
   {
     "id": "tip-calculator",
-    "name": "Tip Calculator",
-    "description": "Enter the bill, pick a tip percentage, split by number of people — done.",
+    "name": "Quick Calculator",
+    "description": "Two tools in one: split a bill with tip calculation, or solve any percentage problem (X% of Y, X is what % of Y, percentage change).",
     "port": 5033, "path": "./the-apps/tip-calculator", "entry": "app.py",
-    "icon": "💰", "color": "#059669", "tags": ["Tip","Finance","Math"], "category": "Finance & Business"
-  },
-  {
-    "id": "percentage-calculator",
-    "name": "Percentage Calculator",
-    "description": "Three modes: X% of Y, X is what % of Y, and percentage change from X to Y.",
-    "port": 5034, "path": "./the-apps/percentage-calculator", "entry": "app.py",
-    "icon": "%", "color": "#d97706", "tags": ["Percentage","Math"], "category": "Finance & Business"
+    "icon": "%", "color": "#059669", "tags": ["Tip","Percentage","Calculator","Finance","Math"], "category": "Finance & Business"
   },
   {
     "id": "compound-interest",

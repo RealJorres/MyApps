@@ -1,6 +1,7 @@
 flask
 gunicorn
 flask-limiter
+pytest
 resend
 PyMuPDF
 Pillow

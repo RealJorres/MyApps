@@ -17,6 +17,16 @@ header h1 { font-size: 1.1rem; font-weight: 700; color: #fff; }
 .hbtn:hover { background: #334155; }
 .hbtn.run { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: 700; }
 .hbtn.run:hover { background: #1d4ed8; }
+.body-light { background: #f8fafc !important; }
+.body-light .editors { border-bottom-color: #e2e8f0; }
+.body-light .ed-pane { border-right-color: #e2e8f0; }
+.body-light .ed-label { background: #f1f5f9; color: #64748b; border-bottom-color: #e2e8f0; }
+.body-light textarea { background: #ffffff; color: #0f172a; }
+.body-light .preview-toolbar { background: #f1f5f9; border-bottom-color: #e2e8f0; }
+.body-light .iframe-wrap { background: #e2e8f0; }
+.body-light .mobile-pane-bar { background: #f1f5f9; border-bottom-color: #e2e8f0; }
+.body-light .mpane-btn { color: #475569; }
+.body-light .mpane-btn.active { color: #2f57ff; border-bottom-color: #2f57ff; }
 .auto-label { font-size: .78rem; color: #64748b; display: flex; align-items: center; gap: .4rem; cursor: pointer; }
 .main { display: flex; flex: 1; overflow: hidden; flex-direction: column; }
 .editors { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 2px solid #1e293b; }
@@ -80,6 +90,7 @@ iframe { flex: 1; border: none; background: #fff; width: 100%; transition: max-w
   <button class="hbtn" onclick="clearAll()">Clear</button>
   <button class="hbtn" onclick="loadExample()">Load Example</button>
   <label class="auto-label"><input type="checkbox" id="autoRun" checked> Auto-run</label>
+  <button class="hbtn" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark editor theme">Light mode</button>
 </header>
 <!-- Mobile pane switcher (hidden on desktop) -->
 <div class="mobile-pane-bar" id="mobilePaneBar" role="tablist" aria-label="Editor pane selector">
@@ -118,6 +129,16 @@ iframe { flex: 1; border: none; background: #fff; width: 100%; transition: max-w
 </div>
 <script>
 let debounceTimer;
+
+/* ── Theme toggle (light / dark) ────────── */
+var _lightMode = localStorage.getItem('hp_light') === '1';
+function applyTheme() {
+  document.body.classList.toggle('body-light', _lightMode);
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = _lightMode ? 'Dark mode' : 'Light mode';
+}
+function toggleTheme() { _lightMode = !_lightMode; localStorage.setItem('hp_light', _lightMode ? '1' : '0'); applyTheme(); }
+applyTheme();
 
 /* ── Mobile pane switching ─────────────────── */
 function setMobilePane(pane, btn) {

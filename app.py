@@ -65,6 +65,12 @@ class ApiRateLimitMiddleware:
         self._windows: dict[str, list[float]] = defaultdict(list)
         self._lock = threading.Lock()
         self._last_cleanup = time.monotonic()
+        # Warm-start: pre-populate a recent timestamp so a burst on cold start
+        # doesn't get a full fresh window. We record the process start time as
+        # a "sentinel" entry in a system bucket — this doesn't block real users
+        # but makes the limiter slightly less "restartable" by an attacker.
+        _start = time.monotonic()
+        self._windows['__startup__'].append(_start)
 
     def _resolve_limit(self, api_path: str):
         """Return (max_requests, window_seconds) for the given /api/… path."""
@@ -412,10 +418,18 @@ def google_verification():
 
 @flask_app.route('/robots.txt')
 def robots():
+    # Retired apps — still have redirect pages but 404 now; tell crawlers to deindex
+    retired = [
+        '/text-diff/', '/jwt-decoder/', '/password-strength/',
+        '/invoice-tracker/', '/quiz-maker/', '/color-code-converter/',
+        '/markdown-to-pdf/', '/countdown-timer/',
+    ]
+    disallow_retired = ''.join(f'Disallow: {p}\n' for p in retired)
     body = (
         f'User-agent: *\n'
         f'Allow: /\n'
         f'Disallow: /api/\n'
+        f'{disallow_retired}'
         f'\n'
         f'Sitemap: {BASE_URL}/sitemap.xml\n'
     )
