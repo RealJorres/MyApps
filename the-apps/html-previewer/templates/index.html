@@ -176,10 +176,7 @@ function runCode() {
   const html = document.getElementById('htmlEd').value;
   const css  = document.getElementById('cssEd').value;
   const js   = document.getElementById('jsEd').value;
-  const doc = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script><script src="/static/footer.js"></script>
-
-<script src="/static/app-nav.js"></script>
-</body></html>`;
+  const doc = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`;
   const frame = document.getElementById('preview');
   frame.srcdoc = doc;
 }
