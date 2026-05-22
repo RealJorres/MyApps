@@ -6,11 +6,11 @@
    ============================================================ */
 
 :root {
-  /* ── Brand ───────────────────────────────── */
-  --brand:       #2563eb;
-  --brand-dark:  #1d4ed8;
-  --brand-light: #dbeafe;
-  --brand-muted: #93c5fd;
+  /* ── Brand (Cobalt — Jorres Apps identity) ── */
+  --brand:       #2f57ff;
+  --brand-dark:  #1a2f8f;
+  --brand-light: #d9e0ff;
+  --brand-muted: rgba(47,87,255,.35);
 
   /* ── Neutrals ────────────────────────────── */
   --bg:           #f8fafc;

@@ -1,10 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="Rr0wNEk84xFbjKC0yegSRUYbqXVSf7OMF-cPXtlM4No" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
     <link rel="canonical" href="https://jorresapps.onrender.com/">
     <meta name="description" content="Jorres Apps — a free collection of 100+ browser-based tools and mini-games. Calculators, converters, productivity apps, games, and more. No install, no sign-up.">
     <meta name="keywords" content="web tools, online apps, free tools, calculators, converters, games, utilities, developer tools, productivity, browser apps">
@@ -60,8 +60,8 @@
         --surface:     #ffffff;
         --surface2:    #f1f5f9;
         --border:      #e2e8f0;
-        --accent:      #2563eb;
-        --accent-dark: #1d4ed8;
+        --accent:      #2f57ff;   /* Cobalt — brand primary */
+        --accent-dark: #1a2f8f;  /* Cobalt deep */
         --text:        #0f172a;
         --muted:       #64748b;
         --green:       #059669;
@@ -100,18 +100,25 @@
       .logo {
         display: flex;
         align-items: center;
-        gap: 0.45rem;
-        font-size: 1rem;
+        gap: 0.55rem;
+        user-select: none;
+        text-decoration: none;
+        line-height: 1;
+      }
+      .logo-mark { flex-shrink: 0; }
+      .logo-text { display: flex; flex-direction: column; gap: 1px; }
+      .logo-name {
+        font-size: 0.95rem;
         font-weight: 700;
         color: #fff;
-        user-select: none;
+        letter-spacing: -0.01em;
       }
-      .logo .glyph {
-        font-size: 1.2rem;
-      }
-      .logo .dim {
+      .logo-tag {
+        font-size: 0.6rem;
+        font-weight: 500;
         color: #64748b;
-        font-weight: 400;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
       }
       .header-right {
         margin-left: auto;
@@ -149,10 +156,9 @@
         text-align: center;
       }
       .hero-icon {
-        font-size: 2.8rem;
-        margin-bottom: 0.85rem;
-        display: block;
-        filter: drop-shadow(0 0 14px rgba(37,99,235,.2));
+        margin-bottom: 1rem;
+        display: inline-block;
+        filter: drop-shadow(0 0 18px rgba(47,87,255,.25));
       }
       .hero h1 {
         font-size: clamp(1.6rem, 4vw, 2.4rem);
@@ -177,12 +183,12 @@
       }
       .privacy-pill {
         padding: 0.25rem 0.75rem;
-        background: #dbeafe;
-        border: 1px solid #bfdbfe;
+        background: #d9e0ff;
+        border: 1px solid #b0beff;
         border-radius: 2rem;
         font-size: 0.72rem;
         font-weight: 600;
-        color: #1e40af;
+        color: #1a2f8f;
         letter-spacing: 0.02em;
       }
 
@@ -221,7 +227,7 @@
       }
       .search-wrap input:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        box-shadow: 0 0 0 3px rgba(47,87,255, 0.12);
       }
 
       /* Stats pills */
@@ -286,7 +292,7 @@
       .card:hover {
         transform: translateY(-3px);
         border-color: var(--accent);
-        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
+        box-shadow: 0 8px 24px rgba(47,87,255, 0.12);
       }
       .card-cover {
         height: 155px;
@@ -877,10 +883,22 @@
   <body>
     <!-- Header -->
     <header>
-      <div class="logo">
-        <span class="glyph">⚡</span>
-        Jorres <span class="dim">Apps</span>
-      </div>
+      <a href="/" class="logo" aria-label="Jorres Apps — home">
+        <!-- J-mark: inverted variant (white container on dark header) -->
+        <svg class="logo-mark" width="30" height="30" viewBox="0 0 64 64"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="2" width="60" height="60" rx="14" fill="#ffffff"/>
+          <rect x="14" y="14" width="12" height="12" rx="3" fill="#0d1117"/>
+          <rect x="30" y="14" width="12" height="12" rx="3" fill="#0d1117" opacity="0.22"/>
+          <rect x="30" y="30" width="12" height="12" rx="3" fill="#0d1117"/>
+          <rect x="14" y="46" width="12" height="12" rx="3" fill="#2f57ff"/>
+          <rect x="30" y="46" width="12" height="12" rx="3" fill="#0d1117"/>
+        </svg>
+        <div class="logo-text">
+          <span class="logo-name">Jorres Apps</span>
+          <span class="logo-tag">100 tools · one workspace</span>
+        </div>
+      </a>
       <div class="header-right">
         <button class="btn-donate" onclick="openDonate()">☕ Support</button>
       </div>
@@ -888,10 +906,19 @@
 
     <!-- Hero -->
     <section class="hero">
-      <span class="hero-icon">⚡</span>
-      <h1>Your Personal <span>App Library</span></h1>
+      <!-- Hero mark — primary variant (dark container) -->
+      <svg class="hero-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"
+           aria-hidden="true" style="width:56px;height:56px;display:inline-block">
+        <rect x="2" y="2" width="60" height="60" rx="14" fill="#0d1117"/>
+        <rect x="14" y="14" width="12" height="12" rx="3" fill="#ffffff"/>
+        <rect x="30" y="14" width="12" height="12" rx="3" fill="#ffffff" opacity="0.35"/>
+        <rect x="30" y="30" width="12" height="12" rx="3" fill="#ffffff"/>
+        <rect x="14" y="46" width="12" height="12" rx="3" fill="#2f57ff"/>
+        <rect x="30" y="46" width="12" height="12" rx="3" fill="#ffffff"/>
+      </svg>
+      <h1>100 tools. <span>One workspace.</span></h1>
       <p>
-        129 free browser tools. No ads. No sign-up. No tracking. All yours.
+        Free browser tools — no ads, no sign-up, no tracking.
       </p>
       <div class="privacy-pills" aria-label="Privacy features">
         <span class="privacy-pill">No ads</span>
