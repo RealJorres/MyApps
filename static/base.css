@@ -314,6 +314,7 @@ input[type=checkbox], input[type=radio] { accent-color: var(--brand); width: aut
   flex-wrap: wrap;
   font-size: .72rem;
 }
+@media (max-width: 600px) { #app-rel-bar { display: none; } }
 .app-rel-label {
   font-weight: 700;
   color: #94a3b8;
