@@ -95,16 +95,16 @@
 
   <div class="controls">
     <div class="ctrl-group">
-      <label>Number of dice</label>
-      <input type="number" id="num-dice" value="2" min="1" max="10">
+      <label for="num-dice">Number of dice</label>
+      <input type="number" id="num-dice" value="2" min="1" max="10">
     </div>
     <div class="ctrl-group">
-      <label>Die type (dX)</label>
-      <input type="number" id="die-type" value="6" min="2" max="1000">
+      <label for="die-type">Die type (dX)</label>
+      <input type="number" id="die-type" value="6" min="2" max="1000">
     </div>
     <div class="ctrl-group">
-      <label>Modifier</label>
-      <input type="number" id="modifier" value="0" min="-99" max="99">
+      <label for="modifier">Modifier</label>
+      <input type="number" id="modifier" value="0" min="-99" max="99">
     </div>
     <button class="roll-btn" onclick="rollDice()">Roll!</button>
     <label class="sound-toggle"><input type="checkbox" id="sound-on" checked>Sound</label>

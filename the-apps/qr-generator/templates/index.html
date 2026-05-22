@@ -92,8 +92,8 @@ textarea#textInput { min-height: 100px; resize: vertical; }
 
     <div class="options-grid">
       <div class="field">
-        <label>Error Correction</label>
-        <select id="ec">
+        <label for="ec">Error Correction</label>
+        <select id="ec">
           <option value="L">L — Low (7%)</option>
           <option value="M" selected>M — Medium (15%)</option>
           <option value="Q">Q — Quartile (25%)</option>
@@ -107,16 +107,16 @@ textarea#textInput { min-height: 100px; resize: vertical; }
         </div>
       </div>
       <div class="field">
-        <label>Foreground Color</label>
+        <label for="fgPicker">Foreground Color</label>
         <div class="color-row">
-          <input type="color" id="fgPicker" value="#000000" oninput="document.getElementById('fgText').value=this.value">
+          <input type="color" id="fgPicker" value="#000000" oninput="document.getElementById('fgText').value=this.value">
           <input type="text" id="fgText" value="#000000" oninput="syncColor('fg')">
         </div>
       </div>
       <div class="field">
-        <label>Background Color</label>
+        <label for="bgPicker">Background Color</label>
         <div class="color-row">
-          <input type="color" id="bgPicker" value="#ffffff" oninput="document.getElementById('bgText').value=this.value">
+          <input type="color" id="bgPicker" value="#ffffff" oninput="document.getElementById('bgText').value=this.value">
           <input type="text" id="bgText" value="#ffffff" oninput="syncColor('bg')">
         </div>
       </div>

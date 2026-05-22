@@ -73,34 +73,34 @@
     <button class="add-fn-btn" id="addFnBtn" onclick="addFunction()" style="margin-top:.5rem">+ Add Function</button>
     <div class="controls-row" style="margin-top:1rem">
       <div class="ctrl-group">
-        <label>X Min</label>
-        <input type="number" id="xMin" value="-10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+        <label for="xMin">X Min</label>
+        <input type="number" id="xMin" value="-10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
       </div>
       <div class="ctrl-group">
-        <label>X Max</label>
-        <input type="number" id="xMax" value="10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+        <label for="xMax">X Max</label>
+        <input type="number" id="xMax" value="10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
       </div>
       <div class="ctrl-group">
-        <label>Y Min</label>
-        <input type="number" id="yMin" value="-10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+        <label for="yMin">Y Min</label>
+        <input type="number" id="yMin" value="-10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
       </div>
       <div class="ctrl-group">
-        <label>Y Max</label>
-        <input type="number" id="yMax" value="10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
+        <label for="yMax">Y Max</label>
+        <input type="number" id="yMax" value="10" step="1" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .55rem;font-size:.82rem">
       </div>
       <div class="ctrl-group">
-        <label>&nbsp;</label>
+        <label for="plotCanvas">&nbsp;</label>
         <button class="plot-btn" onclick="plot()">Plot</button>
       </div>
       <div class="ctrl-group">
-        <label>&nbsp;</label>
+        <label aria-hidden="true">&nbsp;</label>
         <button class="dl-btn" onclick="downloadPNG()">Download PNG</button>
       </div>
     </div>
   </div>
   <div class="card">
     <div class="canvas-wrap">
-      <canvas id="plotCanvas" width="900" height="500"></canvas>
+      <canvas id="plotCanvas" width="900" height="500"></canvas>
       <div class="coord-display" id="coordDisplay"></div>
     </div>
   </div>

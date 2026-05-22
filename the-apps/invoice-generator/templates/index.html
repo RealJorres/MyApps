@@ -155,21 +155,21 @@ textarea { resize: vertical; min-height: 80px; }
         <div class="section-title">Your Business</div>
         <div class="form-grid">
           <div class="full">
-            <label>Business Name</label>
-            <input type="text" id="business_name" placeholder="Acme Corp" oninput="updatePreview()">
+            <label for="business_name">Business Name</label>
+            <input type="text" id="business_name" placeholder="Acme Corp" oninput="updatePreview()">
           </div>
           <div class="full">
-            <label>Business Address</label>
-            <textarea id="business_address" placeholder="123 Main St&#10;City, State 12345" oninput="updatePreview()"></textarea>
+            <label for="business_address">Business Address</label>
+            <textarea id="business_address" placeholder="123 Main St&#10;City, State 12345" oninput="updatePreview()"></textarea>
           </div>
           <div>
-            <label>Business Email</label>
-            <input type="email" id="business_email" placeholder="hello@acme.com" oninput="updatePreview()">
+            <label for="business_email">Business Email</label>
+            <input type="email" id="business_email" placeholder="hello@acme.com" oninput="updatePreview()">
           </div>
           <div>
-            <label>Accent Color</label>
+            <label for="accent_color_pick">Accent Color</label>
             <div class="color-row">
-              <input type="color" id="accent_color_pick" value="#0f766e" oninput="syncColor(this.value)">
+              <input type="color" id="accent_color_pick" value="#0f766e" oninput="syncColor(this.value)">
               <input type="text" id="accent_color" value="#0f766e" placeholder="#0f766e" oninput="syncColorText(this.value)">
             </div>
           </div>
@@ -180,20 +180,20 @@ textarea { resize: vertical; min-height: 80px; }
         <div class="section-title">Invoice Details</div>
         <div class="form-grid four">
           <div>
-            <label>Invoice #</label>
-            <input type="text" id="invoice_number" value="001" oninput="updatePreview()">
+            <label for="invoice_number">Invoice #</label>
+            <input type="text" id="invoice_number" value="001" oninput="updatePreview()">
           </div>
           <div>
-            <label>Date</label>
-            <input type="date" id="invoice_date" oninput="updatePreview()">
+            <label for="invoice_date">Date</label>
+            <input type="date" id="invoice_date" oninput="updatePreview()">
           </div>
           <div>
-            <label>Due Date</label>
-            <input type="date" id="due_date" oninput="updatePreview()">
+            <label for="due_date">Due Date</label>
+            <input type="date" id="due_date" oninput="updatePreview()">
           </div>
           <div>
-            <label>Currency</label>
-            <select id="currency" onchange="updatePreview()">
+            <label for="currency">Currency</label>
+            <select id="currency" onchange="updatePreview()">
               <option value="$">$ USD</option>
               <option value="€">€ EUR</option>
               <option value="£">£ GBP</option>
@@ -207,12 +207,12 @@ textarea { resize: vertical; min-height: 80px; }
         <div class="section-title">Bill To</div>
         <div class="form-grid">
           <div>
-            <label>Client Name</label>
-            <input type="text" id="client_name" placeholder="Client name" oninput="updatePreview()">
+            <label for="client_name">Client Name</label>
+            <input type="text" id="client_name" placeholder="Client name" oninput="updatePreview()">
           </div>
           <div>
-            <label>Client Email</label>
-            <input type="email" id="client_email" placeholder="client@email.com" oninput="updatePreview()">
+            <label for="client_email">Client Email</label>
+            <input type="email" id="client_email" placeholder="client@email.com" oninput="updatePreview()">
           </div>
         </div>
       </div>
@@ -238,12 +238,12 @@ textarea { resize: vertical; min-height: 80px; }
         <div class="section-title">Tax &amp; Notes</div>
         <div class="form-grid">
           <div>
-            <label>Tax Rate (%)</label>
-            <input type="number" id="tax_rate" value="0" min="0" max="100" step="0.1" oninput="updatePreview()">
+            <label for="tax_rate">Tax Rate (%)</label>
+            <input type="number" id="tax_rate" value="0" min="0" max="100" step="0.1" oninput="updatePreview()">
           </div>
           <div class="full">
-            <label>Notes</label>
-            <textarea id="notes" placeholder="Payment terms, bank details, thank you message..." oninput="updatePreview()"></textarea>
+            <label for="notes">Notes</label>
+            <textarea id="notes" placeholder="Payment terms, bank details, thank you message..." oninput="updatePreview()"></textarea>
           </div>
         </div>
       </div>
@@ -270,19 +270,19 @@ textarea { resize: vertical; min-height: 80px; }
     <div class="card">
       <p style="font-weight:700;margin-bottom:.75rem">Add Invoice</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;align-items:end">
-        <div><label>Invoice #</label><input type="text" id="invNum" placeholder="INV-001"></div>
-        <div><label>Client</label><input type="text" id="invClient" placeholder="Client name"></div>
-        <div><label>Amount</label><input type="number" id="invAmount" placeholder="0.00" min="0" step="0.01"></div>
-        <div><label>Issue Date</label><input type="date" id="invIssue"></div>
-        <div><label>Due Date</label><input type="date" id="invDue"></div>
-        <div><label>Status</label>
-          <select id="invStatus">
+        <div><label for="invNum">Invoice #</label><input type="text" id="invNum" placeholder="INV-001"></div>
+        <div><label for="invClient">Client</label><input type="text" id="invClient" placeholder="Client name"></div>
+        <div><label for="invAmount">Amount</label><input type="number" id="invAmount" placeholder="0.00" min="0" step="0.01"></div>
+        <div><label for="invIssue">Issue Date</label><input type="date" id="invIssue"></div>
+        <div><label for="invDue">Due Date</label><input type="date" id="invDue"></div>
+        <div><label for="invStatus">Status</label>
+          <select id="invStatus">
             <option value="unpaid">Unpaid</option>
             <option value="paid">Paid</option>
             <option value="overdue">Overdue</option>
           </select>
         </div>
-        <div><label>Notes</label><input type="text" id="invNotes" placeholder="Optional…"></div>
+        <div><label for="invNotes">Notes</label><input type="text" id="invNotes" placeholder="Optional…"></div>
         <div style="align-self:end"><button class="btn btn-primary" onclick="addTrackedInvoice()" style="width:100%">+ Add</button></div>
       </div>
     </div>

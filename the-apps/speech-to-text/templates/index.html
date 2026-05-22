@@ -102,8 +102,8 @@
       </div>
       <div class="controls-row" style="margin-top:1.5rem">
         <div class="ctrl-group">
-          <label>Language</label>
-          <select id="langSelect" onchange="setLang()">
+          <label for="langSelect">Language</label>
+          <select id="langSelect" onchange="setLang()">
             <option value="en-US">English (US)</option>
             <option value="en-GB">English (UK)</option>
             <option value="es-ES">Spanish</option>
@@ -124,8 +124,8 @@
     </div>
 
     <div class="card">
-      <label style="font-size:.85rem;font-weight:700;color:#dc2626;display:block;margin-bottom:.6rem">Transcript</label>
-      <textarea id="outputText" placeholder="Your speech will appear here..."></textarea>
+      <label for="outputText" style="font-size:.85rem;font-weight:700;color:#dc2626;display:block;margin-bottom:.6rem">Transcript</label>
+      <textarea id="outputText" placeholder="Your speech will appear here..."></textarea>
       <div class="action-btns">
         <button class="btn btn-copy" onclick="copyText()">Copy</button>
         <button class="btn btn-dl" onclick="downloadText()">Download .txt</button>

@@ -43,28 +43,28 @@ tr:hover td{background:#f8fafc}
   </header>
 
   <div class="card">
-    <label>CSV Data</label>
-    <textarea id="csv" rows="7" placeholder="Region,Product,Sales,Units&#10;North,Widget A,1200,30&#10;South,Widget B,850,20&#10;North,Widget B,2100,50&#10;South,Widget A,940,25&#10;East,Widget A,1600,40&#10;East,Widget B,720,18"></textarea>
+    <label for="csv">CSV Data</label>
+    <textarea id="csv" rows="7" placeholder="Region,Product,Sales,Units&#10;North,Widget A,1200,30&#10;South,Widget B,850,20&#10;North,Widget B,2100,50&#10;South,Widget A,940,25&#10;East,Widget A,1600,40&#10;East,Widget B,720,18"></textarea>
     <div class="hint">Include a header row. All columns will be available as fields.</div>
   </div>
 
   <div class="card">
     <div class="row">
       <div class="field">
-        <label>Row Field</label>
-        <select id="rowField"></select>
+        <label for="rowField">Row Field</label>
+        <select id="rowField"></select>
       </div>
       <div class="field">
-        <label>Column Field (optional)</label>
-        <select id="colField"><option value="">(none)</option></select>
+        <label for="colField">Column Field (optional)</label>
+        <select id="colField"><option value="">(none)</option></select>
       </div>
       <div class="field">
-        <label>Value Field</label>
-        <select id="valField"></select>
+        <label for="valField">Value Field</label>
+        <select id="valField"></select>
       </div>
       <div class="field">
-        <label>Aggregation</label>
-        <select id="aggFunc">
+        <label for="aggFunc">Aggregation</label>
+        <select id="aggFunc">
           <option value="sum">Sum</option>
           <option value="count">Count</option>
           <option value="avg">Average</option>
@@ -73,14 +73,14 @@ tr:hover td{background:#f8fafc}
         </select>
       </div>
       <div class="field" style="flex:0 0 auto">
-        <label>&nbsp;</label>
+        <label for="output">&nbsp;</label>
         <button class="btn btn-primary" onclick="buildPivot()">Build Pivot</button>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div id="output"><p style="color:var(--muted);text-align:center">Configure the fields above and click Build Pivot.</p></div>
+    <div id="output"><p style="color:var(--muted);text-align:center">Configure the fields above and click Build Pivot.</p></div>
   </div>
 </div>
 <script>

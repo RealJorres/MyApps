@@ -143,12 +143,12 @@ input:focus { border-color: var(--primary); }
     <div class="section-title">Manual Input</div>
     <div class="manual-row">
       <div>
-        <label>Octal (e.g. 755)</label>
-        <input type="number" id="octalInput" min="0" max="777" value="644" oninput="setOctalFromInput()">
+        <label for="octalInput">Octal (e.g. 755)</label>
+        <input type="number" id="octalInput" min="0" max="777" value="644" oninput="setOctalFromInput()">
       </div>
       <div>
-        <label>Symbolic (e.g. rwxr-xr-x)</label>
-        <input type="text" id="symbolicInput" value="rw-r--r--" maxlength="9" oninput="setFromSymbolic()">
+        <label for="symbolicInput">Symbolic (e.g. rwxr-xr-x)</label>
+        <input type="text" id="symbolicInput" value="rw-r--r--" maxlength="9" oninput="setFromSymbolic()">
       </div>
     </div>
   </div>

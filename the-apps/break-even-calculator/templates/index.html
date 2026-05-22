@@ -46,34 +46,34 @@ canvas{display:block;width:100%;height:auto;border-radius:.5rem}
   <div class="card">
     <div class="grid3">
       <div>
-        <label>Fixed Costs</label>
+        <label for="fixed">Fixed Costs</label>
         <div class="input-group">
           <span class="prefix">$</span>
-          <input type="number" id="fixed" value="50000" min="0" oninput="calc()">
+          <input type="number" id="fixed" value="50000" min="0" oninput="calc()">
         </div>
         <small style="color:var(--muted);font-size:.75rem">Rent, salaries, equipment</small>
       </div>
       <div>
-        <label>Variable Cost per Unit</label>
+        <label for="varCost">Variable Cost per Unit</label>
         <div class="input-group">
           <span class="prefix">$</span>
-          <input type="number" id="varCost" value="12" min="0" step="0.01" oninput="calc()">
+          <input type="number" id="varCost" value="12" min="0" step="0.01" oninput="calc()">
         </div>
         <small style="color:var(--muted);font-size:.75rem">Material, labor per unit</small>
       </div>
       <div>
-        <label>Selling Price per Unit</label>
+        <label for="price">Selling Price per Unit</label>
         <div class="input-group">
           <span class="prefix">$</span>
-          <input type="number" id="price" value="32" min="0" step="0.01" oninput="calc()">
+          <input type="number" id="price" value="32" min="0" step="0.01" oninput="calc()">
         </div>
         <small style="color:var(--muted);font-size:.75rem">Revenue per unit sold</small>
       </div>
     </div>
     <div class="grid3" style="margin-top:1rem">
       <div>
-        <label>Current Sales Volume (optional)</label>
-        <input type="number" id="curSales" value="3000" min="0" oninput="calc()">
+        <label for="curSales">Current Sales Volume (optional)</label>
+        <input type="number" id="curSales" value="3000" min="0" oninput="calc()">
         <small style="color:var(--muted);font-size:.75rem">For margin of safety</small>
       </div>
     </div>

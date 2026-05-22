@@ -82,12 +82,12 @@ input:checked + .slider:before { transform: translateX(18px); }
   <div class="card">
     <div class="section-title">Bill Details</div>
     <div class="form-row">
-      <label>Bill Amount ($)</label>
-      <input type="number" id="billAmount" value="75.00" min="0" step="0.01" oninput="calculate()">
+      <label for="billAmount">Bill Amount ($)</label>
+      <input type="number" id="billAmount" value="75.00" min="0" step="0.01" oninput="calculate()">
     </div>
     <div class="form-row">
-      <label>Tip Percentage</label>
-      <div class="tip-btns">
+      <p id="tipPctLabel" style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Tip Percentage</p>
+      <div class="tip-btns" role="group" aria-labelledby="tipPctLabel">
         <button class="tip-btn" onclick="selectTip(10)">10%</button>
         <button class="tip-btn" onclick="selectTip(15)">15%</button>
         <button class="tip-btn active" onclick="selectTip(18)">18%</button>
@@ -100,8 +100,8 @@ input:checked + .slider:before { transform: translateX(18px); }
       </div>
     </div>
     <div class="form-row">
-      <label>Number of People</label>
-      <input type="number" id="numPeople" value="2" min="1" step="1" oninput="calculate()">
+      <label for="numPeople">Number of People</label>
+      <input type="number" id="numPeople" value="2" min="1" step="1" oninput="calculate()">
     </div>
     <div class="toggle-row">
       <span class="toggle-label">Round up per person</span>

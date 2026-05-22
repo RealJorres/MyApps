@@ -90,16 +90,16 @@ input:focus { border-color: var(--primary); }
   <div class="card">
     <div class="two-col">
       <div>
-        <label>Foreground Color</label>
+        <label for="fgPicker">Foreground Color</label>
         <div class="color-picker-group">
-          <input type="color" id="fgPicker" value="#1e293b">
+          <input type="color" id="fgPicker" value="#1e293b">
           <input type="text" id="fgHex" value="#1e293b" maxlength="7" placeholder="#000000">
         </div>
       </div>
       <div>
-        <label>Background Color</label>
+        <label for="bgPicker">Background Color</label>
         <div class="color-picker-group">
-          <input type="color" id="bgPicker" value="#ffffff">
+          <input type="color" id="bgPicker" value="#ffffff">
           <input type="text" id="bgHex" value="#ffffff" maxlength="7" placeholder="#ffffff">
         </div>
       </div>
@@ -113,7 +113,7 @@ input:focus { border-color: var(--primary); }
     </div>
 
     <div style="margin-top: 0.5rem">
-      <label>Presets</label>
+      <p style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Presets</p>
       <div class="preset-row">
         <button class="preset-btn" data-fg="#000000" data-bg="#ffffff">Black / White</button>
         <button class="preset-btn" data-fg="#ffffff" data-bg="#000000">White / Black</button>

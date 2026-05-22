@@ -68,55 +68,55 @@ input:focus,textarea:focus,select:focus{border-color:var(--primary)}
     <div>
       <div class="card" style="margin-bottom:1.25rem">
         <p style="font-weight:700;margin-bottom:.9rem">Sender</p>
-        <label>Full Name / Company</label>
-        <input type="text" id="senderName" value="Acme Corporation" oninput="update()">
-        <label>Address Line 1</label>
-        <input type="text" id="senderAddr1" value="123 Business Ave, Suite 400" oninput="update()">
-        <label>Address Line 2 (City, State, ZIP)</label>
-        <input type="text" id="senderAddr2" value="New York, NY 10001" oninput="update()">
-        <label>Email / Phone (optional)</label>
-        <input type="text" id="senderContact" value="info@acme.com | (212) 555-0100" oninput="update()">
+        <label for="senderName">Full Name / Company</label>
+        <input type="text" id="senderName" value="Acme Corporation" oninput="update()">
+        <label for="senderAddr1">Address Line 1</label>
+        <input type="text" id="senderAddr1" value="123 Business Ave, Suite 400" oninput="update()">
+        <label for="senderAddr2">Address Line 2 (City, State, ZIP)</label>
+        <input type="text" id="senderAddr2" value="New York, NY 10001" oninput="update()">
+        <label for="senderContact">Email / Phone (optional)</label>
+        <input type="text" id="senderContact" value="info@acme.com | (212) 555-0100" oninput="update()">
       </div>
 
       <div class="card" style="margin-bottom:1.25rem">
         <p style="font-weight:700;margin-bottom:.9rem">Recipient</p>
-        <label>Full Name</label>
-        <input type="text" id="recipName" value="Mr. John Smith" oninput="update()">
-        <label>Title / Company</label>
-        <input type="text" id="recipTitle" value="Procurement Manager, Global Supplies Inc." oninput="update()">
-        <label>Address</label>
-        <input type="text" id="recipAddr" value="456 Corporate Blvd, Chicago, IL 60601" oninput="update()">
+        <label for="recipName">Full Name</label>
+        <input type="text" id="recipName" value="Mr. John Smith" oninput="update()">
+        <label for="recipTitle">Title / Company</label>
+        <input type="text" id="recipTitle" value="Procurement Manager, Global Supplies Inc." oninput="update()">
+        <label for="recipAddr">Address</label>
+        <input type="text" id="recipAddr" value="456 Corporate Blvd, Chicago, IL 60601" oninput="update()">
       </div>
 
       <div class="card">
         <p style="font-weight:700;margin-bottom:.9rem">Letter Content</p>
-        <label>Date</label>
-        <input type="date" id="letterDate" oninput="update()">
-        <label>Subject / Re:</label>
-        <input type="text" id="subject" value="Proposal for Partnership Agreement" oninput="update()">
-        <label>Salutation</label>
-        <select id="salutation" onchange="update()">
+        <label for="letterDate">Date</label>
+        <input type="date" id="letterDate" oninput="update()">
+        <label for="subject">Subject / Re:</label>
+        <input type="text" id="subject" value="Proposal for Partnership Agreement" oninput="update()">
+        <label for="salutation">Salutation</label>
+        <select id="salutation" onchange="update()">
           <option>Dear Mr./Ms. [Surname],</option>
           <option>Dear Sir or Madam,</option>
           <option>To Whom It May Concern,</option>
           <option>Dear [First Name],</option>
         </select>
-        <label>Body</label>
-        <textarea id="bodyText" rows="7" oninput="update()">I am writing to express our interest in establishing a mutually beneficial partnership between our organizations.
+        <label for="bodyText">Body</label>
+        <textarea id="bodyText" rows="7" oninput="update()">I am writing to express our interest in establishing a mutually beneficial partnership between our organizations.
 
 We have reviewed your company's portfolio and believe there is a significant opportunity for collaboration. Our team would be delighted to schedule a meeting at your earliest convenience to discuss the details further.
 
 Please do not hesitate to contact us should you require any additional information. We look forward to hearing from you.</textarea>
-        <label>Closing</label>
-        <select id="closing" onchange="update()">
+        <label for="closing">Closing</label>
+        <select id="closing" onchange="update()">
           <option>Sincerely,</option>
           <option>Best regards,</option>
           <option>Yours faithfully,</option>
           <option>Respectfully,</option>
           <option>Kind regards,</option>
         </select>
-        <label>Signatory Name</label>
-        <input type="text" id="sigName" value="Jane Doe, CEO" oninput="update()">
+        <label for="sigName">Signatory Name</label>
+        <input type="text" id="sigName" value="Jane Doe, CEO" oninput="update()">
       </div>
     </div>
 

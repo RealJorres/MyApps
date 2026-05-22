@@ -109,12 +109,12 @@
   <div class="card">
     <div class="goal-row">
       <div>
-        <label id="goalInputLabel">Daily Goal (glasses)</label>
-        <input type="number" id="goalInput" min="1" max="50" step="1" value="8" oninput="onGoalChange()" />
+        <label for="goalInput" id="goalInputLabel">Daily Goal (glasses)</label>
+        <input type="number" id="goalInput" min="1" max="50" step="1" value="8" oninput="onGoalChange()" />
       </div>
       <div>
-        <label style="margin-bottom:0.1rem;">Unit</label>
-        <div class="toggle-group" id="unitToggle">
+        <label for="unitToggle" style="margin-bottom:0.1rem;">Unit</label>
+        <div class="toggle-group" id="unitToggle">
           <button class="active" data-u="glasses" onclick="setUnit('glasses')">Glasses</button>
           <button data-u="ml" onclick="setUnit('ml')">Milliliters</button>
         </div>
@@ -148,8 +148,8 @@
 
     <div class="add-custom-row" id="customRow" style="display:none;">
       <div style="flex:1;">
-        <label id="customInputLabel">Custom amount (ml)</label>
-        <input type="number" id="customAmt" min="1" max="2000" placeholder="e.g. 330" />
+        <label for="customAmt" id="customInputLabel">Custom amount (ml)</label>
+        <input type="number" id="customAmt" min="1" max="2000" placeholder="e.g. 330" />
       </div>
       <button class="btn btn-primary" onclick="addCustom()">Add</button>
     </div>

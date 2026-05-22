@@ -107,8 +107,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
     <div class="two-col">
       <div>
         <div class="field">
-          <label>Watermark Text</label>
-          <input type="text" id="wmText" value="WATERMARK" placeholder="Enter watermark text">
+          <label for="wmText">Watermark Text</label>
+          <input type="text" id="wmText" value="WATERMARK" placeholder="Enter watermark text">
         </div>
         <div class="field">
           <label>Font Size — <span id="sizeVal">48</span>px</label>
@@ -123,17 +123,17 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
           </div>
         </div>
         <div class="field">
-          <label>Text Color</label>
+          <label for="colorPicker">Text Color</label>
           <div style="display:flex; gap:0.5rem; align-items:center">
-            <input type="color" id="colorPicker" value="#ffffff" style="width:48px;height:36px;padding:2px;border-radius:0.375rem;border:1px solid var(--border);cursor:pointer;background:#fff">
+            <input type="color" id="colorPicker" value="#ffffff" style="width:48px;height:36px;padding:2px;border-radius:0.375rem;border:1px solid var(--border);cursor:pointer;background:#fff">
             <input type="text" id="colorHex" value="#ffffff" style="flex:1">
           </div>
         </div>
       </div>
       <div>
         <div class="field">
-          <label>Position</label>
-          <div class="position-grid" id="posGrid">
+          <label for="posGrid">Position</label>
+          <div class="position-grid" id="posGrid">
             <button class="pos-btn" data-pos="top-left">↖ Top Left</button>
             <button class="pos-btn" data-pos="top-center">↑ Top Center</button>
             <button class="pos-btn" data-pos="top-right">↗ Top Right</button>
@@ -146,8 +146,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
           </div>
         </div>
         <div class="field" style="margin-top:1rem">
-          <label>Output Format</label>
-          <div class="format-tabs">
+          <p id="fmtLabel" style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Output Format</p>
+          <div class="format-tabs" role="group" aria-labelledby="fmtLabel">
             <button class="fmt-btn active" data-fmt="PNG">PNG</button>
             <button class="fmt-btn" data-fmt="JPEG">JPEG</button>
             <button class="fmt-btn" data-fmt="WEBP">WEBP</button>

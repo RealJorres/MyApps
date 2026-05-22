@@ -116,20 +116,20 @@ input:checked + .stoggle::before{transform:translateX(18px)}
     <!-- Build -->
     <div id="stab-build">
       <div class="card">
-        <label>Survey Title</label>
-        <input type="text" id="surveyTitle" value="Employee Satisfaction Survey" oninput="saveSurveyMeta()">
+        <label for="surveyTitle">Survey Title</label>
+        <input type="text" id="surveyTitle" value="Employee Satisfaction Survey" oninput="saveSurveyMeta()">
         <div style="margin-top:.75rem">
-          <label>Description</label>
-          <textarea id="surveyDesc" rows="2" placeholder="Optional description…" oninput="saveSurveyMeta()"></textarea>
+          <label for="surveyDesc">Description</label>
+          <textarea id="surveyDesc" rows="2" placeholder="Optional description…" oninput="saveSurveyMeta()"></textarea>
         </div>
       </div>
       <div id="questionList"></div>
       <div class="card">
         <p style="font-weight:700;margin-bottom:.75rem">Add Question</p>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end">
-          <div style="flex:2;min-width:200px"><label>Question Text</label><input type="text" id="newQText" placeholder="Enter question…"></div>
-          <div style="flex:1;min-width:130px"><label>Type</label>
-            <select id="newQType" onchange="document.getElementById('choiceEditor').style.display=this.value==='choice'?'':'none'">
+          <div style="flex:2;min-width:200px"><label for="newQText">Question Text</label><input type="text" id="newQText" placeholder="Enter question…"></div>
+          <div style="flex:1;min-width:130px"><label for="newQType">Type</label>
+            <select id="newQType" onchange="document.getElementById('choiceEditor').style.display=this.value==='choice'?'':'none'">
               <option value="choice">Multiple Choice</option>
               <option value="text">Free Text</option>
               <option value="rating">Rating (1–5)</option>
@@ -139,8 +139,8 @@ input:checked + .stoggle::before{transform:translateX(18px)}
           <div><button class="btn btn-primary" onclick="addSurveyQuestion()">+ Add</button></div>
         </div>
         <div id="choiceEditor" style="margin-top:.75rem">
-          <label>Choices (one per line)</label>
-          <textarea id="choicesText" rows="3" placeholder="Option A&#10;Option B&#10;Option C"></textarea>
+          <label for="choicesText">Choices (one per line)</label>
+          <textarea id="choicesText" rows="3" placeholder="Option A&#10;Option B&#10;Option C"></textarea>
         </div>
       </div>
     </div>
@@ -181,7 +181,7 @@ input:checked + .stoggle::before{transform:translateX(18px)}
     <div id="qtab-create">
       <div class="card">
         <p style="font-size:.8rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem">New Quiz</p>
-        <div style="margin-bottom:.75rem"><label>Quiz Title</label><input type="text" id="quizTitle" placeholder="My Quiz"></div>
+        <div style="margin-bottom:.75rem"><label for="quizTitle">Quiz Title</label><input type="text" id="quizTitle" placeholder="My Quiz"></div>
         <div id="questionsContainer"></div>
         <div style="margin-top:.5rem;display:flex;gap:.5rem">
           <button class="btn btn-outline" onclick="addQuizQuestion()">+ Add Question</button>
@@ -281,13 +281,13 @@ function renderSurveyTake(){
   if (!surveyQuestions.length){ form.innerHTML='<div class="card empty">No questions yet. Go to Build first.</div>'; return; }
   form.innerHTML = surveyQuestions.map(q=>`
     <div class="card">
-      <label style="font-size:.95rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:700;margin-bottom:.6rem">${esc(q.text)}</label>
+      <label for="sas_${q.id}" style="font-size:.95rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:700;margin-bottom:.6rem">${esc(q.text)}</label>
       ${renderSurveyInput(q)}
     </div>`).join('');
 }
 
 function renderSurveyInput(q){
-  if (q.type==='text') return `<textarea rows="3" id="sas_${q.id}" style="width:100%" placeholder="Your answer…"></textarea>`;
+  if (q.type==='text') return `<textarea rows="3" id="sas_${q.id}" style="width:100%" placeholder="Your answer…"></textarea>`;
   if (q.type==='choice') return q.choices.map(c=>`
     <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:500">
       <input type="radio" name="sas_${q.id}" value="${esc(c)}" style="width:auto"> ${esc(c)}
@@ -410,10 +410,10 @@ function renderQuizQuestions(){
     div.innerHTML=`
       <button class="remove-q-btn" onclick="removeQuizQuestion(${q.id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button>
       <div class="q-num">Question ${idx+1}</div>
-      <div style="margin-bottom:.6rem"><label>Question Prompt</label>
-        <input type="text" placeholder="Enter question…" value="${esc(q.prompt)}" oninput="quizQuestions[${idx}].prompt=this.value">
+      <div style="margin-bottom:.6rem"><label for="qprompt-${q.id}">Question Prompt</label>
+        <input id="qprompt-${q.id}" type="text" placeholder="Enter question…" value="${esc(q.prompt)}" oninput="quizQuestions[${idx}].prompt=this.value">
       </div>
-      <label style="font-size:.75rem;font-weight:600;color:var(--muted)">Options — select the correct answer</label>
+      <p style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.35rem">Options — select the correct answer</p>
       <div class="options-grid">
         ${q.options.map((opt,oi)=>`
           <div class="opt-row">

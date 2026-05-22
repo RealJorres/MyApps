@@ -102,41 +102,41 @@ code { font-family: 'Courier New', monospace; background: var(--bg); padding: 0.
     <div class="section-title">Fields</div>
     <div class="fields-row">
       <div class="field-group">
-        <label>Minute</label>
-        <input type="text" id="f-min" value="*" oninput="syncFromFields()">
+        <label for="f-min">Minute</label>
+        <input type="text" id="f-min" value="*" oninput="syncFromFields()">
         <div class="field-hint">0–59</div>
       </div>
       <div class="field-group">
-        <label>Hour</label>
-        <input type="text" id="f-hour" value="*" oninput="syncFromFields()">
+        <label for="f-hour">Hour</label>
+        <input type="text" id="f-hour" value="*" oninput="syncFromFields()">
         <div class="field-hint">0–23</div>
       </div>
       <div class="field-group">
-        <label>Day of Month</label>
-        <input type="text" id="f-dom" value="*" oninput="syncFromFields()">
+        <label for="f-dom">Day of Month</label>
+        <input type="text" id="f-dom" value="*" oninput="syncFromFields()">
         <div class="field-hint">1–31</div>
       </div>
       <div class="field-group">
-        <label>Month</label>
-        <input type="text" id="f-month" value="*" oninput="syncFromFields()">
+        <label for="f-month">Month</label>
+        <input type="text" id="f-month" value="*" oninput="syncFromFields()">
         <div class="field-hint">1–12</div>
       </div>
       <div class="field-group">
-        <label>Day of Week</label>
-        <input type="text" id="f-dow" value="*" oninput="syncFromFields()">
+        <label for="f-dow">Day of Week</label>
+        <input type="text" id="f-dow" value="*" oninput="syncFromFields()">
         <div class="field-hint">0–7 (0,7=Sun)</div>
       </div>
     </div>
     <div style="margin-bottom:1rem">
-      <label>Full Expression</label>
+      <label for="expr">Full Expression</label>
       <div class="expr-row">
-        <input type="text" id="expr" value="* * * * *" oninput="syncFromExpr()" style="font-family:'Courier New',monospace;font-size:1.1rem;letter-spacing:0.1em">
+        <input type="text" id="expr" value="* * * * *" oninput="syncFromExpr()" style="font-family:'Courier New',monospace;font-size:1.1rem;letter-spacing:0.1em">
         <button class="btn btn-primary" onclick="validate()">Validate &amp; Get Next Runs</button>
       </div>
     </div>
     <div>
-      <label>Human-readable Description</label>
-      <div class="description-box" id="description">Every minute</div>
+      <label for="description">Human-readable Description</label>
+      <div class="description-box" id="description">Every minute</div>
     </div>
   </div>
 

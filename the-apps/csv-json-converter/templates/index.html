@@ -75,8 +75,8 @@
 <!-- CSV to JSON -->
 <div id="panel-csv2json" class="panel active">
   <div class="controls">
-    <label>Delimiter:</label>
-    <select id="c2j-delim" onchange="convert('csv2json')">
+    <label for="c2j-delim">Delimiter:</label>
+    <select id="c2j-delim" onchange="convert('csv2json')">
       <option value=",">Comma (,)</option>
       <option value=";">Semicolon (;)</option>
       <option value="&#9;">Tab (\t)</option>
@@ -113,8 +113,8 @@ Carol,35,Tokyo</textarea>
 <!-- JSON to CSV -->
 <div id="panel-json2csv" class="panel">
   <div class="controls">
-    <label>Delimiter:</label>
-    <select id="j2c-delim" onchange="convert('json2csv')">
+    <label for="j2c-delim">Delimiter:</label>
+    <select id="j2c-delim" onchange="convert('json2csv')">
       <option value=",">Comma (,)</option>
       <option value=";">Semicolon (;)</option>
       <option value="&#9;">Tab (\t)</option>

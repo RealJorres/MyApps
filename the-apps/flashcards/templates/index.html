@@ -239,8 +239,8 @@ function renderCardEditList(cards) {
     const row = document.createElement('div');
     row.className = 'card-edit-row';
     row.innerHTML = `
-      <div><label>Front</label><textarea oninput="updateEditCard(${i},'front',this.value)">${esc(c.front)}</textarea></div>
-      <div><label>Back</label><textarea oninput="updateEditCard(${i},'back',this.value)">${esc(c.back)}</textarea></div>
+      <div><label for="card-front-${i}">Front</label><textarea id="card-front-${i}" oninput="updateEditCard(${i},'front',this.value)">${esc(c.front)}</textarea></div>
+      <div><label for="card-back-${i}">Back</label><textarea id="card-back-${i}" oninput="updateEditCard(${i},'back',this.value)">${esc(c.back)}</textarea></div>
       <div style="padding-top:1.5rem"><button class="btn btn-danger btn-sm" onclick="removeEditCard(${i})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button></div>
     `;
     container.appendChild(row);

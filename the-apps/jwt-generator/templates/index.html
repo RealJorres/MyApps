@@ -114,9 +114,9 @@
         <option value="HS512">HS512</option>
       </select>
 
-      <label>Secret Key</label>
+      <label for="secretKey">Secret Key</label>
       <div class="secret-wrap">
-        <input type="password" id="secretKey" value="your-secret-key">
+        <input type="password" id="secretKey" value="your-secret-key">
         <button class="secret-toggle" onclick="toggleSecret('secretKey', this)">Show</button>
       </div>
 
@@ -149,9 +149,9 @@
       <label for="decodeToken">JWT Token</label>
       <textarea id="decodeToken" placeholder="Paste your JWT here..." style="min-height:100px;"></textarea>
 
-      <label>Secret Key (optional — leave blank to decode without verification)</label>
+      <label for="decodeSecret">Secret Key (optional — leave blank to decode without verification)</label>
       <div class="secret-wrap">
-        <input type="password" id="decodeSecret" placeholder="For signature verification">
+        <input type="password" id="decodeSecret" placeholder="For signature verification">
         <button class="secret-toggle" onclick="toggleSecret('decodeSecret', this)">Show</button>
       </div>
 

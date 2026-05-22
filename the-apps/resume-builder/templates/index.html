@@ -128,16 +128,16 @@ textarea { resize: vertical; min-height: 70px; }
     <div class="card">
       <div class="card-title">Personal Info</div>
       <div class="form-row">
-        <div class="form-group"><label>Full Name</label><input id="f_name" placeholder="Jane Smith" oninput="updatePreview()"></div>
-        <div class="form-group"><label>Job Title</label><input id="f_title" placeholder="Software Engineer" oninput="updatePreview()"></div>
+        <div class="form-group"><label for="f_name">Full Name</label><input id="f_name" placeholder="Jane Smith" oninput="updatePreview()"></div>
+        <div class="form-group"><label for="f_title">Job Title</label><input id="f_title" placeholder="Software Engineer" oninput="updatePreview()"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Email</label><input id="f_email" placeholder="jane@example.com" oninput="updatePreview()"></div>
-        <div class="form-group"><label>Phone</label><input id="f_phone" placeholder="+1 555 000 0000" oninput="updatePreview()"></div>
+        <div class="form-group"><label for="f_email">Email</label><input id="f_email" placeholder="jane@example.com" oninput="updatePreview()"></div>
+        <div class="form-group"><label for="f_phone">Phone</label><input id="f_phone" placeholder="+1 555 000 0000" oninput="updatePreview()"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Location</label><input id="f_location" placeholder="New York, NY" oninput="updatePreview()"></div>
-        <div class="form-group"><label>LinkedIn / Website</label><input id="f_linkedin" placeholder="linkedin.com/in/jane" oninput="updatePreview()"></div>
+        <div class="form-group"><label for="f_location">Location</label><input id="f_location" placeholder="New York, NY" oninput="updatePreview()"></div>
+        <div class="form-group"><label for="f_linkedin">LinkedIn / Website</label><input id="f_linkedin" placeholder="linkedin.com/in/jane" oninput="updatePreview()"></div>
       </div>
     </div>
 
@@ -289,22 +289,22 @@ function renderSectionList(type) {
     if (type === 'experience') {
       div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button>
         <div class="form-row">
-          <div class="form-group"><label>Job Title</label><input data-field="title" placeholder="Software Engineer" oninput="syncItem('${type}',${item.id},this)"></div>
-          <div class="form-group"><label>Company</label><input data-field="org" placeholder="Acme Corp" oninput="syncItem('${type}',${item.id},this)"></div>
+          <div class="form-group"><label for="f-title-${item.id}">Job Title</label><input id="f-title-${item.id}" data-field="title" placeholder="Software Engineer" oninput="syncItem('${type}',${item.id},this)"></div>
+          <div class="form-group"><label for="f-org-${item.id}">Company</label><input id="f-org-${item.id}" data-field="org" placeholder="Acme Corp" oninput="syncItem('${type}',${item.id},this)"></div>
         </div>
-        <div class="form-group"><label>Date Range</label><input data-field="date" placeholder="Jan 2022 – Present" oninput="syncItem('${type}',${item.id},this)"></div>
-        <div class="form-group"><label>Description (one bullet per line)</label><textarea data-field="desc" rows="3" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
+        <div class="form-group"><label for="f-date-${item.id}">Date Range</label><input id="f-date-${item.id}" data-field="date" placeholder="Jan 2022 – Present" oninput="syncItem('${type}',${item.id},this)"></div>
+        <div class="form-group"><label for="f-desc-${item.id}">Description (one bullet per line)</label><textarea id="f-desc-${item.id}" data-field="desc" rows="3" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
     } else if (type === 'education') {
       div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button>
         <div class="form-row">
-          <div class="form-group"><label>Degree</label><input data-field="title" placeholder="B.S. Computer Science" oninput="syncItem('${type}',${item.id},this)"></div>
-          <div class="form-group"><label>Institution</label><input data-field="org" placeholder="MIT" oninput="syncItem('${type}',${item.id},this)"></div>
+          <div class="form-group"><label for="f-title-${item.id}">Degree</label><input id="f-title-${item.id}" data-field="title" placeholder="B.S. Computer Science" oninput="syncItem('${type}',${item.id},this)"></div>
+          <div class="form-group"><label for="f-org-${item.id}">Institution</label><input id="f-org-${item.id}" data-field="org" placeholder="MIT" oninput="syncItem('${type}',${item.id},this)"></div>
         </div>
-        <div class="form-group"><label>Date</label><input data-field="date" placeholder="2018 – 2022" oninput="syncItem('${type}',${item.id},this)"></div>`;
+        <div class="form-group"><label for="f-date-${item.id}">Date</label><input id="f-date-${item.id}" data-field="date" placeholder="2018 – 2022" oninput="syncItem('${type}',${item.id},this)"></div>`;
     } else {
       div.innerHTML = `<button class="remove-btn" onclick="removeItem('${type}',${item.id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button>
-        <div class="form-group"><label>Project Name</label><input data-field="title" placeholder="My Project" oninput="syncItem('${type}',${item.id},this)"></div>
-        <div class="form-group"><label>Description</label><textarea data-field="desc" rows="2" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
+        <div class="form-group"><label for="f-title-${item.id}">Project Name</label><input id="f-title-${item.id}" data-field="title" placeholder="My Project" oninput="syncItem('${type}',${item.id},this)"></div>
+        <div class="form-group"><label for="f-desc-${item.id}">Description</label><textarea id="f-desc-${item.id}" data-field="desc" rows="2" oninput="syncItem('${type}',${item.id},this)"></textarea></div>`;
     }
     container.appendChild(div);
   });

@@ -69,32 +69,32 @@ input:focus, select:focus { border-color: var(--primary); }
   <div class="card">
     <div class="controls">
       <div class="control-group">
-        <label>Version</label>
+        <label for="v4-btn">Version</label>
         <div class="toggle-group">
-          <button class="toggle-btn active" id="v4-btn" onclick="setVersion(4)">v4 (Random)</button>
+          <button class="toggle-btn active" id="v4-btn" onclick="setVersion(4)">v4 (Random)</button>
           <button class="toggle-btn" id="v1-btn" onclick="setVersion(1)">v1 (Timestamp)</button>
         </div>
       </div>
       <div class="control-group">
-        <label>Count</label>
-        <input type="number" id="count" value="5" min="1" max="100" style="width:90px">
+        <label for="count">Count</label>
+        <input type="number" id="count" value="5" min="1" max="100" style="width:90px">
       </div>
       <div class="control-group">
-        <label>Format</label>
+        <label for="fmt-lower">Format</label>
         <div class="toggle-group">
-          <button class="toggle-btn active" id="fmt-lower" onclick="setFormat('lower')">lowercase</button>
+          <button class="toggle-btn active" id="fmt-lower" onclick="setFormat('lower')">lowercase</button>
           <button class="toggle-btn" id="fmt-upper" onclick="setFormat('upper')">UPPERCASE</button>
           <button class="toggle-btn" id="fmt-nohyphen" onclick="setFormat('nohyphen')">no-hyphens</button>
         </div>
       </div>
       <div class="control-group" style="margin-left:auto">
-        <label>&nbsp;</label>
+        <label for="resultsCard">&nbsp;</label>
         <button class="btn btn-primary" onclick="generate()">Generate</button>
       </div>
     </div>
   </div>
 
-  <div class="card" id="resultsCard" style="display:none">
+  <div class="card" id="resultsCard" style="display:none">
     <div class="section-title">
       Results
       <button class="btn btn-ghost btn-sm" onclick="copyAll()">Copy All</button>

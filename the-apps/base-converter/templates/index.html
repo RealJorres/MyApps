@@ -75,34 +75,34 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
     <div class="bases-grid">
       <div class="base-box">
         <div class="base-label-row">
-          <label style="margin:0;">Binary</label>
+          <label for="binInput" style="margin:0;">Binary</label>
           <span class="base-tag">Base 2</span>
         </div>
-        <input type="text" id="binInput" placeholder="e.g. 11111111" oninput="convertFrom(this,'bin')" autocomplete="off" spellcheck="false">
+        <input type="text" id="binInput" placeholder="e.g. 11111111" oninput="convertFrom(this,'bin')" autocomplete="off" spellcheck="false">
         <button class="btn btn-ghost copy-btn-small" onclick="copyInput('binInput')">Copy</button>
       </div>
       <div class="base-box">
         <div class="base-label-row">
-          <label style="margin:0;">Octal</label>
+          <label for="octInput" style="margin:0;">Octal</label>
           <span class="base-tag">Base 8</span>
         </div>
-        <input type="text" id="octInput" placeholder="e.g. 377" oninput="convertFrom(this,'oct')" autocomplete="off" spellcheck="false">
+        <input type="text" id="octInput" placeholder="e.g. 377" oninput="convertFrom(this,'oct')" autocomplete="off" spellcheck="false">
         <button class="btn btn-ghost copy-btn-small" onclick="copyInput('octInput')">Copy</button>
       </div>
       <div class="base-box">
         <div class="base-label-row">
-          <label style="margin:0;">Decimal</label>
+          <label for="decInput" style="margin:0;">Decimal</label>
           <span class="base-tag">Base 10</span>
         </div>
-        <input type="text" id="decInput" placeholder="e.g. 255" oninput="convertFrom(this,'dec')" autocomplete="off" spellcheck="false">
+        <input type="text" id="decInput" placeholder="e.g. 255" oninput="convertFrom(this,'dec')" autocomplete="off" spellcheck="false">
         <button class="btn btn-ghost copy-btn-small" onclick="copyInput('decInput')">Copy</button>
       </div>
       <div class="base-box">
         <div class="base-label-row">
-          <label style="margin:0;">Hexadecimal</label>
+          <label for="hexInput" style="margin:0;">Hexadecimal</label>
           <span class="base-tag">Base 16</span>
         </div>
-        <input type="text" id="hexInput" placeholder="e.g. FF" oninput="convertFrom(this,'hex')" autocomplete="off" spellcheck="false">
+        <input type="text" id="hexInput" placeholder="e.g. FF" oninput="convertFrom(this,'hex')" autocomplete="off" spellcheck="false">
         <button class="btn btn-ghost copy-btn-small" onclick="copyInput('hexInput')">Copy</button>
       </div>
     </div>
@@ -110,8 +110,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); box-sh
   </div>
 
   <div class="card">
-    <label>Decimal Value in Words</label>
-    <div class="words-box" id="wordsBox">Enter a number above to see it in words.</div>
+    <label for="wordsBox">Decimal Value in Words</label>
+    <div class="words-box" id="wordsBox">Enter a number above to see it in words.</div>
   </div>
 </div>
 

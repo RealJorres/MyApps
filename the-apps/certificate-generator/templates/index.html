@@ -43,8 +43,8 @@ canvas{max-width:100%;border-radius:.4rem;box-shadow:0 4px 16px rgba(0,0,0,.15)}
 
   <div class="layout">
     <div class="card">
-      <label>Certificate Type</label>
-      <select id="certType" onchange="render()">
+      <label for="certType">Certificate Type</label>
+      <select id="certType" onchange="render()">
         <option value="completion">Certificate of Completion</option>
         <option value="appreciation">Certificate of Appreciation</option>
         <option value="achievement">Certificate of Achievement</option>
@@ -52,22 +52,22 @@ canvas{max-width:100%;border-radius:.4rem;box-shadow:0 4px 16px rgba(0,0,0,.15)}
         <option value="excellence">Certificate of Excellence</option>
       </select>
 
-      <label>Recipient Name</label>
-      <input type="text" id="recipName" value="Jane Doe" oninput="render()">
+      <label for="recipName">Recipient Name</label>
+      <input type="text" id="recipName" value="Jane Doe" oninput="render()">
 
-      <label>For / Award Description</label>
-      <input type="text" id="awardDesc" value="Completing the Advanced Leadership Training Program" oninput="render()">
+      <label for="awardDesc">For / Award Description</label>
+      <input type="text" id="awardDesc" value="Completing the Advanced Leadership Training Program" oninput="render()">
 
-      <label>Issued By</label>
-      <input type="text" id="issuedBy" value="Acme Corporation" oninput="render()">
+      <label for="issuedBy">Issued By</label>
+      <input type="text" id="issuedBy" value="Acme Corporation" oninput="render()">
 
-      <label>Signatory</label>
-      <input type="text" id="signatory" value="John Smith, CEO" oninput="render()">
+      <label for="signatory">Signatory</label>
+      <input type="text" id="signatory" value="John Smith, CEO" oninput="render()">
 
-      <label>Date</label>
-      <input type="date" id="certDate" oninput="render()">
+      <label for="certDate">Date</label>
+      <input type="date" id="certDate" oninput="render()">
 
-      <label>Color Theme</label>
+      <p role="group" aria-label="Color Theme" style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Color Theme</p>
       <div class="palette">
         <div class="swatch active" style="background:#b45309" data-colors='["#b45309","#92400e","#fef3c7","#fbbf24"]' onclick="setTheme(this)"></div>
         <div class="swatch" style="background:#1d4ed8" data-colors='["#1d4ed8","#1e3a8a","#dbeafe","#3b82f6"]' onclick="setTheme(this)"></div>
