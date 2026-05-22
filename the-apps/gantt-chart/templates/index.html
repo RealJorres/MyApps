@@ -30,9 +30,17 @@ input:focus,select:focus{border-color:var(--primary)}
 .task-list th{padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border)}
 .task-list td{padding:.5rem .75rem;border-bottom:1px solid var(--border)}
 .color-dot{width:14px;height:14px;border-radius:50%;display:inline-block}
-canvas{width:100%;height:auto}
-.canvas-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:.75rem;background:#fff;padding:.75rem}
+canvas{height:auto}
+.canvas-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:.75rem;background:#fff;padding:.75rem;max-width:100%}
+.canvas-wrap canvas{min-width:480px;display:block}
 .dl-row{display:flex;justify-content:flex-end;margin-top:.75rem}
+.task-list{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:600px){
+  body{overflow-x:hidden}
+  .add-row{flex-direction:column}
+  .add-row .field{width:100%;min-width:0}
+  input,select{width:100%!important;min-width:0!important}
+}
 </style>
 </head>
 <body>
@@ -148,7 +156,8 @@ function render() {
   maxD.setUTCDate(maxD.getUTCDate() + 2);
   const totalDays = Math.round((maxD - minD) / 86400000);
 
-  const rowH = 38, labelW = 180;
+  const isMobile = window.innerWidth < 600;
+  const rowH = 38, labelW = isMobile ? 100 : 180;
   const pad = { top: 70, bottom: 30 };
   const H = pad.top + tasks.length * rowH + pad.bottom;
   canvas.height = H;
@@ -199,7 +208,8 @@ function render() {
 
     // Label
     ctx.fillStyle = '#1e293b'; ctx.font = '12px system-ui'; ctx.textAlign = 'left';
-    const lbl = t.name.length > 22 ? t.name.slice(0, 21) + '…' : t.name;
+    const maxChars = isMobile ? 11 : 22;
+    const lbl = t.name.length > maxChars ? t.name.slice(0, maxChars - 1) + '…' : t.name;
     ctx.fillText(lbl, 8, y + rowH/2 + 4);
 
     // Bar

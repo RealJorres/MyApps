@@ -82,12 +82,47 @@ textarea { resize: vertical; min-height: 80px; }
 .color-row input[type=color] { width: 48px; height: 38px; padding: 2px; cursor: pointer; border-radius: 0.4rem; }
 .color-row input[type=text] { flex: 1; }
 .download-bar { text-align: center; margin-top: 1rem; }
-@media (max-width: 600px) {
+/* Mobile: Form / Preview toggle bar */
+.mobile-inv-tabs {
+  display: none;
+  gap: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  padding: .3rem;
+  margin-bottom: 1.25rem;
+}
+.mob-inv-btn {
+  flex: 1; padding: .6rem; border: none;
+  font-size: .9rem; font-weight: 700;
+  cursor: pointer; border-radius: .5rem;
+  font-family: inherit; transition: all .15s;
+  background: none; color: var(--muted);
+}
+.mob-inv-btn.active { background: var(--primary); color: #fff; }
+
+@media (max-width: 767px) {
   body { overflow-x: hidden; }
-  .layout { grid-template-columns: 1fr !important; }
-  .form-grid, .form-grid.three, .form-grid.four, .inv-meta { grid-template-columns: 1fr !important; }
-  input[type=text], input[type=number], input[type=email], textarea, select { width: 100% !important; min-width: 0 !important; }
+  .mobile-inv-tabs { display: flex; }
+
+  /* Single-column layout on mobile */
+  .layout { grid-template-columns: 1fr !important; gap: 0; }
+  .form-grid, .form-grid.three, .form-grid.four, .inv-meta {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .form-grid.four { grid-template-columns: 1fr 1fr !important; }
+
+  /* Form/preview show/hide controlled by JS */
+  .form-col { }
+  .preview-area { position: static !important; }
+
+  input[type=text], input[type=number], input[type=email], textarea, select {
+    width: 100% !important; min-width: 0 !important;
+  }
   table { display: block; overflow-x: auto; }
+
+  /* Compact download button */
+  .download-bar button { padding: .65rem 1rem !important; }
 }
 </style>
 </head>
@@ -106,9 +141,15 @@ textarea { resize: vertical; min-height: 80px; }
 
   <!-- CREATE TAB -->
   <div id="invPanelCreate">
+  <!-- Mobile Form/Preview toggle (hidden on desktop) -->
+  <div class="mobile-inv-tabs" id="mobileInvTabs">
+    <button class="mob-inv-btn active" id="mobBtnForm" onclick="setMobInvTab('form')">Form</button>
+    <button class="mob-inv-btn" id="mobBtnPreview" onclick="setMobInvTab('preview')">Preview</button>
+  </div>
+
   <div class="layout">
     <!-- LEFT: Form -->
-    <div class="form-col">
+    <div class="form-col" id="invFormCol">
       <!-- Business Info -->
       <div class="card">
         <div class="section-title">Your Business</div>
@@ -208,7 +249,7 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
     </div>
     <!-- RIGHT: Preview -->
-    <div class="preview-area">
+    <div class="preview-area" id="invPreviewCol">
       <div class="card">
         <div class="section-title">Live Preview</div>
         <div class="preview-invoice" id="preview"></div>
@@ -460,6 +501,37 @@ addItem('Web Design Services', 1, 1200);
 addItem('Monthly Hosting', 12, 25);
 addItem('Domain Registration', 1, 15);
 updatePreview();
+
+/* ── Mobile form/preview toggle ──────────────────────── */
+function setMobInvTab(tab) {
+  var isForm = tab === 'form';
+  var form    = document.getElementById('invFormCol');
+  var preview = document.getElementById('invPreviewCol');
+  var btnF    = document.getElementById('mobBtnForm');
+  var btnP    = document.getElementById('mobBtnPreview');
+  if (window.innerWidth >= 768) return; // desktop: both always visible
+  if (form)    form.style.display    = isForm ? '' : 'none';
+  if (preview) preview.style.display = isForm ? 'none' : '';
+  if (btnF) { btnF.classList.toggle('active', isForm); }
+  if (btnP) { btnP.classList.toggle('active', !isForm); }
+  if (!isForm) updatePreview(); // refresh preview when switching to it
+}
+
+// On mobile, hide preview panel by default
+(function(){
+  if (window.innerWidth < 768) {
+    var preview = document.getElementById('invPreviewCol');
+    if (preview) preview.style.display = 'none';
+  }
+  window.addEventListener('resize', function(){
+    var form    = document.getElementById('invFormCol');
+    var preview = document.getElementById('invPreviewCol');
+    if (window.innerWidth >= 768) {
+      if (form)    form.style.display    = '';
+      if (preview) preview.style.display = '';
+    }
+  });
+})();
 
 /* ── Tab switching ───────────────────────────────────── */
 function switchInvTab(tab){

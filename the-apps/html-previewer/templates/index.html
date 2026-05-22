@@ -31,11 +31,45 @@ textarea { flex: 1; width: 100%; min-height: 200px; background: #0a1120; border:
 .device-btn.active { background: #2563eb; border-color: #2563eb; color: #fff; }
 iframe { flex: 1; border: none; background: #fff; width: 100%; transition: max-width .2s; }
 .iframe-wrap { flex: 1; display: flex; justify-content: center; overflow: auto; background: #1e293b; }
-@media (max-width: 600px) {
+/* Mobile pane switcher bar */
+.mobile-pane-bar {
+  display: none;
+  background: #0a1120;
+  border-bottom: 1px solid #1e293b;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.mobile-pane-bar::-webkit-scrollbar { display: none; }
+.mpane-btn {
+  padding: .45rem .9rem;
+  border: none; background: none;
+  color: #64748b; font-size: .8rem;
+  font-weight: 600; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .12s, border-color .12s;
+}
+.mpane-btn.active { color: #66c0f4; border-bottom-color: #66c0f4; }
+
+@media (max-width: 767px) {
   body { overflow-x: hidden; }
-  .editors { grid-template-columns: 1fr !important; height: auto; }
-  .editors > * { min-height: 150px; }
+  .mobile-pane-bar { display: flex; }
+
+  /* On mobile: hide the 3-column grid, show one pane at a time */
+  .editors { grid-template-columns: 1fr !important; }
+  .ed-pane { display: none; min-height: 260px; }
+  .ed-pane.mobile-active { display: flex; }
+  .ed-pane.mobile-active textarea { min-height: 260px; resize: none; }
+
+  /* Preview pane visibility controlled by mobile-active too */
+  .preview-pane { display: none; }
+  .preview-pane.mobile-active { display: flex; }
+
   textarea { min-width: 0 !important; }
+
+  /* Simplify header on mobile */
+  header { flex-wrap: wrap; gap: 0.4rem; }
+  .auto-label { font-size: .72rem; }
 }
 </style>
 </head>
@@ -47,22 +81,30 @@ iframe { flex: 1; border: none; background: #fff; width: 100%; transition: max-w
   <button class="hbtn" onclick="loadExample()">Load Example</button>
   <label class="auto-label"><input type="checkbox" id="autoRun" checked> Auto-run</label>
 </header>
+<!-- Mobile pane switcher (hidden on desktop) -->
+<div class="mobile-pane-bar" id="mobilePaneBar" role="tablist" aria-label="Editor pane selector">
+  <button class="mpane-btn active" onclick="setMobilePane('html',this)" role="tab" aria-selected="true">HTML</button>
+  <button class="mpane-btn" onclick="setMobilePane('css',this)" role="tab" aria-selected="false">CSS</button>
+  <button class="mpane-btn" onclick="setMobilePane('js',this)" role="tab" aria-selected="false">JS</button>
+  <button class="mpane-btn" onclick="setMobilePane('preview',this)" role="tab" aria-selected="false">Preview</button>
+</div>
+
 <div class="main">
-  <div class="editors">
-    <div class="ed-pane">
+  <div class="editors" id="editorsGrid">
+    <div class="ed-pane mobile-active" id="paneHtml" role="tabpanel" aria-label="HTML editor">
       <div class="ed-label">HTML</div>
       <textarea id="htmlEd" placeholder="<h1>Hello World</h1>" oninput="autoRun()"></textarea>
     </div>
-    <div class="ed-pane">
+    <div class="ed-pane" id="paneCss" role="tabpanel" aria-label="CSS editor">
       <div class="ed-label">CSS</div>
       <textarea id="cssEd" placeholder="body { font-family: sans-serif; }" oninput="autoRun()"></textarea>
     </div>
-    <div class="ed-pane">
+    <div class="ed-pane" id="paneJs" role="tabpanel" aria-label="JavaScript editor">
       <div class="ed-label">JavaScript</div>
       <textarea id="jsEd" placeholder="console.log('hello')" oninput="autoRun()"></textarea>
     </div>
   </div>
-  <div class="preview-pane">
+  <div class="preview-pane" id="panePreview">
     <div class="preview-toolbar">
       <span class="preview-label">Preview</span>
       <button class="device-btn active" onclick="setDevice('full',this)">Full</button>
@@ -76,6 +118,38 @@ iframe { flex: 1; border: none; background: #fff; width: 100%; transition: max-w
 </div>
 <script>
 let debounceTimer;
+
+/* ── Mobile pane switching ─────────────────── */
+function setMobilePane(pane, btn) {
+  const paneMap = { html:'paneHtml', css:'paneCss', js:'paneJs', preview:'panePreview' };
+  // Hide all
+  Object.values(paneMap).forEach(id => {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('mobile-active');
+  });
+  // Show selected
+  var target = document.getElementById(paneMap[pane]);
+  if (target) target.classList.add('mobile-active');
+  // Update tab buttons
+  document.querySelectorAll('.mpane-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected', 'true'); }
+  // Run code when switching to preview
+  if (pane === 'preview') runCode();
+}
+
+/* On desktop, always show all panes */
+function handleResize() {
+  if (window.innerWidth >= 768) {
+    ['paneHtml','paneCss','paneJs','panePreview'].forEach(id => {
+      var el = document.getElementById(id);
+      if (el) { el.classList.remove('mobile-active'); el.style.display = ''; }
+    });
+  }
+}
+window.addEventListener('resize', handleResize);
 
 function runCode() {
   const html = document.getElementById('htmlEd').value;
