@@ -6,7 +6,7 @@
         "port":  5001,
         "path":  "./the-apps/pdf-to-image",
         "entry":  "app.py",
-        "icon":  "📄",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z\u0027/\u003e\u003cpolyline points=\u002714 2 14 8 20 8\u0027/\u003e\u003ccircle cx=\u002710\u0027 cy=\u002713\u0027 r=\u00272\u0027/\u003e\u003cpath d=\u0027m20 17-1.9-1.9a2 2 0 0 0-2.8 0L10 20\u0027/\u003e\u003c/svg\u003e",
         "color":  "#4f46e5",
         "tags":  [
                      "PDF",
@@ -22,7 +22,7 @@
         "port":  5035,
         "path":  "./the-apps/pdf-merger",
         "entry":  "app.py",
-        "icon":  "🔀",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002712 2 2 7 12 12 22 7 12 2\u0027/\u003e\u003cpolyline points=\u00272 17 12 22 22 17\u0027/\u003e\u003cpolyline points=\u00272 12 12 17 22 12\u0027/\u003e\u003c/svg\u003e",
         "color":  "#4f46e5",
         "tags":  [
                      "PDF",
@@ -37,7 +37,7 @@
         "port":  5004,
         "path":  "./the-apps/csv-viewer",
         "entry":  "app.py",
-        "icon":  "CSV",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "CSV",
@@ -53,7 +53,7 @@
         "port":  5017,
         "path":  "./the-apps/base64-tool",
         "entry":  "app.py",
-        "icon":  "B64",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00274\u0027 height=\u00276\u0027 x=\u002714\u0027 y=\u00272\u0027 rx=\u00272\u0027/\u003e\u003crect width=\u00274\u0027 height=\u00276\u0027 x=\u00276\u0027 y=\u002716\u0027 rx=\u00272\u0027/\u003e\u003cpath d=\u0027M6 2v4\u0027/\u003e\u003cpath d=\u0027M6 8v2\u0027/\u003e\u003cpath d=\u0027M18 14v2\u0027/\u003e\u003cpath d=\u0027M18 20v2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#c2410c",
         "tags":  [
                      "Base64",
@@ -69,7 +69,7 @@
         "port":  5021,
         "path":  "./the-apps/invoice-generator",
         "entry":  "app.py",
-        "icon":  "🧾",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z\u0027/\u003e\u003cpath d=\u0027M16 8H8\u0027/\u003e\u003cpath d=\u0027M16 12H8\u0027/\u003e\u003cpath d=\u0027M12 16H8\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "tags":  [
                      "Invoice",
@@ -87,7 +87,7 @@
         "port":  5037,
         "path":  "./the-apps/ocr-tool",
         "entry":  "app.py",
-        "icon":  "🔍",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002711\u0027 cy=\u002711\u0027 r=\u00278\u0027/\u003e\u003cline x1=\u002721\u0027 x2=\u002716.65\u0027 y1=\u002721\u0027 y2=\u002716.65\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "OCR",
@@ -103,7 +103,7 @@
         "port":  5003,
         "path":  "./the-apps/qr-generator",
         "entry":  "app.py",
-        "icon":  "▦",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00275\u0027 height=\u00275\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u0027.5\u0027/\u003e\u003crect width=\u00275\u0027 height=\u00275\u0027 x=\u002716\u0027 y=\u00273\u0027 rx=\u0027.5\u0027/\u003e\u003crect width=\u00275\u0027 height=\u00275\u0027 x=\u00273\u0027 y=\u002716\u0027 rx=\u0027.5\u0027/\u003e\u003cpath d=\u0027M21 16h-3a2 2 0 0 0-2 2v3\u0027/\u003e\u003cpath d=\u0027M21 21v.01\u0027/\u003e\u003cpath d=\u0027M12 7v3a2 2 0 0 1-2 2H7\u0027/\u003e\u003cpath d=\u0027M3 12h.01\u0027/\u003e\u003cpath d=\u0027M12 3h.01\u0027/\u003e\u003cpath d=\u0027M16 12h1\u0027/\u003e\u003cpath d=\u0027M21 12v.01\u0027/\u003e\u003cpath d=\u0027M12 21v-1\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "QR",
@@ -118,7 +118,7 @@
         "port":  5002,
         "path":  "./the-apps/image-tools",
         "entry":  "app.py",
-        "icon":  "🖼️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M18 22H4a2 2 0 0 1-2-2V6\u0027/\u003e\u003cpath d=\u0027m22 13-1.3-1.3a2 2 0 0 0-2.8 0L11 18\u0027/\u003e\u003ccircle cx=\u002714\u0027 cy=\u00279\u0027 r=\u00272\u0027/\u003e\u003crect width=\u002716\u0027 height=\u002716\u0027 x=\u00276\u0027 y=\u00272\u0027 rx=\u00272\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Images",
@@ -134,7 +134,7 @@
         "port":  5036,
         "path":  "./the-apps/watermark-tool",
         "entry":  "app.py",
-        "icon":  "💧",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M5 22h14\u0027/\u003e\u003cpath d=\u0027M19.27 13.73A2.5 2.5 0 0 0 17.5 13h-11A2.5 2.5 0 0 0 4 15.5V17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1.5c0-.66-.26-1.3-.73-1.77z\u0027/\u003e\u003cpath d=\u0027M14 13V8.5a2.5 2.5 0 0 0-5 0V13\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Watermark",
@@ -149,7 +149,7 @@
         "port":  5022,
         "path":  "./the-apps/exif-viewer",
         "entry":  "app.py",
-        "icon":  "📷",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002713\u0027 r=\u00273\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "EXIF",
@@ -165,7 +165,7 @@
         "port":  5023,
         "path":  "./the-apps/favicon-generator",
         "entry":  "app.py",
-        "icon":  "⭐",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002713 2 3 14 12 14 11 22 21 10 12 10 13 2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Favicon",
@@ -181,7 +181,7 @@
         "port":  5055,
         "path":  "./the-apps/color-palette-extractor",
         "entry":  "app.py",
-        "icon":  "🎨",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002713.5\u0027 cy=\u00276.5\u0027 r=\u0027.5\u0027 fill=\u0027currentColor\u0027/\u003e\u003ccircle cx=\u002717.5\u0027 cy=\u002710.5\u0027 r=\u0027.5\u0027 fill=\u0027currentColor\u0027/\u003e\u003ccircle cx=\u00278.5\u0027 cy=\u00277.5\u0027 r=\u0027.5\u0027 fill=\u0027currentColor\u0027/\u003e\u003ccircle cx=\u00276.5\u0027 cy=\u002712.5\u0027 r=\u0027.5\u0027 fill=\u0027currentColor\u0027/\u003e\u003cpath d=\u0027M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Color",
@@ -197,7 +197,7 @@
         "port":  5011,
         "path":  "./the-apps/color-picker",
         "entry":  "app.py",
-        "icon":  "●",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027m2 22 1-1h3l9-9\u0027/\u003e\u003cpath d=\u0027M3 21v-3l9-9\u0027/\u003e\u003cpath d=\u0027m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8-1 1\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Color",
@@ -216,7 +216,7 @@
         "port":  5038,
         "path":  "./the-apps/color-contrast",
         "entry":  "app.py",
-        "icon":  "◑",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cpath d=\u0027M12 18a6 6 0 0 0 0-12v12z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "Color",
@@ -232,7 +232,7 @@
         "port":  5005,
         "path":  "./the-apps/json-formatter",
         "entry":  "app.py",
-        "icon":  "{ }",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1\u0027/\u003e\u003cpath d=\u0027M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "JSON",
@@ -248,7 +248,7 @@
         "port":  5007,
         "path":  "./the-apps/regex-tester",
         "entry":  "app.py",
-        "icon":  ".*",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002711\u0027 cy=\u002711\u0027 r=\u00278\u0027/\u003e\u003cline x1=\u002721\u0027 x2=\u002716.65\u0027 y1=\u002721\u0027 y2=\u002716.65\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "Regex",
@@ -264,7 +264,7 @@
         "port":  5013,
         "path":  "./the-apps/timestamp-converter",
         "entry":  "app.py",
-        "icon":  "⏱",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cpolyline points=\u002712 6 12 12 16 14\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "Timestamp",
@@ -280,7 +280,7 @@
         "port":  5014,
         "path":  "./the-apps/base-converter",
         "entry":  "app.py",
-        "icon":  "0x",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00274\u0027 height=\u00276\u0027 x=\u002714\u0027 y=\u00272\u0027 rx=\u00272\u0027/\u003e\u003crect width=\u00274\u0027 height=\u00276\u0027 x=\u00276\u0027 y=\u002716\u0027 rx=\u00272\u0027/\u003e\u003cpath d=\u0027M6 2v4\u0027/\u003e\u003cpath d=\u0027M6 8v2\u0027/\u003e\u003cpath d=\u0027M18 14v2\u0027/\u003e\u003cpath d=\u0027M18 20v2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "Binary",
@@ -296,7 +296,7 @@
         "port":  5015,
         "path":  "./the-apps/url-parser",
         "entry":  "app.py",
-        "icon":  "🔗",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\u0027/\u003e\u003cpath d=\u0027M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "URL",
@@ -312,7 +312,7 @@
         "port":  5024,
         "path":  "./the-apps/uuid-generator",
         "entry":  "app.py",
-        "icon":  "⬡",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4\u0027/\u003e\u003cpath d=\u0027M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2\u0027/\u003e\u003cpath d=\u0027M17.29 21.02c.12-.6.43-2.3.5-3.02\u0027/\u003e\u003cpath d=\u0027M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4\u0027/\u003e\u003cpath d=\u0027M8.65 22c.21-.66.45-1.32.57-2\u0027/\u003e\u003cpath d=\u0027M14 13.12c0 2.38 0 6.38-1 8.88\u0027/\u003e\u003cpath d=\u0027M2 16h.01\u0027/\u003e\u003cpath d=\u0027M21.8 16c.2-2 .131-5.354 0-6\u0027/\u003e\u003cpath d=\u0027M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 1.17-.02 2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "UUID",
@@ -327,7 +327,7 @@
         "port":  5025,
         "path":  "./the-apps/cron-builder",
         "entry":  "app.py",
-        "icon":  "⏰",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cpolyline points=\u002712 6 12 12 16 14\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "Cron",
@@ -343,7 +343,7 @@
         "port":  5026,
         "path":  "./the-apps/html-entity-encoder",
         "entry":  "app.py",
-        "icon":  "\u0026amp;",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u002716 18 22 12 16 6\u0027/\u003e\u003cpolyline points=\u00278 6 2 12 8 18\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "HTML",
@@ -359,7 +359,7 @@
         "port":  5027,
         "path":  "./the-apps/chmod-calculator",
         "entry":  "app.py",
-        "icon":  "🔐",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002718\u0027 height=\u002711\u0027 x=\u00273\u0027 y=\u002711\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003cpath d=\u0027M7 11V7a5 5 0 0 1 10 0v4\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "chmod",
@@ -375,7 +375,7 @@
         "port":  5028,
         "path":  "./the-apps/sql-formatter",
         "entry":  "app.py",
-        "icon":  "🗄",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u00274 17 10 11 4 5\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002720\u0027 y1=\u002719\u0027 y2=\u002719\u0027/\u003e\u003c/svg\u003e",
         "color":  "#c2410c",
         "tags":  [
                      "SQL",
@@ -391,7 +391,7 @@
         "port":  5039,
         "path":  "./the-apps/css-formatter",
         "entry":  "app.py",
-        "icon":  "CSS",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u002716 18 22 12 16 6\u0027/\u003e\u003cpolyline points=\u00278 6 2 12 8 18\u0027/\u003e\u003c/svg\u003e",
         "color":  "#2563eb",
         "tags":  [
                      "CSS",
@@ -407,7 +407,7 @@
         "port":  5040,
         "path":  "./the-apps/api-tester",
         "entry":  "app.py",
-        "icon":  "⚡",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002722\u0027 x2=\u002711\u0027 y1=\u00272\u0027 y2=\u002713\u0027/\u003e\u003cpolygon points=\u002722 2 15 22 11 13 2 9 22 2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "API",
@@ -423,7 +423,7 @@
         "port":  5042,
         "path":  "./the-apps/random-data-generator",
         "entry":  "app.py",
-        "icon":  "~{}",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002713 2 3 14 12 14 11 22 21 10 12 10 13 2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "tags":  [
                      "Random",
@@ -439,7 +439,7 @@
         "port":  5008,
         "path":  "./the-apps/markdown-editor",
         "entry":  "app.py",
-        "icon":  "MD",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z\u0027/\u003e\u003cpolyline points=\u002714 2 14 8 20 8\u0027/\u003e\u003cline x1=\u002716\u0027 x2=\u00278\u0027 y1=\u002713\u0027 y2=\u002713\u0027/\u003e\u003cline x1=\u002716\u0027 x2=\u00278\u0027 y1=\u002717\u0027 y2=\u002717\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "tags":  [
                      "Markdown",
@@ -457,7 +457,7 @@
         "port":  5009,
         "path":  "./the-apps/word-counter",
         "entry":  "app.py",
-        "icon":  "Aa",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002721\u0027 x2=\u00273\u0027 y1=\u00276\u0027 y2=\u00276\u0027/\u003e\u003cline x1=\u002715\u0027 x2=\u00273\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cline x1=\u002717\u0027 x2=\u00273\u0027 y1=\u002718\u0027 y2=\u002718\u0027/\u003e\u003c/svg\u003e",
         "color":  "#c2410c",
         "tags":  [
                      "Text",
@@ -473,7 +473,7 @@
         "port":  5041,
         "path":  "./the-apps/text-case-converter",
         "entry":  "app.py",
-        "icon":  "Tt",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u00274 7 4 4 20 4 20 7\u0027/\u003e\u003cline x1=\u00279\u0027 x2=\u002715\u0027 y1=\u002720\u0027 y2=\u002720\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712\u0027 y1=\u00274\u0027 y2=\u002720\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "Text",
@@ -489,7 +489,7 @@
         "port":  5019,
         "path":  "./the-apps/lorem-ipsum",
         "entry":  "app.py",
-        "icon":  "¶",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002721\u0027 x2=\u00273\u0027 y1=\u00276\u0027 y2=\u00276\u0027/\u003e\u003cline x1=\u002715\u0027 x2=\u00273\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cline x1=\u002717\u0027 x2=\u00273\u0027 y1=\u002718\u0027 y2=\u002718\u0027/\u003e\u003c/svg\u003e",
         "color":  "#6d28d9",
         "tags":  [
                      "Lorem",
@@ -505,7 +505,7 @@
         "port":  5020,
         "path":  "./the-apps/notepad",
         "entry":  "app.py",
-        "icon":  "📝",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Notes",
@@ -520,7 +520,7 @@
         "port":  5029,
         "path":  "./the-apps/pomodoro-timer",
         "entry":  "app.py",
-        "icon":  "🍅",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002710\u0027 x2=\u002714\u0027 y1=\u00272\u0027 y2=\u00272\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002715\u0027 y1=\u002714\u0027 y2=\u002711\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002714\u0027 r=\u00278\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Pomodoro",
@@ -538,7 +538,7 @@
         "port":  5010,
         "path":  "./the-apps/password-generator",
         "entry":  "app.py",
-        "icon":  "🔑",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u00277.5\u0027 cy=\u002715.5\u0027 r=\u00275.5\u0027/\u003e\u003cpath d=\u0027m21 2-9.6 9.6\u0027/\u003e\u003cpath d=\u0027m15.5 7.5 3 3L22 7l-3-3\u0027/\u003e\u003c/svg\u003e",
         "color":  "#15803d",
         "tags":  [
                      "Password",
@@ -555,7 +555,7 @@
         "port":  5006,
         "path":  "./the-apps/hash-generator",
         "entry":  "app.py",
-        "icon":  "#",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u00279\u0027 y2=\u00279\u0027/\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u002715\u0027 y2=\u002715\u0027/\u003e\u003cline x1=\u002710\u0027 x2=\u002714\u0027 y1=\u00273\u0027 y2=\u002721\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Hash",
@@ -571,7 +571,7 @@
         "port":  5043,
         "path":  "./the-apps/cipher-tool",
         "entry":  "app.py",
-        "icon":  "🔒",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002718\u0027 height=\u002711\u0027 x=\u00273\u0027 y=\u002711\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003cpath d=\u0027M7 11V7a5 5 0 0 1 10 0v4\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Cipher",
@@ -587,7 +587,7 @@
         "port":  5032,
         "path":  "./the-apps/loan-calculator",
         "entry":  "app.py",
-        "icon":  "🏦",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002720\u0027 height=\u002714\u0027 x=\u00272\u0027 y=\u00275\u0027 rx=\u00272\u0027/\u003e\u003cline x1=\u00272\u0027 x2=\u002722\u0027 y1=\u002710\u0027 y2=\u002710\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Loan",
@@ -603,7 +603,7 @@
         "port":  5033,
         "path":  "./the-apps/tip-calculator",
         "entry":  "app.py",
-        "icon":  "%",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002719\u0027 x2=\u00275\u0027 y1=\u00275\u0027 y2=\u002719\u0027/\u003e\u003ccircle cx=\u00276.5\u0027 cy=\u00276.5\u0027 r=\u00272.5\u0027/\u003e\u003ccircle cx=\u002717.5\u0027 cy=\u002717.5\u0027 r=\u00272.5\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "Tip",
@@ -621,7 +621,7 @@
         "port":  5045,
         "path":  "./the-apps/compound-interest",
         "entry":  "app.py",
-        "icon":  "%+",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u002722 7 13.5 15.5 8.5 10.5 2 17\u0027/\u003e\u003cpolyline points=\u002716 7 22 7 22 13\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Interest",
@@ -637,7 +637,7 @@
         "port":  5046,
         "path":  "./the-apps/vat-calculator",
         "entry":  "app.py",
-        "icon":  "🧮",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z\u0027/\u003e\u003cpath d=\u0027M16 8H8\u0027/\u003e\u003cpath d=\u0027M16 12H8\u0027/\u003e\u003cpath d=\u0027M12 16H8\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "VAT",
@@ -653,7 +653,7 @@
         "port":  5047,
         "path":  "./the-apps/expense-splitter",
         "entry":  "app.py",
-        "icon":  "🤝",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M16 3h5v5\u0027/\u003e\u003cpath d=\u0027M8 3H3v5\u0027/\u003e\u003cpath d=\u0027M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3\u0027/\u003e\u003cpath d=\u0027m15 9 6-6\u0027/\u003e\u003c/svg\u003e",
         "color":  "#c2410c",
         "tags":  [
                      "Expenses",
@@ -669,7 +669,7 @@
         "port":  5048,
         "path":  "./the-apps/bmi-calculator",
         "entry":  "app.py",
-        "icon":  "⚖️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z\u0027/\u003e\u003cpath d=\u0027m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z\u0027/\u003e\u003cpath d=\u0027M7 21H17\u0027/\u003e\u003cpath d=\u0027M12 3v18\u0027/\u003e\u003cpath d=\u0027M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "BMI",
@@ -685,7 +685,7 @@
         "port":  5049,
         "path":  "./the-apps/tdee-calculator",
         "entry":  "app.py",
-        "icon":  "🔥",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Calories",
@@ -701,7 +701,7 @@
         "port":  5050,
         "path":  "./the-apps/age-calculator",
         "entry":  "app.py",
-        "icon":  "🎂",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002718\u0027 height=\u002718\u0027 x=\u00273\u0027 y=\u00274\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003cline x1=\u002716\u0027 x2=\u002716\u0027 y1=\u00272\u0027 y2=\u00276\u0027/\u003e\u003cline x1=\u00278\u0027 x2=\u00278\u0027 y1=\u00272\u0027 y2=\u00276\u0027/\u003e\u003cline x1=\u00273\u0027 x2=\u002721\u0027 y1=\u002710\u0027 y2=\u002710\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Age",
@@ -717,7 +717,7 @@
         "port":  5051,
         "path":  "./the-apps/water-tracker",
         "entry":  "app.py",
-        "icon":  "H₂O",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z\u0027/\u003e\u003cpath d=\u0027M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0284c7",
         "tags":  [
                      "Water",
@@ -733,7 +733,7 @@
         "port":  5058,
         "path":  "./the-apps/sleep-calculator",
         "entry":  "app.py",
-        "icon":  "🌙",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#4f46e5",
         "tags":  [
                      "Sleep",
@@ -749,7 +749,7 @@
         "port":  5044,
         "path":  "./the-apps/habit-tracker",
         "entry":  "app.py",
-        "icon":  "✅",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M22 11.08V12a10 10 0 1 1-5.93-9.14\u0027/\u003e\u003cpolyline points=\u002722 4 12 14.01 9 11.01\u0027/\u003e\u003c/svg\u003e",
         "color":  "#16a34a",
         "tags":  [
                      "Habits",
@@ -765,7 +765,7 @@
         "port":  5057,
         "path":  "./the-apps/periodic-table",
         "entry":  "app.py",
-        "icon":  "⚗️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u00271\u0027/\u003e\u003cpath d=\u0027M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5z\u0027/\u003e\u003cpath d=\u0027M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Chemistry",
@@ -781,7 +781,7 @@
         "port":  5030,
         "path":  "./the-apps/flashcards",
         "entry":  "app.py",
-        "icon":  "🃏",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002712 2 2 7 12 12 22 7 12 2\u0027/\u003e\u003cpolyline points=\u00272 17 12 22 22 17\u0027/\u003e\u003cpolyline points=\u00272 12 12 17 22 12\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Study",
@@ -797,7 +797,7 @@
         "port":  5018,
         "path":  "./the-apps/unit-converter",
         "entry":  "app.py",
-        "icon":  "⇆",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M21.3 8.7 8.7 21.3c-1 1-2.5 1-3.4 0l-2.6-2.6c-1-1-1-2.5 0-3.4L15.3 2.7c1-1 2.5-1 3.4 0l2.6 2.6c1 1 1 2.5 0 3.4z\u0027/\u003e\u003cpath d=\u0027m7.5 10.5 2 2\u0027/\u003e\u003cpath d=\u0027m10.5 7.5 2 2\u0027/\u003e\u003cpath d=\u0027m13.5 4.5 2 2\u0027/\u003e\u003cpath d=\u0027m4.5 13.5 2 2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#15803d",
         "tags":  [
                      "Units",
@@ -813,7 +813,7 @@
         "port":  5052,
         "path":  "./the-apps/typing-speed-test",
         "entry":  "app.py",
-        "icon":  "⌨️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002720\u0027 height=\u002716\u0027 x=\u00272\u0027 y=\u00274\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003cpath d=\u0027M6 8h.001\u0027/\u003e\u003cpath d=\u0027M10 8h.001\u0027/\u003e\u003cpath d=\u0027M14 8h.001\u0027/\u003e\u003cpath d=\u0027M18 8h.001\u0027/\u003e\u003cpath d=\u0027M8 12h.001\u0027/\u003e\u003cpath d=\u0027M12 12h.001\u0027/\u003e\u003cpath d=\u0027M16 12h.001\u0027/\u003e\u003cpath d=\u0027M7 16h10\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Typing",
@@ -829,7 +829,7 @@
         "port":  5053,
         "path":  "./the-apps/game-2048",
         "entry":  "app.py",
-        "icon":  "🎮",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u00276\u0027 x2=\u002710\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cline x1=\u00278\u0027 x2=\u00278\u0027 y1=\u002710\u0027 y2=\u002714\u0027/\u003e\u003cline x1=\u002715\u0027 x2=\u002715.01\u0027 y1=\u002713\u0027 y2=\u002713\u0027/\u003e\u003cline x1=\u002718\u0027 x2=\u002718.01\u0027 y1=\u002711\u0027 y2=\u002711\u0027/\u003e\u003crect width=\u002720\u0027 height=\u002712\u0027 x=\u00272\u0027 y=\u00276\u0027 rx=\u00272\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "2048",
@@ -845,7 +845,7 @@
         "port":  5054,
         "path":  "./the-apps/memory-card-game",
         "entry":  "app.py",
-        "icon":  "◻◼",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002712 2 2 7 12 12 22 7 12 2\u0027/\u003e\u003cpolyline points=\u00272 17 12 22 22 17\u0027/\u003e\u003cpolyline points=\u00272 12 12 17 22 12\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Memory",
@@ -861,7 +861,7 @@
         "port":  5071,
         "path":  "./the-apps/sudoku",
         "entry":  "app.py",
-        "icon":  "🔢",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Sudoku",
@@ -877,7 +877,7 @@
         "port":  5072,
         "path":  "./the-apps/snake-game",
         "entry":  "app.py",
-        "icon":  "🐍",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002713 2 3 14 12 14 11 22 21 10 12 10 13 2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#16a34a",
         "tags":  [
                      "Snake",
@@ -893,7 +893,7 @@
         "port":  5073,
         "path":  "./the-apps/tic-tac-toe",
         "entry":  "app.py",
-        "icon":  "❌",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u00279\u0027 y2=\u00279\u0027/\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u002715\u0027 y2=\u002715\u0027/\u003e\u003cline x1=\u002710\u0027 x2=\u002714\u0027 y1=\u00273\u0027 y2=\u002721\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "Tic-Tac-Toe",
@@ -909,7 +909,7 @@
         "port":  5059,
         "path":  "./the-apps/pdf-compressor",
         "entry":  "app.py",
-        "icon":  "🗜️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002720\u0027 height=\u00275\u0027 x=\u00272\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003cpath d=\u0027M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8\u0027/\u003e\u003cpath d=\u0027M10 12h4\u0027/\u003e\u003c/svg\u003e",
         "color":  "#4f46e5",
         "tags":  [
                      "PDF",
@@ -924,7 +924,7 @@
         "port":  5060,
         "path":  "./the-apps/resume-builder",
         "entry":  "app.py",
-        "icon":  "CV",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z\u0027/\u003e\u003cpolyline points=\u002714 2 14 8 20 8\u0027/\u003e\u003cline x1=\u002716\u0027 x2=\u00278\u0027 y1=\u002713\u0027 y2=\u002713\u0027/\u003e\u003cline x1=\u002716\u0027 x2=\u00278\u0027 y1=\u002717\u0027 y2=\u002717\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "tags":  [
                      "Resume",
@@ -940,7 +940,7 @@
         "port":  5061,
         "path":  "./the-apps/image-cropper",
         "entry":  "app.py",
-        "icon":  "✂️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M6 2v14a2 2 0 0 0 2 2h14\u0027/\u003e\u003cpath d=\u0027M18 22V8a2 2 0 0 0-2-2H2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Crop",
@@ -956,7 +956,7 @@
         "port":  5062,
         "path":  "./the-apps/meme-generator",
         "entry":  "app.py",
-        "icon":  "😂",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z\u0027/\u003e\u003cpath d=\u0027M14 3v5h5\u0027/\u003e\u003cpath d=\u0027M10 16s.8 1 2 1c1.3 0 2-1 2-1\u0027/\u003e\u003cpath d=\u0027M8 13h.01\u0027/\u003e\u003cpath d=\u0027M16 13h.01\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "Meme",
@@ -972,7 +972,7 @@
         "port":  5063,
         "path":  "./the-apps/image-comparison",
         "entry":  "app.py",
-        "icon":  "⇔",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u00273\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Compare",
@@ -988,7 +988,7 @@
         "port":  5064,
         "path":  "./the-apps/kanban-board",
         "entry":  "app.py",
-        "icon":  "📌",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002718\u0027 height=\u002718\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003cline x1=\u00273\u0027 x2=\u002721\u0027 y1=\u00279\u0027 y2=\u00279\u0027/\u003e\u003cline x1=\u00279\u0027 x2=\u00279\u0027 y1=\u002721\u0027 y2=\u00279\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Kanban",
@@ -1004,7 +1004,7 @@
         "port":  5065,
         "path":  "./the-apps/journal",
         "entry":  "app.py",
-        "icon":  "📔",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Journal",
@@ -1020,7 +1020,7 @@
         "port":  5066,
         "path":  "./the-apps/speech-to-text",
         "entry":  "app.py",
-        "icon":  "🎙️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002711 5 6 9 2 9 2 15 6 15 11 19 11 5\u0027/\u003e\u003cpath d=\u0027M15.54 8.46a5 5 0 0 1 0 7.07\u0027/\u003e\u003cpath d=\u0027M19.07 4.93a10 10 0 0 1 0 14.14\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Speech",
@@ -1036,7 +1036,7 @@
         "port":  5067,
         "path":  "./the-apps/ip-info",
         "entry":  "app.py",
-        "icon":  "🌐",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002710\u0027 r=\u00273\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "IP",
@@ -1052,7 +1052,7 @@
         "port":  5068,
         "path":  "./the-apps/dns-lookup",
         "entry":  "app.py",
-        "icon":  "🔎",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cline x1=\u00272\u0027 x2=\u002722\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cpath d=\u0027M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "DNS",
@@ -1068,7 +1068,7 @@
         "port":  5069,
         "path":  "./the-apps/graph-plotter",
         "entry":  "app.py",
-        "icon":  "📉",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002718\u0027 height=\u002718\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003cpath d=\u0027M9 17c2 0 2.8-1 2.8-2.8V10c0-2 1-3.3 3.2-3\u0027/\u003e\u003cpath d=\u0027M9 11.2h5.7\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "Graph",
@@ -1084,7 +1084,7 @@
         "port":  5074,
         "path":  "./the-apps/csv-json-converter",
         "entry":  "app.py",
-        "icon":  "↔",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027m17 2 4 4-4 4\u0027/\u003e\u003cpath d=\u0027M3 11V9a4 4 0 0 1 4-4h14\u0027/\u003e\u003cpath d=\u0027m7 22-4-4 4-4\u0027/\u003e\u003cpath d=\u0027M21 13v2a4 4 0 0 1-4 4H3\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "CSV",
@@ -1100,7 +1100,7 @@
         "port":  5076,
         "path":  "./the-apps/color-gradient-generator",
         "entry":  "app.py",
-        "icon":  "🌈",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u00279\u0027 cy=\u00279\u0027 r=\u00276\u0027/\u003e\u003ccircle cx=\u002715\u0027 cy=\u002715\u0027 r=\u00276\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Gradient",
@@ -1116,7 +1116,7 @@
         "port":  5077,
         "path":  "./the-apps/pixel-art-maker",
         "entry":  "app.py",
-        "icon":  "◼",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "Pixel Art",
@@ -1132,7 +1132,7 @@
         "port":  5078,
         "path":  "./the-apps/budget-tracker",
         "entry":  "app.py",
-        "icon":  "💼",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M21 12V7H5a2 2 0 0 1 0-4h14v4\u0027/\u003e\u003cpath d=\u0027M3 5v14a2 2 0 0 0 2 2h16v-5\u0027/\u003e\u003cpath d=\u0027M18 12a2 2 0 0 0 0 4h4v-4z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "Budget",
@@ -1148,7 +1148,7 @@
         "port":  5079,
         "path":  "./the-apps/mind-map",
         "entry":  "app.py",
-        "icon":  "🧠",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.66z\u0027/\u003e\u003cpath d=\u0027M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.66z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "Mind Map",
@@ -1164,7 +1164,7 @@
         "port":  5080,
         "path":  "./the-apps/dice-roller",
         "entry":  "app.py",
-        "icon":  "🎲",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002718\u0027 height=\u002718\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003cpath d=\u0027M16 8h.01\u0027/\u003e\u003cpath d=\u0027M8 8h.01\u0027/\u003e\u003cpath d=\u0027M8 16h.01\u0027/\u003e\u003cpath d=\u0027M16 16h.01\u0027/\u003e\u003cpath d=\u0027M12 12h.01\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Dice",
@@ -1180,7 +1180,7 @@
         "port":  5081,
         "path":  "./the-apps/currency-converter",
         "entry":  "app.py",
-        "icon":  "💱",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002720\u0027 height=\u002712\u0027 x=\u00272\u0027 y=\u00276\u0027 rx=\u00272\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u00272\u0027/\u003e\u003cpath d=\u0027M6 12h.01M18 12h.01\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Currency",
@@ -1196,7 +1196,7 @@
         "port":  5082,
         "path":  "./the-apps/salary-calculator",
         "entry":  "app.py",
-        "icon":  "💵",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002712\u0027 x2=\u002712\u0027 y1=\u00272\u0027 y2=\u002722\u0027/\u003e\u003cpath d=\u0027M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "Salary",
@@ -1212,7 +1212,7 @@
         "port":  5083,
         "path":  "./the-apps/wordle",
         "entry":  "app.py",
-        "icon":  "🟩",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u00274 7 4 4 20 4 20 7\u0027/\u003e\u003cline x1=\u00279\u0027 x2=\u002715\u0027 y1=\u002720\u0027 y2=\u002720\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712\u0027 y1=\u00274\u0027 y2=\u002720\u0027/\u003e\u003c/svg\u003e",
         "color":  "#4f46e5",
         "tags":  [
                      "Wordle",
@@ -1228,7 +1228,7 @@
         "port":  5084,
         "path":  "./the-apps/minesweeper",
         "entry":  "app.py",
-        "icon":  "💣",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002711\u0027 cy=\u002713\u0027 r=\u00279\u0027/\u003e\u003cpath d=\u0027M14.35 4.65 16.3 2.7a2.41 2.41 0 0 1 3.41 3.41l-1.65 1.66\u0027/\u003e\u003cpath d=\u0027m20 7-1.38-.38\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Minesweeper",
@@ -1244,7 +1244,7 @@
         "port":  5085,
         "path":  "./the-apps/hangman",
         "entry":  "app.py",
-        "icon":  "🪢",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Hangman",
@@ -1260,7 +1260,7 @@
         "port":  5086,
         "path":  "./the-apps/pdf-splitter",
         "entry":  "app.py",
-        "icon":  "|…|",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M16 3h5v5\u0027/\u003e\u003cpath d=\u0027M8 3H3v5\u0027/\u003e\u003cpath d=\u0027M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3\u0027/\u003e\u003cpath d=\u0027m15 9 6-6\u0027/\u003e\u003c/svg\u003e",
         "color":  "#4f46e5",
         "tags":  [
                      "PDF",
@@ -1275,7 +1275,7 @@
         "port":  5087,
         "path":  "./the-apps/markdown-table-generator",
         "entry":  "app.py",
-        "icon":  "⊟",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M12 3v18\u0027/\u003e\u003crect width=\u002718\u0027 height=\u002718\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00272\u0027/\u003e\u003cpath d=\u0027M3 9h18\u0027/\u003e\u003cpath d=\u0027M3 15h18\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Markdown",
@@ -1291,7 +1291,7 @@
         "port":  5088,
         "path":  "./the-apps/jwt-generator",
         "entry":  "app.py",
-        "icon":  "🔏",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u00277.5\u0027 cy=\u002715.5\u0027 r=\u00275.5\u0027/\u003e\u003cpath d=\u0027m21 2-9.6 9.6\u0027/\u003e\u003cpath d=\u0027m15.5 7.5 3 3L22 7l-3-3\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "JWT",
@@ -1307,7 +1307,7 @@
         "port":  5089,
         "path":  "./the-apps/code-beautifier",
         "entry":  "app.py",
-        "icon":  "✨",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1\u0027/\u003e\u003cpath d=\u0027M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "Format",
@@ -1323,7 +1323,7 @@
         "port":  5090,
         "path":  "./the-apps/sticky-notes",
         "entry":  "app.py",
-        "icon":  "🗒️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z\u0027/\u003e\u003cpath d=\u0027M14 3v5h5\u0027/\u003e\u003cpath d=\u0027M10 16s.8 1 2 1c1.3 0 2-1 2-1\u0027/\u003e\u003cpath d=\u0027M8 13h.01\u0027/\u003e\u003cpath d=\u0027M16 13h.01\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "Notes",
@@ -1339,7 +1339,7 @@
         "port":  5091,
         "path":  "./the-apps/reading-list",
         "entry":  "app.py",
-        "icon":  "📚",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\u0027/\u003e\u003cpath d=\u0027M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "tags":  [
                      "Reading",
@@ -1355,7 +1355,7 @@
         "port":  5092,
         "path":  "./the-apps/whois-lookup",
         "entry":  "app.py",
-        "icon":  "WH",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002711\u0027 cy=\u002711\u0027 r=\u00278\u0027/\u003e\u003cline x1=\u002721\u0027 x2=\u002716.65\u0027 y1=\u002721\u0027 y2=\u002716.65\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "Whois",
@@ -1371,7 +1371,7 @@
         "port":  5093,
         "path":  "./the-apps/ssl-checker",
         "entry":  "app.py",
-        "icon":  "🛡",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\u0027/\u003e\u003cpath d=\u0027m9 12 2 2 4-4\u0027/\u003e\u003c/svg\u003e",
         "color":  "#16a34a",
         "tags":  [
                      "SSL",
@@ -1387,7 +1387,7 @@
         "port":  5094,
         "path":  "./the-apps/calorie-tracker",
         "entry":  "app.py",
-        "icon":  "🥗",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Calories",
@@ -1403,7 +1403,7 @@
         "port":  5095,
         "path":  "./the-apps/tetris",
         "entry":  "app.py",
-        "icon":  "🟦",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002712 2 2 7 12 12 22 7 12 2\u0027/\u003e\u003cpolyline points=\u00272 17 12 22 22 17\u0027/\u003e\u003cpolyline points=\u00272 12 12 17 22 12\u0027/\u003e\u003c/svg\u003e",
         "color":  "#4f46e5",
         "tags":  [
                      "Tetris",
@@ -1419,7 +1419,7 @@
         "port":  5096,
         "path":  "./the-apps/connect-four",
         "entry":  "app.py",
-        "icon":  "🔴",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Connect Four",
@@ -1435,7 +1435,7 @@
         "port":  5097,
         "path":  "./the-apps/simon-says",
         "entry":  "app.py",
-        "icon":  "🟢",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cpolygon points=\u002716.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76\u0027/\u003e\u003c/svg\u003e",
         "color":  "#16a34a",
         "tags":  [
                      "Simon",
@@ -1451,7 +1451,7 @@
         "port":  5098,
         "path":  "./the-apps/world-clock",
         "entry":  "app.py",
-        "icon":  "🌍",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cline x1=\u00272\u0027 x2=\u002722\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cpath d=\u0027M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Clock",
@@ -1467,7 +1467,7 @@
         "port":  5099,
         "path":  "./the-apps/ascii-art-generator",
         "entry":  "app.py",
-        "icon":  "▓",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u00274 7 4 4 20 4 20 7\u0027/\u003e\u003cline x1=\u00279\u0027 x2=\u002715\u0027 y1=\u002720\u0027 y2=\u002720\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712\u0027 y1=\u00274\u0027 y2=\u002720\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "ASCII",
@@ -1483,7 +1483,7 @@
         "port":  5100,
         "path":  "./the-apps/number-guessing",
         "entry":  "app.py",
-        "icon":  "🎯",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u00279\u0027 y2=\u00279\u0027/\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u002715\u0027 y2=\u002715\u0027/\u003e\u003cline x1=\u002710\u0027 x2=\u002714\u0027 y1=\u00273\u0027 y2=\u002721\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Guessing",
@@ -1499,7 +1499,7 @@
         "port":  5101,
         "path":  "./the-apps/chess",
         "entry":  "app.py",
-        "icon":  "♟",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1e3a5f",
         "tags":  [
                      "Chess",
@@ -1515,7 +1515,7 @@
         "port":  5102,
         "path":  "./the-apps/battleship",
         "entry":  "app.py",
-        "icon":  "🚢",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cline x1=\u002722\u0027 x2=\u002718\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cline x1=\u00276\u0027 x2=\u00272\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712\u0027 y1=\u00276\u0027 y2=\u00272\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712\u0027 y1=\u002722\u0027 y2=\u002718\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0c4a6e",
         "tags":  [
                      "Battleship",
@@ -1531,7 +1531,7 @@
         "port":  5103,
         "path":  "./the-apps/flappy-bird",
         "entry":  "app.py",
-        "icon":  "🐦",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002713 2 3 14 12 14 11 22 21 10 12 10 13 2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#065f46",
         "tags":  [
                      "Flappy Bird",
@@ -1547,7 +1547,7 @@
         "port":  5104,
         "path":  "./the-apps/paint",
         "entry":  "app.py",
-        "icon":  "🖌️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "Paint",
@@ -1563,7 +1563,7 @@
         "port":  5105,
         "path":  "./the-apps/http-status-codes",
         "entry":  "app.py",
-        "icon":  "200",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M5 12.55a11 11 0 0 1 14.08 0\u0027/\u003e\u003cpath d=\u0027M1.42 9a16 16 0 0 1 21.16 0\u0027/\u003e\u003cpath d=\u0027M8.53 16.11a6 6 0 0 1 6.95 0\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712.01\u0027 y1=\u002720\u0027 y2=\u002720\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1e3a5f",
         "tags":  [
                      "HTTP",
@@ -1580,7 +1580,7 @@
         "port":  5107,
         "path":  "./the-apps/diff-checker",
         "entry":  "app.py",
-        "icon":  "⇄",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M12 3v14\u0027/\u003e\u003cpath d=\u0027M5 10l7-7 7 7\u0027/\u003e\u003cpath d=\u0027M19 17H5\u0027/\u003e\u003cpath d=\u0027M5 21h14\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1e3a5f",
         "tags":  [
                      "Diff",
@@ -1597,7 +1597,7 @@
         "port":  5108,
         "path":  "./the-apps/json-to-yaml",
         "entry":  "app.py",
-        "icon":  "⇌",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z\u0027/\u003e\u003cpolyline points=\u002714 2 14 8 20 8\u0027/\u003e\u003cpath d=\u0027M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1\u0027/\u003e\u003cpath d=\u0027M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1\u0027/\u003e\u003c/svg\u003e",
         "color":  "#14532d",
         "tags":  [
                      "JSON",
@@ -1614,7 +1614,7 @@
         "port":  5109,
         "path":  "./the-apps/html-previewer",
         "entry":  "app.py",
-        "icon":  "🖥️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u00273\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1e3a5f",
         "tags":  [
                      "HTML",
@@ -1632,7 +1632,7 @@
         "port":  5110,
         "path":  "./the-apps/cidr-calculator",
         "entry":  "app.py",
-        "icon":  "/24",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M5 12.55a11 11 0 0 1 14.08 0\u0027/\u003e\u003cpath d=\u0027M1.42 9a16 16 0 0 1 21.16 0\u0027/\u003e\u003cpath d=\u0027M8.53 16.11a6 6 0 0 1 6.95 0\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712.01\u0027 y1=\u002720\u0027 y2=\u002720\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "CIDR",
@@ -1650,7 +1650,7 @@
         "port":  5111,
         "path":  "./the-apps/gitignore-generator",
         "entry":  "app.py",
-        "icon":  "⛔",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u00276\u0027 x2=\u00276\u0027 y1=\u00273\u0027 y2=\u002715\u0027/\u003e\u003ccircle cx=\u002718\u0027 cy=\u00276\u0027 r=\u00273\u0027/\u003e\u003ccircle cx=\u00276\u0027 cy=\u002718\u0027 r=\u00273\u0027/\u003e\u003cpath d=\u0027M18 9a9 9 0 0 1-9 9\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Git",
@@ -1666,7 +1666,7 @@
         "port":  5112,
         "path":  "./the-apps/ascii-table",
         "entry":  "app.py",
-        "icon":  "A/Z",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M12 3v18\u0027/\u003e\u003crect width=\u002718\u0027 height=\u002718\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00272\u0027/\u003e\u003cpath d=\u0027M3 9h18\u0027/\u003e\u003cpath d=\u0027M3 15h18\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "ASCII",
@@ -1682,7 +1682,7 @@
         "port":  5113,
         "path":  "./the-apps/todo-list",
         "entry":  "app.py",
-        "icon":  "☐",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u00279 11 12 14 22 4\u0027/\u003e\u003cpath d=\u0027M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Tasks",
@@ -1698,7 +1698,7 @@
         "port":  5114,
         "path":  "./the-apps/meeting-timer",
         "entry":  "app.py",
-        "icon":  "🔔",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002710\u0027 x2=\u002714\u0027 y1=\u00272\u0027 y2=\u00272\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002715\u0027 y1=\u002714\u0027 y2=\u002711\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002714\u0027 r=\u00278\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "Meeting",
@@ -1714,7 +1714,7 @@
         "port":  5115,
         "path":  "./the-apps/image-filters",
         "entry":  "app.py",
-        "icon":  "◈",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002718\u0027 height=\u002718\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00272\u0027 ry=\u00272\u0027/\u003e\u003ccircle cx=\u00279\u0027 cy=\u00279\u0027 r=\u00272\u0027/\u003e\u003cpath d=\u0027m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Image",
@@ -1731,7 +1731,7 @@
         "port":  5116,
         "path":  "./the-apps/svg-to-png",
         "entry":  "app.py",
-        "icon":  "🔄",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027m17 2 4 4-4 4\u0027/\u003e\u003cpath d=\u0027M3 11V9a4 4 0 0 1 4-4h14\u0027/\u003e\u003cpath d=\u0027m7 22-4-4 4-4\u0027/\u003e\u003cpath d=\u0027M21 13v2a4 4 0 0 1-4 4H3\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "SVG",
@@ -1748,7 +1748,7 @@
         "port":  5117,
         "path":  "./the-apps/roi-calculator",
         "entry":  "app.py",
-        "icon":  "ROI",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u002722 7 13.5 15.5 8.5 10.5 2 17\u0027/\u003e\u003cpolyline points=\u002716 7 22 7 22 13\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "ROI",
@@ -1765,7 +1765,7 @@
         "port":  5118,
         "path":  "./the-apps/inflation-calculator",
         "entry":  "app.py",
-        "icon":  "💸",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002719\u0027 x2=\u00275\u0027 y1=\u00275\u0027 y2=\u002719\u0027/\u003e\u003ccircle cx=\u00276.5\u0027 cy=\u00276.5\u0027 r=\u00272.5\u0027/\u003e\u003ccircle cx=\u002717.5\u0027 cy=\u002717.5\u0027 r=\u00272.5\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Inflation",
@@ -1781,7 +1781,7 @@
         "port":  5119,
         "path":  "./the-apps/statistics-calculator",
         "entry":  "app.py",
-        "icon":  "∑",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M18 7V5H6l6 7-6 7h12v-2\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Statistics",
@@ -1798,7 +1798,7 @@
         "port":  5120,
         "path":  "./the-apps/prime-factorizer",
         "entry":  "app.py",
-        "icon":  "p!",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u00279\u0027 y2=\u00279\u0027/\u003e\u003cline x1=\u00274\u0027 x2=\u002720\u0027 y1=\u002715\u0027 y2=\u002715\u0027/\u003e\u003cline x1=\u002710\u0027 x2=\u002714\u0027 y1=\u00273\u0027 y2=\u002721\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Prime",
@@ -1815,7 +1815,7 @@
         "port":  5121,
         "path":  "./the-apps/chart-visualizer",
         "entry":  "app.py",
-        "icon":  "📈",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cline x1=\u002718\u0027 x2=\u002718\u0027 y1=\u002720\u0027 y2=\u002710\u0027/\u003e\u003cline x1=\u002712\u0027 x2=\u002712\u0027 y1=\u002720\u0027 y2=\u00274\u0027/\u003e\u003cline x1=\u00276\u0027 x2=\u00276\u0027 y1=\u002720\u0027 y2=\u002714\u0027/\u003e\u003cline x1=\u00272\u0027 x2=\u002722\u0027 y1=\u002720\u0027 y2=\u002720\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Chart",
@@ -1832,7 +1832,7 @@
         "port":  5122,
         "path":  "./the-apps/pivot-table",
         "entry":  "app.py",
-        "icon":  "⊞",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003c/svg\u003e",
         "color":  "#059669",
         "tags":  [
                      "CSV",
@@ -1849,7 +1849,7 @@
         "port":  5123,
         "path":  "./the-apps/survey-builder",
         "entry":  "app.py",
-        "icon":  "?",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027m3 17 2 2 4-4\u0027/\u003e\u003cpath d=\u0027m3 7 2 2 4-4\u0027/\u003e\u003cpath d=\u0027M13 6h8\u0027/\u003e\u003cpath d=\u0027M13 12h8\u0027/\u003e\u003cpath d=\u0027M13 18h8\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Survey",
@@ -1867,7 +1867,7 @@
         "port":  5124,
         "path":  "./the-apps/gantt-chart",
         "entry":  "app.py",
-        "icon":  "📅",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M3 12h14\u0027/\u003e\u003cpath d=\u0027M3 18h7\u0027/\u003e\u003cpath d=\u0027M3 6h20\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Gantt",
@@ -1884,7 +1884,7 @@
         "port":  5125,
         "path":  "./the-apps/decision-matrix",
         "entry":  "app.py",
-        "icon":  "⊙",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00275\u0027 height=\u00275\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00275\u0027 height=\u00275\u0027 x=\u002716\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00275\u0027 height=\u00275\u0027 x=\u002716\u0027 y=\u002716\u0027 rx=\u00271\u0027/\u003e\u003cpath d=\u0027M10 5.5H14\u0027/\u003e\u003cpath d=\u0027M18.5 10v6\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "tags":  [
                      "Decision",
@@ -1901,7 +1901,7 @@
         "port":  5126,
         "path":  "./the-apps/swot-analysis",
         "entry":  "app.py",
-        "icon":  "SW",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u00273\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u002714\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003crect width=\u00277\u0027 height=\u00277\u0027 x=\u00273\u0027 y=\u002714\u0027 rx=\u00271\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "SWOT",
@@ -1918,7 +1918,7 @@
         "port":  5127,
         "path":  "./the-apps/okr-tracker",
         "entry":  "app.py",
-        "icon":  "KR",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u00276\u0027/\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u00272\u0027/\u003e\u003c/svg\u003e",
         "color":  "#16a34a",
         "tags":  [
                      "OKR",
@@ -1935,7 +1935,7 @@
         "port":  5128,
         "path":  "./the-apps/business-letter",
         "entry":  "app.py",
-        "icon":  "✉️",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002720\u0027 height=\u002716\u0027 x=\u00272\u0027 y=\u00274\u0027 rx=\u00272\u0027/\u003e\u003cpath d=\u0027m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Letter",
@@ -1952,7 +1952,7 @@
         "port":  5129,
         "path":  "./the-apps/certificate-generator",
         "entry":  "app.py",
-        "icon":  "🏆",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u00278\u0027 r=\u00276\u0027/\u003e\u003cpath d=\u0027M15.477 12.89 17 22l-5-3-5 3 1.523-9.11\u0027/\u003e\u003c/svg\u003e",
         "color":  "#d97706",
         "tags":  [
                      "Certificate",
@@ -1969,7 +1969,7 @@
         "port":  5130,
         "path":  "./the-apps/barcode-generator",
         "entry":  "app.py",
-        "icon":  "|||",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M3 5v1M3 10v4M3 19v1M8 5v6M8 15v4M13 5v1M13 10v4M13 19v1M18 5v6M18 15v4\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "tags":  [
                      "Barcode",
@@ -1986,7 +1986,7 @@
         "port":  5131,
         "path":  "./the-apps/meeting-agenda",
         "entry":  "app.py",
-        "icon":  "📋",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00278\u0027 height=\u00274\u0027 x=\u00278\u0027 y=\u00272\u0027 rx=\u00271\u0027 ry=\u00271\u0027/\u003e\u003cpath d=\u0027M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\u0027/\u003e\u003cpath d=\u0027M12 11h4\u0027/\u003e\u003cpath d=\u0027M12 16h4\u0027/\u003e\u003cpath d=\u0027M8 11h.01\u0027/\u003e\u003cpath d=\u0027M8 16h.01\u0027/\u003e\u003c/svg\u003e",
         "color":  "#be185d",
         "tags":  [
                      "Meeting",
@@ -2003,7 +2003,7 @@
         "port":  5132,
         "path":  "./the-apps/break-even-calculator",
         "entry":  "app.py",
-        "icon":  "BE",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u002722 7 13.5 15.5 8.5 10.5 2 17\u0027/\u003e\u003cpolyline points=\u002716 7 22 7 22 13\u0027/\u003e\u003c/svg\u003e",
         "color":  "#dc2626",
         "tags":  [
                      "Break-Even",
@@ -2020,7 +2020,7 @@
         "port":  5133,
         "path":  "./the-apps/depreciation-calculator",
         "entry":  "app.py",
-        "icon":  "↓$",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolyline points=\u002722 17 13.5 8.5 8.5 13.5 2 7\u0027/\u003e\u003cpolyline points=\u002716 17 22 17 22 11\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "tags":  [
                      "Depreciation",
@@ -2037,7 +2037,7 @@
         "port":  5135,
         "path":  "./the-apps/meeting-time-planner",
         "entry":  "app.py",
-        "icon":  "TZ",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003ccircle cx=\u002712\u0027 cy=\u002712\u0027 r=\u002710\u0027/\u003e\u003cline x1=\u00272\u0027 x2=\u002722\u0027 y1=\u002712\u0027 y2=\u002712\u0027/\u003e\u003cpath d=\u0027M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0891b2",
         "tags":  [
                      "Meeting",
@@ -2054,7 +2054,7 @@
         "port":  5136,
         "path":  "./the-apps/org-chart",
         "entry":  "app.py",
-        "icon":  "🏢",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u00278\u0027 height=\u00278\u0027 x=\u00272\u0027 y=\u00279\u0027 rx=\u00272\u0027/\u003e\u003cpath d=\u0027M14 6c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z\u0027/\u003e\u003cpath d=\u0027M7 17v4\u0027/\u003e\u003cpath d=\u0027M7 13v4\u0027/\u003e\u003cpath d=\u0027M18 13v8\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "tags":  [
                      "Org Chart",
@@ -2069,7 +2069,7 @@
         "name":  "Text to Speech",
         "description":  "Convert text to speech in your browser. Choose from all installed voices, adjust speed, pitch, and volume.",
         "category":  "Productivity \u0026 Planning",
-        "icon":  "\u0026#128266;",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpolygon points=\u002711 5 6 9 2 9 2 15 6 15 11 19 11 5\u0027/\u003e\u003cpath d=\u0027M15.54 8.46a5 5 0 0 1 0 7.07\u0027/\u003e\u003cpath d=\u0027M19.07 4.93a10 10 0 0 1 0 14.14\u0027/\u003e\u003c/svg\u003e",
         "color":  "#7c3aed",
         "url":  "/text-to-speech/",
         "port":  5137,
@@ -2089,7 +2089,7 @@
         "name":  "Email Signature Generator",
         "description":  "Build a professional HTML email signature with 4 style themes. Copy HTML to paste into Gmail, Outlook, or any email client.",
         "category":  "Documents \u0026 Writing",
-        "icon":  "\u0026#128140;",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003crect width=\u002720\u0027 height=\u002716\u0027 x=\u00272\u0027 y=\u00274\u0027 rx=\u00272\u0027/\u003e\u003cpath d=\u0027m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\u0027/\u003e\u003c/svg\u003e",
         "color":  "#0f766e",
         "url":  "/email-signature/",
         "port":  5138,
@@ -2109,7 +2109,7 @@
         "name":  "Readability Analyzer",
         "description":  "Analyze text for Flesch-Kincaid grade level, reading ease, reading time, sentence complexity, and hard words.",
         "category":  "Documents \u0026 Writing",
-        "icon":  "\u0026#128218;",
+        "icon":  "\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 width=\u002732\u0027 height=\u002732\u0027 viewBox=\u00270 0 24 24\u0027 fill=\u0027none\u0027 stroke=\u0027currentColor\u0027 stroke-width=\u00271.75\u0027 stroke-linecap=\u0027round\u0027 stroke-linejoin=\u0027round\u0027\u003e\u003cpath d=\u0027M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\u0027/\u003e\u003cpath d=\u0027M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\u0027/\u003e\u003c/svg\u003e",
         "color":  "#1d4ed8",
         "url":  "/readability-analyzer/",
         "port":  5139,

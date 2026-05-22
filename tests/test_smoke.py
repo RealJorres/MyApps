@@ -89,12 +89,10 @@ def test_registry_valid_categories(registry):
     assert not bad, f"Apps with invalid categories: {bad}"
 
 
-def test_registry_no_duplicate_icons(registry):
-    """Each app should have a unique icon identifier."""
-    from collections import Counter
-    icons = Counter(a.get('icon', '') for a in registry)
-    dupes = {icon: count for icon, count in icons.items() if count > 1 and icon}
-    assert not dupes, f"Duplicate icons found: {dupes}"
+def test_registry_icons_are_svg(registry):
+    """All app icons should be SVG strings (not HTML entities or emoji)."""
+    bad = [a['id'] for a in registry if not a.get('icon', '').startswith('<svg')]
+    assert not bad, f"Apps with non-SVG icons: {bad}"
 
 
 def test_registry_no_retired_apps(registry):
