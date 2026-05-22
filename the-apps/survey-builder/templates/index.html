@@ -115,19 +115,19 @@ input:checked + .stoggle::before{transform:translateX(18px)}
     <div id="stab-build">
       <div class="card">
         <label for="surveyTitle">Survey Title</label>
-        <input type="text" id="surveyTitle" value="Employee Satisfaction Survey" oninput="saveSurveyMeta()">
+        <input type="text" id="surveyTitle" value="Employee Satisfaction Survey" oninput="saveSurveyMeta()">
         <div style="margin-top:.75rem">
           <label for="surveyDesc">Description</label>
-          <textarea id="surveyDesc" rows="2" placeholder="Optional description…" oninput="saveSurveyMeta()"></textarea>
+          <textarea id="surveyDesc" rows="2" placeholder="Optional description…" oninput="saveSurveyMeta()"></textarea>
         </div>
       </div>
       <div id="questionList"></div>
       <div class="card">
         <p style="font-weight:700;margin-bottom:.75rem">Add Question</p>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end">
-          <div style="flex:2;min-width:200px"><label for="newQText">Question Text</label><input type="text" id="newQText" placeholder="Enter question…"></div>
+          <div style="flex:2;min-width:200px"><label for="newQText">Question Text</label><input type="text" id="newQText" placeholder="Enter question…"></div>
           <div style="flex:1;min-width:130px"><label for="newQType">Type</label>
-            <select id="newQType" onchange="document.getElementById('choiceEditor').style.display=this.value==='choice'?'':'none'">
+            <select id="newQType" onchange="document.getElementById('choiceEditor').style.display=this.value==='choice'?'':'none'">
               <option value="choice">Multiple Choice</option>
               <option value="text">Free Text</option>
               <option value="rating">Rating (1–5)</option>
@@ -138,7 +138,7 @@ input:checked + .stoggle::before{transform:translateX(18px)}
         </div>
         <div id="choiceEditor" style="margin-top:.75rem">
           <label for="choicesText">Choices (one per line)</label>
-          <textarea id="choicesText" rows="3" placeholder="Option A&#10;Option B&#10;Option C"></textarea>
+          <textarea id="choicesText" rows="3" placeholder="Option A&#10;Option B&#10;Option C"></textarea>
         </div>
       </div>
     </div>
@@ -179,7 +179,7 @@ input:checked + .stoggle::before{transform:translateX(18px)}
     <div id="qtab-create">
       <div class="card">
         <p style="font-size:.8rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem">New Quiz</p>
-        <div style="margin-bottom:.75rem"><label for="quizTitle">Quiz Title</label><input type="text" id="quizTitle" placeholder="My Quiz"></div>
+        <div style="margin-bottom:.75rem"><label for="quizTitle">Quiz Title</label><input type="text" id="quizTitle" placeholder="My Quiz"></div>
         <div id="questionsContainer"></div>
         <div style="margin-top:.5rem;display:flex;gap:.5rem">
           <button class="btn btn-outline" onclick="addQuizQuestion()">+ Add Question</button>
@@ -285,7 +285,7 @@ function renderSurveyTake(){
 }
 
 function renderSurveyInput(q){
-  if (q.type==='text') return `<textarea rows="3" id="sas_${q.id}" style="width:100%" placeholder="Your answer…"></textarea>`;
+  if (q.type==='text') return `<textarea rows="3" id="sas_${q.id}" style="width:100%" placeholder="Your answer…"></textarea>`;
   if (q.type==='choice') return q.choices.map(c=>`
     <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;color:var(--text);text-transform:none;letter-spacing:0;font-weight:500">
       <input type="radio" name="sas_${q.id}" value="${esc(c)}" style="width:auto"> ${esc(c)}

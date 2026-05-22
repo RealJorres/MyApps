@@ -161,7 +161,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
       <div class="resize-inputs show" id="resizePercent">
         <label for="percentSlider">Scale (%)</label>
         <div style="display:flex;align-items:center;gap:0.75rem;">
-          <input type="range" id="percentSlider" min="1" max="300" value="100" oninput="document.getElementById('percentVal').textContent=this.value+'%'" style="flex:1;accent-color:var(--primary);">
+          <input type="range" id="percentSlider" min="1" max="300" value="100" oninput="document.getElementById('percentVal').textContent=this.value+'%'" style="flex:1;accent-color:var(--primary);">
           <span id="percentVal" style="font-weight:700;color:var(--primary);min-width:3rem;">100%</span>
         </div>
         <p style="font-size:0.8rem;color:var(--muted);margin-top:0.4rem;">Aspect ratio is preserved automatically.</p>
@@ -170,11 +170,11 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
         <div class="row">
           <div class="field">
             <label for="rWidth">Width (px)</label>
-            <input type="number" id="rWidth" placeholder="e.g. 800" min="1">
+            <input type="number" id="rWidth" placeholder="e.g. 800" min="1">
           </div>
           <div class="field">
             <label for="rHeight">Height (px)</label>
-            <input type="number" id="rHeight" placeholder="e.g. 600" min="1">
+            <input type="number" id="rHeight" placeholder="e.g. 600" min="1">
           </div>
         </div>
         <p style="font-size:0.8rem;color:var(--muted);margin-top:0.4rem;">Leave one blank to auto-scale and preserve aspect ratio.</p>
@@ -185,7 +185,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
       <div class="row">
         <div class="field">
           <label for="fmt">Output Format</label>
-          <select id="fmt" onchange="toggleQuality()">
+          <select id="fmt" onchange="toggleQuality()">
             <option value="PNG">PNG</option>
             <option value="JPEG">JPEG</option>
             <option value="WEBP">WEBP</option>

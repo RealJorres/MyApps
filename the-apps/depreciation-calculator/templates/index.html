@@ -47,22 +47,22 @@ canvas{width:100%;height:auto;display:block}
       <div>
         <label for="cost">Asset Cost</label>
         <div class="input-group"><span class="prefix">$</span>
-          <input type="number" id="cost" value="100000" min="0" oninput="calc()">
+          <input type="number" id="cost" value="100000" min="0" oninput="calc()">
         </div>
       </div>
       <div>
         <label for="salvage">Salvage Value</label>
         <div class="input-group"><span class="prefix">$</span>
-          <input type="number" id="salvage" value="10000" min="0" oninput="calc()">
+          <input type="number" id="salvage" value="10000" min="0" oninput="calc()">
         </div>
       </div>
       <div>
         <label for="life">Useful Life (years)</label>
-        <input type="number" id="life" value="5" min="1" max="40" oninput="calc()">
+        <input type="number" id="life" value="5" min="1" max="40" oninput="calc()">
       </div>
       <div>
         <label for="method">Method</label>
-        <select id="method" onchange="calc()">
+        <select id="method" onchange="calc()">
           <option value="sl">Straight-Line (SL)</option>
           <option value="db">Declining Balance (DB)</option>
           <option value="ddb">Double Declining Balance (DDB)</option>
@@ -71,7 +71,7 @@ canvas{width:100%;height:auto;display:block}
       </div>
       <div id="dbRateDiv">
         <label for="dbRate">DB Rate (% / year)</label>
-        <input type="number" id="dbRate" value="150" min="100" max="200" oninput="calc()">
+        <input type="number" id="dbRate" value="150" min="100" max="200" oninput="calc()">
       </div>
     </div>
   </div>

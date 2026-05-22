@@ -84,7 +84,7 @@ input:focus, select:focus { border-color: var(--primary); }
     <div class="controls-row">
       <div class="field">
         <label for="countInput">Count (1–50)</label>
-        <input type="number" id="countInput" value="5" min="1" max="50">
+        <input type="number" id="countInput" value="5" min="1" max="50">
       </div>
       <div id="extraControls"></div>
       <button class="btn btn-primary" id="generateBtn">Generate</button>
@@ -178,14 +178,14 @@ let currentCat = 'person';
 function extraControlsHtml(cat) {
   if (cat === 'numbers') {
     return `<div class="numbers-inputs">
-      <div class="field"><label for="numMin">Min</label><input type="number" id="numMin" value="0"></div>
-      <div class="field"><label for="numMax">Max</label><input type="number" id="numMax" value="1000"></div>
+      <div class="field"><label for="numMin">Min</label><input type="number" id="numMin" value="0"></div>
+      <div class="field"><label for="numMax">Max</label><input type="number" id="numMax" value="1000"></div>
     </div>`;
   }
   if (cat === 'dates') {
     return `<div class="numbers-inputs">
-      <div class="field"><label for="dateStartY">Range Start</label><input type="number" id="dateStartY" value="2000" min="1900" max="2025"></div>
-      <div class="field"><label for="dateEndY">Range End</label><input type="number" id="dateEndY" value="2024" min="1900" max="2030"></div>
+      <div class="field"><label for="dateStartY">Range Start</label><input type="number" id="dateStartY" value="2000" min="1900" max="2025"></div>
+      <div class="field"><label for="dateEndY">Range End</label><input type="number" id="dateEndY" value="2024" min="1900" max="2030"></div>
     </div>`;
   }
   return '';

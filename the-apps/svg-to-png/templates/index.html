@@ -53,22 +53,22 @@ input:focus{border-color:var(--primary)}
 
   <div class="card">
     <label for="svgInput">SVG Code</label>
-    <textarea id="svgInput" placeholder="Paste your SVG code here, e.g.&#10;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 100 100&quot;&gt;&#10;  &lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;40&quot; fill=&quot;#3B82F6&quot;/&gt;&#10;&lt;/svg&gt;"></textarea>
+    <textarea id="svgInput" placeholder="Paste your SVG code here, e.g.&#10;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 100 100&quot;&gt;&#10;  &lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;40&quot; fill=&quot;#3B82F6&quot;/&gt;&#10;&lt;/svg&gt;"></textarea>
     <div class="size-row">
       <div class="field">
         <label for="outWidth">Width (px)</label>
-        <input type="number" id="outWidth" value="512" min="1" max="4096">
+        <input type="number" id="outWidth" value="512" min="1" max="4096">
       </div>
       <div class="field">
         <label for="outHeight">Height (px)</label>
-        <input type="number" id="outHeight" value="512" min="1" max="4096">
+        <input type="number" id="outHeight" value="512" min="1" max="4096">
       </div>
       <div class="cb-row">
         <input type="checkbox" id="transparent" checked>
         <label for="err" style="text-transform:none;letter-spacing:0;font-size:.85rem;font-weight:500;color:var(--text);margin-bottom:0">Transparent background</label>
       </div>
     </div>
-    <div class="error" id="err"></div>
+    <div class="error" id="err"></div>
     <div class="actions">
       <button class="btn btn-primary" onclick="convert()">Convert to PNG</button>
       <label class="upload-btn" for="svgFile">Upload SVG File</label>
@@ -82,11 +82,11 @@ input:focus{border-color:var(--primary)}
       <div class="preview-wrap">
         <div class="preview-box">
           <label for="svgPreview">SVG Preview</label>
-          <div id="svgPreview" style="border:1px solid var(--border);border-radius:.5rem;padding:.5rem;background:repeating-conic-gradient(#e2e8f0 0% 25%,#fff 0% 50%) 0 0/20px 20px;min-height:80px;display:flex;align-items:center;justify-content:center"></div>
+          <div id="svgPreview" style="border:1px solid var(--border);border-radius:.5rem;padding:.5rem;background:repeating-conic-gradient(#e2e8f0 0% 25%,#fff 0% 50%) 0 0/20px 20px;min-height:80px;display:flex;align-items:center;justify-content:center"></div>
         </div>
         <div class="preview-box">
           <label for="canvas">PNG Output</label>
-          <canvas id="canvas"></canvas>
+          <canvas id="canvas"></canvas>
         </div>
       </div>
       <div class="actions">

@@ -52,12 +52,12 @@ select:focus,input:focus{border-color:var(--primary)}
     <div class="add-row">
       <div style="flex:1;min-width:220px">
         <label for="tzSelect">Add City / Timezone</label>
-        <select id="tzSelect" style="width:100%"></select>
+        <select id="tzSelect" style="width:100%"></select>
       </div>
       <div>
         <label for="workStart">Work Hours</label>
         <div style="display:flex;gap:.3rem;align-items:center">
-          <input type="number" id="workStart" value="9" min="0" max="23" style="width:55px">
+          <input type="number" id="workStart" value="9" min="0" max="23" style="width:55px">
           <span style="color:var(--muted)">–</span>
           <input type="number" id="workEnd" value="17" min="1" max="24" style="width:55px">
         </div>
@@ -72,7 +72,7 @@ select:focus,input:focus{border-color:var(--primary)}
       <p style="font-weight:700">24-Hour Overlap Grid</p>
       <div style="display:flex;gap:.5rem;align-items:center">
         <label for="gridDate" style="text-transform:none;font-size:.85rem;color:var(--text);margin:0">Date:</label>
-        <input type="date" id="gridDate" style="width:150px" onchange="renderGrid()">
+        <input type="date" id="gridDate" style="width:150px" onchange="renderGrid()">
       </div>
     </div>
     <div class="legend" style="margin-top:.75rem">

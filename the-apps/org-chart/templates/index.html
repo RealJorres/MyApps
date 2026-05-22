@@ -45,23 +45,23 @@ canvas{display:block}
     <div class="row">
       <div class="field" style="flex:2">
         <label for="pName">Name</label>
-        <input type="text" id="pName" placeholder="Jane Doe" onkeydown="if(event.key==='Enter')addPerson()">
+        <input type="text" id="pName" placeholder="Jane Doe" onkeydown="if(event.key==='Enter')addPerson()">
       </div>
       <div class="field" style="flex:2">
         <label for="pTitle">Title / Role</label>
-        <input type="text" id="pTitle" placeholder="Chief Executive Officer">
+        <input type="text" id="pTitle" placeholder="Chief Executive Officer">
       </div>
       <div class="field">
         <label for="pDept">Department</label>
-        <input type="text" id="pDept" placeholder="Executive">
+        <input type="text" id="pDept" placeholder="Executive">
       </div>
       <div class="field">
         <label for="pParent">Reports To</label>
-        <select id="pParent"><option value="">(No one — root)</option></select>
+        <select id="pParent"><option value="">(No one — root)</option></select>
       </div>
       <div class="field" style="flex:0 0 auto">
         <label for="pColor">Color</label>
-        <input type="color" id="pColor" value="#1d4ed8" style="width:44px;height:36px;padding:.2rem">
+        <input type="color" id="pColor" value="#1d4ed8" style="width:44px;height:36px;padding:.2rem">
       </div>
       <div style="align-self:flex-end"><button class="btn btn-primary" onclick="addPerson()">+ Add</button></div>
     </div>

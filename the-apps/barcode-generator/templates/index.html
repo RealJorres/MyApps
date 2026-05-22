@@ -42,26 +42,26 @@ canvas{max-width:100%}
     <div class="row">
       <div class="field" style="flex:2">
         <label for="barcodeText">Text / Value</label>
-        <input type="text" id="barcodeText" value="PRODUCT-00123" oninput="generate()" placeholder="Enter text or number...">
+        <input type="text" id="barcodeText" value="PRODUCT-00123" oninput="generate()" placeholder="Enter text or number...">
         <div class="hint">Supports all printable ASCII characters.</div>
       </div>
       <div class="field">
         <label for="barColor">Bar Color</label>
-        <input type="color" id="barColor" value="#000000" oninput="generate()" style="height:38px;padding:.3rem">
+        <input type="color" id="barColor" value="#000000" oninput="generate()" style="height:38px;padding:.3rem">
       </div>
       <div class="field">
         <label for="barHeight">Bar Height (px)</label>
-        <input type="number" id="barHeight" value="80" min="40" max="200" oninput="generate()">
+        <input type="number" id="barHeight" value="80" min="40" max="200" oninput="generate()">
       </div>
     </div>
     <div class="row" style="margin-top:.75rem">
       <div class="field">
         <label for="moduleW">Module Width (px)</label>
-        <input type="number" id="moduleW" value="2" min="1" max="5" oninput="generate()">
+        <input type="number" id="moduleW" value="2" min="1" max="5" oninput="generate()">
       </div>
       <div class="field">
         <label for="showText">Show Text</label>
-        <select id="showText" onchange="generate()">
+        <select id="showText" onchange="generate()">
           <option value="yes">Yes</option>
           <option value="no">No</option>
         </select>

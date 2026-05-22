@@ -101,7 +101,7 @@
 
   <div class="card">
     <label for="unitToggle">Unit System</label>
-    <div class="toggle-group" id="unitToggle">
+    <div class="toggle-group" id="unitToggle">
       <button class="active" data-unit="metric" onclick="setUnit('metric')">Metric (kg / cm)</button>
       <button data-unit="imperial" onclick="setUnit('imperial')">Imperial (lbs / ft)</button>
     </div>
@@ -110,11 +110,11 @@
     <div id="metricInputs" class="input-row cols-2">
       <div class="field">
         <label for="weightKg">Weight (kg)</label>
-        <input type="number" id="weightKg" min="1" max="500" step="0.1" placeholder="e.g. 70" oninput="calculate()" />
+        <input type="number" id="weightKg" min="1" max="500" step="0.1" placeholder="e.g. 70" oninput="calculate()" />
       </div>
       <div class="field">
         <label for="heightCm">Height (cm)</label>
-        <input type="number" id="heightCm" min="50" max="300" step="0.1" placeholder="e.g. 175" oninput="calculate()" />
+        <input type="number" id="heightCm" min="50" max="300" step="0.1" placeholder="e.g. 175" oninput="calculate()" />
       </div>
     </div>
 
@@ -122,15 +122,15 @@
     <div id="imperialInputs" class="input-row cols-3" style="display:none;">
       <div class="field">
         <label for="weightLbs">Weight (lbs)</label>
-        <input type="number" id="weightLbs" min="1" max="1100" step="0.1" placeholder="e.g. 154" oninput="calculate()" />
+        <input type="number" id="weightLbs" min="1" max="1100" step="0.1" placeholder="e.g. 154" oninput="calculate()" />
       </div>
       <div class="field">
         <label for="heightFt">Height (ft)</label>
-        <input type="number" id="heightFt" min="1" max="9" step="1" placeholder="e.g. 5" oninput="calculate()" />
+        <input type="number" id="heightFt" min="1" max="9" step="1" placeholder="e.g. 5" oninput="calculate()" />
       </div>
       <div class="field">
         <label for="heightIn">Height (in)</label>
-        <input type="number" id="heightIn" min="0" max="11" step="0.5" placeholder="e.g. 9" oninput="calculate()" />
+        <input type="number" id="heightIn" min="0" max="11" step="0.5" placeholder="e.g. 9" oninput="calculate()" />
       </div>
     </div>
 

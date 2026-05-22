@@ -55,25 +55,25 @@ input:focus,textarea:focus{border-color:var(--primary)}
     <div class="row" style="margin-bottom:.75rem">
       <div class="field" style="flex:2">
         <label for="meetTitle">Meeting Title</label>
-        <input type="text" id="meetTitle" value="Q2 Planning Meeting" oninput="updatePreview()">
+        <input type="text" id="meetTitle" value="Q2 Planning Meeting" oninput="updatePreview()">
       </div>
       <div class="field">
         <label for="meetDate">Date</label>
-        <input type="date" id="meetDate" oninput="updatePreview()">
+        <input type="date" id="meetDate" oninput="updatePreview()">
       </div>
       <div class="field">
         <label for="meetTime">Start Time</label>
-        <input type="time" id="meetTime" value="09:00" oninput="updatePreview()">
+        <input type="time" id="meetTime" value="09:00" oninput="updatePreview()">
       </div>
     </div>
     <div class="row">
       <div class="field">
         <label for="meetLoc">Location / Link</label>
-        <input type="text" id="meetLoc" value="Conference Room A" oninput="updatePreview()">
+        <input type="text" id="meetLoc" value="Conference Room A" oninput="updatePreview()">
       </div>
       <div class="field">
         <label for="meetFac">Facilitator</label>
-        <input type="text" id="meetFac" value="Jane Doe" oninput="updatePreview()">
+        <input type="text" id="meetFac" value="Jane Doe" oninput="updatePreview()">
       </div>
     </div>
   </div>
@@ -84,21 +84,21 @@ input:focus,textarea:focus{border-color:var(--primary)}
     <div class="row">
       <div class="field" style="flex:3">
         <label for="itemTopic">Topic</label>
-        <input type="text" id="itemTopic" placeholder="e.g. Review Q1 results" onkeydown="if(event.key==='Enter')addItem()">
+        <input type="text" id="itemTopic" placeholder="e.g. Review Q1 results" onkeydown="if(event.key==='Enter')addItem()">
       </div>
       <div class="field" style="flex:1;min-width:100px">
         <label for="itemDur">Duration (min)</label>
-        <input type="number" id="itemDur" value="15" min="1" max="120">
+        <input type="number" id="itemDur" value="15" min="1" max="120">
       </div>
     </div>
     <div class="row" style="margin-top:.5rem">
       <div class="field">
         <label for="itemPres">Presenter</label>
-        <input type="text" id="itemPres" placeholder="Name (optional)">
+        <input type="text" id="itemPres" placeholder="Name (optional)">
       </div>
       <div class="field">
         <label for="itemNotes">Notes</label>
-        <input type="text" id="itemNotes" placeholder="e.g. Bring last quarter data">
+        <input type="text" id="itemNotes" placeholder="e.g. Bring last quarter data">
       </div>
       <div style="display:flex;align-items:flex-end">
         <button class="btn btn-primary" onclick="addItem()">+ Add Item</button>

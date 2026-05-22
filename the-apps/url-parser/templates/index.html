@@ -86,7 +86,7 @@ textarea{resize:vertical;font-family:'Courier New',monospace;font-size:.85rem}
   <div id="tab-parse" class="panel active">
     <div class="card">
       <label for="parseInput">URL</label>
-      <input type="text" id="parseInput" placeholder="https://example.com/path?foo=bar&baz=qux#section" oninput="parseURL()">
+      <input type="text" id="parseInput" placeholder="https://example.com/path?foo=bar&baz=qux#section" oninput="parseURL()">
       <div id="parseError" style="color:var(--error-fg,#dc2626);font-size:.8rem;margin-top:.4rem;display:none"></div>
       <table class="parse-table" id="parseTable" style="display:none">
         <tbody id="parseBody"></tbody>
@@ -95,7 +95,7 @@ textarea{resize:vertical;font-family:'Courier New',monospace;font-size:.85rem}
         <label for="paramsBody">Query Parameters</label>
         <table class="params-table">
           <thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
-          <tbody id="paramsBody"></tbody>
+          <tbody id="paramsBody"></tbody>
         </table>
       </div>
     </div>
@@ -107,12 +107,12 @@ textarea{resize:vertical;font-family:'Courier New',monospace;font-size:.85rem}
       <div class="split">
         <div>
           <label for="rawText">Raw Text</label>
-          <textarea id="rawText" rows="8" placeholder="Hello World / path?key=value" oninput="encodeFromRaw()"></textarea>
+          <textarea id="rawText" rows="8" placeholder="Hello World / path?key=value" oninput="encodeFromRaw()"></textarea>
           <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="copyText('rawText')">Copy</button>
         </div>
         <div>
           <label for="encodedText">URL Encoded</label>
-          <textarea id="encodedText" rows="8" placeholder="Hello%20World%20%2F%20path%3Fkey%3Dvalue" oninput="decodeFromEncoded()"></textarea>
+          <textarea id="encodedText" rows="8" placeholder="Hello%20World%20%2F%20path%3Fkey%3Dvalue" oninput="decodeFromEncoded()"></textarea>
           <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="copyText('encodedText')">Copy</button>
         </div>
       </div>
@@ -129,36 +129,36 @@ textarea{resize:vertical;font-family:'Courier New',monospace;font-size:.85rem}
       <div class="row" style="margin-bottom:1rem">
         <div class="field" style="max-width:120px">
           <label for="bScheme">Scheme</label>
-          <select id="bScheme" onchange="buildURL()" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;outline:none">
+          <select id="bScheme" onchange="buildURL()" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;outline:none">
             <option>https</option><option>http</option><option>ftp</option><option>mailto</option>
           </select>
         </div>
         <div class="field">
           <label for="bHost">Host</label>
-          <input type="text" id="bHost" placeholder="example.com" oninput="buildURL()">
+          <input type="text" id="bHost" placeholder="example.com" oninput="buildURL()">
         </div>
         <div class="field" style="max-width:100px">
           <label for="bPort">Port</label>
-          <input type="text" id="bPort" placeholder="8080" oninput="buildURL()">
+          <input type="text" id="bPort" placeholder="8080" oninput="buildURL()">
         </div>
       </div>
       <div style="margin-bottom:1rem">
         <label for="bPath">Path</label>
-        <input type="text" id="bPath" placeholder="/api/v1/resource" oninput="buildURL()">
+        <input type="text" id="bPath" placeholder="/api/v1/resource" oninput="buildURL()">
       </div>
       <div style="margin-bottom:1rem">
         <label for="bHash">Hash / Fragment</label>
-        <input type="text" id="bHash" placeholder="section-id" oninput="buildURL()">
+        <input type="text" id="bHash" placeholder="section-id" oninput="buildURL()">
       </div>
       <div style="margin-bottom:1rem">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
           <label for="paramRows" style="margin:0">Query Parameters</label>
           <button class="btn btn-ghost btn-sm" onclick="addParam()">+ Add</button>
         </div>
-        <div id="paramRows"></div>
+        <div id="paramRows"></div>
       </div>
       <label for="builtURL">Result</label>
-      <div class="result-url" id="builtURL">https://example.com/</div>
+      <div class="result-url" id="builtURL">https://example.com/</div>
       <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="copyBuilt()">Copy URL</button>
     </div>
   </div>

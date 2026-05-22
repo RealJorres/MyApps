@@ -77,7 +77,7 @@ select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">
         <label for="encoding" style="margin:0">Plain Text</label>
-        <select id="encoding" onchange="">
+        <select id="encoding" onchange="">
           <option value="utf-8">UTF-8</option>
           <option value="latin-1">Latin-1</option>
         </select>
@@ -94,7 +94,7 @@ select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">
         <label for="b64Text" style="margin:0">Base64</label>
       </div>
-      <textarea id="b64Text" rows="7" placeholder="Paste Base64 to decode, or encode from above…" oninput="updateCount('b64Text','countB64')"></textarea>
+      <textarea id="b64Text" rows="7" placeholder="Paste Base64 to decode, or encode from above…" oninput="updateCount('b64Text','countB64')"></textarea>
       <div class="actions">
         <button class="btn btn-primary" onclick="decodeText()">← Decode</button>
         <button class="btn btn-ghost" onclick="copyTA('b64Text')">Copy</button>
@@ -108,7 +108,7 @@ select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;
   <div id="tab-file" class="panel">
     <div class="card">
       <label for="dropZone">Encode File → Base64</label>
-      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
         <div class="icon"></div>
         <p><strong>Click to choose</strong> or drag &amp; drop a file</p>
         <p style="margin-top:.25rem;font-size:.8rem">Any file type, up to 50 MB</p>
@@ -116,7 +116,7 @@ select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;
       <input type="file" id="fileInput" style="display:none" onchange="encodeFile(this)">
       <div id="encodeResult" style="display:none;margin-top:1rem">
         <label for="fileB64Out">Base64 Output</label>
-        <textarea id="fileB64Out" rows="8" readonly></textarea>
+        <textarea id="fileB64Out" rows="8" readonly></textarea>
         <div class="actions">
           <button class="btn btn-ghost" onclick="copyTA('fileB64Out')">Copy</button>
           <button class="btn btn-ghost" onclick="downloadB64Text()">Download .txt</button>
@@ -126,10 +126,10 @@ select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;
     </div>
     <div class="card">
       <label for="decodeB64Input">Decode Base64 → File</label>
-      <textarea id="decodeB64Input" rows="6" placeholder="Paste Base64 here…"></textarea>
+      <textarea id="decodeB64Input" rows="6" placeholder="Paste Base64 here…"></textarea>
       <div style="margin-top:.75rem">
         <label for="decodeFilename">Output Filename</label>
-        <input type="text" id="decodeFilename" placeholder="output.bin">
+        <input type="text" id="decodeFilename" placeholder="output.bin">
       </div>
       <div class="actions" style="margin-top:.75rem">
         <button class="btn btn-primary" onclick="decodeFile()">Decode &amp; Download</button>

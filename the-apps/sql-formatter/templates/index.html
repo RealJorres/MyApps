@@ -72,7 +72,7 @@ textarea[readonly] { background: #f8fafc; }
     <div class="options-bar">
       <div class="opt-group">
         <label for="indent">Indent</label>
-        <select id="indent">
+        <select id="indent">
           <option value="2">2 spaces</option>
           <option value="4">4 spaces</option>
           <option value="1">Tab (1)</option>
@@ -80,7 +80,7 @@ textarea[readonly] { background: #f8fafc; }
       </div>
       <div class="opt-group">
         <label for="keyword_case">Keyword Case</label>
-        <select id="keyword_case">
+        <select id="keyword_case">
           <option value="upper">UPPERCASE</option>
           <option value="lower">lowercase</option>
           <option value="capitalize">Capitalize</option>
@@ -98,14 +98,14 @@ textarea[readonly] { background: #f8fafc; }
       <div class="editor-col">
         <div class="editor-header">
           <label for="inputLines">Input SQL</label>
-          <span class="line-count" id="inputLines">0 lines</span>
+          <span class="line-count" id="inputLines">0 lines</span>
         </div>
         <textarea id="sqlInput" placeholder="Paste your SQL here...&#10;&#10;SELECT u.id, u.name, COUNT(o.id) as order_count FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.active = 1 GROUP BY u.id, u.name ORDER BY order_count DESC LIMIT 10;" oninput="updateLineCounts()"></textarea>
       </div>
       <div class="editor-col">
         <div class="editor-header">
           <label for="outputLines">Formatted SQL</label>
-          <span class="line-count" id="outputLines">0 lines</span>
+          <span class="line-count" id="outputLines">0 lines</span>
         </div>
         <textarea id="sqlOutput" readonly placeholder="Formatted output will appear here..."></textarea>
       </div>
