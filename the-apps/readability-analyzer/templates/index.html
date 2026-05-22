@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/base.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://jorresapps.onrender.com/readability-analyzer/">
+<meta name="description" content="Analyze text readability instantly. Get Flesch-Kincaid grade level, reading ease score, reading time, sentence statistics, and hard words.">
+<meta name="author" content="Jorres Apps">
+<meta property="og:title" content="Readability Analyzer">
+<meta property="og:description" content="Analyze text readability instantly. Get Flesch-Kincaid grade level, reading ease score, reading time, sentence statistics, and hard words.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta name="twitter:title" content="Readability Analyzer">
+<meta name="twitter:description" content="Analyze text readability. Get Flesch-Kincaid grade, reading ease, reading time, and hard words.">
+<title>Readability Analyzer | Jorres Apps</title>
+<style>
+:root { --primary: #1d4ed8; --brand: var(--primary); --primary-h: #1e40af; --bg: #eff6ff; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
+body { padding: 2rem 1rem 4rem; }
+.container { max-width: 960px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 2rem; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+header p { color: var(--muted); margin-top: .4rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.25rem; }
+textarea { width: 100%; padding: .75rem; border: 1px solid var(--border); border-radius: .5rem; font-size: .95rem; font-family: inherit; background: #fff; color: var(--text); outline: none; resize: vertical; min-height: 220px; line-height: 1.7; }
+textarea:focus { border-color: var(--primary); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .85rem; margin-bottom: 1.25rem; }
+.stat-box { background: var(--bg); border: 1px solid var(--border); border-radius: .75rem; padding: 1rem; text-align: center; }
+.stat-value { font-size: 1.75rem; font-weight: 800; color: var(--primary); line-height: 1; }
+.stat-label { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: .3rem; }
+.grade-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 60px; height: 60px; border-radius: 50%;
+  font-size: 1.3rem; font-weight: 800; color: #fff;
+  margin-bottom: .25rem;
+}
+.ease-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin: .5rem 0 .25rem; }
+.ease-fill { height: 100%; border-radius: 4px; transition: width .4s; }
+.ease-label { font-size: .72rem; color: var(--muted); display: flex; justify-content: space-between; }
+.hard-words { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .5rem; }
+.hard-word { background: #fef3c7; color: #92400e; padding: .15rem .55rem; border-radius: 2rem; font-size: .78rem; font-weight: 600; }
+.section-title { font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .75rem; }
+.tip-list { list-style: none; }
+.tip-list li { font-size: .875rem; color: var(--text); padding: .35rem 0; border-bottom: 1px solid var(--border); }
+.tip-list li:last-child { border-bottom: none; }
+.tip-list li::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: .6rem; vertical-align: middle; }
+.tip-list li.good::before { background: #059669; }
+.tip-list li.warn::before { background: #d97706; }
+.tip-list li.bad::before  { background: #dc2626; }
+.empty-state { text-align: center; padding: 2rem; color: var(--muted); font-size: .9rem; }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  textarea { min-height: 160px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Readability Analyzer</h1>
+    <p>Paste any text to get instant readability scores, reading time, and improvement tips.</p>
+  </header>
+
+  <div class="card">
+    <textarea id="textInput" placeholder="Paste your text here to analyze its readability…" oninput="analyze()"></textarea>
+  </div>
+
+  <div id="results" style="display:none">
+    <!-- Core stats -->
+    <div class="card">
+      <div class="section-title">Overview</div>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+
+    <!-- Flesch scores -->
+    <div class="card">
+      <div class="section-title">Flesch Scores</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem" id="fleschGrid"></div>
+    </div>
+
+    <!-- Hard words -->
+    <div class="card" id="hardWordsCard">
+      <div class="section-title">Complex Words <span id="hwCount" style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span></div>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">Words with 3+ syllables that may slow readers down.</p>
+      <div class="hard-words" id="hardWordsList"></div>
+    </div>
+
+    <!-- Tips -->
+    <div class="card">
+      <div class="section-title">Suggestions</div>
+      <ul class="tip-list" id="tipList"></ul>
+    </div>
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    Type or paste text above to see the analysis.
+  </div>
+</div>
+
+<script>
+// Syllable counter (English approximation)
+function syllables(word) {
+  word = word.toLowerCase().replace(/[^a-z]/g,'');
+  if (!word) return 0;
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+  word = word.replace(/^y/, '');
+  const m = word.match(/[aeiouy]{1,2}/g);
+  return m ? m.length : 1;
+}
+
+function sentences(text) {
+  return text.split(/[.!?]+/).filter(s => s.trim().length > 1);
+}
+
+function words(text) {
+  return text.match(/\b[a-zA-Z']+\b/g) || [];
+}
+
+function gradeColor(g) {
+  if (g <= 6)  return '#059669';
+  if (g <= 9)  return '#0891b2';
+  if (g <= 12) return '#d97706';
+  return '#dc2626';
+}
+
+function easeColor(e) {
+  if (e >= 70) return '#059669';
+  if (e >= 50) return '#0891b2';
+  if (e >= 30) return '#d97706';
+  return '#dc2626';
+}
+
+function gradeLabel(g) {
+  if (g <= 6)  return 'Very Easy';
+  if (g <= 9)  return 'Easy';
+  if (g <= 12) return 'Average';
+  if (g <= 16) return 'Difficult';
+  return 'Very Difficult';
+}
+
+function easeLabel(e) {
+  if (e >= 90) return 'Very Easy (5th grade)';
+  if (e >= 80) return 'Easy (6th grade)';
+  if (e >= 70) return 'Fairly Easy (7th grade)';
+  if (e >= 60) return 'Standard (8–9th grade)';
+  if (e >= 50) return 'Fairly Difficult (10–12th grade)';
+  if (e >= 30) return 'Difficult (college)';
+  return 'Very Difficult (professional)';
+}
+
+function readingTime(wordCount) {
+  const mins = wordCount / 238; // avg adult reading speed
+  if (mins < 1) return `${Math.round(mins * 60)}s`;
+  return `${Math.round(mins)}m ${Math.round((mins % 1) * 60)}s`;
+}
+
+function analyze() {
+  const text = document.getElementById('textInput').value;
+  const results = document.getElementById('results');
+  const empty   = document.getElementById('emptyState');
+
+  if (!text.trim() || text.trim().split(/\s+/).length < 5) {
+    results.style.display = 'none';
+    empty.style.display   = '';
+    return;
+  }
+  results.style.display = '';
+  empty.style.display   = 'none';
+
+  const ws = words(text);
+  const ss = sentences(text);
+  const wc = ws.length;
+  const sc = ss.length;
+  const cc = text.replace(/\s/g,'').length;
+
+  const totalSyl = ws.reduce((s, w) => s + syllables(w), 0);
+  const avgWordsPerSent = sc ? (wc / sc) : wc;
+  const avgSylPerWord   = wc ? (totalSyl / wc) : 0;
+
+  // Flesch Reading Ease: 206.835 - 1.015*(w/s) - 84.6*(syl/w)
+  const ease  = Math.round(206.835 - 1.015 * avgWordsPerSent - 84.6 * avgSylPerWord);
+  const easeC = Math.max(0, Math.min(100, ease));
+
+  // Flesch-Kincaid Grade: 0.39*(w/s) + 11.8*(syl/w) - 15.59
+  const grade = Math.max(0, Math.round(0.39 * avgWordsPerSent + 11.8 * avgSylPerWord - 15.59));
+
+  // Hard words (3+ syllables, not proper nouns for simplicity)
+  const hardSet = new Set();
+  ws.forEach(w => { if (syllables(w) >= 3) hardSet.add(w.toLowerCase()); });
+  const hardArr = [...hardSet].slice(0, 30);
+
+  // ── Render stats ────────────────────────────────
+  document.getElementById('statsGrid').innerHTML = [
+    { v: wc.toLocaleString(),          l: 'Words' },
+    { v: sc.toLocaleString(),          l: 'Sentences' },
+    { v: cc.toLocaleString(),          l: 'Characters' },
+    { v: Math.round(avgWordsPerSent),  l: 'Avg Words/Sentence' },
+    { v: readingTime(wc),              l: 'Reading Time' },
+    { v: hardArr.length,               l: 'Complex Words' },
+  ].map(s => `<div class="stat-box">
+    <div class="stat-value">${s.v}</div>
+    <div class="stat-label">${s.l}</div>
+  </div>`).join('');
+
+  document.getElementById('fleschGrid').innerHTML = `
+    <div>
+      <div class="stat-label" style="margin-bottom:.5rem">Grade Level (FK)</div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div class="grade-badge" style="background:${gradeColor(grade)}">${grade}</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:700;color:${gradeColor(grade)}">${gradeLabel(grade)}</div>
+          <div style="font-size:.78rem;color:var(--muted)">Grade ${grade} reading level</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="stat-label" style="margin-bottom:.5rem">Reading Ease (Flesch)</div>
+      <div style="font-size:1.5rem;font-weight:800;color:${easeColor(easeC)}">${easeC}</div>
+      <div class="ease-bar"><div class="ease-fill" style="width:${easeC}%;background:${easeColor(easeC)}"></div></div>
+      <div class="ease-label"><span>Hard</span><span style="color:${easeColor(easeC)};font-weight:600">${easeLabel(easeC)}</span><span>Easy</span></div>
+    </div>`;
+
+  // Hard words
+  const hwCard = document.getElementById('hardWordsCard');
+  if (hardArr.length) {
+    hwCard.style.display = '';
+    document.getElementById('hwCount').textContent = `(${hardArr.length})`;
+    document.getElementById('hardWordsList').innerHTML =
+      hardArr.map(w => `<span class="hard-word">${w}</span>`).join('');
+  } else {
+    hwCard.style.display = 'none';
+  }
+
+  // Tips
+  const tips = [];
+  if (grade > 12)             tips.push({ cls:'bad',  t:`Grade ${grade} is difficult — aim for grade 8–10 for general audiences.` });
+  else if (grade >= 9)        tips.push({ cls:'warn', t:`Grade ${grade} is average — consider simplifying for broader reach.` });
+  else                         tips.push({ cls:'good', t:`Grade ${grade} reading level is accessible and easy to follow.` });
+
+  if (avgWordsPerSent > 25)   tips.push({ cls:'bad',  t:`Average sentence length is ${Math.round(avgWordsPerSent)} words — try breaking long sentences in half.` });
+  else if (avgWordsPerSent > 18) tips.push({ cls:'warn', t:`Average sentence length is ${Math.round(avgWordsPerSent)} words — a few shorter sentences would help flow.` });
+  else                         tips.push({ cls:'good', t:`Sentence length (${Math.round(avgWordsPerSent)} words avg) is good.` });
+
+  const hwPct = wc ? Math.round((hardArr.length / wc) * 100) : 0;
+  if (hwPct > 15)             tips.push({ cls:'bad',  t:`${hwPct}% of unique words are complex (3+ syllables) — swap some for simpler alternatives.` });
+  else if (hwPct > 8)         tips.push({ cls:'warn', t:`${hwPct}% complex words — reasonable, but scan the list for unnecessary jargon.` });
+  else                         tips.push({ cls:'good', t:`Low complex-word density (${hwPct}%) — vocabulary is accessible.` });
+
+  if (easeC < 50)             tips.push({ cls:'bad',  t:`Flesch score ${easeC} is below 50 — academic or technical writing. Use active voice and shorter words.` });
+  else if (easeC < 70)        tips.push({ cls:'warn', t:`Flesch score ${easeC} — standard writing. Small simplifications would improve clarity.` });
+  else                         tips.push({ cls:'good', t:`Flesch score ${easeC} — clear and easy to read.` });
+
+  document.getElementById('tipList').innerHTML = tips.map(t =>
+    `<li class="${t.cls}">${t.t}</li>`).join('');
+}
+</script>
+<script src="/static/footer.js?v=3"></script>
+<script src="/static/app-nav.js?v=3"></script>
+</body>
+</html>

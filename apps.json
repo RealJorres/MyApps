@@ -1,891 +1,2127 @@
 [
-  {
-    "id": "pdf-to-image",
-    "name": "PDF ↔ Image Converter",
-    "description": "Convert PDF pages to PNG or JPEG images, and combine multiple images into a single PDF.",
-    "port": 5001, "path": "./the-apps/pdf-to-image", "entry": "app.py",
-    "icon": "📄", "color": "#4f46e5", "tags": ["PDF","Images","Converter"], "category": "Documents & Writing"
-  },
-  {
-    "id": "pdf-merger",
-    "name": "PDF Merger",
-    "description": "Upload multiple PDFs, reorder them, and merge into a single downloadable file.",
-    "port": 5035, "path": "./the-apps/pdf-merger", "entry": "app.py",
-    "icon": "🔀", "color": "#4f46e5", "tags": ["PDF","Merge"], "category": "Documents & Writing"
-  },
-  {
-    "id": "csv-viewer",
-    "name": "CSV / Excel Viewer",
-    "description": "Upload and browse CSV or Excel files as a searchable, paginated table.",
-    "port": 5004, "path": "./the-apps/csv-viewer", "entry": "app.py",
-    "icon": "CSV", "color": "#059669", "tags": ["CSV","Excel","Data"], "category": "Data & Analysis"
-  },
-  {
-    "id": "base64-tool",
-    "name": "Base64 Tool",
-    "description": "Encode and decode text or files to and from Base64.",
-    "port": 5017, "path": "./the-apps/base64-tool", "entry": "app.py",
-    "icon": "B64", "color": "#c2410c", "tags": ["Base64","Encode","Decode"], "category": "Developer Tools"
-  },
-  {
-    "id": "invoice-generator",
-    "name": "Invoice Manager",
-    "description": "Create professional PDF invoices and track client payment status — all in one place. Generate, log, filter, and monitor outstanding amounts.",
-    "port": 5021, "path": "./the-apps/invoice-generator", "entry": "app.py",
-    "icon": "🧾", "color": "#0f766e", "tags": ["Invoice","PDF","Finance","Tracker","Billing"], "category": "Finance & Business"
-  },
-  {
-    "id": "ocr-tool",
-    "name": "OCR — Image to Text",
-    "description": "Extract text from images and scanned documents. Runs entirely in your browser.",
-    "port": 5037, "path": "./the-apps/ocr-tool", "entry": "app.py",
-    "icon": "🔍", "color": "#7c3aed", "tags": ["OCR","Text","Images"], "category": "Documents & Writing"
-  },
-  {
-    "id": "qr-generator",
-    "name": "QR Code Generator",
-    "description": "Generate QR codes for URLs, text, or anything. Download as PNG.",
-    "port": 5003, "path": "./the-apps/qr-generator", "entry": "app.py",
-    "icon": "▦", "color": "#1d4ed8", "tags": ["QR","Generator"], "category": "Finance & Business"
-  },
-  {
-    "id": "image-tools",
-    "name": "Image Tools",
-    "description": "Resize, compress, and convert images between PNG, JPEG, WEBP, and BMP.",
-    "port": 5002, "path": "./the-apps/image-tools", "entry": "app.py",
-    "icon": "🖼️", "color": "#0891b2", "tags": ["Images","Resize","Convert"], "category": "Design & Visuals"
-  },
-  {
-    "id": "watermark-tool",
-    "name": "Watermark Tool",
-    "description": "Add a custom text watermark to images with control over position, size, and opacity.",
-    "port": 5036, "path": "./the-apps/watermark-tool", "entry": "app.py",
-    "icon": "💧", "color": "#0891b2", "tags": ["Watermark","Images"], "category": "Design & Visuals"
-  },
-  {
-    "id": "exif-viewer",
-    "name": "EXIF Viewer",
-    "description": "Upload a photo to view its embedded metadata: camera, exposure, GPS, and more.",
-    "port": 5022, "path": "./the-apps/exif-viewer", "entry": "app.py",
-    "icon": "📷", "color": "#0891b2", "tags": ["EXIF","Metadata","Images"], "category": "Design & Visuals"
-  },
-  {
-    "id": "favicon-generator",
-    "name": "Favicon Generator",
-    "description": "Upload any image and download a ZIP of all standard favicon sizes.",
-    "port": 5023, "path": "./the-apps/favicon-generator", "entry": "app.py",
-    "icon": "⭐", "color": "#7c3aed", "tags": ["Favicon","Icons","Images"], "category": "Design & Visuals"
-  },
-  {
-    "id": "color-palette-extractor",
-    "name": "Color Palette Extractor",
-    "description": "Upload a photo and extract its dominant colors as HEX and RGB swatches.",
-    "port": 5055, "path": "./the-apps/color-palette-extractor", "entry": "app.py",
-    "icon": "🎨", "color": "#7c3aed", "tags": ["Color","Palette","Images"], "category": "Design & Visuals"
-  },
-  {
-    "id": "color-picker",
-    "name": "Color Studio",
-    "description": "Pick any color and get HEX, RGB, HSL, OKLCH, and CSS variable values instantly. Includes RGB/HSL sliders, Tailwind approximation, and tints & shades.",
-    "port": 5011, "path": "./the-apps/color-picker", "entry": "app.py",
-    "icon": "●", "color": "#7c3aed", "tags": ["Color","HEX","RGB","HSL","OKLCH","Design"], "category": "Design & Visuals"
-  },
-  {
-    "id": "color-contrast",
-    "name": "Color Contrast Checker",
-    "description": "Check WCAG contrast ratio between two colors with AA and AAA pass/fail badges.",
-    "port": 5038, "path": "./the-apps/color-contrast", "entry": "app.py",
-    "icon": "◑", "color": "#059669", "tags": ["Color","Accessibility","Design"], "category": "Design & Visuals"
-  },
-  {
-    "id": "json-formatter",
-    "name": "JSON Formatter",
-    "description": "Prettify, minify, and validate JSON. Spot errors instantly.",
-    "port": 5005, "path": "./the-apps/json-formatter", "entry": "app.py",
-    "icon": "{ }", "color": "#d97706", "tags": ["JSON","Formatter","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "regex-tester",
-    "name": "Regex Tester",
-    "description": "Test Python regular expressions with live match highlighting and group capture.",
-    "port": 5007, "path": "./the-apps/regex-tester", "entry": "app.py",
-    "icon": ".*", "color": "#be185d", "tags": ["Regex","Dev","Python"], "category": "Developer Tools"
-  },
-  {
-    "id": "timestamp-converter",
-    "name": "Timestamp Converter",
-    "description": "Convert Unix timestamps to human-readable dates and back, with a live clock.",
-    "port": 5013, "path": "./the-apps/timestamp-converter", "entry": "app.py",
-    "icon": "⏱", "color": "#d97706", "tags": ["Timestamp","Date","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "base-converter",
-    "name": "Number Base Converter",
-    "description": "Convert numbers between binary, octal, decimal, and hexadecimal in real time.",
-    "port": 5014, "path": "./the-apps/base-converter", "entry": "app.py",
-    "icon": "0x", "color": "#059669", "tags": ["Binary","Hex","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "url-parser",
-    "name": "URL Parser",
-    "description": "Parse URLs into components, encode/decode query strings, and build URLs visually.",
-    "port": 5015, "path": "./the-apps/url-parser", "entry": "app.py",
-    "icon": "🔗", "color": "#be185d", "tags": ["URL","Encode","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "uuid-generator",
-    "name": "UUID Generator",
-    "description": "Generate UUID v4 or v1 in bulk. Copy individually or all at once.",
-    "port": 5024, "path": "./the-apps/uuid-generator", "entry": "app.py",
-    "icon": "⬡", "color": "#d97706", "tags": ["UUID","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "cron-builder",
-    "name": "Cron Builder",
-    "description": "Build cron expressions visually with a human-readable description and next run times.",
-    "port": 5025, "path": "./the-apps/cron-builder", "entry": "app.py",
-    "icon": "⏰", "color": "#be185d", "tags": ["Cron","Scheduler","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "html-entity-encoder",
-    "name": "HTML Entity Encoder",
-    "description": "Encode and decode HTML entities. Includes a common entities reference table.",
-    "port": 5026, "path": "./the-apps/html-entity-encoder", "entry": "app.py",
-    "icon": "&amp;", "color": "#059669", "tags": ["HTML","Encode","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "chmod-calculator",
-    "name": "Chmod Calculator",
-    "description": "Click permissions for owner, group, and others — see the octal and chmod command live.",
-    "port": 5027, "path": "./the-apps/chmod-calculator", "entry": "app.py",
-    "icon": "🔐", "color": "#1d4ed8", "tags": ["chmod","Linux","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "sql-formatter",
-    "name": "SQL Formatter",
-    "description": "Prettify and minify SQL queries with configurable indentation and keyword case.",
-    "port": 5028, "path": "./the-apps/sql-formatter", "entry": "app.py",
-    "icon": "🗄", "color": "#c2410c", "tags": ["SQL","Formatter","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "css-formatter",
-    "name": "CSS Formatter",
-    "description": "Prettify or minify CSS with configurable indentation.",
-    "port": 5039, "path": "./the-apps/css-formatter", "entry": "app.py",
-    "icon": "CSS", "color": "#2563eb", "tags": ["CSS","Formatter","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "api-tester",
-    "name": "API Tester",
-    "description": "Send HTTP requests with custom headers and body. See status, response, and timing.",
-    "port": 5040, "path": "./the-apps/api-tester", "entry": "app.py",
-    "icon": "⚡", "color": "#be185d", "tags": ["API","HTTP","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "random-data-generator",
-    "name": "Random Data Generator",
-    "description": "Generate fake names, emails, addresses, and more for testing. Export as JSON or CSV.",
-    "port": 5042, "path": "./the-apps/random-data-generator", "entry": "app.py",
-    "icon": "~{}", "color": "#0f766e", "tags": ["Random","Testing","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "markdown-editor",
-    "name": "Markdown Editor",
-    "description": "Write Markdown with a live side-by-side preview. Export as HTML or download a styled PDF directly from the toolbar.",
-    "port": 5008, "path": "./the-apps/markdown-editor", "entry": "app.py",
-    "icon": "MD", "color": "#0f766e", "tags": ["Markdown","Editor","PDF","Writing","Export"], "category": "Developer Tools"
-  },
-  {
-    "id": "word-counter",
-    "name": "Word Counter",
-    "description": "Count words, characters, sentences and get reading time and word frequency stats.",
-    "port": 5009, "path": "./the-apps/word-counter", "entry": "app.py",
-    "icon": "Aa", "color": "#c2410c", "tags": ["Text","Writing","Stats"], "category": "Documents & Writing"
-  },
-  {
-    "id": "text-case-converter",
-    "name": "Text Case Converter",
-    "description": "Convert text between camelCase, snake_case, PascalCase, kebab-case, and more — live.",
-    "port": 5041, "path": "./the-apps/text-case-converter", "entry": "app.py",
-    "icon": "Tt", "color": "#d97706", "tags": ["Text","Case","Writing"], "category": "Documents & Writing"
-  },
-  {
-    "id": "lorem-ipsum",
-    "name": "Lorem Ipsum Generator",
-    "description": "Generate placeholder text by paragraphs, sentences, or words. Copy or download.",
-    "port": 5019, "path": "./the-apps/lorem-ipsum", "entry": "app.py",
-    "icon": "¶", "color": "#6d28d9", "tags": ["Lorem","Placeholder","Text"], "category": "Documents & Writing"
-  },
-  {
-    "id": "notepad",
-    "name": "Notepad",
-    "description": "A simple persistent scratchpad. Auto-saves to your browser as you type.",
-    "port": 5020, "path": "./the-apps/notepad", "entry": "app.py",
-    "icon": "📝", "color": "#1d4ed8", "tags": ["Notes","Productivity"], "category": "Documents & Writing"
-  },
-  {
-    "id": "pomodoro-timer",
-    "name": "Focus Timer",
-    "description": "Pomodoro focus sessions with short and long breaks, plus custom countdown timers for events and deadlines.",
-    "port": 5029, "path": "./the-apps/pomodoro-timer", "entry": "app.py",
-    "icon": "🍅", "color": "#dc2626", "tags": ["Pomodoro","Timer","Focus","Countdown","Productivity"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "password-generator",
-    "name": "Password Tools",
-    "description": "Generate secure passwords and check the strength of any password — entropy score, crack time estimate, and actionable tips. All analysis runs locally.",
-    "port": 5010, "path": "./the-apps/password-generator", "entry": "app.py",
-    "icon": "🔑", "color": "#15803d", "tags": ["Password","Security","Generator","Strength"], "category": "Security & Network"
-  },
-  {
-    "id": "hash-generator",
-    "name": "Hash Generator",
-    "description": "Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text or uploaded files.",
-    "port": 5006, "path": "./the-apps/hash-generator", "entry": "app.py",
-    "icon": "#", "color": "#7c3aed", "tags": ["Hash","Security","Dev"], "category": "Security & Network"
-  },
-  {
-    "id": "cipher-tool",
-    "name": "Cipher Tool",
-    "description": "Encode and decode text with ROT13, Caesar, Atbash, Vigenère, and Morse Code.",
-    "port": 5043, "path": "./the-apps/cipher-tool", "entry": "app.py",
-    "icon": "🔒", "color": "#7c3aed", "tags": ["Cipher","Encode","Security"], "category": "Security & Network"
-  },
-  {
-    "id": "loan-calculator",
-    "name": "Loan Calculator",
-    "description": "Calculate monthly payments, total interest, and view a full amortization schedule.",
-    "port": 5032, "path": "./the-apps/loan-calculator", "entry": "app.py",
-    "icon": "🏦", "color": "#1d4ed8", "tags": ["Loan","Finance","Math"], "category": "Finance & Business"
-  },
-  {
-    "id": "tip-calculator",
-    "name": "Quick Calculator",
-    "description": "Two tools in one: split a bill with tip calculation, or solve any percentage problem (X% of Y, X is what % of Y, percentage change).",
-    "port": 5033, "path": "./the-apps/tip-calculator", "entry": "app.py",
-    "icon": "%", "color": "#059669", "tags": ["Tip","Percentage","Calculator","Finance","Math"], "category": "Finance & Business"
-  },
-  {
-    "id": "compound-interest",
-    "name": "Compound Interest",
-    "description": "Calculate final balance with compound interest, optional monthly contributions, and a year-by-year table.",
-    "port": 5045, "path": "./the-apps/compound-interest", "entry": "app.py",
-    "icon": "%+", "color": "#1d4ed8", "tags": ["Interest","Finance","Math"], "category": "Finance & Business"
-  },
-  {
-    "id": "vat-calculator",
-    "name": "VAT / Tax Calculator",
-    "description": "Add or remove VAT/tax from a price. Supports custom rates and common presets.",
-    "port": 5046, "path": "./the-apps/vat-calculator", "entry": "app.py",
-    "icon": "🧮", "color": "#059669", "tags": ["VAT","Tax","Finance"], "category": "Finance & Business"
-  },
-  {
-    "id": "expense-splitter",
-    "name": "Expense Splitter",
-    "description": "Add people and expenses, see who owes whom and the minimum transactions to settle up.",
-    "port": 5047, "path": "./the-apps/expense-splitter", "entry": "app.py",
-    "icon": "🤝", "color": "#c2410c", "tags": ["Expenses","Split","Finance"], "category": "Finance & Business"
-  },
-  {
-    "id": "bmi-calculator",
-    "name": "BMI Calculator",
-    "description": "Calculate your BMI with category, healthy weight range, and a visual BMI scale. Metric and imperial.",
-    "port": 5048, "path": "./the-apps/bmi-calculator", "entry": "app.py",
-    "icon": "⚖️", "color": "#0891b2", "tags": ["BMI","Health","Fitness"], "category": "Health & Wellness"
-  },
-  {
-    "id": "tdee-calculator",
-    "name": "TDEE Calculator",
-    "description": "Calculate your daily calorie needs and macro breakdown based on your stats and activity level.",
-    "port": 5049, "path": "./the-apps/tdee-calculator", "entry": "app.py",
-    "icon": "🔥", "color": "#dc2626", "tags": ["Calories","TDEE","Health"], "category": "Health & Wellness"
-  },
-  {
-    "id": "age-calculator",
-    "name": "Age Calculator",
-    "description": "Exact age in years, months, and days. Birthday countdown, zodiac sign, and fun life stats.",
-    "port": 5050, "path": "./the-apps/age-calculator", "entry": "app.py",
-    "icon": "🎂", "color": "#7c3aed", "tags": ["Age","Birthday","Date"], "category": "Health & Wellness"
-  },
-  {
-    "id": "water-tracker",
-    "name": "Water Intake Tracker",
-    "description": "Track your daily water intake with a goal, progress ring, and history log. Resets each day.",
-    "port": 5051, "path": "./the-apps/water-tracker", "entry": "app.py",
-    "icon": "H₂O", "color": "#0284c7", "tags": ["Water","Hydration","Health"], "category": "Health & Wellness"
-  },
-  {
-    "id": "sleep-calculator",
-    "name": "Sleep Calculator",
-    "description": "Find your ideal bedtime or wake-up time based on 90-minute sleep cycles.",
-    "port": 5058, "path": "./the-apps/sleep-calculator", "entry": "app.py",
-    "icon": "🌙", "color": "#4f46e5", "tags": ["Sleep","Health","Wellness"], "category": "Health & Wellness"
-  },
-  {
-    "id": "habit-tracker",
-    "name": "Habit Tracker",
-    "description": "Track daily habits with streaks, completion rates, and a 30-day heatmap calendar.",
-    "port": 5044, "path": "./the-apps/habit-tracker", "entry": "app.py",
-    "icon": "✅", "color": "#16a34a", "tags": ["Habits","Health","Tracker"], "category": "Health & Wellness"
-  },
-  {
-    "id": "periodic-table",
-    "name": "Periodic Table",
-    "description": "Interactive periodic table with all 118 elements. Click any element for full details.",
-    "port": 5057, "path": "./the-apps/periodic-table", "entry": "app.py",
-    "icon": "⚗️", "color": "#0891b2", "tags": ["Chemistry","Science","Education"], "category": "Science & Learning"
-  },
-  {
-    "id": "flashcards",
-    "name": "Flashcards",
-    "description": "Create decks and study with flip-card UI. Tracks your score. Saved in browser.",
-    "port": 5030, "path": "./the-apps/flashcards", "entry": "app.py",
-    "icon": "🃏", "color": "#7c3aed", "tags": ["Study","Flashcards","Learning"], "category": "Science & Learning"
-  },
-  {
-    "id": "unit-converter",
-    "name": "Unit Converter",
-    "description": "Convert length, weight, temperature, volume, area, speed, and time units.",
-    "port": 5018, "path": "./the-apps/unit-converter", "entry": "app.py",
-    "icon": "⇆", "color": "#15803d", "tags": ["Units","Convert","Science"], "category": "Science & Learning"
-  },
-  {
-    "id": "typing-speed-test",
-    "name": "Typing Speed Test",
-    "description": "60-second WPM typing test with accuracy score and a personal results history.",
-    "port": 5052, "path": "./the-apps/typing-speed-test", "entry": "app.py",
-    "icon": "⌨️", "color": "#0891b2", "tags": ["Typing","WPM","Speed"], "category": "Games"
-  },
-  {
-    "id": "game-2048",
-    "name": "2048",
-    "description": "The classic sliding tile puzzle. Merge tiles to reach 2048. Arrow keys or swipe to play.",
-    "port": 5053, "path": "./the-apps/game-2048", "entry": "app.py",
-    "icon": "🎮", "color": "#d97706", "tags": ["2048","Puzzle","Game"], "category": "Games"
-  },
-  {
-    "id": "memory-card-game",
-    "name": "Memory Card Game",
-    "description": "Flip cards to find matching emoji pairs. Three difficulty levels with a star rating.",
-    "port": 5054, "path": "./the-apps/memory-card-game", "entry": "app.py",
-    "icon": "◻◼", "color": "#7c3aed", "tags": ["Memory","Cards","Game"], "category": "Games"
-  },
-  {
-    "id": "sudoku",
-    "name": "Sudoku",
-    "description": "Classic 9×9 Sudoku with Easy, Medium, and Hard difficulties. Hints, check, and solve.",
-    "port": 5071, "path": "./the-apps/sudoku", "entry": "app.py",
-    "icon": "🔢", "color": "#0891b2", "tags": ["Sudoku","Puzzle","Game"], "category": "Games"
-  },
-  {
-    "id": "snake-game",
-    "name": "Snake",
-    "description": "Classic snake game. Eat food, grow longer, avoid yourself. Arrow keys or swipe to play.",
-    "port": 5072, "path": "./the-apps/snake-game", "entry": "app.py",
-    "icon": "🐍", "color": "#16a34a", "tags": ["Snake","Game","Arcade"], "category": "Games"
-  },
-  {
-    "id": "tic-tac-toe",
-    "name": "Tic-Tac-Toe",
-    "description": "Play vs a friend or vs an AI. Hard mode uses minimax — try to beat it.",
-    "port": 5073, "path": "./the-apps/tic-tac-toe", "entry": "app.py",
-    "icon": "❌", "color": "#be185d", "tags": ["Tic-Tac-Toe","Game","AI"], "category": "Games"
-  },
-  {
-    "id": "pdf-compressor",
-    "name": "PDF Compressor",
-    "description": "Reduce PDF file size with one click. Shows original size, compressed size, and savings.",
-    "port": 5059, "path": "./the-apps/pdf-compressor", "entry": "app.py",
-    "icon": "🗜️", "color": "#4f46e5", "tags": ["PDF","Compress"], "category": "Documents & Writing"
-  },
-  {
-    "id": "resume-builder",
-    "name": "Resume Builder",
-    "description": "Fill in your experience, education, and skills — download a clean one-page PDF resume.",
-    "port": 5060, "path": "./the-apps/resume-builder", "entry": "app.py",
-    "icon": "CV", "color": "#0f766e", "tags": ["Resume","PDF","Career"], "category": "Documents & Writing"
-  },
-  {
-    "id": "image-cropper",
-    "name": "Image Cropper",
-    "description": "Upload an image, drag a crop box, and download the cropped result.",
-    "port": 5061, "path": "./the-apps/image-cropper", "entry": "app.py",
-    "icon": "✂️", "color": "#0891b2", "tags": ["Crop","Images","Edit"], "category": "Design & Visuals"
-  },
-  {
-    "id": "meme-generator",
-    "name": "Meme Generator",
-    "description": "Add top and bottom text to any image with live preview. Download your meme instantly.",
-    "port": 5062, "path": "./the-apps/meme-generator", "entry": "app.py",
-    "icon": "😂", "color": "#d97706", "tags": ["Meme","Images","Fun"], "category": "Design & Visuals"
-  },
-  {
-    "id": "image-comparison",
-    "name": "Image Comparison",
-    "description": "Upload two images and compare them with a drag-to-reveal before/after slider.",
-    "port": 5063, "path": "./the-apps/image-comparison", "entry": "app.py",
-    "icon": "⇔", "color": "#7c3aed", "tags": ["Compare","Images","Before/After"], "category": "Design & Visuals"
-  },
-  {
-    "id": "kanban-board",
-    "name": "Kanban Board",
-    "description": "Drag-and-drop task board with To Do, In Progress, and Done columns. Saved in browser.",
-    "port": 5064, "path": "./the-apps/kanban-board", "entry": "app.py",
-    "icon": "📌", "color": "#0891b2", "tags": ["Kanban","Tasks","Productivity"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "journal",
-    "name": "Journal",
-    "description": "Daily journal with a calendar view, mood selector, and search. All saved in your browser.",
-    "port": 5065, "path": "./the-apps/journal", "entry": "app.py",
-    "icon": "📔", "color": "#7c3aed", "tags": ["Journal","Diary","Productivity"], "category": "Documents & Writing"
-  },
-  {
-    "id": "speech-to-text",
-    "name": "Speech to Text",
-    "description": "Click the mic and speak — your words are transcribed live using your browser's speech API.",
-    "port": 5066, "path": "./the-apps/speech-to-text", "entry": "app.py",
-    "icon": "🎙️", "color": "#dc2626", "tags": ["Speech","Transcribe","Voice"], "category": "Documents & Writing"
-  },
-  {
-    "id": "ip-info",
-    "name": "IP Address Info",
-    "description": "See your public IP address and look up any IP for location, ISP, and timezone info.",
-    "port": 5067, "path": "./the-apps/ip-info", "entry": "app.py",
-    "icon": "🌐", "color": "#0891b2", "tags": ["IP","Network","Lookup"], "category": "Security & Network"
-  },
-  {
-    "id": "dns-lookup",
-    "name": "DNS Lookup",
-    "description": "Look up A, AAAA, MX, TXT, CNAME, and NS records for any domain.",
-    "port": 5068, "path": "./the-apps/dns-lookup", "entry": "app.py",
-    "icon": "🔎", "color": "#7c3aed", "tags": ["DNS","Network","Dev"], "category": "Security & Network"
-  },
-  {
-    "id": "graph-plotter",
-    "name": "Graph Plotter",
-    "description": "Plot math functions like sin(x), x^2, and more. Up to 4 functions at once on a canvas.",
-    "port": 5069, "path": "./the-apps/graph-plotter", "entry": "app.py",
-    "icon": "📉", "color": "#059669", "tags": ["Graph","Math","Science"], "category": "Science & Learning"
-  },
-  {
-    "id": "csv-json-converter",
-    "name": "CSV ↔ JSON Converter",
-    "description": "Convert CSV to JSON and JSON to CSV instantly. Supports custom delimiters.",
-    "port": 5074, "path": "./the-apps/csv-json-converter", "entry": "app.py",
-    "icon": "↔", "color": "#059669", "tags": ["CSV","JSON","Convert"], "category": "Data & Analysis"
-  },
-  {
-    "id": "color-gradient-generator",
-    "name": "Color Gradient Generator",
-    "description": "Build CSS gradients visually with up to 6 color stops. Copy the CSS instantly.",
-    "port": 5076, "path": "./the-apps/color-gradient-generator", "entry": "app.py",
-    "icon": "🌈", "color": "#7c3aed", "tags": ["Gradient","CSS","Color"], "category": "Design & Visuals"
-  },
-  {
-    "id": "pixel-art-maker",
-    "name": "Pixel Art Maker",
-    "description": "Draw pixel art on an 8×8 to 32×32 grid. Fill, undo, and export as PNG.",
-    "port": 5077, "path": "./the-apps/pixel-art-maker", "entry": "app.py",
-    "icon": "◼", "color": "#be185d", "tags": ["Pixel Art","Drawing","Creative"], "category": "Design & Visuals"
-  },
-  {
-    "id": "budget-tracker",
-    "name": "Budget Tracker",
-    "description": "Log monthly income and expenses by category. View your balance and breakdown.",
-    "port": 5078, "path": "./the-apps/budget-tracker", "entry": "app.py",
-    "icon": "💼", "color": "#059669", "tags": ["Budget","Finance","Tracker"], "category": "Finance & Business"
-  },
-  {
-    "id": "mind-map",
-    "name": "Mind Map",
-    "description": "Create visual mind maps on a canvas. Add nodes, connect them, and export as PNG.",
-    "port": 5079, "path": "./the-apps/mind-map", "entry": "app.py",
-    "icon": "🧠", "color": "#d97706", "tags": ["Mind Map","Ideas","Visual"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "dice-roller",
-    "name": "Dice Roller",
-    "description": "Roll d4, d6, d8, d10, d12, d20, and custom dice. Keeps a history of rolls.",
-    "port": 5080, "path": "./the-apps/dice-roller", "entry": "app.py",
-    "icon": "🎲", "color": "#dc2626", "tags": ["Dice","RPG","Random"], "category": "Games"
-  },
-  {
-    "id": "currency-converter",
-    "name": "Currency Converter",
-    "description": "Convert between 30+ currencies with built-in rates. Includes a full rate table.",
-    "port": 5081, "path": "./the-apps/currency-converter", "entry": "app.py",
-    "icon": "💱", "color": "#1d4ed8", "tags": ["Currency","Finance","Convert"], "category": "Finance & Business"
-  },
-  {
-    "id": "salary-calculator",
-    "name": "Salary Calculator",
-    "description": "Philippines take-home pay calculator with SSS, PhilHealth, Pag-IBIG, and BIR tax.",
-    "port": 5082, "path": "./the-apps/salary-calculator", "entry": "app.py",
-    "icon": "💵", "color": "#059669", "tags": ["Salary","Tax","Philippines"], "category": "Finance & Business"
-  },
-  {
-    "id": "wordle",
-    "name": "Wordle",
-    "description": "Guess the 5-letter word in 6 tries. Green, yellow, and gray clues guide you.",
-    "port": 5083, "path": "./the-apps/wordle", "entry": "app.py",
-    "icon": "🟩", "color": "#4f46e5", "tags": ["Wordle","Word","Game"], "category": "Games"
-  },
-  {
-    "id": "minesweeper",
-    "name": "Minesweeper",
-    "description": "Classic mine-sweeping game with Easy, Medium, and Hard difficulty levels.",
-    "port": 5084, "path": "./the-apps/minesweeper", "entry": "app.py",
-    "icon": "💣", "color": "#dc2626", "tags": ["Minesweeper","Puzzle","Game"], "category": "Games"
-  },
-  {
-    "id": "hangman",
-    "name": "Hangman",
-    "description": "Guess the hidden word letter by letter across 6 categories. Classic SVG hangman.",
-    "port": 5085, "path": "./the-apps/hangman", "entry": "app.py",
-    "icon": "🪢", "color": "#7c3aed", "tags": ["Hangman","Word","Game"], "category": "Games"
-  },
-  {
-    "id": "pdf-splitter",
-    "name": "PDF Splitter",
-    "description": "Split a PDF into individual pages or custom ranges. Download as a ZIP file.",
-    "port": 5086, "path": "./the-apps/pdf-splitter", "entry": "app.py",
-    "icon": "|…|", "color": "#4f46e5", "tags": ["PDF","Split"], "category": "Documents & Writing"
-  },
-  {
-    "id": "markdown-table-generator",
-    "name": "Markdown Table Generator",
-    "description": "Fill in a visual grid and generate Markdown table syntax instantly.",
-    "port": 5087, "path": "./the-apps/markdown-table-generator", "entry": "app.py",
-    "icon": "⊟", "color": "#0891b2", "tags": ["Markdown","Table","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "jwt-generator",
-    "name": "JWT Tools",
-    "description": "Generate and sign JWTs with a custom payload and secret. Decode and inspect any existing token instantly.",
-    "port": 5088, "path": "./the-apps/jwt-generator", "entry": "app.py",
-    "icon": "🔏", "color": "#be185d", "tags": ["JWT","Auth","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "code-beautifier",
-    "name": "Code Beautifier",
-    "description": "Format and beautify JSON, Python, JavaScript, CSS, and HTML code.",
-    "port": 5089, "path": "./the-apps/code-beautifier", "entry": "app.py",
-    "icon": "✨", "color": "#d97706", "tags": ["Format","Code","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "sticky-notes",
-    "name": "Sticky Notes",
-    "description": "Colorful draggable sticky notes board. Everything saves automatically in your browser.",
-    "port": 5090, "path": "./the-apps/sticky-notes", "entry": "app.py",
-    "icon": "🗒️", "color": "#d97706", "tags": ["Notes","Sticky","Productivity"], "category": "Documents & Writing"
-  },
-  {
-    "id": "reading-list",
-    "name": "Reading List",
-    "description": "Save URLs with titles, tags, and notes. Filter by read/unread status.",
-    "port": 5091, "path": "./the-apps/reading-list", "entry": "app.py",
-    "icon": "📚", "color": "#0f766e", "tags": ["Reading","Bookmarks","Links"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "whois-lookup",
-    "name": "Whois Lookup",
-    "description": "Look up domain registration info: registrar, creation date, expiry, and nameservers.",
-    "port": 5092, "path": "./the-apps/whois-lookup", "entry": "app.py",
-    "icon": "WH", "color": "#059669", "tags": ["Whois","Domain","Network"], "category": "Security & Network"
-  },
-  {
-    "id": "ssl-checker",
-    "name": "SSL Certificate Checker",
-    "description": "Check any domain's SSL certificate — issuer, expiry date, and days remaining.",
-    "port": 5093, "path": "./the-apps/ssl-checker", "entry": "app.py",
-    "icon": "🛡", "color": "#16a34a", "tags": ["SSL","HTTPS","Security"], "category": "Security & Network"
-  },
-  {
-    "id": "calorie-tracker",
-    "name": "Calorie Tracker",
-    "description": "Log meals and track daily calorie intake against your goal. Resets each day.",
-    "port": 5094, "path": "./the-apps/calorie-tracker", "entry": "app.py",
-    "icon": "🥗", "color": "#dc2626", "tags": ["Calories","Food","Health"], "category": "Health & Wellness"
-  },
-  {
-    "id": "tetris",
-    "name": "Tetris",
-    "description": "Classic falling block puzzle. Arrow keys to move, Up to rotate, Space to drop.",
-    "port": 5095, "path": "./the-apps/tetris", "entry": "app.py",
-    "icon": "🟦", "color": "#4f46e5", "tags": ["Tetris","Puzzle","Game"], "category": "Games"
-  },
-  {
-    "id": "connect-four",
-    "name": "Connect Four",
-    "description": "Drop discs to get 4 in a row. Play vs a friend or vs a minimax AI.",
-    "port": 5096, "path": "./the-apps/connect-four", "entry": "app.py",
-    "icon": "🔴", "color": "#0891b2", "tags": ["Connect Four","Strategy","Game"], "category": "Games"
-  },
-  {
-    "id": "simon-says",
-    "name": "Simon Says",
-    "description": "Repeat the color and sound sequence before it gets too long. Classic memory game.",
-    "port": 5097, "path": "./the-apps/simon-says", "entry": "app.py",
-    "icon": "🟢", "color": "#16a34a", "tags": ["Simon","Memory","Game"], "category": "Games"
-  },
-  {
-    "id": "world-clock",
-    "name": "World Clock",
-    "description": "See the current time in multiple cities at once. Add, remove, and save your timezone set.",
-    "port": 5098, "path": "./the-apps/world-clock", "entry": "app.py",
-    "icon": "🌍", "color": "#0891b2", "tags": ["Clock","Time","Timezone"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "ascii-art-generator",
-    "name": "ASCII Art Generator",
-    "description": "Convert text to large ASCII art in 8 different styles. Copy or download as .txt.",
-    "port": 5099, "path": "./the-apps/ascii-art-generator", "entry": "app.py",
-    "icon": "▓", "color": "#7c3aed", "tags": ["ASCII","Art","Text"], "category": "Design & Visuals"
-  },
-  {
-    "id": "number-guessing",
-    "name": "Number Guessing Game",
-    "description": "Guess the secret number with Too High / Too Low hints. Four difficulty levels.",
-    "port": 5100, "path": "./the-apps/number-guessing", "entry": "app.py",
-    "icon": "🎯", "color": "#dc2626", "tags": ["Guessing","Number","Game"], "category": "Games"
-  },
-  {
-    "id": "chess",
-    "name": "Chess vs AI",
-    "description": "Play chess against a minimax AI. Choose Easy, Medium, or Hard difficulty. Full legal move enforcement.",
-    "port": 5101, "path": "./the-apps/chess", "entry": "app.py",
-    "icon": "♟", "color": "#1e3a5f", "tags": ["Chess","Strategy","Game"], "category": "Games"
-  },
-  {
-    "id": "battleship",
-    "name": "Battleship",
-    "description": "Classic naval battle game. Randomize your fleet and hunt down the AI's ships on a 10×10 grid.",
-    "port": 5102, "path": "./the-apps/battleship", "entry": "app.py",
-    "icon": "🚢", "color": "#0c4a6e", "tags": ["Battleship","Strategy","Game"], "category": "Games"
-  },
-  {
-    "id": "flappy-bird",
-    "name": "Flappy Bird",
-    "description": "Tap or press Space to flap through pipes. Canvas-based clone with score tracking and best score.",
-    "port": 5103, "path": "./the-apps/flappy-bird", "entry": "app.py",
-    "icon": "🐦", "color": "#065f46", "tags": ["Flappy Bird","Arcade","Game"], "category": "Games"
-  },
-  {
-    "id": "paint",
-    "name": "Paint",
-    "description": "MS Paint-style canvas with brush, eraser, line, rectangle, circle, and flood-fill tools. Save as PNG.",
-    "port": 5104, "path": "./the-apps/paint", "entry": "app.py",
-    "icon": "🖌️", "color": "#be185d", "tags": ["Paint","Drawing","Creative"], "category": "Design & Visuals"
-  },
-  {
-    "id": "http-status-codes",
-    "name": "HTTP Status Codes",
-    "description": "Quick reference for all HTTP status codes — 1xx to 5xx — with descriptions. Searchable and filterable.",
-    "port": 5105, "path": "./the-apps/http-status-codes", "entry": "app.py",
-    "icon": "200", "color": "#1e3a5f", "tags": ["HTTP","Status","Reference","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "diff-checker",
-    "name": "Diff Checker",
-    "description": "Side-by-side visual diff for any two blocks of text. Added and removed lines highlighted in green and red.",
-    "port": 5107, "path": "./the-apps/diff-checker", "entry": "app.py",
-    "icon": "⇄", "color": "#1e3a5f", "tags": ["Diff","Compare","Text","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "json-to-yaml",
-    "name": "JSON ↔ YAML Converter",
-    "description": "Bidirectional converter between JSON and YAML. Paste either format and convert instantly.",
-    "port": 5108, "path": "./the-apps/json-to-yaml", "entry": "app.py",
-    "icon": "⇌", "color": "#14532d", "tags": ["JSON","YAML","Convert","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "html-previewer",
-    "name": "HTML Previewer",
-    "description": "Live HTML/CSS/JS sandbox with separate editor panes and an instant preview. Mobile and tablet views included.",
-    "port": 5109, "path": "./the-apps/html-previewer", "entry": "app.py",
-    "icon": "🖥️", "color": "#1e3a5f", "tags": ["HTML","CSS","JS","Sandbox","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "cidr-calculator",
-    "name": "CIDR / Subnet Calculator",
-    "description": "Enter an IP/CIDR notation to get network address, broadcast, subnet mask, usable hosts, and a bit layout.",
-    "port": 5110, "path": "./the-apps/cidr-calculator", "entry": "app.py",
-    "icon": "/24", "color": "#1d4ed8", "tags": ["CIDR","Subnet","IP","Network","Dev"], "category": "Security & Network"
-  },
-  {
-    "id": "gitignore-generator",
-    "name": "Gitignore Generator",
-    "description": "Pick languages, frameworks, and editors to instantly generate a ready-to-use .gitignore file.",
-    "port": 5111, "path": "./the-apps/gitignore-generator", "entry": "app.py",
-    "icon": "⛔", "color": "#1d4ed8", "tags": ["Git","Gitignore","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "ascii-table",
-    "name": "ASCII Table",
-    "description": "All 128 ASCII characters with decimal, hex, octal, binary values and descriptions. Searchable and filterable.",
-    "port": 5112, "path": "./the-apps/ascii-table", "entry": "app.py",
-    "icon": "A/Z", "color": "#7c3aed", "tags": ["ASCII","Reference","Dev"], "category": "Developer Tools"
-  },
-  {
-    "id": "todo-list",
-    "name": "To-Do List",
-    "description": "Simple task checklist with High / Medium / Low priorities. Filter by status or priority. Saved in browser.",
-    "port": 5113, "path": "./the-apps/todo-list", "entry": "app.py",
-    "icon": "☐", "color": "#1d4ed8", "tags": ["Tasks","Todo","Productivity"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "meeting-timer",
-    "name": "Meeting Timer",
-    "description": "Add agenda items with time limits. A bell rings when each item ends and the timer auto-advances.",
-    "port": 5114, "path": "./the-apps/meeting-timer", "entry": "app.py",
-    "icon": "🔔", "color": "#be185d", "tags": ["Meeting","Timer","Productivity"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "image-filters",
-    "name": "Image Filters & Effects",
-    "description": "Upload an image and adjust brightness, contrast, saturation, grayscale, sepia, blur, and more. Download the result.",
-    "port": 5115, "path": "./the-apps/image-filters", "entry": "app.py",
-    "icon": "◈", "color": "#7c3aed", "tags": ["Image","Filter","Effects","Edit"], "category": "Design & Visuals"
-  },
-  {
-    "id": "svg-to-png",
-    "name": "SVG to PNG Converter",
-    "description": "Paste SVG code or upload an SVG file, set output dimensions, and download as a PNG image.",
-    "port": 5116, "path": "./the-apps/svg-to-png", "entry": "app.py",
-    "icon": "🔄", "color": "#0891b2", "tags": ["SVG","PNG","Convert","Images"], "category": "Design & Visuals"
-  },
-  {
-    "id": "roi-calculator",
-    "name": "ROI Calculator",
-    "description": "Calculate return on investment, annualized CAGR, net profit/loss, and investment multiple.",
-    "port": 5117, "path": "./the-apps/roi-calculator", "entry": "app.py",
-    "icon": "ROI", "color": "#059669", "tags": ["ROI","Return","Finance","Investment"], "category": "Finance & Business"
-  },
-  {
-    "id": "inflation-calculator",
-    "name": "Inflation Calculator",
-    "description": "Find the purchasing power equivalent of any dollar amount across years using US CPI data (1913–2024).",
-    "port": 5118, "path": "./the-apps/inflation-calculator", "entry": "app.py",
-    "icon": "💸", "color": "#dc2626", "tags": ["Inflation","CPI","Finance"], "category": "Finance & Business"
-  },
-  {
-    "id": "statistics-calculator",
-    "name": "Statistics Calculator",
-    "description": "Paste a list of numbers to compute mean, median, mode, std dev, variance, quartiles, and more.",
-    "port": 5119, "path": "./the-apps/statistics-calculator", "entry": "app.py",
-    "icon": "∑", "color": "#0891b2", "tags": ["Statistics","Math","Data","Science"], "category": "Data & Analysis"
-  },
-  {
-    "id": "prime-factorizer",
-    "name": "Prime Factorizer",
-    "description": "Enter any number to get its prime factorization, all divisors, and properties like perfect number check.",
-    "port": 5120, "path": "./the-apps/prime-factorizer", "entry": "app.py",
-    "icon": "p!", "color": "#7c3aed", "tags": ["Prime","Factors","Math","Science"], "category": "Science & Learning"
-  },
-  {
-    "id": "chart-visualizer",
-    "name": "Chart / Data Visualizer",
-    "description": "Paste CSV data and instantly generate bar, horizontal bar, line, pie, or doughnut charts. Download as PNG.",
-    "port": 5121, "path": "./the-apps/chart-visualizer", "entry": "app.py",
-    "icon": "📈", "color": "#0891b2", "tags": ["Chart","Data","Visualize","CSV"], "category": "Data & Analysis"
-  },
-  {
-    "id": "pivot-table",
-    "name": "Pivot Table Builder",
-    "description": "Upload or paste CSV data, choose row, column, and value fields with aggregation to generate a pivot table summary.",
-    "port": 5122, "path": "./the-apps/pivot-table", "entry": "app.py",
-    "icon": "⊞", "color": "#059669", "tags": ["CSV","Pivot","Data","Aggregate"], "category": "Data & Analysis"
-  },
-  {
-    "id": "survey-builder",
-    "name": "Form Builder",
-    "description": "Build surveys with multiple question types and tally responses, or create scored multiple-choice quizzes — two tools in one.",
-    "port": 5123, "path": "./the-apps/survey-builder", "entry": "app.py",
-    "icon": "?", "color": "#7c3aed", "tags": ["Survey","Quiz","Form","Responses","Productivity"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "gantt-chart",
-    "name": "Gantt Chart Maker",
-    "description": "Add tasks with start and end dates to generate a visual project timeline. Highlights today and shows durations. Export as PNG.",
-    "port": 5124, "path": "./the-apps/gantt-chart", "entry": "app.py",
-    "icon": "📅", "color": "#1d4ed8", "tags": ["Gantt","Project","Timeline","Planning"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "decision-matrix",
-    "name": "Decision Matrix",
-    "description": "Score options against weighted criteria to find the best choice objectively. Great for vendor, tool, or strategy selection.",
-    "port": 5125, "path": "./the-apps/decision-matrix", "entry": "app.py",
-    "icon": "⊙", "color": "#0f766e", "tags": ["Decision","Matrix","Analysis","Strategy"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "swot-analysis",
-    "name": "SWOT Analysis Board",
-    "description": "Build a 4-quadrant SWOT board — Strengths, Weaknesses, Opportunities, Threats. Add items and print.",
-    "port": 5126, "path": "./the-apps/swot-analysis", "entry": "app.py",
-    "icon": "SW", "color": "#d97706", "tags": ["SWOT","Strategy","Analysis","Planning"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "okr-tracker",
-    "name": "OKR Tracker",
-    "description": "Define Objectives and Key Results, set target progress per KR, and track overall completion percentage.",
-    "port": 5127, "path": "./the-apps/okr-tracker", "entry": "app.py",
-    "icon": "KR", "color": "#16a34a", "tags": ["OKR","Goals","KPI","Productivity"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "business-letter",
-    "name": "Business Letter Generator",
-    "description": "Fill in sender, recipient, subject, and body to generate a clean formatted business letter. Print or download as PDF.",
-    "port": 5128, "path": "./the-apps/business-letter", "entry": "app.py",
-    "icon": "✉️", "color": "#1d4ed8", "tags": ["Letter","Business","Document","Print"], "category": "Documents & Writing"
-  },
-  {
-    "id": "certificate-generator",
-    "name": "Certificate Generator",
-    "description": "Create certificates of completion, appreciation, achievement, or participation. Customize colors and download as PNG.",
-    "port": 5129, "path": "./the-apps/certificate-generator", "entry": "app.py",
-    "icon": "🏆", "color": "#d97706", "tags": ["Certificate","Award","Document","HR"], "category": "Documents & Writing"
-  },
-  {
-    "id": "barcode-generator",
-    "name": "Barcode Generator",
-    "description": "Generate Code 128 barcodes from any printable text. Customize bar height, color, and module width. Download as PNG.",
-    "port": 5130, "path": "./the-apps/barcode-generator", "entry": "app.py",
-    "icon": "|||", "color": "#0f766e", "tags": ["Barcode","Code128","Scanner","Inventory"], "category": "Finance & Business"
-  },
-  {
-    "id": "meeting-agenda",
-    "name": "Meeting Agenda Builder",
-    "description": "Create structured meeting agendas with timed items, presenters, and notes. Auto-calculates time slots. Copy or print.",
-    "port": 5131, "path": "./the-apps/meeting-agenda", "entry": "app.py",
-    "icon": "📋", "color": "#be185d", "tags": ["Meeting","Agenda","Timer","Productivity"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "break-even-calculator",
-    "name": "Break-Even Calculator",
-    "description": "Enter fixed costs, variable cost per unit, and price per unit to find the break-even point with a visual chart.",
-    "port": 5132, "path": "./the-apps/break-even-calculator", "entry": "app.py",
-    "icon": "BE", "color": "#dc2626", "tags": ["Break-Even","Finance","Business","Analysis"], "category": "Finance & Business"
-  },
-  {
-    "id": "depreciation-calculator",
-    "name": "Depreciation Calculator",
-    "description": "Calculate Straight-Line, Declining Balance, Double Declining, or SYD depreciation with a full schedule and chart.",
-    "port": 5133, "path": "./the-apps/depreciation-calculator", "entry": "app.py",
-    "icon": "↓$", "color": "#7c3aed", "tags": ["Depreciation","Asset","Finance","Accounting"], "category": "Finance & Business"
-  },
-  {
-    "id": "meeting-time-planner",
-    "name": "Meeting Time Planner",
-    "description": "Add cities or timezones and see a 24-hour color-coded overlap grid to find the best meeting time across regions.",
-    "port": 5135, "path": "./the-apps/meeting-time-planner", "entry": "app.py",
-    "icon": "TZ", "color": "#0891b2", "tags": ["Meeting","Timezone","Schedule","Global"], "category": "Productivity & Planning"
-  },
-  {
-    "id": "org-chart",
-    "name": "Org Chart Builder",
-    "description": "Add people with names, titles, and reporting lines to build a visual organization chart. Export as PNG.",
-    "port": 5136, "path": "./the-apps/org-chart", "entry": "app.py",
-    "icon": "🏢", "color": "#1d4ed8", "tags": ["Org Chart","Team","HR","Structure"], "category": "Productivity & Planning"
-  }
+    {
+        "id":  "pdf-to-image",
+        "name":  "PDF ↔ Image Converter",
+        "description":  "Convert PDF pages to PNG or JPEG images, and combine multiple images into a single PDF.",
+        "port":  5001,
+        "path":  "./the-apps/pdf-to-image",
+        "entry":  "app.py",
+        "icon":  "📄",
+        "color":  "#4f46e5",
+        "tags":  [
+                     "PDF",
+                     "Images",
+                     "Converter"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "pdf-merger",
+        "name":  "PDF Merger",
+        "description":  "Upload multiple PDFs, reorder them, and merge into a single downloadable file.",
+        "port":  5035,
+        "path":  "./the-apps/pdf-merger",
+        "entry":  "app.py",
+        "icon":  "🔀",
+        "color":  "#4f46e5",
+        "tags":  [
+                     "PDF",
+                     "Merge"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "csv-viewer",
+        "name":  "CSV / Excel Viewer",
+        "description":  "Upload and browse CSV or Excel files as a searchable, paginated table.",
+        "port":  5004,
+        "path":  "./the-apps/csv-viewer",
+        "entry":  "app.py",
+        "icon":  "CSV",
+        "color":  "#059669",
+        "tags":  [
+                     "CSV",
+                     "Excel",
+                     "Data"
+                 ],
+        "category":  "Data \u0026 Analysis"
+    },
+    {
+        "id":  "base64-tool",
+        "name":  "Base64 Tool",
+        "description":  "Encode and decode text or files to and from Base64.",
+        "port":  5017,
+        "path":  "./the-apps/base64-tool",
+        "entry":  "app.py",
+        "icon":  "B64",
+        "color":  "#c2410c",
+        "tags":  [
+                     "Base64",
+                     "Encode",
+                     "Decode"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "invoice-generator",
+        "name":  "Invoice Manager",
+        "description":  "Create professional PDF invoices and track client payment status — all in one place. Generate, log, filter, and monitor outstanding amounts.",
+        "port":  5021,
+        "path":  "./the-apps/invoice-generator",
+        "entry":  "app.py",
+        "icon":  "🧾",
+        "color":  "#0f766e",
+        "tags":  [
+                     "Invoice",
+                     "PDF",
+                     "Finance",
+                     "Tracker",
+                     "Billing"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "ocr-tool",
+        "name":  "OCR — Image to Text",
+        "description":  "Extract text from images and scanned documents. Runs entirely in your browser.",
+        "port":  5037,
+        "path":  "./the-apps/ocr-tool",
+        "entry":  "app.py",
+        "icon":  "🔍",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "OCR",
+                     "Text",
+                     "Images"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "qr-generator",
+        "name":  "QR Code Generator",
+        "description":  "Generate QR codes for URLs, text, or anything. Download as PNG.",
+        "port":  5003,
+        "path":  "./the-apps/qr-generator",
+        "entry":  "app.py",
+        "icon":  "▦",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "QR",
+                     "Generator"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "image-tools",
+        "name":  "Image Tools",
+        "description":  "Resize, compress, and convert images between PNG, JPEG, WEBP, and BMP.",
+        "port":  5002,
+        "path":  "./the-apps/image-tools",
+        "entry":  "app.py",
+        "icon":  "🖼️",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Images",
+                     "Resize",
+                     "Convert"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "watermark-tool",
+        "name":  "Watermark Tool",
+        "description":  "Add a custom text watermark to images with control over position, size, and opacity.",
+        "port":  5036,
+        "path":  "./the-apps/watermark-tool",
+        "entry":  "app.py",
+        "icon":  "💧",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Watermark",
+                     "Images"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "exif-viewer",
+        "name":  "EXIF Viewer",
+        "description":  "Upload a photo to view its embedded metadata: camera, exposure, GPS, and more.",
+        "port":  5022,
+        "path":  "./the-apps/exif-viewer",
+        "entry":  "app.py",
+        "icon":  "📷",
+        "color":  "#0891b2",
+        "tags":  [
+                     "EXIF",
+                     "Metadata",
+                     "Images"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "favicon-generator",
+        "name":  "Favicon Generator",
+        "description":  "Upload any image and download a ZIP of all standard favicon sizes.",
+        "port":  5023,
+        "path":  "./the-apps/favicon-generator",
+        "entry":  "app.py",
+        "icon":  "⭐",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Favicon",
+                     "Icons",
+                     "Images"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "color-palette-extractor",
+        "name":  "Color Palette Extractor",
+        "description":  "Upload a photo and extract its dominant colors as HEX and RGB swatches.",
+        "port":  5055,
+        "path":  "./the-apps/color-palette-extractor",
+        "entry":  "app.py",
+        "icon":  "🎨",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Color",
+                     "Palette",
+                     "Images"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "color-picker",
+        "name":  "Color Studio",
+        "description":  "Pick any color and get HEX, RGB, HSL, OKLCH, and CSS variable values instantly. Includes RGB/HSL sliders, Tailwind approximation, and tints \u0026 shades.",
+        "port":  5011,
+        "path":  "./the-apps/color-picker",
+        "entry":  "app.py",
+        "icon":  "●",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Color",
+                     "HEX",
+                     "RGB",
+                     "HSL",
+                     "OKLCH",
+                     "Design"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "color-contrast",
+        "name":  "Color Contrast Checker",
+        "description":  "Check WCAG contrast ratio between two colors with AA and AAA pass/fail badges.",
+        "port":  5038,
+        "path":  "./the-apps/color-contrast",
+        "entry":  "app.py",
+        "icon":  "◑",
+        "color":  "#059669",
+        "tags":  [
+                     "Color",
+                     "Accessibility",
+                     "Design"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "json-formatter",
+        "name":  "JSON Formatter",
+        "description":  "Prettify, minify, and validate JSON. Spot errors instantly.",
+        "port":  5005,
+        "path":  "./the-apps/json-formatter",
+        "entry":  "app.py",
+        "icon":  "{ }",
+        "color":  "#d97706",
+        "tags":  [
+                     "JSON",
+                     "Formatter",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "regex-tester",
+        "name":  "Regex Tester",
+        "description":  "Test Python regular expressions with live match highlighting and group capture.",
+        "port":  5007,
+        "path":  "./the-apps/regex-tester",
+        "entry":  "app.py",
+        "icon":  ".*",
+        "color":  "#be185d",
+        "tags":  [
+                     "Regex",
+                     "Dev",
+                     "Python"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "timestamp-converter",
+        "name":  "Timestamp Converter",
+        "description":  "Convert Unix timestamps to human-readable dates and back, with a live clock.",
+        "port":  5013,
+        "path":  "./the-apps/timestamp-converter",
+        "entry":  "app.py",
+        "icon":  "⏱",
+        "color":  "#d97706",
+        "tags":  [
+                     "Timestamp",
+                     "Date",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "base-converter",
+        "name":  "Number Base Converter",
+        "description":  "Convert numbers between binary, octal, decimal, and hexadecimal in real time.",
+        "port":  5014,
+        "path":  "./the-apps/base-converter",
+        "entry":  "app.py",
+        "icon":  "0x",
+        "color":  "#059669",
+        "tags":  [
+                     "Binary",
+                     "Hex",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "url-parser",
+        "name":  "URL Parser",
+        "description":  "Parse URLs into components, encode/decode query strings, and build URLs visually.",
+        "port":  5015,
+        "path":  "./the-apps/url-parser",
+        "entry":  "app.py",
+        "icon":  "🔗",
+        "color":  "#be185d",
+        "tags":  [
+                     "URL",
+                     "Encode",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "uuid-generator",
+        "name":  "UUID Generator",
+        "description":  "Generate UUID v4 or v1 in bulk. Copy individually or all at once.",
+        "port":  5024,
+        "path":  "./the-apps/uuid-generator",
+        "entry":  "app.py",
+        "icon":  "⬡",
+        "color":  "#d97706",
+        "tags":  [
+                     "UUID",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "cron-builder",
+        "name":  "Cron Builder",
+        "description":  "Build cron expressions visually with a human-readable description and next run times.",
+        "port":  5025,
+        "path":  "./the-apps/cron-builder",
+        "entry":  "app.py",
+        "icon":  "⏰",
+        "color":  "#be185d",
+        "tags":  [
+                     "Cron",
+                     "Scheduler",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "html-entity-encoder",
+        "name":  "HTML Entity Encoder",
+        "description":  "Encode and decode HTML entities. Includes a common entities reference table.",
+        "port":  5026,
+        "path":  "./the-apps/html-entity-encoder",
+        "entry":  "app.py",
+        "icon":  "\u0026amp;",
+        "color":  "#059669",
+        "tags":  [
+                     "HTML",
+                     "Encode",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "chmod-calculator",
+        "name":  "Chmod Calculator",
+        "description":  "Click permissions for owner, group, and others — see the octal and chmod command live.",
+        "port":  5027,
+        "path":  "./the-apps/chmod-calculator",
+        "entry":  "app.py",
+        "icon":  "🔐",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "chmod",
+                     "Linux",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "sql-formatter",
+        "name":  "SQL Formatter",
+        "description":  "Prettify and minify SQL queries with configurable indentation and keyword case.",
+        "port":  5028,
+        "path":  "./the-apps/sql-formatter",
+        "entry":  "app.py",
+        "icon":  "🗄",
+        "color":  "#c2410c",
+        "tags":  [
+                     "SQL",
+                     "Formatter",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "css-formatter",
+        "name":  "CSS Formatter",
+        "description":  "Prettify or minify CSS with configurable indentation.",
+        "port":  5039,
+        "path":  "./the-apps/css-formatter",
+        "entry":  "app.py",
+        "icon":  "CSS",
+        "color":  "#2563eb",
+        "tags":  [
+                     "CSS",
+                     "Formatter",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "api-tester",
+        "name":  "API Tester",
+        "description":  "Send HTTP requests with custom headers and body. See status, response, and timing.",
+        "port":  5040,
+        "path":  "./the-apps/api-tester",
+        "entry":  "app.py",
+        "icon":  "⚡",
+        "color":  "#be185d",
+        "tags":  [
+                     "API",
+                     "HTTP",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "random-data-generator",
+        "name":  "Random Data Generator",
+        "description":  "Generate fake names, emails, addresses, and more for testing. Export as JSON or CSV.",
+        "port":  5042,
+        "path":  "./the-apps/random-data-generator",
+        "entry":  "app.py",
+        "icon":  "~{}",
+        "color":  "#0f766e",
+        "tags":  [
+                     "Random",
+                     "Testing",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "markdown-editor",
+        "name":  "Markdown Editor",
+        "description":  "Write Markdown with a live side-by-side preview. Export as HTML or download a styled PDF directly from the toolbar.",
+        "port":  5008,
+        "path":  "./the-apps/markdown-editor",
+        "entry":  "app.py",
+        "icon":  "MD",
+        "color":  "#0f766e",
+        "tags":  [
+                     "Markdown",
+                     "Editor",
+                     "PDF",
+                     "Writing",
+                     "Export"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "word-counter",
+        "name":  "Word Counter",
+        "description":  "Count words, characters, sentences and get reading time and word frequency stats.",
+        "port":  5009,
+        "path":  "./the-apps/word-counter",
+        "entry":  "app.py",
+        "icon":  "Aa",
+        "color":  "#c2410c",
+        "tags":  [
+                     "Text",
+                     "Writing",
+                     "Stats"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "text-case-converter",
+        "name":  "Text Case Converter",
+        "description":  "Convert text between camelCase, snake_case, PascalCase, kebab-case, and more — live.",
+        "port":  5041,
+        "path":  "./the-apps/text-case-converter",
+        "entry":  "app.py",
+        "icon":  "Tt",
+        "color":  "#d97706",
+        "tags":  [
+                     "Text",
+                     "Case",
+                     "Writing"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "lorem-ipsum",
+        "name":  "Lorem Ipsum Generator",
+        "description":  "Generate placeholder text by paragraphs, sentences, or words. Copy or download.",
+        "port":  5019,
+        "path":  "./the-apps/lorem-ipsum",
+        "entry":  "app.py",
+        "icon":  "¶",
+        "color":  "#6d28d9",
+        "tags":  [
+                     "Lorem",
+                     "Placeholder",
+                     "Text"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "notepad",
+        "name":  "Notepad",
+        "description":  "A simple persistent scratchpad. Auto-saves to your browser as you type.",
+        "port":  5020,
+        "path":  "./the-apps/notepad",
+        "entry":  "app.py",
+        "icon":  "📝",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Notes",
+                     "Productivity"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "pomodoro-timer",
+        "name":  "Focus Timer",
+        "description":  "Pomodoro focus sessions with short and long breaks, plus custom countdown timers for events and deadlines.",
+        "port":  5029,
+        "path":  "./the-apps/pomodoro-timer",
+        "entry":  "app.py",
+        "icon":  "🍅",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Pomodoro",
+                     "Timer",
+                     "Focus",
+                     "Countdown",
+                     "Productivity"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "password-generator",
+        "name":  "Password Tools",
+        "description":  "Generate secure passwords and check the strength of any password — entropy score, crack time estimate, and actionable tips. All analysis runs locally.",
+        "port":  5010,
+        "path":  "./the-apps/password-generator",
+        "entry":  "app.py",
+        "icon":  "🔑",
+        "color":  "#15803d",
+        "tags":  [
+                     "Password",
+                     "Security",
+                     "Generator",
+                     "Strength"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "hash-generator",
+        "name":  "Hash Generator",
+        "description":  "Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text or uploaded files.",
+        "port":  5006,
+        "path":  "./the-apps/hash-generator",
+        "entry":  "app.py",
+        "icon":  "#",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Hash",
+                     "Security",
+                     "Dev"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "cipher-tool",
+        "name":  "Cipher Tool",
+        "description":  "Encode and decode text with ROT13, Caesar, Atbash, Vigenère, and Morse Code.",
+        "port":  5043,
+        "path":  "./the-apps/cipher-tool",
+        "entry":  "app.py",
+        "icon":  "🔒",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Cipher",
+                     "Encode",
+                     "Security"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "loan-calculator",
+        "name":  "Loan Calculator",
+        "description":  "Calculate monthly payments, total interest, and view a full amortization schedule.",
+        "port":  5032,
+        "path":  "./the-apps/loan-calculator",
+        "entry":  "app.py",
+        "icon":  "🏦",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Loan",
+                     "Finance",
+                     "Math"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "tip-calculator",
+        "name":  "Quick Calculator",
+        "description":  "Two tools in one: split a bill with tip calculation, or solve any percentage problem (X% of Y, X is what % of Y, percentage change).",
+        "port":  5033,
+        "path":  "./the-apps/tip-calculator",
+        "entry":  "app.py",
+        "icon":  "%",
+        "color":  "#059669",
+        "tags":  [
+                     "Tip",
+                     "Percentage",
+                     "Calculator",
+                     "Finance",
+                     "Math"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "compound-interest",
+        "name":  "Compound Interest",
+        "description":  "Calculate final balance with compound interest, optional monthly contributions, and a year-by-year table.",
+        "port":  5045,
+        "path":  "./the-apps/compound-interest",
+        "entry":  "app.py",
+        "icon":  "%+",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Interest",
+                     "Finance",
+                     "Math"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "vat-calculator",
+        "name":  "VAT / Tax Calculator",
+        "description":  "Add or remove VAT/tax from a price. Supports custom rates and common presets.",
+        "port":  5046,
+        "path":  "./the-apps/vat-calculator",
+        "entry":  "app.py",
+        "icon":  "🧮",
+        "color":  "#059669",
+        "tags":  [
+                     "VAT",
+                     "Tax",
+                     "Finance"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "expense-splitter",
+        "name":  "Expense Splitter",
+        "description":  "Add people and expenses, see who owes whom and the minimum transactions to settle up.",
+        "port":  5047,
+        "path":  "./the-apps/expense-splitter",
+        "entry":  "app.py",
+        "icon":  "🤝",
+        "color":  "#c2410c",
+        "tags":  [
+                     "Expenses",
+                     "Split",
+                     "Finance"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "bmi-calculator",
+        "name":  "BMI Calculator",
+        "description":  "Calculate your BMI with category, healthy weight range, and a visual BMI scale. Metric and imperial.",
+        "port":  5048,
+        "path":  "./the-apps/bmi-calculator",
+        "entry":  "app.py",
+        "icon":  "⚖️",
+        "color":  "#0891b2",
+        "tags":  [
+                     "BMI",
+                     "Health",
+                     "Fitness"
+                 ],
+        "category":  "Health \u0026 Wellness"
+    },
+    {
+        "id":  "tdee-calculator",
+        "name":  "TDEE Calculator",
+        "description":  "Calculate your daily calorie needs and macro breakdown based on your stats and activity level.",
+        "port":  5049,
+        "path":  "./the-apps/tdee-calculator",
+        "entry":  "app.py",
+        "icon":  "🔥",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Calories",
+                     "TDEE",
+                     "Health"
+                 ],
+        "category":  "Health \u0026 Wellness"
+    },
+    {
+        "id":  "age-calculator",
+        "name":  "Age Calculator",
+        "description":  "Exact age in years, months, and days. Birthday countdown, zodiac sign, and fun life stats.",
+        "port":  5050,
+        "path":  "./the-apps/age-calculator",
+        "entry":  "app.py",
+        "icon":  "🎂",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Age",
+                     "Birthday",
+                     "Date"
+                 ],
+        "category":  "Health \u0026 Wellness"
+    },
+    {
+        "id":  "water-tracker",
+        "name":  "Water Intake Tracker",
+        "description":  "Track your daily water intake with a goal, progress ring, and history log. Resets each day.",
+        "port":  5051,
+        "path":  "./the-apps/water-tracker",
+        "entry":  "app.py",
+        "icon":  "H₂O",
+        "color":  "#0284c7",
+        "tags":  [
+                     "Water",
+                     "Hydration",
+                     "Health"
+                 ],
+        "category":  "Health \u0026 Wellness"
+    },
+    {
+        "id":  "sleep-calculator",
+        "name":  "Sleep Calculator",
+        "description":  "Find your ideal bedtime or wake-up time based on 90-minute sleep cycles.",
+        "port":  5058,
+        "path":  "./the-apps/sleep-calculator",
+        "entry":  "app.py",
+        "icon":  "🌙",
+        "color":  "#4f46e5",
+        "tags":  [
+                     "Sleep",
+                     "Health",
+                     "Wellness"
+                 ],
+        "category":  "Health \u0026 Wellness"
+    },
+    {
+        "id":  "habit-tracker",
+        "name":  "Habit Tracker",
+        "description":  "Track daily habits with streaks, completion rates, and a 30-day heatmap calendar.",
+        "port":  5044,
+        "path":  "./the-apps/habit-tracker",
+        "entry":  "app.py",
+        "icon":  "✅",
+        "color":  "#16a34a",
+        "tags":  [
+                     "Habits",
+                     "Health",
+                     "Tracker"
+                 ],
+        "category":  "Health \u0026 Wellness"
+    },
+    {
+        "id":  "periodic-table",
+        "name":  "Periodic Table",
+        "description":  "Interactive periodic table with all 118 elements. Click any element for full details.",
+        "port":  5057,
+        "path":  "./the-apps/periodic-table",
+        "entry":  "app.py",
+        "icon":  "⚗️",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Chemistry",
+                     "Science",
+                     "Education"
+                 ],
+        "category":  "Science \u0026 Learning"
+    },
+    {
+        "id":  "flashcards",
+        "name":  "Flashcards",
+        "description":  "Create decks and study with flip-card UI. Tracks your score. Saved in browser.",
+        "port":  5030,
+        "path":  "./the-apps/flashcards",
+        "entry":  "app.py",
+        "icon":  "🃏",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Study",
+                     "Flashcards",
+                     "Learning"
+                 ],
+        "category":  "Science \u0026 Learning"
+    },
+    {
+        "id":  "unit-converter",
+        "name":  "Unit Converter",
+        "description":  "Convert length, weight, temperature, volume, area, speed, and time units.",
+        "port":  5018,
+        "path":  "./the-apps/unit-converter",
+        "entry":  "app.py",
+        "icon":  "⇆",
+        "color":  "#15803d",
+        "tags":  [
+                     "Units",
+                     "Convert",
+                     "Science"
+                 ],
+        "category":  "Science \u0026 Learning"
+    },
+    {
+        "id":  "typing-speed-test",
+        "name":  "Typing Speed Test",
+        "description":  "60-second WPM typing test with accuracy score and a personal results history.",
+        "port":  5052,
+        "path":  "./the-apps/typing-speed-test",
+        "entry":  "app.py",
+        "icon":  "⌨️",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Typing",
+                     "WPM",
+                     "Speed"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "game-2048",
+        "name":  "2048",
+        "description":  "The classic sliding tile puzzle. Merge tiles to reach 2048. Arrow keys or swipe to play.",
+        "port":  5053,
+        "path":  "./the-apps/game-2048",
+        "entry":  "app.py",
+        "icon":  "🎮",
+        "color":  "#d97706",
+        "tags":  [
+                     "2048",
+                     "Puzzle",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "memory-card-game",
+        "name":  "Memory Card Game",
+        "description":  "Flip cards to find matching emoji pairs. Three difficulty levels with a star rating.",
+        "port":  5054,
+        "path":  "./the-apps/memory-card-game",
+        "entry":  "app.py",
+        "icon":  "◻◼",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Memory",
+                     "Cards",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "sudoku",
+        "name":  "Sudoku",
+        "description":  "Classic 9×9 Sudoku with Easy, Medium, and Hard difficulties. Hints, check, and solve.",
+        "port":  5071,
+        "path":  "./the-apps/sudoku",
+        "entry":  "app.py",
+        "icon":  "🔢",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Sudoku",
+                     "Puzzle",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "snake-game",
+        "name":  "Snake",
+        "description":  "Classic snake game. Eat food, grow longer, avoid yourself. Arrow keys or swipe to play.",
+        "port":  5072,
+        "path":  "./the-apps/snake-game",
+        "entry":  "app.py",
+        "icon":  "🐍",
+        "color":  "#16a34a",
+        "tags":  [
+                     "Snake",
+                     "Game",
+                     "Arcade"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "tic-tac-toe",
+        "name":  "Tic-Tac-Toe",
+        "description":  "Play vs a friend or vs an AI. Hard mode uses minimax — try to beat it.",
+        "port":  5073,
+        "path":  "./the-apps/tic-tac-toe",
+        "entry":  "app.py",
+        "icon":  "❌",
+        "color":  "#be185d",
+        "tags":  [
+                     "Tic-Tac-Toe",
+                     "Game",
+                     "AI"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "pdf-compressor",
+        "name":  "PDF Compressor",
+        "description":  "Reduce PDF file size with one click. Shows original size, compressed size, and savings.",
+        "port":  5059,
+        "path":  "./the-apps/pdf-compressor",
+        "entry":  "app.py",
+        "icon":  "🗜️",
+        "color":  "#4f46e5",
+        "tags":  [
+                     "PDF",
+                     "Compress"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "resume-builder",
+        "name":  "Resume Builder",
+        "description":  "Fill in your experience, education, and skills — download a clean one-page PDF resume.",
+        "port":  5060,
+        "path":  "./the-apps/resume-builder",
+        "entry":  "app.py",
+        "icon":  "CV",
+        "color":  "#0f766e",
+        "tags":  [
+                     "Resume",
+                     "PDF",
+                     "Career"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "image-cropper",
+        "name":  "Image Cropper",
+        "description":  "Upload an image, drag a crop box, and download the cropped result.",
+        "port":  5061,
+        "path":  "./the-apps/image-cropper",
+        "entry":  "app.py",
+        "icon":  "✂️",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Crop",
+                     "Images",
+                     "Edit"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "meme-generator",
+        "name":  "Meme Generator",
+        "description":  "Add top and bottom text to any image with live preview. Download your meme instantly.",
+        "port":  5062,
+        "path":  "./the-apps/meme-generator",
+        "entry":  "app.py",
+        "icon":  "😂",
+        "color":  "#d97706",
+        "tags":  [
+                     "Meme",
+                     "Images",
+                     "Fun"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "image-comparison",
+        "name":  "Image Comparison",
+        "description":  "Upload two images and compare them with a drag-to-reveal before/after slider.",
+        "port":  5063,
+        "path":  "./the-apps/image-comparison",
+        "entry":  "app.py",
+        "icon":  "⇔",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Compare",
+                     "Images",
+                     "Before/After"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "kanban-board",
+        "name":  "Kanban Board",
+        "description":  "Drag-and-drop task board with To Do, In Progress, and Done columns. Saved in browser.",
+        "port":  5064,
+        "path":  "./the-apps/kanban-board",
+        "entry":  "app.py",
+        "icon":  "📌",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Kanban",
+                     "Tasks",
+                     "Productivity"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "journal",
+        "name":  "Journal",
+        "description":  "Daily journal with a calendar view, mood selector, and search. All saved in your browser.",
+        "port":  5065,
+        "path":  "./the-apps/journal",
+        "entry":  "app.py",
+        "icon":  "📔",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Journal",
+                     "Diary",
+                     "Productivity"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "speech-to-text",
+        "name":  "Speech to Text",
+        "description":  "Click the mic and speak — your words are transcribed live using your browser\u0027s speech API.",
+        "port":  5066,
+        "path":  "./the-apps/speech-to-text",
+        "entry":  "app.py",
+        "icon":  "🎙️",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Speech",
+                     "Transcribe",
+                     "Voice"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "ip-info",
+        "name":  "IP Address Info",
+        "description":  "See your public IP address and look up any IP for location, ISP, and timezone info.",
+        "port":  5067,
+        "path":  "./the-apps/ip-info",
+        "entry":  "app.py",
+        "icon":  "🌐",
+        "color":  "#0891b2",
+        "tags":  [
+                     "IP",
+                     "Network",
+                     "Lookup"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "dns-lookup",
+        "name":  "DNS Lookup",
+        "description":  "Look up A, AAAA, MX, TXT, CNAME, and NS records for any domain.",
+        "port":  5068,
+        "path":  "./the-apps/dns-lookup",
+        "entry":  "app.py",
+        "icon":  "🔎",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "DNS",
+                     "Network",
+                     "Dev"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "graph-plotter",
+        "name":  "Graph Plotter",
+        "description":  "Plot math functions like sin(x), x^2, and more. Up to 4 functions at once on a canvas.",
+        "port":  5069,
+        "path":  "./the-apps/graph-plotter",
+        "entry":  "app.py",
+        "icon":  "📉",
+        "color":  "#059669",
+        "tags":  [
+                     "Graph",
+                     "Math",
+                     "Science"
+                 ],
+        "category":  "Science \u0026 Learning"
+    },
+    {
+        "id":  "csv-json-converter",
+        "name":  "CSV ↔ JSON Converter",
+        "description":  "Convert CSV to JSON and JSON to CSV instantly. Supports custom delimiters.",
+        "port":  5074,
+        "path":  "./the-apps/csv-json-converter",
+        "entry":  "app.py",
+        "icon":  "↔",
+        "color":  "#059669",
+        "tags":  [
+                     "CSV",
+                     "JSON",
+                     "Convert"
+                 ],
+        "category":  "Data \u0026 Analysis"
+    },
+    {
+        "id":  "color-gradient-generator",
+        "name":  "Color Gradient Generator",
+        "description":  "Build CSS gradients visually with up to 6 color stops. Copy the CSS instantly.",
+        "port":  5076,
+        "path":  "./the-apps/color-gradient-generator",
+        "entry":  "app.py",
+        "icon":  "🌈",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Gradient",
+                     "CSS",
+                     "Color"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "pixel-art-maker",
+        "name":  "Pixel Art Maker",
+        "description":  "Draw pixel art on an 8×8 to 32×32 grid. Fill, undo, and export as PNG.",
+        "port":  5077,
+        "path":  "./the-apps/pixel-art-maker",
+        "entry":  "app.py",
+        "icon":  "◼",
+        "color":  "#be185d",
+        "tags":  [
+                     "Pixel Art",
+                     "Drawing",
+                     "Creative"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "budget-tracker",
+        "name":  "Budget Tracker",
+        "description":  "Log monthly income and expenses by category. View your balance and breakdown.",
+        "port":  5078,
+        "path":  "./the-apps/budget-tracker",
+        "entry":  "app.py",
+        "icon":  "💼",
+        "color":  "#059669",
+        "tags":  [
+                     "Budget",
+                     "Finance",
+                     "Tracker"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "mind-map",
+        "name":  "Mind Map",
+        "description":  "Create visual mind maps on a canvas. Add nodes, connect them, and export as PNG.",
+        "port":  5079,
+        "path":  "./the-apps/mind-map",
+        "entry":  "app.py",
+        "icon":  "🧠",
+        "color":  "#d97706",
+        "tags":  [
+                     "Mind Map",
+                     "Ideas",
+                     "Visual"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "dice-roller",
+        "name":  "Dice Roller",
+        "description":  "Roll d4, d6, d8, d10, d12, d20, and custom dice. Keeps a history of rolls.",
+        "port":  5080,
+        "path":  "./the-apps/dice-roller",
+        "entry":  "app.py",
+        "icon":  "🎲",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Dice",
+                     "RPG",
+                     "Random"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "currency-converter",
+        "name":  "Currency Converter",
+        "description":  "Convert between 30+ currencies with built-in rates. Includes a full rate table.",
+        "port":  5081,
+        "path":  "./the-apps/currency-converter",
+        "entry":  "app.py",
+        "icon":  "💱",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Currency",
+                     "Finance",
+                     "Convert"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "salary-calculator",
+        "name":  "Salary Calculator",
+        "description":  "Philippines take-home pay calculator with SSS, PhilHealth, Pag-IBIG, and BIR tax.",
+        "port":  5082,
+        "path":  "./the-apps/salary-calculator",
+        "entry":  "app.py",
+        "icon":  "💵",
+        "color":  "#059669",
+        "tags":  [
+                     "Salary",
+                     "Tax",
+                     "Philippines"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "wordle",
+        "name":  "Wordle",
+        "description":  "Guess the 5-letter word in 6 tries. Green, yellow, and gray clues guide you.",
+        "port":  5083,
+        "path":  "./the-apps/wordle",
+        "entry":  "app.py",
+        "icon":  "🟩",
+        "color":  "#4f46e5",
+        "tags":  [
+                     "Wordle",
+                     "Word",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "minesweeper",
+        "name":  "Minesweeper",
+        "description":  "Classic mine-sweeping game with Easy, Medium, and Hard difficulty levels.",
+        "port":  5084,
+        "path":  "./the-apps/minesweeper",
+        "entry":  "app.py",
+        "icon":  "💣",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Minesweeper",
+                     "Puzzle",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "hangman",
+        "name":  "Hangman",
+        "description":  "Guess the hidden word letter by letter across 6 categories. Classic SVG hangman.",
+        "port":  5085,
+        "path":  "./the-apps/hangman",
+        "entry":  "app.py",
+        "icon":  "🪢",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Hangman",
+                     "Word",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "pdf-splitter",
+        "name":  "PDF Splitter",
+        "description":  "Split a PDF into individual pages or custom ranges. Download as a ZIP file.",
+        "port":  5086,
+        "path":  "./the-apps/pdf-splitter",
+        "entry":  "app.py",
+        "icon":  "|…|",
+        "color":  "#4f46e5",
+        "tags":  [
+                     "PDF",
+                     "Split"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "markdown-table-generator",
+        "name":  "Markdown Table Generator",
+        "description":  "Fill in a visual grid and generate Markdown table syntax instantly.",
+        "port":  5087,
+        "path":  "./the-apps/markdown-table-generator",
+        "entry":  "app.py",
+        "icon":  "⊟",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Markdown",
+                     "Table",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "jwt-generator",
+        "name":  "JWT Tools",
+        "description":  "Generate and sign JWTs with a custom payload and secret. Decode and inspect any existing token instantly.",
+        "port":  5088,
+        "path":  "./the-apps/jwt-generator",
+        "entry":  "app.py",
+        "icon":  "🔏",
+        "color":  "#be185d",
+        "tags":  [
+                     "JWT",
+                     "Auth",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "code-beautifier",
+        "name":  "Code Beautifier",
+        "description":  "Format and beautify JSON, Python, JavaScript, CSS, and HTML code.",
+        "port":  5089,
+        "path":  "./the-apps/code-beautifier",
+        "entry":  "app.py",
+        "icon":  "✨",
+        "color":  "#d97706",
+        "tags":  [
+                     "Format",
+                     "Code",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "sticky-notes",
+        "name":  "Sticky Notes",
+        "description":  "Colorful draggable sticky notes board. Everything saves automatically in your browser.",
+        "port":  5090,
+        "path":  "./the-apps/sticky-notes",
+        "entry":  "app.py",
+        "icon":  "🗒️",
+        "color":  "#d97706",
+        "tags":  [
+                     "Notes",
+                     "Sticky",
+                     "Productivity"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "reading-list",
+        "name":  "Reading List",
+        "description":  "Save URLs with titles, tags, and notes. Filter by read/unread status.",
+        "port":  5091,
+        "path":  "./the-apps/reading-list",
+        "entry":  "app.py",
+        "icon":  "📚",
+        "color":  "#0f766e",
+        "tags":  [
+                     "Reading",
+                     "Bookmarks",
+                     "Links"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "whois-lookup",
+        "name":  "Whois Lookup",
+        "description":  "Look up domain registration info: registrar, creation date, expiry, and nameservers.",
+        "port":  5092,
+        "path":  "./the-apps/whois-lookup",
+        "entry":  "app.py",
+        "icon":  "WH",
+        "color":  "#059669",
+        "tags":  [
+                     "Whois",
+                     "Domain",
+                     "Network"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "ssl-checker",
+        "name":  "SSL Certificate Checker",
+        "description":  "Check any domain\u0027s SSL certificate — issuer, expiry date, and days remaining.",
+        "port":  5093,
+        "path":  "./the-apps/ssl-checker",
+        "entry":  "app.py",
+        "icon":  "🛡",
+        "color":  "#16a34a",
+        "tags":  [
+                     "SSL",
+                     "HTTPS",
+                     "Security"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "calorie-tracker",
+        "name":  "Calorie Tracker",
+        "description":  "Log meals and track daily calorie intake against your goal. Resets each day.",
+        "port":  5094,
+        "path":  "./the-apps/calorie-tracker",
+        "entry":  "app.py",
+        "icon":  "🥗",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Calories",
+                     "Food",
+                     "Health"
+                 ],
+        "category":  "Health \u0026 Wellness"
+    },
+    {
+        "id":  "tetris",
+        "name":  "Tetris",
+        "description":  "Classic falling block puzzle. Arrow keys to move, Up to rotate, Space to drop.",
+        "port":  5095,
+        "path":  "./the-apps/tetris",
+        "entry":  "app.py",
+        "icon":  "🟦",
+        "color":  "#4f46e5",
+        "tags":  [
+                     "Tetris",
+                     "Puzzle",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "connect-four",
+        "name":  "Connect Four",
+        "description":  "Drop discs to get 4 in a row. Play vs a friend or vs a minimax AI.",
+        "port":  5096,
+        "path":  "./the-apps/connect-four",
+        "entry":  "app.py",
+        "icon":  "🔴",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Connect Four",
+                     "Strategy",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "simon-says",
+        "name":  "Simon Says",
+        "description":  "Repeat the color and sound sequence before it gets too long. Classic memory game.",
+        "port":  5097,
+        "path":  "./the-apps/simon-says",
+        "entry":  "app.py",
+        "icon":  "🟢",
+        "color":  "#16a34a",
+        "tags":  [
+                     "Simon",
+                     "Memory",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "world-clock",
+        "name":  "World Clock",
+        "description":  "See the current time in multiple cities at once. Add, remove, and save your timezone set.",
+        "port":  5098,
+        "path":  "./the-apps/world-clock",
+        "entry":  "app.py",
+        "icon":  "🌍",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Clock",
+                     "Time",
+                     "Timezone"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "ascii-art-generator",
+        "name":  "ASCII Art Generator",
+        "description":  "Convert text to large ASCII art in 8 different styles. Copy or download as .txt.",
+        "port":  5099,
+        "path":  "./the-apps/ascii-art-generator",
+        "entry":  "app.py",
+        "icon":  "▓",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "ASCII",
+                     "Art",
+                     "Text"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "number-guessing",
+        "name":  "Number Guessing Game",
+        "description":  "Guess the secret number with Too High / Too Low hints. Four difficulty levels.",
+        "port":  5100,
+        "path":  "./the-apps/number-guessing",
+        "entry":  "app.py",
+        "icon":  "🎯",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Guessing",
+                     "Number",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "chess",
+        "name":  "Chess vs AI",
+        "description":  "Play chess against a minimax AI. Choose Easy, Medium, or Hard difficulty. Full legal move enforcement.",
+        "port":  5101,
+        "path":  "./the-apps/chess",
+        "entry":  "app.py",
+        "icon":  "♟",
+        "color":  "#1e3a5f",
+        "tags":  [
+                     "Chess",
+                     "Strategy",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "battleship",
+        "name":  "Battleship",
+        "description":  "Classic naval battle game. Randomize your fleet and hunt down the AI\u0027s ships on a 10×10 grid.",
+        "port":  5102,
+        "path":  "./the-apps/battleship",
+        "entry":  "app.py",
+        "icon":  "🚢",
+        "color":  "#0c4a6e",
+        "tags":  [
+                     "Battleship",
+                     "Strategy",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "flappy-bird",
+        "name":  "Flappy Bird",
+        "description":  "Tap or press Space to flap through pipes. Canvas-based clone with score tracking and best score.",
+        "port":  5103,
+        "path":  "./the-apps/flappy-bird",
+        "entry":  "app.py",
+        "icon":  "🐦",
+        "color":  "#065f46",
+        "tags":  [
+                     "Flappy Bird",
+                     "Arcade",
+                     "Game"
+                 ],
+        "category":  "Games"
+    },
+    {
+        "id":  "paint",
+        "name":  "Paint",
+        "description":  "MS Paint-style canvas with brush, eraser, line, rectangle, circle, and flood-fill tools. Save as PNG.",
+        "port":  5104,
+        "path":  "./the-apps/paint",
+        "entry":  "app.py",
+        "icon":  "🖌️",
+        "color":  "#be185d",
+        "tags":  [
+                     "Paint",
+                     "Drawing",
+                     "Creative"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "http-status-codes",
+        "name":  "HTTP Status Codes",
+        "description":  "Quick reference for all HTTP status codes — 1xx to 5xx — with descriptions. Searchable and filterable.",
+        "port":  5105,
+        "path":  "./the-apps/http-status-codes",
+        "entry":  "app.py",
+        "icon":  "200",
+        "color":  "#1e3a5f",
+        "tags":  [
+                     "HTTP",
+                     "Status",
+                     "Reference",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "diff-checker",
+        "name":  "Diff Checker",
+        "description":  "Side-by-side visual diff for any two blocks of text. Added and removed lines highlighted in green and red.",
+        "port":  5107,
+        "path":  "./the-apps/diff-checker",
+        "entry":  "app.py",
+        "icon":  "⇄",
+        "color":  "#1e3a5f",
+        "tags":  [
+                     "Diff",
+                     "Compare",
+                     "Text",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "json-to-yaml",
+        "name":  "JSON ↔ YAML Converter",
+        "description":  "Bidirectional converter between JSON and YAML. Paste either format and convert instantly.",
+        "port":  5108,
+        "path":  "./the-apps/json-to-yaml",
+        "entry":  "app.py",
+        "icon":  "⇌",
+        "color":  "#14532d",
+        "tags":  [
+                     "JSON",
+                     "YAML",
+                     "Convert",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "html-previewer",
+        "name":  "HTML Previewer",
+        "description":  "Live HTML/CSS/JS sandbox with separate editor panes and an instant preview. Mobile and tablet views included.",
+        "port":  5109,
+        "path":  "./the-apps/html-previewer",
+        "entry":  "app.py",
+        "icon":  "🖥️",
+        "color":  "#1e3a5f",
+        "tags":  [
+                     "HTML",
+                     "CSS",
+                     "JS",
+                     "Sandbox",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "cidr-calculator",
+        "name":  "CIDR / Subnet Calculator",
+        "description":  "Enter an IP/CIDR notation to get network address, broadcast, subnet mask, usable hosts, and a bit layout.",
+        "port":  5110,
+        "path":  "./the-apps/cidr-calculator",
+        "entry":  "app.py",
+        "icon":  "/24",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "CIDR",
+                     "Subnet",
+                     "IP",
+                     "Network",
+                     "Dev"
+                 ],
+        "category":  "Security \u0026 Network"
+    },
+    {
+        "id":  "gitignore-generator",
+        "name":  "Gitignore Generator",
+        "description":  "Pick languages, frameworks, and editors to instantly generate a ready-to-use .gitignore file.",
+        "port":  5111,
+        "path":  "./the-apps/gitignore-generator",
+        "entry":  "app.py",
+        "icon":  "⛔",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Git",
+                     "Gitignore",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "ascii-table",
+        "name":  "ASCII Table",
+        "description":  "All 128 ASCII characters with decimal, hex, octal, binary values and descriptions. Searchable and filterable.",
+        "port":  5112,
+        "path":  "./the-apps/ascii-table",
+        "entry":  "app.py",
+        "icon":  "A/Z",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "ASCII",
+                     "Reference",
+                     "Dev"
+                 ],
+        "category":  "Developer Tools"
+    },
+    {
+        "id":  "todo-list",
+        "name":  "To-Do List",
+        "description":  "Simple task checklist with High / Medium / Low priorities. Filter by status or priority. Saved in browser.",
+        "port":  5113,
+        "path":  "./the-apps/todo-list",
+        "entry":  "app.py",
+        "icon":  "☐",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Tasks",
+                     "Todo",
+                     "Productivity"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "meeting-timer",
+        "name":  "Meeting Timer",
+        "description":  "Add agenda items with time limits. A bell rings when each item ends and the timer auto-advances.",
+        "port":  5114,
+        "path":  "./the-apps/meeting-timer",
+        "entry":  "app.py",
+        "icon":  "🔔",
+        "color":  "#be185d",
+        "tags":  [
+                     "Meeting",
+                     "Timer",
+                     "Productivity"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "image-filters",
+        "name":  "Image Filters \u0026 Effects",
+        "description":  "Upload an image and adjust brightness, contrast, saturation, grayscale, sepia, blur, and more. Download the result.",
+        "port":  5115,
+        "path":  "./the-apps/image-filters",
+        "entry":  "app.py",
+        "icon":  "◈",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Image",
+                     "Filter",
+                     "Effects",
+                     "Edit"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "svg-to-png",
+        "name":  "SVG to PNG Converter",
+        "description":  "Paste SVG code or upload an SVG file, set output dimensions, and download as a PNG image.",
+        "port":  5116,
+        "path":  "./the-apps/svg-to-png",
+        "entry":  "app.py",
+        "icon":  "🔄",
+        "color":  "#0891b2",
+        "tags":  [
+                     "SVG",
+                     "PNG",
+                     "Convert",
+                     "Images"
+                 ],
+        "category":  "Design \u0026 Visuals"
+    },
+    {
+        "id":  "roi-calculator",
+        "name":  "ROI Calculator",
+        "description":  "Calculate return on investment, annualized CAGR, net profit/loss, and investment multiple.",
+        "port":  5117,
+        "path":  "./the-apps/roi-calculator",
+        "entry":  "app.py",
+        "icon":  "ROI",
+        "color":  "#059669",
+        "tags":  [
+                     "ROI",
+                     "Return",
+                     "Finance",
+                     "Investment"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "inflation-calculator",
+        "name":  "Inflation Calculator",
+        "description":  "Find the purchasing power equivalent of any dollar amount across years using US CPI data (1913–2024).",
+        "port":  5118,
+        "path":  "./the-apps/inflation-calculator",
+        "entry":  "app.py",
+        "icon":  "💸",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Inflation",
+                     "CPI",
+                     "Finance"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "statistics-calculator",
+        "name":  "Statistics Calculator",
+        "description":  "Paste a list of numbers to compute mean, median, mode, std dev, variance, quartiles, and more.",
+        "port":  5119,
+        "path":  "./the-apps/statistics-calculator",
+        "entry":  "app.py",
+        "icon":  "∑",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Statistics",
+                     "Math",
+                     "Data",
+                     "Science"
+                 ],
+        "category":  "Data \u0026 Analysis"
+    },
+    {
+        "id":  "prime-factorizer",
+        "name":  "Prime Factorizer",
+        "description":  "Enter any number to get its prime factorization, all divisors, and properties like perfect number check.",
+        "port":  5120,
+        "path":  "./the-apps/prime-factorizer",
+        "entry":  "app.py",
+        "icon":  "p!",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Prime",
+                     "Factors",
+                     "Math",
+                     "Science"
+                 ],
+        "category":  "Science \u0026 Learning"
+    },
+    {
+        "id":  "chart-visualizer",
+        "name":  "Chart / Data Visualizer",
+        "description":  "Paste CSV data and instantly generate bar, horizontal bar, line, pie, or doughnut charts. Download as PNG.",
+        "port":  5121,
+        "path":  "./the-apps/chart-visualizer",
+        "entry":  "app.py",
+        "icon":  "📈",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Chart",
+                     "Data",
+                     "Visualize",
+                     "CSV"
+                 ],
+        "category":  "Data \u0026 Analysis"
+    },
+    {
+        "id":  "pivot-table",
+        "name":  "Pivot Table Builder",
+        "description":  "Upload or paste CSV data, choose row, column, and value fields with aggregation to generate a pivot table summary.",
+        "port":  5122,
+        "path":  "./the-apps/pivot-table",
+        "entry":  "app.py",
+        "icon":  "⊞",
+        "color":  "#059669",
+        "tags":  [
+                     "CSV",
+                     "Pivot",
+                     "Data",
+                     "Aggregate"
+                 ],
+        "category":  "Data \u0026 Analysis"
+    },
+    {
+        "id":  "survey-builder",
+        "name":  "Form Builder",
+        "description":  "Build surveys with multiple question types and tally responses, or create scored multiple-choice quizzes — two tools in one.",
+        "port":  5123,
+        "path":  "./the-apps/survey-builder",
+        "entry":  "app.py",
+        "icon":  "?",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Survey",
+                     "Quiz",
+                     "Form",
+                     "Responses",
+                     "Productivity"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "gantt-chart",
+        "name":  "Gantt Chart Maker",
+        "description":  "Add tasks with start and end dates to generate a visual project timeline. Highlights today and shows durations. Export as PNG.",
+        "port":  5124,
+        "path":  "./the-apps/gantt-chart",
+        "entry":  "app.py",
+        "icon":  "📅",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Gantt",
+                     "Project",
+                     "Timeline",
+                     "Planning"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "decision-matrix",
+        "name":  "Decision Matrix",
+        "description":  "Score options against weighted criteria to find the best choice objectively. Great for vendor, tool, or strategy selection.",
+        "port":  5125,
+        "path":  "./the-apps/decision-matrix",
+        "entry":  "app.py",
+        "icon":  "⊙",
+        "color":  "#0f766e",
+        "tags":  [
+                     "Decision",
+                     "Matrix",
+                     "Analysis",
+                     "Strategy"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "swot-analysis",
+        "name":  "SWOT Analysis Board",
+        "description":  "Build a 4-quadrant SWOT board — Strengths, Weaknesses, Opportunities, Threats. Add items and print.",
+        "port":  5126,
+        "path":  "./the-apps/swot-analysis",
+        "entry":  "app.py",
+        "icon":  "SW",
+        "color":  "#d97706",
+        "tags":  [
+                     "SWOT",
+                     "Strategy",
+                     "Analysis",
+                     "Planning"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "okr-tracker",
+        "name":  "OKR Tracker",
+        "description":  "Define Objectives and Key Results, set target progress per KR, and track overall completion percentage.",
+        "port":  5127,
+        "path":  "./the-apps/okr-tracker",
+        "entry":  "app.py",
+        "icon":  "KR",
+        "color":  "#16a34a",
+        "tags":  [
+                     "OKR",
+                     "Goals",
+                     "KPI",
+                     "Productivity"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "business-letter",
+        "name":  "Business Letter Generator",
+        "description":  "Fill in sender, recipient, subject, and body to generate a clean formatted business letter. Print or download as PDF.",
+        "port":  5128,
+        "path":  "./the-apps/business-letter",
+        "entry":  "app.py",
+        "icon":  "✉️",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Letter",
+                     "Business",
+                     "Document",
+                     "Print"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "certificate-generator",
+        "name":  "Certificate Generator",
+        "description":  "Create certificates of completion, appreciation, achievement, or participation. Customize colors and download as PNG.",
+        "port":  5129,
+        "path":  "./the-apps/certificate-generator",
+        "entry":  "app.py",
+        "icon":  "🏆",
+        "color":  "#d97706",
+        "tags":  [
+                     "Certificate",
+                     "Award",
+                     "Document",
+                     "HR"
+                 ],
+        "category":  "Documents \u0026 Writing"
+    },
+    {
+        "id":  "barcode-generator",
+        "name":  "Barcode Generator",
+        "description":  "Generate Code 128 barcodes from any printable text. Customize bar height, color, and module width. Download as PNG.",
+        "port":  5130,
+        "path":  "./the-apps/barcode-generator",
+        "entry":  "app.py",
+        "icon":  "|||",
+        "color":  "#0f766e",
+        "tags":  [
+                     "Barcode",
+                     "Code128",
+                     "Scanner",
+                     "Inventory"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "meeting-agenda",
+        "name":  "Meeting Agenda Builder",
+        "description":  "Create structured meeting agendas with timed items, presenters, and notes. Auto-calculates time slots. Copy or print.",
+        "port":  5131,
+        "path":  "./the-apps/meeting-agenda",
+        "entry":  "app.py",
+        "icon":  "📋",
+        "color":  "#be185d",
+        "tags":  [
+                     "Meeting",
+                     "Agenda",
+                     "Timer",
+                     "Productivity"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "break-even-calculator",
+        "name":  "Break-Even Calculator",
+        "description":  "Enter fixed costs, variable cost per unit, and price per unit to find the break-even point with a visual chart.",
+        "port":  5132,
+        "path":  "./the-apps/break-even-calculator",
+        "entry":  "app.py",
+        "icon":  "BE",
+        "color":  "#dc2626",
+        "tags":  [
+                     "Break-Even",
+                     "Finance",
+                     "Business",
+                     "Analysis"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "depreciation-calculator",
+        "name":  "Depreciation Calculator",
+        "description":  "Calculate Straight-Line, Declining Balance, Double Declining, or SYD depreciation with a full schedule and chart.",
+        "port":  5133,
+        "path":  "./the-apps/depreciation-calculator",
+        "entry":  "app.py",
+        "icon":  "↓$",
+        "color":  "#7c3aed",
+        "tags":  [
+                     "Depreciation",
+                     "Asset",
+                     "Finance",
+                     "Accounting"
+                 ],
+        "category":  "Finance \u0026 Business"
+    },
+    {
+        "id":  "meeting-time-planner",
+        "name":  "Meeting Time Planner",
+        "description":  "Add cities or timezones and see a 24-hour color-coded overlap grid to find the best meeting time across regions.",
+        "port":  5135,
+        "path":  "./the-apps/meeting-time-planner",
+        "entry":  "app.py",
+        "icon":  "TZ",
+        "color":  "#0891b2",
+        "tags":  [
+                     "Meeting",
+                     "Timezone",
+                     "Schedule",
+                     "Global"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "org-chart",
+        "name":  "Org Chart Builder",
+        "description":  "Add people with names, titles, and reporting lines to build a visual organization chart. Export as PNG.",
+        "port":  5136,
+        "path":  "./the-apps/org-chart",
+        "entry":  "app.py",
+        "icon":  "🏢",
+        "color":  "#1d4ed8",
+        "tags":  [
+                     "Org Chart",
+                     "Team",
+                     "HR",
+                     "Structure"
+                 ],
+        "category":  "Productivity \u0026 Planning"
+    },
+    {
+        "id":  "text-to-speech",
+        "name":  "Text to Speech",
+        "description":  "Convert text to speech in your browser. Choose from all installed voices, adjust speed, pitch, and volume.",
+        "category":  "Productivity \u0026 Planning",
+        "icon":  "\u0026#128266;",
+        "color":  "#7c3aed",
+        "url":  "/text-to-speech/",
+        "port":  5137,
+        "entry":  "app.py",
+        "path":  "the-apps/text-to-speech",
+        "tags":  [
+                     "text to speech",
+                     "tts",
+                     "voice",
+                     "speak",
+                     "audio",
+                     "accessibility"
+                 ]
+    },
+    {
+        "id":  "email-signature",
+        "name":  "Email Signature Generator",
+        "description":  "Build a professional HTML email signature with 4 style themes. Copy HTML to paste into Gmail, Outlook, or any email client.",
+        "category":  "Documents \u0026 Writing",
+        "icon":  "\u0026#128140;",
+        "color":  "#0f766e",
+        "url":  "/email-signature/",
+        "port":  5138,
+        "entry":  "app.py",
+        "path":  "the-apps/email-signature",
+        "tags":  [
+                     "email signature",
+                     "html signature",
+                     "gmail",
+                     "outlook",
+                     "professional",
+                     "email"
+                 ]
+    },
+    {
+        "id":  "readability-analyzer",
+        "name":  "Readability Analyzer",
+        "description":  "Analyze text for Flesch-Kincaid grade level, reading ease, reading time, sentence complexity, and hard words.",
+        "category":  "Documents \u0026 Writing",
+        "icon":  "\u0026#128218;",
+        "color":  "#1d4ed8",
+        "url":  "/readability-analyzer/",
+        "port":  5139,
+        "entry":  "app.py",
+        "path":  "the-apps/readability-analyzer",
+        "tags":  [
+                     "readability",
+                     "flesch kincaid",
+                     "reading level",
+                     "text analysis",
+                     "grade level",
+                     "writing"
+                 ]
+    }
 ]
