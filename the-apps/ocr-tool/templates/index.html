@@ -126,15 +126,16 @@ textarea:focus { border-color: var(--primary); }
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 let selectedFile = null;
-
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('over');
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) loadFile(f);
-});
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+if (dropZone && fileInput) {
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadFile(f);
+  });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+}
 
 function loadFile(f) {
   selectedFile = f;

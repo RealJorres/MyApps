@@ -119,11 +119,13 @@ let selectedTZs = [
 
 // Populate select
 const sel = document.getElementById('tzSelect');
-TIMEZONES.forEach(tz => {
-  const opt = document.createElement('option');
-  opt.value = tz.tz; opt.textContent = tz.label;
-  sel.appendChild(opt);
-});
+if (sel) {
+  TIMEZONES.forEach(tz => {
+    const opt = document.createElement('option');
+    opt.value = tz.tz; opt.textContent = tz.label;
+    sel.appendChild(opt);
+  });
+}
 
 function addTZ() {
   const tz = sel.value;

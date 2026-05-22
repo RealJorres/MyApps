@@ -160,16 +160,18 @@ function switchTab(tab) {
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) setFile(file);
-});
-dropZone.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
+if (dropZone && fileInput) {
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) setFile(file);
+  });
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
+}
 
 function setFile(file) {
   selectedFile = file;

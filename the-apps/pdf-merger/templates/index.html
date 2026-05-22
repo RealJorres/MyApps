@@ -128,19 +128,21 @@ const statsBar = document.getElementById('statsBar');
 let files = [];
 let dragSrcIdx = null;
 
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  addFiles(Array.from(e.dataTransfer.files));
-});
-fileInput.addEventListener('change', () => {
-  addFiles(Array.from(fileInput.files));
-  fileInput.value = '';
-});
-addMoreBtn.addEventListener('click', () => fileInput.click());
+if (dropZone && fileInput) {
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    addFiles(Array.from(e.dataTransfer.files));
+  });
+  fileInput.addEventListener('change', () => {
+    addFiles(Array.from(fileInput.files));
+    fileInput.value = '';
+  });
+}
+if (addMoreBtn) addMoreBtn.addEventListener('click', () => fileInput && fileInput.click());
 
 function addFiles(newFiles) {
   newFiles.filter(f => f.type === 'application/pdf' || f.name.endsWith('.pdf')).forEach(f => {

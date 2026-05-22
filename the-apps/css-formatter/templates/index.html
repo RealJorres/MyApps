@@ -115,11 +115,11 @@ function countStats(text) {
   return `${text.length} chars, ${text.split('\n').length} lines`;
 }
 
-inputCss.addEventListener('input', () => {
+if (inputCss) inputCss.addEventListener('input', () => {
   document.getElementById('inputStats').textContent = countStats(inputCss.value);
 });
 
-outputCss.addEventListener('input', () => {
+if (outputCss) outputCss.addEventListener('input', () => {
   document.getElementById('outputStats').textContent = countStats(outputCss.value);
 });
 

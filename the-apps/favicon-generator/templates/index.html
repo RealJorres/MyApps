@@ -124,12 +124,14 @@ let selectedFormat = 'png';
 
 // Build size checkboxes
 const sizesGrid = document.getElementById('sizesGrid');
-SIZES.forEach(s => {
-  const label = document.createElement('label');
-  label.className = 'size-check';
-  label.innerHTML = `<input type="checkbox" value="${s}" checked> ${s}×${s}`;
-  sizesGrid.appendChild(label);
-});
+if (sizesGrid) {
+  SIZES.forEach(s => {
+    const label = document.createElement('label');
+    label.className = 'size-check';
+    label.innerHTML = `<input type="checkbox" value="${s}" checked> ${s}×${s}`;
+    sizesGrid.appendChild(label);
+  });
+}
 
 function selectAll(v) {
   document.querySelectorAll('#sizesGrid input').forEach(cb => cb.checked = v);

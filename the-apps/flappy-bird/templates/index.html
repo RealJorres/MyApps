@@ -31,7 +31,8 @@ canvas { border: 3px solid #334155; border-radius: 8px; display: block; max-widt
   <p class="hint">Press Space / Tap to flap</p>
 </div>
 <script>
-const c=document.getElementById('c'),ctx=c.getContext('2d');
+const c=document.getElementById('c');
+const ctx=c&&c.getContext('2d');
 const W=360,H=540,GRAV=0.08,FLAP=-4.0,PIPE_W=48,GAP=190,PIPE_SPEED=1.0;
 let bird,pipes,score,best=0,state,frame;
 

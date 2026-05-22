@@ -127,16 +127,17 @@ let currentMode = 'all';
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type === 'application/pdf') handleFile(file);
-  else showError('Please drop a valid PDF file.');
-});
-fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+if (dropZone && fileInput) {
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') handleFile(file);
+    else showError('Please drop a valid PDF file.');
+  });
+  fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+}
 
 async function handleFile(file) {
   currentFile = file;

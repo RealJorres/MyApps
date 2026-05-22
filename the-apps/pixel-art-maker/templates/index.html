@@ -145,7 +145,7 @@ let history = [];
 let recentColors = [];
 
 const canvas = document.getElementById('pixel-canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas && canvas.getContext('2d');
 
 function initGrid() {
   cells = Array.from({length: gridSize}, () => Array(gridSize).fill(null));

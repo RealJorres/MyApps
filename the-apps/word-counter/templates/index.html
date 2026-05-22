@@ -136,7 +136,7 @@ input:focus, textarea:focus { border-color: var(--primary); }
 
 <script>
 const textarea = document.getElementById('mainTextarea');
-textarea.addEventListener('input', updateStats);
+if (textarea) textarea.addEventListener('input', updateStats);
 
 function clearText() {
   textarea.value = '';

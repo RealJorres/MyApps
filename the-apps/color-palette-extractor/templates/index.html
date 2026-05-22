@@ -303,32 +303,31 @@ const gradientBar = document.getElementById('gradientBar');
 
 let selectedFile = null;
 
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) handleFile(file);
-});
-
-fileInput.addEventListener('change', () => {
-  if (fileInput.files[0]) handleFile(fileInput.files[0]);
-});
-
-changeBtn.addEventListener('click', () => {
+if (dropZone && fileInput) {
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) handleFile(file);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+}
+if (changeBtn) changeBtn.addEventListener('click', () => {
   selectedFile = null;
-  extractBtn.disabled = true;
-  previewWrap.style.display = 'none';
-  dropZone.style.display = 'block';
-  resultsSection.style.display = 'none';
-  errorMsg.style.display = 'none';
-  fileInput.value = '';
+  if (extractBtn) extractBtn.disabled = true;
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (dropZone) dropZone.style.display = 'block';
+  if (resultsSection) resultsSection.style.display = 'none';
+  if (errorMsg) errorMsg.style.display = 'none';
+  if (fileInput) fileInput.value = '';
 });
-
-countSlider.addEventListener('input', () => {
-  countBadge.textContent = countSlider.value;
+if (countSlider) countSlider.addEventListener('input', () => {
+  if (countBadge) countBadge.textContent = countSlider.value;
 });
 
 function handleFile(file) {

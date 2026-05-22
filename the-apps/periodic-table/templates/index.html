@@ -556,7 +556,7 @@ function closeModal() {
 
 // Search
 const searchBox = document.getElementById('searchBox');
-searchBox.addEventListener('input', () => {
+if (searchBox) searchBox.addEventListener('input', () => {
   const q = searchBox.value.trim().toLowerCase();
   const cells = document.querySelectorAll('.el-cell:not(.spacer)');
   if (!q) {

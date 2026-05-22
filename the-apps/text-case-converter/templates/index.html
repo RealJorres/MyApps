@@ -85,6 +85,7 @@ const conversions = [
 const grid = document.getElementById('resultsGrid');
 
 function buildGrid() {
+  if (!grid) return;
   grid.innerHTML = '';
   conversions.forEach(conv => {
     const box = document.createElement('div');

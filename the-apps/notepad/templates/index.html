@@ -64,38 +64,40 @@ const editor = document.getElementById('editor');
 let saveTimer = null;
 
 // Restore saved content
-editor.value = localStorage.getItem(STORAGE_KEY) || '';
-updateStats();
-
-editor.addEventListener('input', () => {
+if (editor) {
+  editor.value = localStorage.getItem(STORAGE_KEY) || '';
   updateStats();
-  scheduleSave();
-});
+  editor.addEventListener('input', () => {
+    updateStats();
+    scheduleSave();
+  });
+}
 
 function updateStats() {
-  const text = editor.value;
+  const text = editor ? editor.value : '';
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   document.getElementById('wordCount').textContent = words.toLocaleString() + ' word' + (words!==1?'s':'');
   document.getElementById('charCount').textContent = text.length.toLocaleString() + ' char' + (text.length!==1?'s':'');
 }
 
 function scheduleSave() {
+  if (!editor) return;
   const ind = document.getElementById('saveIndicator');
-  ind.textContent = 'Saving…';
-  ind.className = 'save-indicator saving';
+  if (ind) { ind.textContent = 'Saving…'; ind.className = 'save-indicator saving'; }
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     localStorage.setItem(STORAGE_KEY, editor.value);
-    ind.textContent = 'Saved';
-    ind.className = 'save-indicator saved';
+    if (ind) { ind.textContent = 'Saved'; ind.className = 'save-indicator saved'; }
   }, 500);
 }
 
 function copyAll() {
+  if (!editor) return;
   navigator.clipboard.writeText(editor.value);
 }
 
 function downloadTxt() {
+  if (!editor) return;
   const blob = new Blob([editor.value], {type:'text/plain'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -104,12 +106,13 @@ function downloadTxt() {
 }
 
 function clearAll() {
+  if (!editor) return;
   if (editor.value && !confirm('Clear all notes? This cannot be undone.')) return;
   editor.value = '';
   localStorage.removeItem(STORAGE_KEY);
   updateStats();
   const ind = document.getElementById('saveIndicator');
-  ind.textContent = 'Saved'; ind.className = 'save-indicator saved';
+  if (ind) { ind.textContent = 'Saved'; ind.className = 'save-indicator saved'; }
 }
 </script>
 <script src="/static/footer.js"></script>

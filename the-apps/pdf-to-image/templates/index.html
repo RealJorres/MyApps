@@ -436,16 +436,17 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-pdfInput.addEventListener('change', () => addPdfFiles([...pdfInput.files]));
-
-pdfZone.addEventListener('dragover', e => { e.preventDefault(); pdfZone.classList.add('over'); });
-pdfZone.addEventListener('dragleave', () => pdfZone.classList.remove('over'));
-pdfZone.addEventListener('drop', e => {
-  e.preventDefault(); pdfZone.classList.remove('over');
-  const dropped = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
-  if (dropped.length) addPdfFiles(dropped);
-  else showStatus(pdfStatus, 'Please drop PDF files only.', 'error');
-});
+if (pdfInput) pdfInput.addEventListener('change', () => addPdfFiles([...pdfInput.files]));
+if (pdfZone) {
+  pdfZone.addEventListener('dragover', e => { e.preventDefault(); pdfZone.classList.add('over'); });
+  pdfZone.addEventListener('dragleave', () => pdfZone.classList.remove('over'));
+  pdfZone.addEventListener('drop', e => {
+    e.preventDefault(); pdfZone.classList.remove('over');
+    const dropped = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+    if (dropped.length) addPdfFiles(dropped);
+    else if (pdfStatus) showStatus(pdfStatus, 'Please drop PDF files only.', 'error');
+  });
+}
 
 function addPdfFiles(files) {
   pdfFiles = [...pdfFiles, ...files];
@@ -582,16 +583,17 @@ const imgControls = document.getElementById('imgControls');
 const imgBtn      = document.getElementById('imgBtn');
 const imgStatus   = document.getElementById('imgStatus');
 
-imgInput.addEventListener('change', () => addImages([...imgInput.files]));
-
-imgZone.addEventListener('dragover', e => { e.preventDefault(); imgZone.classList.add('over'); });
-imgZone.addEventListener('dragleave', () => imgZone.classList.remove('over'));
-imgZone.addEventListener('drop', e => {
-  e.preventDefault(); imgZone.classList.remove('over');
-  const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
-  if (files.length) addImages(files);
-  else showStatus(imgStatus, 'Please drop image files.', 'error');
-});
+if (imgInput) imgInput.addEventListener('change', () => addImages([...imgInput.files]));
+if (imgZone) {
+  imgZone.addEventListener('dragover', e => { e.preventDefault(); imgZone.classList.add('over'); });
+  imgZone.addEventListener('dragleave', () => imgZone.classList.remove('over'));
+  imgZone.addEventListener('drop', e => {
+    e.preventDefault(); imgZone.classList.remove('over');
+    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+    if (files.length) addImages(files);
+    else if (imgStatus) showStatus(imgStatus, 'Please drop image files.', 'error');
+  });
+}
 
 function addImages(files) {
   imageFiles = [...imageFiles, ...files];

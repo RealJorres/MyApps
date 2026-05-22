@@ -176,15 +176,17 @@ let selectedFile = null;
 let selectedPos = 'center';
 let selectedFmt = 'PNG';
 
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) loadFile(f);
-});
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+if (dropZone && fileInput) {
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadFile(f);
+  });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+}
 
 function loadFile(f) {
   selectedFile = f;

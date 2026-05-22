@@ -138,9 +138,9 @@
 <script>
 const COLS = 10, ROWS = 20, CELL = 30;
 const canvas = document.getElementById('board');
-const ctx = canvas.getContext('2d');
+const ctx = canvas && canvas.getContext('2d');
 const nextCanvas = document.getElementById('nextCanvas');
-const nextCtx = nextCanvas.getContext('2d');
+const nextCtx = nextCanvas && nextCanvas.getContext('2d');
 
 const PIECES = [
   { shape: [[1,1,1,1]], color: '#06b6d4' },      // I - cyan

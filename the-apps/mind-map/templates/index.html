@@ -63,7 +63,7 @@
 
 <script>
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas && canvas.getContext('2d');
 const editor = document.getElementById('node-editor');
 
 const NODE_COLORS = ['#f97316','#22c55e','#3b82f6','#a855f7','#ec4899','#14b8a6'];

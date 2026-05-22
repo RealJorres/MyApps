@@ -187,11 +187,14 @@ function loadFile(file){
   reader.readAsDataURL(file);
 }
 
-document.getElementById('fileInput').addEventListener('change',e=>loadFile(e.target.files[0]));
+const _fi=document.getElementById('fileInput');
+if(_fi)_fi.addEventListener('change',e=>loadFile(e.target.files[0]));
 const dz=document.getElementById('dropZone');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');loadFile(e.dataTransfer.files[0]);});
+if(dz){
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');loadFile(e.dataTransfer.files[0]);});
+}
 </script>
 <script src="/static/footer.js"></script>
 

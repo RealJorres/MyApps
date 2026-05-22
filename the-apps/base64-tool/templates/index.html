@@ -151,34 +151,40 @@ function updateCount(taId, countId) {
 }
 
 async function encodeText() {
-  const text = document.getElementById('plainText').value;
-  const enc = document.getElementById('encoding').value;
+  const plainEl = document.getElementById('plainText');
+  const encEl   = document.getElementById('encoding');
+  if (!plainEl || !encEl) return;
+  const text = plainEl.value;
+  const enc  = encEl.value;
   const res = await fetch('api/encode-text',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,encoding:enc})});
   const d = await res.json();
   if (d.error) showStatus('textStatus',d.error,true);
-  else { document.getElementById('b64Text').value=d.result; updateCount('b64Text','countB64'); }
+  else { const b=document.getElementById('b64Text'); if(b){b.value=d.result; updateCount('b64Text','countB64');} }
 }
 
 async function decodeText() {
-  const text = document.getElementById('b64Text').value;
-  const enc = document.getElementById('encoding').value;
+  const b64El = document.getElementById('b64Text');
+  const encEl = document.getElementById('encoding');
+  if (!b64El || !encEl) return;
+  const text = b64El.value;
+  const enc  = encEl.value;
   const res = await fetch('api/decode-text',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,encoding:enc})});
   const d = await res.json();
   if (d.error) showStatus('textStatus',d.error,true);
-  else { document.getElementById('plainText').value=d.result; updateCount('plainText','countPlain'); }
+  else { const p=document.getElementById('plainText'); if(p){p.value=d.result; updateCount('plainText','countPlain');} }
 }
 
 function clearBoth() {
-  document.getElementById('plainText').value='';
-  document.getElementById('b64Text').value='';
-  document.getElementById('countPlain').textContent='0 chars';
-  document.getElementById('countB64').textContent='0 chars';
-  document.getElementById('textStatus').innerHTML='';
+  ['plainText','b64Text'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const cp=document.getElementById('countPlain'); if(cp)cp.textContent='0 chars';
+  const cb=document.getElementById('countB64');   if(cb)cb.textContent='0 chars';
+  const ts=document.getElementById('textStatus'); if(ts)ts.innerHTML='';
 }
 
 function copyTA(id) {
-  const t = document.getElementById(id).value;
-  navigator.clipboard.writeText(t).then(()=>{});
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.value).then(()=>{});
 }
 
 async function encodeFile(input) {
@@ -187,22 +193,26 @@ async function encodeFile(input) {
   const res = await fetch('api/encode-file',{method:'POST',body:fd});
   const d = await res.json();
   if (d.error) { alert(d.error); return; }
-  document.getElementById('fileB64Out').value = d.result;
-  document.getElementById('encodeResult').style.display='block';
-  document.getElementById('countFileB64').textContent = d.result.length.toLocaleString()+' chars';
-  document.getElementById('decodeFilename').value = f.name + '.txt';
+  const out=document.getElementById('fileB64Out'); if(out) out.value=d.result;
+  const er=document.getElementById('encodeResult'); if(er) er.style.display='block';
+  const cf=document.getElementById('countFileB64'); if(cf) cf.textContent=d.result.length.toLocaleString()+' chars';
+  const fn=document.getElementById('decodeFilename'); if(fn) fn.value=f.name+'.txt';
 }
 
 function downloadB64Text() {
-  const text = document.getElementById('fileB64Out').value;
-  const blob = new Blob([text],{type:'text/plain'});
+  const el = document.getElementById('fileB64Out');
+  if (!el) return;
+  const blob = new Blob([el.value],{type:'text/plain'});
   const a = document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='encoded.txt'; a.click();
 }
 
 async function decodeFile() {
-  const text = document.getElementById('decodeB64Input').value.trim();
-  const filename = document.getElementById('decodeFilename').value.trim() || 'output.bin';
+  const inEl=document.getElementById('decodeB64Input');
+  const fnEl=document.getElementById('decodeFilename');
+  if (!inEl || !fnEl) return;
+  const text = inEl.value.trim();
+  const filename = fnEl.value.trim() || 'output.bin';
   if (!text) { showStatus('decodeStatus','Please paste Base64 content.',true); return; }
   const res = await fetch('api/decode-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,filename})});
   if (!res.ok) { const d=await res.json(); showStatus('decodeStatus',d.error,true); return; }
@@ -213,18 +223,22 @@ async function decodeFile() {
 }
 
 function showStatus(id,msg,err) {
-  document.getElementById(id).innerHTML=`<div class="status ${err?'error':'success'}">${msg}</div>`;
+  const el=document.getElementById(id); if(!el) return;
+  el.innerHTML=`<div class="status ${err?'error':'success'}">${msg}</div>`;
 }
 
 // Drag-drop
-const dz = document.getElementById('dropZone');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
-dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
-dz.addEventListener('drop',e=>{
-  e.preventDefault();dz.classList.remove('over');
-  const f=e.dataTransfer.files[0];
-  if(f){document.getElementById('fileInput').files=e.dataTransfer.files;encodeFile(document.getElementById('fileInput'));}
-});
+(function(){
+  const dz = document.getElementById('dropZone');
+  if (!dz) return;
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('over');
+    const f=e.dataTransfer.files[0];
+    if(f){const fi=document.getElementById('fileInput');if(fi){fi.files=e.dataTransfer.files;encodeFile(fi);}}
+  });
+}());
 </script>
 <script src="/static/footer.js"></script>
 
