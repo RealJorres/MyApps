@@ -54,6 +54,23 @@
     <meta name="twitter:description" content="A free collection of 100+ browser-based tools and mini-games. Calculators, converters, productivity apps, games, and more. No install, no sign-up.">
     <title>Jorres Apps</title>
     <style>
+      /* Skip link — visually hidden until focused by keyboard */
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: 1rem;
+        z-index: 9999;
+        background: #2f57ff;
+        color: #fff;
+        padding: .4rem 1rem;
+        border-radius: .4rem;
+        font-weight: 700;
+        font-size: .85rem;
+        text-decoration: none;
+        transition: top .15s;
+      }
+      .skip-link:focus { top: .5rem; }
+
       :root {
         /* Light theme — header stays dark via explicit overrides */
         --bg:          #f8fafc;
