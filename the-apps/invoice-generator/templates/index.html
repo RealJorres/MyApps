@@ -108,19 +108,31 @@ textarea { resize: vertical; min-height: 80px; }
   .form-grid, .form-grid.three, .form-grid.four, .inv-meta {
     grid-template-columns: 1fr 1fr !important;
   }
-  .form-grid.four { grid-template-columns: 1fr 1fr !important; }
 
   /* Form/preview show/hide controlled by JS */
-  .form-col { }
   .preview-area { position: static !important; }
 
   input[type=text], input[type=number], input[type=email], textarea, select {
     width: 100% !important; min-width: 0 !important;
   }
-  table { display: block; overflow-x: auto; }
+  /* Keep color swatch its natural size */
+  input[type=color] { width: 48px !important; }
+
+  /* Items table scrolls horizontally */
+  .items-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  .items-table thead, .items-table tbody, .items-table tr { display: table; width: 100%; table-layout: fixed; }
+  .items-table tbody { display: block; }
 
   /* Compact download button */
-  .download-bar button { padding: .65rem 1rem !important; }
+  .download-bar button { width: 100% !important; justify-content: center; }
+}
+
+/* Very small screens: single-column forms */
+@media (max-width: 420px) {
+  .form-grid, .form-grid.three, .form-grid.four, .inv-meta {
+    grid-template-columns: 1fr !important;
+  }
+  .full { grid-column: 1 !important; }
 }
 </style>
 </head>

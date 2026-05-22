@@ -103,11 +103,18 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
   .kv-row .kv-remove { grid-row: 1 / 3; grid-column: 2; align-self: center; }
 
   input[type=text], input[type=number], textarea, select { width: 100% !important; min-width: 0 !important; }
+  /* Restore compact width for inline utility inputs */
+  #timeoutInput { width: 60px !important; }
   .resp-headers-table { display: block; overflow-x: auto; }
-  .resp-body { max-height: 250px; font-size: 0.72rem; }
-  .tabs { overflow-x: auto; }
+  .resp-body { max-height: 300px; font-size: 0.75rem; word-break: break-all; }
+  .tabs { overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
   .tab-btn { white-space: nowrap; padding: 0.55rem 0.7rem; font-size: 0.8rem; }
   .resp-meta { gap: 0.5rem; }
+  /* History items: truncate long URLs */
+  .history-url { max-width: 180px; }
+  /* Send button always full-width on small screens for easy tap */
+  .url-bar .btn { min-width: 70px; }
 }
 </style>
 </head>

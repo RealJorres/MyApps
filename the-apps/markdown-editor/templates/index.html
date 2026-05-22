@@ -245,25 +245,48 @@ body { display: flex; flex-direction: column; }
 @media (max-width: 767px) {
   body { overflow-x: hidden; }
 
-  /* Top bar: wrap and shrink on mobile */
-  .top-bar { padding: 0.5rem 0.75rem; gap: 0.4rem; }
-  .top-bar h1 { font-size: 1rem; }
-  .view-toggle { display: flex; }
+  /* Top bar: two rows on mobile
+     Row 1 (primary): title + Edit/Preview toggle
+     Row 2 (secondary, scrollable): export actions
+  */
+  .top-bar {
+    padding: 0.4rem 0.75rem;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .top-bar h1 { font-size: 1rem; flex: 1; min-width: 0; order: 1; }
 
-  /* Full-height single-pane on mobile — no split view */
+  /* View toggle stays on first row, right of title */
+  .view-toggle { order: 2; flex-shrink: 0; }
+
+  /* Hide "Split" on narrow screens — only editor/preview makes sense */
+  #btnSplit { display: none; }
+
+  /* Export buttons move to second row — horizontally scrollable strip */
+  .top-bar > .btn,
+  .top-bar > div:has(input) {
+    order: 3;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+  }
+  .btn-help { order: 4; }
+
+  /* Overflow row scrolls instead of wrapping to 3rd row */
+  .top-bar { overflow-x: auto; flex-wrap: nowrap; }
+  .top-bar h1 { flex-shrink: 0; }
+
+  /* PDF title input: compact */
+  #pdfTitle { width: 90px !important; font-size: 0.78rem; padding: 0.3rem 0.5rem; }
+
+  /* Editor area: full-height, stacked vertically for split, hidden for editor/preview only */
   .editor-area {
+    height: calc(100dvh - 96px) !important; /* 40px app-nav + ~56px top-bar */
     display: flex !important;
     flex-direction: column !important;
-    height: calc(100dvh - 88px) !important; /* top-bar + app-nav */
   }
-  /* Each pane fills remaining height */
-  .editor-pane, .preview-pane { flex: 1; }
-
-  /* Editor textarea fills pane */
+  .editor-pane, .preview-pane { flex: 1; overflow: hidden; }
   #editorArea { min-height: 0; height: 100%; }
-
-  /* PDF title input: compress on mobile */
-  #pdfTitle { width: 110px !important; }
 
   textarea { min-width: 0 !important; }
   table { display: block; overflow-x: auto; }

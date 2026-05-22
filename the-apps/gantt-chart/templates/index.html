@@ -35,9 +35,31 @@ canvas{height:auto}
 .task-list{overflow-x:auto;-webkit-overflow-scrolling:touch}
 @media(max-width:600px){
   body{ overflow-x:hidden; }
+
+  /* Add-task row: stack all fields vertically */
   .add-row{flex-direction:column}
   .add-row .field{width:100%;min-width:0}
+  /* Color picker + Add button stay side-by-side */
+  .add-row .field:nth-last-child(-n+2){flex:0 0 auto;width:auto}
+
   input,select{width:100%!important;min-width:0!important}
+  /* Keep color swatch compact */
+  input[type=color]{width:48px!important;height:36px!important}
+
+  /* Task header: title input + Draw Chart button → stack */
+  .task-list > div:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .task-list > div:first-child input[type=text]{width:100%!important}
+  .task-list > div:first-child button{width:100%}
+
+  /* Download button full-width */
+  .dl-row{justify-content:stretch}
+  .dl-row .btn{width:100%;justify-content:center}
+
+  /* Ensure task table scrolls */
+  .task-list table{min-width:480px}
 }
 </style>
 </head>
