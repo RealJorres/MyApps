@@ -1592,7 +1592,7 @@
             <button class="btn-star ${favorites.has(a.id) ? 'active' : ''}" data-id="${esc(a.id)}" onclick="toggleFavorite('${esc(a.id)}')" title="${favorites.has(a.id) ? 'Remove from favorites' : 'Add to favorites'}" aria-label="${favorites.has(a.id) ? 'Remove from favorites' : 'Add to favorites'}">★</button>
             <button class="btn-pin ${pinned ? 'active' : ''}" data-id="${esc(a.id)}" onclick="togglePin('${esc(a.id)}')" title="${pinned ? 'Unpin from Quick Tools' : 'Pin to Quick Tools'}" aria-label="${pinned ? 'Unpin from Quick Tools' : 'Pin to Quick Tools'}">${pinSvg}</button>
             <button class="btn-like ${likeCount > 0 ? 'active' : ''}" data-id="${esc(a.id)}" onclick="likeApp('${esc(a.id)}',this)" title="Mark as helpful" aria-label="Mark as helpful">${thumbSvg}<span class="like-count">${likeCount > 1 ? likeCount : ''}</span></button>
-            <div class="card-actions"><a class="btn-open" href="${a.url}" target="_blank" onclick="trackClick('${esc(a.id)}')">↗ Open</a></div>
+            <div class="card-actions"><a class="btn-open" href="${a.url}" onclick="trackClick('${esc(a.id)}')">Open</a></div>
           </div>
         </div>
       </div>`;
