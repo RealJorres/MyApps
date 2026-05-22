@@ -53,6 +53,8 @@
     '<footer class="site-footer" role="contentinfo">',
     '  <span>© 2026 Jorres Apps</span>',
     '  <span class="ft-sep" aria-hidden="true">·</span>',
+    '  <a class="ft-btn" href="/privacy">Privacy</a>',
+    '  <span class="ft-sep" aria-hidden="true">·</span>',
     '  <button class="ft-btn" onclick="ftOpen(\'ft-terms\')" aria-haspopup="dialog">Terms &amp; Conditions</button>',
     '  <span class="ft-sep" aria-hidden="true">·</span>',
     '  <button class="ft-btn" onclick="ftOpen(\'ft-bug\')" aria-haspopup="dialog">Report a Bug</button>',
