@@ -30,8 +30,7 @@
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2;   --error-fg: #dc2626;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+body { display: flex; flex-direction: column; }
 .top-bar {
   background: var(--card);
   border-bottom: 1px solid var(--border);
@@ -195,10 +194,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   padding: 0.1rem 0.3rem; border-radius: 4px;
 }
 .modal-close:hover { background: var(--border); color: var(--text); }
-.modal-body {
-  overflow-y: auto;
-  padding: 1.25rem 1.5rem;
-}
+.modal-body { overflow-y: auto; padding: 1.25rem 1.5rem; }
 .cheat-section { margin-bottom: 1.5rem; }
 .cheat-section h3 {
   font-size: 0.7rem;
@@ -493,7 +489,7 @@ function downloadHTML() {
 <link rel="stylesheet" href="/static/base.css">
 <title>${title} | Jorres Apps</title>
 <style>
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; color: #1e293b; line-height: 1.7; }
+body { max-width: 780px; margin: 2rem auto; padding: 0 1rem; }
 h1,h2,h3,h4,h5,h6 { margin-top: 1.5em; margin-bottom: 0.5em; }
 h1 { border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3em; }
 h2 { border-bottom: 1px solid #e2e8f0; padding-bottom: 0.2em; }

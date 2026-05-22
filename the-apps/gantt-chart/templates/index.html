@@ -10,14 +10,12 @@
 <title>Gantt Chart Maker | Jorres Apps</title>
 <style>
 :root{--primary:#1d4ed8; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+body{ padding:2rem 1rem 4rem; }
 .container{max-width:1000px;margin:0 auto}
 header{text-align:center;margin-bottom:2rem}
 header h1{font-size:2rem;font-weight:800}
 header p{color:var(--muted);margin-top:.4rem}
 .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
-label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
 input,select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
 input:focus,select:focus{border-color:var(--primary)}
 .btn{padding:.55rem 1.1rem;border:none;border-radius:.5rem;font-size:.9rem;font-weight:600;cursor:pointer}
@@ -36,7 +34,7 @@ canvas{height:auto}
 .dl-row{display:flex;justify-content:flex-end;margin-top:.75rem}
 .task-list{overflow-x:auto;-webkit-overflow-scrolling:touch}
 @media(max-width:600px){
-  body{overflow-x:hidden}
+  body{ overflow-x:hidden; }
   .add-row{flex-direction:column}
   .add-row .field{width:100%;min-width:0}
   input,select{width:100%!important;min-width:0!important}

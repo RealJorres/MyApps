@@ -10,7 +10,7 @@
 <title>HTML Previewer | Jorres Apps</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+body { display: flex; flex-direction: column; }
 header { background: #1e3a5f; padding: .65rem 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 header h1 { font-size: 1.1rem; font-weight: 700; color: #fff; }
 .hbtn { padding: .35rem .85rem; border: 1px solid #334155; border-radius: 6px; background: #1e293b; color: #e2e8f0; font-size: .8rem; cursor: pointer; font-family: inherit; transition: background .12s; }
@@ -97,7 +97,7 @@ iframe { flex: 1; border: none; background: #fff; width: 100%; transition: max-w
     </div>
     <div class="ed-pane" id="paneCss" role="tabpanel" aria-label="CSS editor">
       <div class="ed-label">CSS</div>
-      <textarea id="cssEd" placeholder="body { font-family: sans-serif; }" oninput="autoRun()"></textarea>
+      <textarea id="cssEd" placeholder="" oninput="autoRun()"></textarea>
     </div>
     <div class="ed-pane" id="paneJs" role="tabpanel" aria-label="JavaScript editor">
       <div class="ed-label">JavaScript</div>
@@ -190,7 +190,7 @@ function loadExample() {
   <p id="msg"></p>
 </div>`;
   document.getElementById('cssEd').value =
-`body { font-family: sans-serif; display: flex; justify-content: center; padding: 2rem; background: #f1f5f9; }
+`body { display: flex; justify-content: center; padding: 2rem; }
 .card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,.1); max-width: 400px; text-align: center; }
 h1 { color: #3b82f6; margin-bottom: .75rem; }
 button { padding: .5rem 1.5rem; background: #3b82f6; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; }`;

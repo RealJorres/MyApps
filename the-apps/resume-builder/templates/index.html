@@ -10,7 +10,7 @@
 <title>Resume Builder | Jorres Apps</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', sans-serif; background: #f0fdf9; color: #1e293b; min-height: 100vh; overflow-x: hidden; }
+body { overflow-x: hidden; }
 header { background: #0f766e; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(15,118,110,.3); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; }
 header h1 { font-size: 1.4rem; font-weight: 700; }
 header p  { font-size: .85rem; opacity: .85; }
@@ -80,10 +80,29 @@ textarea { resize: vertical; min-height: 70px; }
 .pv-sidebar-name    { font-size: 16px; font-weight: bold; color: #fff; line-height: 1.2; margin-bottom: 3px; }
 .pv-sidebar-title   { font-size: 9px; color: #e2e8f0; margin-bottom: 12px; }
 .pv-sidebar-lhead   { font-size: 8px; font-weight: bold; color: #fff; letter-spacing: .07em; border-bottom: 1px solid rgba(255,255,255,.3); padding-bottom: 2px; margin: 10px 0 5px; }
-.pv-sidebar-lbody   { font-size: 8.5px; color: #e2e8f0; margin-bottom: 2px; }
+.pv-sidebar-lbody   { font-size: 8.5px; margin-bottom: 2px; }
 .pv-sidebar-right   { padding: 16px 14px; }
 .pv-sidebar-rsec    { font-size: 11px; font-weight: bold; margin: 8px 0 2px; }
 .pv-sidebar-rhr     { border: none; border-top: 0.5px solid #e2e8f0; margin: 2px 0 5px; }
+
+/* Mobile Form/Preview toggle */
+.mob-resume-tabs {
+  display: none;
+  gap: 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 3px;
+  margin: .75rem 1rem;
+}
+.mob-res-btn {
+  flex: 1; padding: .55rem; border: none;
+  font-size: .875rem; font-weight: 700;
+  cursor: pointer; border-radius: 6px;
+  font-family: inherit; transition: all .15s;
+  background: none; color: #64748b;
+}
+.mob-res-btn.active { background: #0f766e; color: #fff; }
 
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; }
@@ -91,6 +110,11 @@ textarea { resize: vertical; min-height: 70px; }
   .form-row { grid-template-columns: 1fr !important; }
   .pv-sidebar-wrap { grid-template-columns: 1fr; }
   .pv-sidebar-left { padding-bottom: 10px; }
+}
+@media (max-width: 600px) {
+  .mob-resume-tabs { display: flex; }
+  header { flex-direction: column; align-items: flex-start; gap: .5rem; }
+  .layout { padding: .75rem; gap: .75rem; }
 }
 @media (max-width: 500px) {
   header { flex-direction: column; align-items: flex-start; }
@@ -104,8 +128,14 @@ textarea { resize: vertical; min-height: 70px; }
   <button class="download-btn" style="width:auto;padding:.6rem 1.5rem;font-size:.9rem;margin:0" onclick="downloadPDF()">⬇ Download PDF</button>
 </header>
 
+<!-- Mobile toggle (hidden on desktop) -->
+<div class="mob-resume-tabs">
+  <button class="mob-res-btn active" id="mobResForm" onclick="setResumeTab('form')">Form</button>
+  <button class="mob-res-btn" id="mobResPreview" onclick="setResumeTab('preview')">Preview</button>
+</div>
+
 <div class="layout">
-  <div class="form-panel">
+  <div class="form-panel" id="resumeFormCol">
 
     <!-- Layout & Sample -->
     <div class="card">
@@ -187,7 +217,7 @@ textarea { resize: vertical; min-height: 70px; }
   </div>
 
   <!-- Preview -->
-  <div class="preview-panel">
+  <div class="preview-panel" id="resumePreviewCol">
     <div class="preview-box">
       <div class="preview-inner" id="previewInner"></div>
     </div>
@@ -211,6 +241,36 @@ function setLayout(l, btn) {
 }
 
 // ── Sample resume ─────────────────────────────────────
+/* ── Mobile Form/Preview toggle ─────────────── */
+function setResumeTab(tab) {
+  if (window.innerWidth >= 600) return;
+  var isForm = tab === 'form';
+  var fc = document.getElementById('resumeFormCol');
+  var pc = document.getElementById('resumePreviewCol');
+  if (fc) fc.style.display = isForm ? '' : 'none';
+  if (pc) pc.style.display = isForm ? 'none' : '';
+  var bf = document.getElementById('mobResForm');
+  var bp = document.getElementById('mobResPreview');
+  if (bf) { bf.classList.toggle('active', isForm); }
+  if (bp) { bp.classList.toggle('active', !isForm); }
+  if (!isForm && typeof render === 'function') render();
+}
+
+(function() {
+  if (window.innerWidth < 600) {
+    var pc = document.getElementById('resumePreviewCol');
+    if (pc) pc.style.display = 'none';
+  }
+  window.addEventListener('resize', function() {
+    var fc = document.getElementById('resumeFormCol');
+    var pc = document.getElementById('resumePreviewCol');
+    if (window.innerWidth >= 600) {
+      if (fc) fc.style.display = '';
+      if (pc) pc.style.display = '';
+    }
+  });
+})();
+
 function loadSample() {
   document.getElementById('f_name').value     = 'Alex Johnson';
   document.getElementById('f_title').value    = 'Senior Software Engineer';

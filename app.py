@@ -2,18 +2,128 @@ from flask import Flask, jsonify, render_template, make_response, request, send_
 import sys
 import json
 import os
+import time
+import threading
+from collections import defaultdict
 from json import dumps as _json_dumps
 import importlib.util
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
-# ── Optional rate limiting ────────────────────────────────────────────────────
+# ── Optional per-route rate limiting (Flask-Limiter) ─────────────────────────
 try:
     from flask_limiter import Limiter
     from flask_limiter.util import get_remote_address
     _LIMITER_AVAILABLE = True
 except ImportError:
     _LIMITER_AVAILABLE = False
-    print('[launcher] flask-limiter not installed — API endpoints unprotected', flush=True)
+    print('[launcher] flask-limiter not installed — root API endpoints unprotected', flush=True)
+
+
+# ── WSGI-level API rate limiter (covers ALL sub-app /api/* endpoints) ─────────
+class ApiRateLimitMiddleware:
+    """
+    Sliding-window rate limiter applied at the WSGI layer so every sub-app's
+    /api/* routes are protected without modifying individual app.py files.
+
+    Limits are keyed by (client_ip, endpoint_category). Categories are matched
+    by the most-specific prefix in LIMITS.
+    """
+
+    # (max_requests, window_seconds)
+    LIMITS = {
+        # CPU-heavy processing ─────────────────────────────────────────────────
+        '/api/convert':    (5,  60),   # PDF generation (ReportLab)
+        '/api/generate':   (10, 60),   # PDF / image / QR generation
+        '/api/merge':      (5,  60),   # PDF merge (PyMuPDF)
+        '/api/compress':   (5,  60),   # PDF / image compression
+        '/api/split':      (5,  60),   # PDF split
+        '/api/watermark':  (10, 60),   # Image processing (Pillow)
+        '/api/crop':       (15, 60),   # Image crop
+        '/api/process':    (10, 60),   # Image resize / convert
+        '/api/extract':    (10, 60),   # Colour-palette extraction
+        '/api/pdf-to-images': (5, 60), # PDF → images
+        '/api/images-to-pdf': (5, 60), # Images → PDF
+        # Outbound network requests ────────────────────────────────────────────
+        '/api/lookup':     (15, 60),   # DNS / IP / Whois
+        '/api/check':      (10, 60),   # SSL certificate check
+        '/api/request':    (15, 60),   # api-tester (outbound HTTP proxy)
+        '/api/myip':       (30, 60),   # IP info
+        # Text / compute ───────────────────────────────────────────────────────
+        '/api/test':       (30, 60),   # Regex tester (ReDoS surface)
+        '/api/format':     (60, 60),   # Code formatters
+        '/api/diff':       (60, 60),   # Text diff
+        # Default: all other /api/ paths ──────────────────────────────────────
+        '/api/':           (60, 60),
+    }
+
+    _RATE_LIMITED = (
+        b'{"error":"Rate limit exceeded. Please slow down and try again."}',
+    )
+
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+        self._windows: dict[str, list[float]] = defaultdict(list)
+        self._lock = threading.Lock()
+        self._last_cleanup = time.monotonic()
+
+    def _resolve_limit(self, api_path: str):
+        """Return (max_requests, window_seconds) for the given /api/… path."""
+        for prefix, lim in self.LIMITS.items():
+            if prefix == '/api/':
+                continue
+            if api_path == prefix or api_path.startswith(prefix + '/') or api_path.startswith(prefix + '?'):
+                return lim
+        return self.LIMITS['/api/']
+
+    def _allowed(self, ip: str, api_path: str) -> bool:
+        max_req, window = self._resolve_limit(api_path)
+        key = f'{ip}\x00{api_path}'
+        now = time.monotonic()
+
+        with self._lock:
+            # Periodic cleanup every 5 minutes
+            if now - self._last_cleanup > 300:
+                cutoff = now - 120
+                stale = [k for k, ts in self._windows.items()
+                         if not ts or ts[-1] < cutoff]
+                for k in stale:
+                    del self._windows[k]
+                self._last_cleanup = now
+
+            # Slide window
+            cutoff = now - window
+            bucket = self._windows[key]
+            while bucket and bucket[0] < cutoff:
+                bucket.pop(0)
+
+            if len(bucket) >= max_req:
+                return False
+
+            bucket.append(now)
+            return True
+
+    def __call__(self, environ, start_response):
+        path = environ.get('PATH_INFO', '')
+
+        # Only rate-limit paths that contain /api/
+        api_idx = path.find('/api/')
+        if api_idx < 0:
+            return self.wsgi_app(environ, start_response)
+
+        api_path = path[api_idx:]   # e.g. /api/convert
+
+        # Prefer X-Forwarded-For (Render adds this behind its edge proxy)
+        xff = environ.get('HTTP_X_FORWARDED_FOR', '')
+        ip  = xff.split(',')[0].strip() if xff else environ.get('REMOTE_ADDR', '0.0.0.0')
+
+        if not self._allowed(ip, api_path):
+            start_response('429 Too Many Requests', [
+                ('Content-Type', 'application/json'),
+                ('Retry-After', '60'),
+            ])
+            return self._RATE_LIMITED
+
+        return self.wsgi_app(environ, start_response)
 
 
 class SecurityHeadersMiddleware:
@@ -114,10 +224,14 @@ def _slash_redirect(wsgi_app, prefixes):
 
 
 # 'app' is the full WSGI stack imported by wsgi.py and gunicorn
+# Layers (innermost → outermost):
+#   DispatcherMiddleware → _slash_redirect → ApiRateLimitMiddleware → SecurityHeadersMiddleware
 app = SecurityHeadersMiddleware(
-    _slash_redirect(
-        DispatcherMiddleware(flask_app, mounts),
-        set(mounts.keys()),
+    ApiRateLimitMiddleware(
+        _slash_redirect(
+            DispatcherMiddleware(flask_app, mounts),
+            set(mounts.keys()),
+        )
     )
 )
 

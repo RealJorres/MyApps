@@ -10,8 +10,7 @@
 <title>Business Letter Generator | Jorres Apps</title>
 <style>
 :root{--primary:#1d4ed8; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+body{ padding:2rem 1rem 4rem; }
 .container{max-width:960px;margin:0 auto}
 header{text-align:center;margin-bottom:2rem}
 header h1{font-size:2rem;font-weight:800}
@@ -19,7 +18,6 @@ header p{color:var(--muted);margin-top:.4rem}
 .layout{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem}
-label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
 input,select,textarea{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit;margin-bottom:.9rem}
 input:focus,textarea:focus,select:focus{border-color:var(--primary)}
 .btn{padding:.55rem 1.2rem;border:none;border-radius:.5rem;font-weight:600;font-size:.9rem;cursor:pointer}
@@ -49,7 +47,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--primary)}
 #letterDoc .sig-space{height:3em}
 
 @media print{
-  body{background:#fff;padding:0}
+  body{ padding:0; }
   .layout{display:block}
   .card,.letter-actions,header{display:none}
   .letter-preview{border:none;border-radius:0}

@@ -11,8 +11,7 @@
 <title>Color Studio | Jorres Apps</title>
 <style>
 :root{--primary:#7c3aed; --brand: var(--primary);--primary-h:#6d28d9;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem}
+body{ padding:2rem 1rem 4rem; }
 .container{max-width:800px;margin:0 auto}
 header{text-align:center;margin-bottom:2rem}
 header h1{font-size:2rem;font-weight:800}
@@ -21,8 +20,6 @@ header p{color:var(--muted);margin-top:.4rem}
 .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.1rem;border-radius:.5rem;border:none;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
 .btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
 .btn-ghost:hover{background:var(--border)}
-label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
-
 /* Picker */
 .picker-row{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
 input[type=color]{width:88px;height:88px;border:none;border-radius:.75rem;cursor:pointer;padding:0;background:none;flex-shrink:0}
@@ -61,10 +58,11 @@ input.num-inp:focus{border-color:var(--primary)}
 #copyToast{position:fixed;bottom:2rem;right:2rem;background:#1e293b;color:#fff;padding:.6rem 1.2rem;border-radius:.5rem;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9998}
 
 @media(max-width:600px){
-  body{overflow-x:hidden}
+  body{ overflow-x:hidden; }
   .fmt-grid{grid-template-columns:1fr}
   .hex-wrap input{font-size:1.2rem}
 }
+@media (max-width: 600px) { input[type=text], input[type=number], input[type=email], input[type=date], input[type=password], input[type=search], select, textarea { font-size: 16px !important; } }
 </style>
 </head>
 <body>

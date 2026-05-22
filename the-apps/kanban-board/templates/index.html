@@ -23,7 +23,7 @@
 <title>Kanban Board | Jorres Apps</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f0f9ff; color: #1e293b; min-height: 100vh; }
+  
   header { background: #0891b2; color: #fff; padding: .9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(8,145,178,.3); }
   header h1 { font-size: 1.3rem; font-weight: 700; }
   .clear-btn { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4); color: #fff; padding: .4rem .9rem; border-radius: 6px; cursor: pointer; font-size: .82rem; font-weight: 600; }
@@ -76,6 +76,7 @@
   .btn-save:hover { background: #0e7490; }
   .btn-close-modal { background: #e2e8f0; color: #475569; border: none; border-radius: 6px; padding: .55rem 1rem; font-size: .875rem; font-weight: 600; cursor: pointer; }
   @media (max-width: 700px) { body { overflow-x: hidden; } .board { grid-template-columns: 1fr; } input[type=text], textarea { width: 100% !important; min-width: 0 !important; } }
+@media (max-width: 600px) { input[type=text], input[type=number], input[type=email], input[type=date], input[type=password], input[type=search], select, textarea { font-size: 16px !important; } }
 </style>
 </head>
 <body>

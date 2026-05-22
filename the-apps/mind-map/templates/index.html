@@ -22,8 +22,7 @@
 <meta name="twitter:description" content="Create visual mind maps in your browser to brainstorm ideas and organize your thoughts clearly.">
 <title>Mind Map | Jorres Apps</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fffbeb; color: #1e293b; min-height: 100vh; overflow: hidden; }
+  body { overflow: hidden; }
   header { background: linear-gradient(135deg, #d97706, #b45309); color: white; padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; position: relative; }
   header h1 { font-size: 1.2rem; font-weight: 700; }
   .hdr-actions { display: flex; gap: 0.5rem; }
@@ -43,6 +42,7 @@
   body { overflow-x: hidden; }
   canvas { max-width: 100%; }
 }
+@media (max-width: 600px) { input[type=text], input[type=number], input[type=email], input[type=date], input[type=password], input[type=search], select, textarea { font-size: 16px !important; } }
 </style>
 </head>
 <body>
@@ -55,7 +55,7 @@
 </header>
 <canvas id="canvas"></canvas>
 <input class="node-editor" id="node-editor" type="text">
-<div class="hint">Double-click canvas to add node &bull; Scroll to zoom &bull; Drag canvas to pan &bull; Click node to select</div>
+<div class="hint">Double-click to add node &bull; Drag to pan &bull; Scroll/pinch to zoom &bull; Click node to select</div>
 <div class="zoom-controls">
   <button class="zoom-btn" onclick="zoom(0.15)">+</button>
   <button class="zoom-btn" onclick="zoom(-0.15)">−</button>
@@ -234,6 +234,48 @@ canvas.addEventListener('wheel', e => {
   scale = Math.max(0.2, Math.min(3, scale * factor));
   draw();
 }, {passive:false});
+
+/* ── Touch support: 1-finger pan, 2-finger pinch-zoom ──────────── */
+let _t1 = null, _t2 = null, _tDist = 0;
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    _t1 = { x: e.touches[0].clientX, y: e.touches[0].clientY, panX: pan.x, panY: pan.y };
+    _t2 = null;
+  } else if (e.touches.length === 2) {
+    _t1 = null;
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    _tDist = Math.sqrt(dx*dx + dy*dy);
+    _t2 = { scale };
+  }
+}, {passive: false});
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1 && _t1) {
+    pan.x = _t1.panX + (e.touches[0].clientX - _t1.x);
+    pan.y = _t1.panY + (e.touches[0].clientY - _t1.y);
+    draw();
+  } else if (e.touches.length === 2 && _t2) {
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    const newDist = Math.sqrt(dx*dx + dy*dy);
+    const factor = newDist / (_tDist || 1);
+    scale = Math.max(0.2, Math.min(3, _t2.scale * factor));
+    draw();
+  }
+}, {passive: false});
+
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  _t1 = null; _t2 = null;
+}, {passive: false});
+
+canvas.addEventListener('dblclick', e => {
+  // On mobile, double-tap adds a node (same as desktop double-click)
+});
 
 function startEditing(n) {
   editingId = n.id;

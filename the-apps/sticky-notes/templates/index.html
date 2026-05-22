@@ -22,8 +22,7 @@
 <meta name="twitter:description" content="Create colorful sticky notes in your browser to organize thoughts, reminders, and to-dos visually.">
 <title>Sticky Notes | Jorres Apps</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #1e293b; min-height: 100vh; overflow: hidden; }
+  body { overflow: hidden; }
   header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     background: #0f172a; color: #fff; padding: 0.6rem 1rem;
@@ -70,12 +69,7 @@
     color: rgba(0,0,0,0.4); padding: 0 0.2rem; line-height: 1;
   }
   .note-delete:hover { color: rgba(0,0,0,0.75); }
-  .note-body {
-    flex: 1; padding: 0.6rem 0.75rem; outline: none;
-    font-size: 0.9rem; line-height: 1.55; color: rgba(0,0,0,0.75);
-    overflow-y: auto; word-break: break-word; white-space: pre-wrap;
-    cursor: text; min-height: 110px;
-  }
+  .note-body { flex: 1; padding: 0.6rem 0.75rem; outline: none; font-size: 0.9rem; overflow-y: auto; word-break: break-word; white-space: pre-wrap; cursor: text; }
   .note-resize {
     position: absolute; bottom: 0; right: 0; width: 16px; height: 16px;
     cursor: se-resize; background: rgba(0,0,0,0.12); border-radius: 0 0 10px 0;
