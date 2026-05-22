@@ -55,16 +55,20 @@
     <title>Jorres Apps</title>
     <style>
       :root {
-        --bg: #1b2838;
-        --surface: #16202d;
-        --surface2: #1d3148;
-        --border: #2a475e;
-        --accent: #66c0f4;
-        --accent-dark: #1b8fc4;
-        --text: #c6d4df;
-        --muted: #93a8b8;
-        --green: #3e7a1e;
-        --tag-bg: #1e3448;
+        /* Light theme — header stays dark via explicit overrides */
+        --bg:          #f8fafc;
+        --surface:     #ffffff;
+        --surface2:    #f1f5f9;
+        --border:      #e2e8f0;
+        --accent:      #2563eb;
+        --accent-dark: #1d4ed8;
+        --text:        #0f172a;
+        --muted:       #64748b;
+        --green:       #059669;
+        --tag-bg:      #f1f5f9;
+        /* Header retains its dark identity */
+        --header-bg:   #0f172a;
+        --header-border: #1e293b;
       }
       *,
       *::before,
@@ -81,13 +85,13 @@
         min-height: 100vh;
       }
 
-      /* ── Header ── */
+      /* ── Header — intentionally stays dark as brand anchor ── */
       header {
         position: sticky;
         top: 0;
         z-index: 50;
-        background: var(--surface);
-        border-bottom: 1px solid var(--border);
+        background: var(--header-bg);
+        border-bottom: 1px solid var(--header-border);
         height: 54px;
         display: flex;
         align-items: center;
@@ -106,7 +110,7 @@
         font-size: 1.2rem;
       }
       .logo .dim {
-        color: var(--muted);
+        color: #64748b;
         font-weight: 400;
       }
       .header-right {
@@ -137,9 +141,9 @@
         transform: translateY(-1px);
       }
 
-      /* ── Hero ── */
+      /* ── Hero — light version ── */
       .hero {
-        background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+        background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
         border-bottom: 1px solid var(--border);
         padding: 3.5rem 1.75rem 3rem;
         text-align: center;
@@ -148,12 +152,12 @@
         font-size: 2.8rem;
         margin-bottom: 0.85rem;
         display: block;
-        filter: drop-shadow(0 0 18px rgba(102, 192, 244, 0.35));
+        filter: drop-shadow(0 0 14px rgba(37,99,235,.2));
       }
       .hero h1 {
         font-size: clamp(1.6rem, 4vw, 2.4rem);
         font-weight: 800;
-        color: #fff;
+        color: var(--text);
         letter-spacing: -0.5px;
         margin-bottom: 0.6rem;
       }
@@ -173,12 +177,12 @@
       }
       .privacy-pill {
         padding: 0.25rem 0.75rem;
-        background: rgba(102,192,244,.1);
-        border: 1px solid rgba(102,192,244,.2);
+        background: #dbeafe;
+        border: 1px solid #bfdbfe;
         border-radius: 2rem;
         font-size: 0.72rem;
         font-weight: 600;
-        color: var(--accent);
+        color: #1e40af;
         letter-spacing: 0.02em;
       }
 
@@ -200,23 +204,24 @@
       .search-wrap input {
         width: 100%;
         padding: 0.85rem 1.25rem 0.85rem 2.8rem;
-        background: var(--surface2);
+        background: #fff;
         border: 1.5px solid var(--border);
         border-radius: 40px;
-        color: #fff;
+        color: var(--text);
         font-size: 0.95rem;
         outline: none;
         transition:
           border-color 0.2s,
           box-shadow 0.2s;
         font-family: inherit;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
       }
       .search-wrap input::placeholder {
         color: var(--muted);
       }
       .search-wrap input:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(102, 192, 244, 0.12);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
       }
 
       /* Stats pills */
@@ -227,12 +232,13 @@
         flex-wrap: wrap;
       }
       .stat-pill {
-        background: var(--surface2);
+        background: #fff;
         border: 1px solid var(--border);
         border-radius: 20px;
         padding: 0.25rem 0.85rem;
         font-size: 0.78rem;
         color: var(--muted);
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
       }
       .stat-pill strong {
         color: var(--accent);
@@ -278,9 +284,9 @@
           box-shadow 0.15s;
       }
       .card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-3px);
         border-color: var(--accent);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
       }
       .card-cover {
         height: 155px;
@@ -307,7 +313,7 @@
       .card-name {
         font-size: 0.92rem;
         font-weight: 700;
-        color: #fff;
+        color: var(--text);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -465,7 +471,7 @@
       .fav-name {
         font-size: 0.78rem;
         font-weight: 700;
-        color: #fff;
+        color: var(--text);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -489,7 +495,7 @@
         flex: 1;
         text-align: center;
       }
-      .fav-open:hover { background: #4a8f24; }
+      .fav-open:hover { background: #047857; }
       .fav-remove {
         background: none;
         border: none;
@@ -613,7 +619,7 @@
 
       /* ── Footer ── */
       footer {
-        background: var(--surface);
+        background: var(--surface2);
         border-top: 1px solid var(--border);
         padding: 1.5rem 1.75rem;
         display: flex;
@@ -700,7 +706,7 @@
       .modal-close {
         background: none;
         border: none;
-        color: var(--muted);
+        color: #94a3b8;   /* always light — stays on dark modal header */
         font-size: 1.2rem;
         cursor: pointer;
         line-height: 1;
