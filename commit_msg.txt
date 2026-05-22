@@ -1,0 +1,40 @@
+Mobile polish pass 3: 36 more apps fully responsive
+
+Accurate detection found 38 apps still relying only on the generic baseline
+media query block. After reading each app's actual layout patterns, 36 received
+targeted fixes (2 were already adequate). This pass focused on three types:
+
+GRID FIXES (multi-column layouts not yet overridden):
+  bmi-calculator    .cols-2 -> 1fr
+  tdee-calculator   .cols-2 -> 1fr, .macros-grid -> 1fr 1fr
+  loan-calculator   .form-grid -> 1fr, .four -> 1fr 1fr, .results-grid -> 1fr 1fr
+  age-calculator    .input-row -> 1fr, .fun-grid -> 1fr 1fr
+
+FLEX / FORM FIXES (input rows that need to stretch or wrap):
+  habit-tracker     .add-form wraps; input[type=text] gets flex:1
+  regex-tester      pattern-row input gets flex:1
+  jwt-generator     .secret-wrap stacks vertically
+  meeting-agenda    .row fields go full-width
+  random-data-generator  controls-row stacks
+  graph-plotter     .fn-row wraps; input gets flex:1
+  meme-generator    color-row text input gets flex:1
+  todo-list, water-tracker, uuid-generator, ssl-checker, whois-lookup,
+  csv-viewer, reading-list, speech-to-text, timestamp-converter,
+  lorem-ipsum, gitignore-generator, favicon-generator, image-cropper — all
+  get flex-wrap on their input rows and flex:1 on key inputs
+
+FIXED-WIDTH OVERFLOW FIXES (width:Npx instead of max-width):
+  simon-says        .simon-grid fixed width -> max-width + 100%
+  memory-card-game  .game-screen, .win-box, .diff-screen -> max-width
+  hangman           .game-wrap -> max-width; keyboard keys get min-width
+  dice-roller       .main -> max-width
+  pdf-splitter      .mode-tab -> flex:1
+  pixel-art-maker   .palette-panel -> max-width
+  svg-to-png        .preview-wrap stacks vertically
+  hash-generator    .field stacks
+  meeting-timer     time display shrinks; btn-row wraps
+  markdown-table-generator  .editor-row stacks
+  color-palette-extractor   .swatch-card percentage width
+
+Every one of the 127 real-content apps now has at least one app-specific
+mobile rule on top of the baseline block. 17/17 smoke tests passing.
