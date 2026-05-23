@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/base.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://jorresapps.onrender.com/hiit-timer/">
+<meta name="description" content="Professional HIIT and interval timer for workouts. Configure work, rest, warmup, cooldown, and rounds. Includes Tabata, HIIT, and EMOM presets with audio cues.">
+<meta name="keywords" content="HIIT timer, interval timer, Tabata timer, workout timer, EMOM timer, fitness timer">
+<meta name="author" content="Jorres Apps">
+<meta property="og:title" content="HIIT / Interval Timer">
+<meta property="og:description" content="Professional HIIT and interval timer with Tabata, HIIT, and EMOM presets. Audio cues, fullscreen mode.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta name="twitter:title" content="HIIT / Interval Timer">
+<meta name="twitter:description" content="Professional HIIT and interval timer with Tabata, HIIT, and EMOM presets.">
+<title>HIIT / Interval Timer | Jorres Apps</title>
+<style>
+.container--narrow { max-width: 560px; margin: 0 auto; padding: 0 1rem; }
+.presets { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.preset-btn { background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 0.4rem 0.9rem; font-size: var(--text-sm); font-weight: var(--weight-semibold); cursor: pointer; transition: all var(--transition); color: var(--text); font-family: inherit; }
+.preset-btn:hover, .preset-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+/* Timer display */
+.timer-display {
+  background: #0f172a; border-radius: var(--radius-xl); padding: 2rem 1.5rem 1.75rem;
+  text-align: center; color: #fff; margin-bottom: 1.25rem;
+  transition: background 0.4s;
+}
+.timer-display.phase-work     { background: #1a0a0a; }
+.timer-display.phase-rest     { background: #0a1a10; }
+.timer-display.phase-warmup   { background: #1a130a; }
+.timer-display.phase-cooldown { background: #0a101a; }
+.timer-display.phase-done     { background: #0a1a0a; }
+
+.phase-label {
+  font-size: var(--text-xs); font-weight: var(--weight-extrabold);
+  letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.25rem;
+  opacity: 0.7;
+}
+.phase-label.work     { color: #fca5a5; }
+.phase-label.rest     { color: #86efac; }
+.phase-label.warmup   { color: #fcd34d; }
+.phase-label.cooldown { color: #93c5fd; }
+.phase-label.idle, .phase-label.done { color: #94a3b8; }
+
+.round-label { font-size: var(--text-sm); color: #94a3b8; margin-bottom: 0.5rem; }
+.countdown { font-size: clamp(4rem, 20vw, 7rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.countdown.work     { color: #f87171; }
+.countdown.rest     { color: #4ade80; }
+.countdown.warmup   { color: #fbbf24; }
+.countdown.cooldown { color: #60a5fa; }
+.countdown.idle, .countdown.done { color: #e2e8f0; }
+
+.progress-bar-wrap { background: #1e293b; border-radius: 4px; height: 5px; margin-top: 1.25rem; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.9s linear, background 0.4s; }
+
+/* Controls */
+.controls { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.btn-control { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: var(--radius-md); border: none; font-size: var(--text-base); font-weight: var(--weight-bold); cursor: pointer; transition: all var(--transition); font-family: inherit; }
+.btn-start  { background: var(--brand); color: #fff; font-size: 1rem; padding: 0.75rem 2rem; }
+.btn-start:hover  { background: var(--brand-hover); }
+.btn-reset  { background: var(--surface-2); color: var(--text); border: 1.5px solid var(--border); }
+.btn-reset:hover  { background: var(--border); }
+.btn-fs     { background: var(--surface-2); color: var(--text); border: 1.5px solid var(--border); padding: 0.65rem 0.9rem; }
+.btn-fs:hover     { background: var(--border); }
+
+/* Settings */
+.settings-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 0.75rem 0; border-top: 1px solid var(--border); user-select: none; font-weight: var(--weight-semibold); font-size: var(--text-sm); color: var(--text-muted); }
+.settings-toggle svg { transition: transform 0.2s; }
+.settings-toggle.open svg { transform: rotate(180deg); }
+.settings-body { display: none; padding-top: 0.75rem; }
+.settings-body.open { display: block; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.setting-field label { margin-bottom: 0.3rem; }
+.setting-field input[type=number] { width: 100%; }
+.setting-field .unit { font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.2rem; }
+.audio-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; font-size: var(--text-sm); color: var(--text-muted); }
+.audio-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--brand); }
+
+/* Fullscreen overrides */
+:fullscreen .container--narrow, :-webkit-full-screen .container--narrow { max-width: 100vw; }
+:fullscreen header, :-webkit-full-screen header,
+:fullscreen .presets, :-webkit-full-screen .presets,
+:fullscreen .settings-toggle, :-webkit-full-screen .settings-toggle { display: none; }
+:fullscreen .timer-display, :-webkit-full-screen .timer-display {
+  border-radius: 0; min-height: calc(100vh - 80px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+:fullscreen .countdown, :-webkit-full-screen .countdown { font-size: min(35vw, 40vh); }
+
+@media (max-width: 480px) {
+  .settings-grid { grid-template-columns: 1fr 1fr; }
+  .btn-start { font-size: 0.95rem; padding: 0.7rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<script src="/static/app-nav.js?v=3" data-app-id="hiit-timer" data-app-name="HIIT / Interval Timer"></script>
+<div class="container--narrow">
+  <header>
+    <h1>HIIT / Interval Timer</h1>
+    <p>Configure work, rest, rounds, warmup, and cooldown. Includes Tabata, HIIT, and EMOM presets.</p>
+  </header>
+
+  <div class="presets" role="group" aria-label="Timer presets">
+    <button class="preset-btn" onclick="loadPreset('tabata')">Tabata</button>
+    <button class="preset-btn" onclick="loadPreset('hiit')">HIIT</button>
+    <button class="preset-btn" onclick="loadPreset('emom')">EMOM</button>
+    <button class="preset-btn" onclick="loadPreset('custom')">Custom</button>
+  </div>
+
+  <div class="timer-display" id="timerDisplay" role="timer" aria-live="assertive" aria-label="Timer">
+    <div class="phase-label idle" id="phaseLabel">READY</div>
+    <div class="round-label" id="roundLabel">Press Start to begin</div>
+    <div class="countdown idle" id="countdown" aria-atomic="true">00</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0;background:var(--brand)"></div></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-control btn-start" id="startBtn" onclick="toggleStart()" aria-label="Start timer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Start
+    </button>
+    <button class="btn-control btn-reset" onclick="resetTimer()" aria-label="Reset timer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Reset
+    </button>
+    <button class="btn-control btn-fs" onclick="toggleFullscreen()" aria-label="Toggle fullscreen">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    </button>
+  </div>
+
+  <div class="card" style="padding-top:0; padding-bottom:0;">
+    <div class="settings-toggle" id="settingsToggle" onclick="toggleSettings()" role="button" tabindex="0" aria-expanded="false" aria-controls="settingsBody" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSettings()">
+      <span>Settings</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="settings-body" id="settingsBody" aria-hidden="true">
+      <div class="settings-grid">
+        <div class="setting-field">
+          <label for="workTime">Work</label>
+          <input type="number" id="workTime" min="5" max="600" value="40" onchange="saveSettings()">
+          <div class="unit">seconds</div>
+        </div>
+        <div class="setting-field">
+          <label for="restTime">Rest</label>
+          <input type="number" id="restTime" min="0" max="600" value="20" onchange="saveSettings()">
+          <div class="unit">seconds</div>
+        </div>
+        <div class="setting-field">
+          <label for="rounds">Rounds</label>
+          <input type="number" id="rounds" min="1" max="99" value="5" onchange="saveSettings()">
+          <div class="unit">total</div>
+        </div>
+        <div class="setting-field">
+          <label for="warmupTime">Warmup</label>
+          <input type="number" id="warmupTime" min="0" max="300" value="0" onchange="saveSettings()">
+          <div class="unit">seconds</div>
+        </div>
+        <div class="setting-field">
+          <label for="cooldownTime">Cooldown</label>
+          <input type="number" id="cooldownTime" min="0" max="300" value="0" onchange="saveSettings()">
+          <div class="unit">seconds</div>
+        </div>
+      </div>
+      <div class="audio-row">
+        <input type="checkbox" id="audioEnabled" checked onchange="saveSettings()">
+        <label for="audioEnabled" style="margin:0; font-size:var(--text-sm); color:var(--text-muted); text-transform:none; letter-spacing:0; font-weight:var(--weight-normal);">Audio cues</label>
+      </div>
+      <div style="height:0.75rem;"></div>
+    </div>
+  </div>
+</div>
+<script src="/static/footer.js?v=3"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────────────────────
+let interval   = null;
+let running    = false;
+let phase      = 'idle';   // idle | warmup | work | rest | cooldown | done
+let timeLeft   = 0;
+let phaseDur   = 0;
+let currentRound = 0;
+let audioCtx   = null;
+
+const PRESETS = {
+  tabata: { work:20, rest:10, rounds:8, warmup:0,  cooldown:0  },
+  hiit:   { work:40, rest:20, rounds:5, warmup:30, cooldown:30 },
+  emom:   { work:50, rest:10, rounds:10,warmup:0,  cooldown:0  },
+  custom: null,
+};
+
+// ── localStorage persistence ──────────────────────────────────────────────────
+function saveSettings() {
+  const s = getSettings();
+  localStorage.setItem('hiit_settings', JSON.stringify(s));
+}
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem('hiit_settings') || 'null');
+    if (s) applySettings(s);
+  } catch(e) {}
+}
+function getSettings() {
+  return {
+    work:     parseInt(document.getElementById('workTime').value)    || 40,
+    rest:     parseInt(document.getElementById('restTime').value)    || 20,
+    rounds:   parseInt(document.getElementById('rounds').value)      || 5,
+    warmup:   parseInt(document.getElementById('warmupTime').value)  || 0,
+    cooldown: parseInt(document.getElementById('cooldownTime').value)|| 0,
+    audio:    document.getElementById('audioEnabled').checked,
+  };
+}
+function applySettings(s) {
+  document.getElementById('workTime').value    = s.work;
+  document.getElementById('restTime').value    = s.rest;
+  document.getElementById('rounds').value      = s.rounds;
+  document.getElementById('warmupTime').value  = s.warmup;
+  document.getElementById('cooldownTime').value= s.cooldown;
+  document.getElementById('audioEnabled').checked = s.audio !== false;
+}
+loadSettings();
+
+// ── Presets ───────────────────────────────────────────────────────────────────
+function loadPreset(name) {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (name !== 'custom' && PRESETS[name]) {
+    applySettings({ ...PRESETS[name], audio: document.getElementById('audioEnabled').checked });
+    saveSettings();
+  }
+  if (!running) resetTimer();
+}
+
+// ── Settings panel ────────────────────────────────────────────────────────────
+function toggleSettings() {
+  const body   = document.getElementById('settingsBody');
+  const toggle = document.getElementById('settingsToggle');
+  const open   = body.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  toggle.setAttribute('aria-expanded', open);
+  body.setAttribute('aria-hidden', !open);
+}
+
+// ── Audio ─────────────────────────────────────────────────────────────────────
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function beep(freq, dur, vol) {
+  if (!document.getElementById('audioEnabled').checked) return;
+  try {
+    const ctx = getAudioCtx();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = freq;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(vol || 0.25, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+function beepStart()    { beep(880, 0.15); setTimeout(() => beep(880, 0.15), 180); }
+function beepTransition(){ beep(660, 0.12); setTimeout(() => beep(880, 0.18), 160); }
+function beepDone()     { [523,659,784].forEach((f,i) => setTimeout(() => beep(f, 0.25, 0.3), i*180)); }
+function beepCountdown(){ beep(440, 0.08, 0.15); }
+
+// ── Timer core ────────────────────────────────────────────────────────────────
+function getPhaseColor(p) {
+  return {work:'#f87171',rest:'#4ade80',warmup:'#fbbf24',cooldown:'#60a5fa'}[p] || 'var(--brand)';
+}
+function setPhase(p, dur) {
+  phase = p;
+  timeLeft = phaseDur = dur;
+  const disp = document.getElementById('timerDisplay');
+  disp.className = 'timer-display' + (p !== 'idle' ? ' phase-' + p : '');
+  const pl = document.getElementById('phaseLabel');
+  pl.className = 'phase-label ' + p;
+  pl.textContent = { work:'WORK', rest:'REST', warmup:'WARM UP', cooldown:'COOL DOWN', done:'DONE', idle:'READY' }[p] || p.toUpperCase();
+  document.getElementById('countdown').className = 'countdown ' + p;
+  document.getElementById('progressFill').style.background = getPhaseColor(p);
+  updateDisplay();
+}
+
+function updateDisplay() {
+  const s    = getSettings();
+  const cd   = document.getElementById('countdown');
+  const rl   = document.getElementById('roundLabel');
+  cd.textContent = String(timeLeft).padStart(2, '0');
+  if (phase === 'work' || phase === 'rest') {
+    rl.textContent = 'Round ' + currentRound + ' of ' + s.rounds;
+  } else if (phase === 'warmup') {
+    rl.textContent = 'Warming up...';
+  } else if (phase === 'cooldown') {
+    rl.textContent = 'Cooling down...';
+  } else if (phase === 'done') {
+    rl.textContent = 'Workout complete!';
+  } else {
+    rl.textContent = 'Press Start to begin';
+  }
+  const pct = phaseDur > 0 ? ((phaseDur - timeLeft) / phaseDur * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function nextPhase() {
+  const s = getSettings();
+  if (phase === 'idle') {
+    if (s.warmup > 0) {
+      setPhase('warmup', s.warmup);
+    } else {
+      currentRound = 1;
+      setPhase('work', s.work);
+      beepStart();
+    }
+    return;
+  }
+  if (phase === 'warmup') {
+    currentRound = 1;
+    beepTransition();
+    setPhase('work', s.work);
+    return;
+  }
+  if (phase === 'work') {
+    if (s.rest > 0) {
+      beepTransition();
+      setPhase('rest', s.rest);
+    } else {
+      currentRound++;
+      if (currentRound > s.rounds) {
+        finishWorkout(s);
+      } else {
+        beepTransition();
+        setPhase('work', s.work);
+      }
+    }
+    return;
+  }
+  if (phase === 'rest') {
+    currentRound++;
+    if (currentRound > s.rounds) {
+      finishWorkout(s);
+    } else {
+      beepTransition();
+      setPhase('work', s.work);
+    }
+    return;
+  }
+  if (phase === 'cooldown') {
+    setPhase('done', 0);
+    beepDone();
+    stopTimer();
+    return;
+  }
+}
+
+function finishWorkout(s) {
+  if (s.cooldown > 0) {
+    beepTransition();
+    setPhase('cooldown', s.cooldown);
+  } else {
+    setPhase('done', 0);
+    beepDone();
+    stopTimer();
+  }
+}
+
+function tick() {
+  if (phase === 'done') { stopTimer(); return; }
+  timeLeft--;
+  if (timeLeft <= 3 && timeLeft > 0 && phase !== 'done') beepCountdown();
+  if (timeLeft <= 0) {
+    nextPhase();
+  } else {
+    updateDisplay();
+  }
+}
+
+function startTimer() {
+  if (phase === 'idle' || phase === 'done') {
+    resetState();
+    nextPhase();
+  }
+  running = true;
+  interval = setInterval(tick, 1000);
+  const btn = document.getElementById('startBtn');
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+  btn.setAttribute('aria-label', 'Pause timer');
+}
+
+function pauseTimer() {
+  running = false;
+  clearInterval(interval);
+  const btn = document.getElementById('startBtn');
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume';
+  btn.setAttribute('aria-label', 'Resume timer');
+}
+
+function stopTimer() {
+  running = false;
+  clearInterval(interval);
+  const btn = document.getElementById('startBtn');
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start';
+  btn.setAttribute('aria-label', 'Start timer');
+}
+
+function resetState() {
+  currentRound = 0;
+  phase = 'idle';
+}
+
+function toggleStart() {
+  if (phase === 'done') resetTimer();
+  if (running) pauseTimer(); else startTimer();
+}
+
+function resetTimer() {
+  stopTimer();
+  resetState();
+  setPhase('idle', 0);
+  document.getElementById('progressFill').style.width = '0';
+  document.getElementById('progressFill').style.background = 'var(--brand)';
+  document.getElementById('countdown').textContent = '00';
+  document.getElementById('roundLabel').textContent = 'Press Start to begin';
+}
+
+function toggleFullscreen() {
+  const el = document.documentElement;
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space') { e.preventDefault(); toggleStart(); }
+  if (e.code === 'KeyR')  resetTimer();
+  if (e.code === 'KeyF')  toggleFullscreen();
+});
+
+resetTimer();
+</script>
+</body>
+</html>

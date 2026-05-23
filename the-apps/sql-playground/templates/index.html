@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Cellipse cx='32' cy='18' rx='20' ry='7' fill='%230891b2'/%3E%3Crect x='12' y='18' width='40' height='28' fill='%230891b2' opacity='0.4'/%3E%3Cellipse cx='32' cy='46' rx='20' ry='7' fill='%230891b2' opacity='0.7'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/base.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://jorresapps.onrender.com/sql-playground/">
+<meta name="description" content="Write and run SQL queries in your browser with a built-in SQLite database. No server needed — powered by sql.js WASM.">
+<meta name="keywords" content="SQL playground, SQLite, browser SQL, SQL editor, query runner, sql.js">
+<meta name="author" content="Jorres Apps">
+<meta property="og:title" content="SQL Playground">
+<meta property="og:description" content="Write and run SQL queries in your browser with a built-in SQLite database. No server needed.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta name="twitter:title" content="SQL Playground">
+<meta name="twitter:description" content="Write and run SQL queries in your browser with a built-in SQLite database.">
+<title>SQL Playground | Jorres Apps</title>
+<style>
+.sql-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; align-items: start; }
+.schema-panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; }
+.schema-panel h3 { font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 0.65rem; }
+.schema-table { margin-bottom: 0.85rem; }
+.schema-table-name { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--brand); cursor: pointer; display: flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0; }
+.schema-table-name:hover { opacity: 0.8; }
+.schema-cols { padding-left: 0.85rem; display: none; }
+.schema-cols.open { display: block; }
+.schema-col { font-size: var(--text-xs); color: var(--text-muted); padding: 0.15rem 0; display: flex; gap: 0.4rem; }
+.schema-col .col-type { color: var(--text-muted); opacity: 0.6; font-style: italic; }
+.schema-col .pk-badge { font-size: 9px; background: var(--brand); color: #fff; border-radius: 3px; padding: 0 3px; font-weight: 700; }
+.editor-pane { display: flex; flex-direction: column; gap: 0.65rem; }
+.toolbar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.toolbar select { font-size: var(--text-xs); padding: 0.35rem 0.6rem; max-width: 200px; }
+.run-btn { display: flex; align-items: center; gap: 0.4rem; }
+textarea#sqlEditor { font-family: var(--font-mono); font-size: var(--text-sm); min-height: 140px; resize: vertical; }
+.results-section { }
+.results-meta { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+.results-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); max-height: 360px; overflow-y: auto; }
+table.results-tbl { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+table.results-tbl th { background: var(--surface-2); color: var(--text-muted); font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.75rem; text-align: left; position: sticky; top: 0; border-bottom: 1px solid var(--border); white-space: nowrap; }
+table.results-tbl td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: var(--text-xs); white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
+table.results-tbl tr:last-child td { border-bottom: none; }
+table.results-tbl tr:hover td { background: var(--surface-2); }
+table.results-tbl td.null-val { color: var(--text-muted); font-style: italic; }
+.msg-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.75rem 1rem; font-size: var(--text-sm); }
+.msg-box.success { border-color: var(--success-border); color: var(--success); }
+.msg-box.error   { border-color: var(--danger); color: var(--danger); }
+.loading-state { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: var(--text-sm); }
+@media (max-width: 620px) {
+  .sql-layout { grid-template-columns: 1fr; }
+  .schema-panel { order: 2; }
+  .editor-pane  { order: 1; }
+}
+</style>
+</head>
+<body>
+<script src="/static/app-nav.js?v=3" data-app-id="sql-playground" data-app-name="SQL Playground"></script>
+<div class="container">
+  <header>
+    <h1>SQL Playground</h1>
+    <p>Run SQL queries directly in your browser — no server, no setup. Powered by SQLite via WebAssembly.</p>
+  </header>
+
+  <div id="loadingState" class="card loading-state">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="animation:spin 1s linear infinite;display:inline-block"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+    Loading SQLite engine...
+  </div>
+
+  <div id="mainContent" style="display:none;">
+    <div class="sql-layout">
+      <!-- Schema Browser -->
+      <div class="schema-panel" id="schemaPanel">
+        <h3>Schema</h3>
+        <div id="schemaTables"></div>
+      </div>
+
+      <!-- Editor + Results -->
+      <div class="editor-pane">
+        <div class="card" style="padding:1rem;">
+          <div class="toolbar" style="margin-bottom:0.65rem;">
+            <select id="exampleSelect" onchange="loadExample(this.value)" aria-label="Example queries">
+              <option value="">Example queries...</option>
+              <optgroup label="Employees">
+                <option value="sel_emp">All employees</option>
+                <option value="emp_dept">Employees with department</option>
+                <option value="emp_sal">Top earners</option>
+                <option value="dept_avg">Avg salary by department</option>
+                <option value="emp_hire">Hired after 2021</option>
+              </optgroup>
+              <optgroup label="Products & Orders">
+                <option value="sel_prod">All products</option>
+                <option value="prod_cat">Products by category</option>
+                <option value="order_total">Order totals</option>
+                <option value="top_prod">Best-selling products</option>
+                <option value="low_stock">Low stock alert</option>
+              </optgroup>
+              <optgroup label="Advanced">
+                <option value="agg_dept">Department summary</option>
+                <option value="cte_rank">Salary rank (CTE)</option>
+                <option value="subquery">Employees above avg salary</option>
+                <option value="insert_ex">INSERT example</option>
+                <option value="update_ex">UPDATE example</option>
+              </optgroup>
+            </select>
+            <button class="btn btn-primary run-btn" onclick="runQuery()" id="runBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run
+            </button>
+            <button class="btn" onclick="clearEditor()">Clear</button>
+            <button class="btn" onclick="resetDb()">Reset DB</button>
+          </div>
+          <textarea id="sqlEditor" placeholder="SELECT * FROM employees LIMIT 10;" aria-label="SQL editor" spellcheck="false"></textarea>
+          <p style="font-size:var(--text-xs);color:var(--text-muted);margin:0.4rem 0 0;">Ctrl+Enter to run &nbsp;|&nbsp; Multiple statements separated by <code>;</code></p>
+        </div>
+
+        <div id="resultsArea"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/static/footer.js?v=3"></script>
+<script>
+// sql.js loaded from CDN
+const SQL_JS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js';
+const WASM_URL   = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm';
+
+let db = null;
+
+const EXAMPLES = {
+  sel_emp:    'SELECT * FROM employees ORDER BY last_name;',
+  emp_dept:   `SELECT e.first_name, e.last_name, d.name AS department, e.salary\nFROM employees e\nJOIN departments d ON e.department_id = d.id\nORDER BY d.name, e.last_name;`,
+  emp_sal:    'SELECT first_name, last_name, salary FROM employees ORDER BY salary DESC LIMIT 5;',
+  dept_avg:   `SELECT d.name AS department,\n       COUNT(e.id) AS headcount,\n       ROUND(AVG(e.salary), 2) AS avg_salary,\n       MIN(e.salary) AS min_sal,\n       MAX(e.salary) AS max_sal\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nGROUP BY d.id\nORDER BY avg_salary DESC;`,
+  emp_hire:   `SELECT first_name, last_name, hire_date, salary\nFROM employees\nWHERE hire_date >= '2021-01-01'\nORDER BY hire_date DESC;`,
+  sel_prod:   'SELECT * FROM products ORDER BY category, name;',
+  prod_cat:   `SELECT category, COUNT(*) AS count, ROUND(AVG(price),2) AS avg_price\nFROM products\nGROUP BY category\nORDER BY count DESC;`,
+  order_total:`SELECT o.id AS order_id, e.first_name || ' ' || e.last_name AS employee,\n       o.customer, o.order_date,\n       ROUND(SUM(oi.qty * oi.unit_price), 2) AS total\nFROM orders o\nJOIN employees e ON e.id = o.employee_id\nJOIN order_items oi ON oi.order_id = o.id\nGROUP BY o.id\nORDER BY total DESC;`,
+  top_prod:   `SELECT p.name, p.category, SUM(oi.qty) AS units_sold,\n       ROUND(SUM(oi.qty * oi.unit_price), 2) AS revenue\nFROM order_items oi\nJOIN products p ON p.id = oi.product_id\nGROUP BY p.id\nORDER BY units_sold DESC\nLIMIT 5;`,
+  low_stock:  `SELECT name, category, stock, price\nFROM products\nWHERE stock < 20\nORDER BY stock ASC;`,
+  agg_dept:   `SELECT d.name,\n       COUNT(e.id)                       AS employees,\n       ROUND(AVG(e.salary), 2)           AS avg_salary,\n       ROUND(SUM(e.salary), 2)           AS payroll\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nGROUP BY d.id\nORDER BY payroll DESC;`,
+  cte_rank:   `WITH ranked AS (\n  SELECT first_name, last_name, salary, department_id,\n         RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rnk\n  FROM employees\n)\nSELECT r.first_name, r.last_name, d.name AS dept, r.salary, r.rnk\nFROM ranked r\nJOIN departments d ON d.id = r.department_id\nWHERE r.rnk <= 2\nORDER BY d.name, r.rnk;`,
+  subquery:   `SELECT first_name, last_name, salary\nFROM employees\nWHERE salary > (SELECT AVG(salary) FROM employees)\nORDER BY salary DESC;`,
+  insert_ex:  `-- Insert a new employee (rolled back after page reload)\nINSERT INTO employees (first_name, last_name, email, hire_date, salary, department_id)\nVALUES ('Alex', 'Taylor', 'alex.taylor@company.com', '2024-03-15', 72000, 1);\n\nSELECT * FROM employees ORDER BY id DESC LIMIT 5;`,
+  update_ex:  `-- Give everyone in Engineering a 5% raise\nUPDATE employees SET salary = ROUND(salary * 1.05, 2)\nWHERE department_id = (SELECT id FROM departments WHERE name = 'Engineering');\n\nSELECT first_name, last_name, salary FROM employees\nWHERE department_id = (SELECT id FROM departments WHERE name = 'Engineering');`,
+};
+
+const SEED_SQL = `
+CREATE TABLE departments (
+  id   INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  city TEXT
+);
+INSERT INTO departments VALUES
+(1,'Engineering','San Francisco'),(2,'Marketing','New York'),
+(3,'Sales','Chicago'),(4,'Finance','Boston'),
+(5,'HR','Austin'),(6,'Product','Seattle');
+
+CREATE TABLE employees (
+  id            INTEGER PRIMARY KEY,
+  first_name    TEXT NOT NULL,
+  last_name     TEXT NOT NULL,
+  email         TEXT UNIQUE,
+  hire_date     TEXT,
+  salary        REAL,
+  department_id INTEGER REFERENCES departments(id)
+);
+INSERT INTO employees VALUES
+(1,'Alice','Johnson','alice.j@company.com','2019-03-12',95000,1),
+(2,'Bob','Williams','bob.w@company.com','2020-07-01',82000,1),
+(3,'Carol','Martinez','carol.m@company.com','2018-11-05',110000,1),
+(4,'David','Brown','david.b@company.com','2021-02-28',76000,2),
+(5,'Eva','Davis','eva.d@company.com','2022-06-15',68000,2),
+(6,'Frank','Wilson','frank.w@company.com','2017-09-20',125000,3),
+(7,'Grace','Taylor','grace.t@company.com','2023-01-10',62000,3),
+(8,'Henry','Anderson','henry.a@company.com','2020-04-18',88000,4),
+(9,'Iris','Thomas','iris.t@company.com','2021-08-30',91000,4),
+(10,'Jack','Jackson','jack.j@company.com','2019-12-01',78000,5),
+(11,'Karen','White','karen.w@company.com','2022-03-22',72000,5),
+(12,'Leo','Harris','leo.h@company.com','2018-05-14',105000,6),
+(13,'Mia','Martin','mia.m@company.com','2023-07-05',88000,6),
+(14,'Nate','Garcia','nate.g@company.com','2016-01-15',138000,1),
+(15,'Olivia','Lee','olivia.l@company.com','2020-10-09',79000,2);
+
+CREATE TABLE products (
+  id       INTEGER PRIMARY KEY,
+  name     TEXT NOT NULL,
+  category TEXT,
+  price    REAL,
+  stock    INTEGER
+);
+INSERT INTO products VALUES
+(1,'Laptop Pro 15','Electronics',1299.99,42),
+(2,'Wireless Mouse','Electronics',29.99,180),
+(3,'USB-C Hub','Electronics',49.99,95),
+(4,'Standing Desk','Furniture',549.00,18),
+(5,'Ergonomic Chair','Furniture',399.00,12),
+(6,'Monitor 27"','Electronics',349.99,35),
+(7,'Whiteboard','Office',89.99,60),
+(8,'Notebook Pack','Stationery',12.99,250),
+(9,'Noise-Cancelling Headphones','Electronics',199.99,55),
+(10,'Coffee Maker','Appliances',79.99,28),
+(11,'Cable Organizer','Office',14.99,7),
+(12,'Webcam HD','Electronics',89.99,40),
+(13,'Mechanical Keyboard','Electronics',129.99,22),
+(14,'Desk Lamp','Furniture',44.99,85),
+(15,'Printer Ink Set','Office',34.99,15);
+
+CREATE TABLE orders (
+  id          INTEGER PRIMARY KEY,
+  employee_id INTEGER REFERENCES employees(id),
+  customer    TEXT,
+  order_date  TEXT
+);
+INSERT INTO orders VALUES
+(1,3,'Acme Corp','2024-01-15'),(2,6,'Globex Inc','2024-01-20'),
+(3,1,'Initech','2024-02-03'),(4,3,'Umbrella Ltd','2024-02-14'),
+(5,12,'Wayne Ent','2024-02-28'),(6,6,'Stark Ind','2024-03-05'),
+(7,1,'CHOAM','2024-03-18'),(8,14,'Nakatomi','2024-04-01');
+
+CREATE TABLE order_items (
+  id         INTEGER PRIMARY KEY,
+  order_id   INTEGER REFERENCES orders(id),
+  product_id INTEGER REFERENCES products(id),
+  qty        INTEGER,
+  unit_price REAL
+);
+INSERT INTO order_items VALUES
+(1,1,1,5,1299.99),(2,1,3,10,49.99),(3,1,2,5,29.99),
+(4,2,4,2,549.00),(5,2,5,2,399.00),(6,2,14,4,44.99),
+(7,3,9,8,199.99),(8,3,12,8,89.99),(9,3,13,8,129.99),
+(10,4,6,3,349.99),(11,4,7,2,89.99),(12,4,8,20,12.99),
+(13,5,1,2,1299.99),(14,5,9,5,199.99),(15,5,3,5,49.99),
+(16,6,13,10,129.99),(17,6,2,20,29.99),(18,6,12,5,89.99),
+(19,7,4,1,549.00),(20,7,10,3,79.99),(21,7,15,5,34.99),
+(22,8,1,3,1299.99),(23,8,6,2,349.99),(24,8,9,3,199.99);
+`;
+
+const SCHEMA_DEF = [
+  { table: 'departments', cols: [['id','INTEGER','PK'],['name','TEXT'],['city','TEXT']] },
+  { table: 'employees',   cols: [['id','INTEGER','PK'],['first_name','TEXT'],['last_name','TEXT'],['email','TEXT'],['hire_date','TEXT'],['salary','REAL'],['department_id','INTEGER','FK']] },
+  { table: 'products',    cols: [['id','INTEGER','PK'],['name','TEXT'],['category','TEXT'],['price','REAL'],['stock','INTEGER']] },
+  { table: 'orders',      cols: [['id','INTEGER','PK'],['employee_id','INTEGER','FK'],['customer','TEXT'],['order_date','TEXT']] },
+  { table: 'order_items', cols: [['id','INTEGER','PK'],['order_id','INTEGER','FK'],['product_id','INTEGER','FK'],['qty','INTEGER'],['unit_price','REAL']] },
+];
+
+function buildSchema() {
+  const wrap = document.getElementById('schemaTables');
+  wrap.innerHTML = SCHEMA_DEF.map((t, ti) => `
+    <div class="schema-table">
+      <div class="schema-table-name" onclick="toggleCols(${ti})" aria-expanded="false" id="schema-hd-${ti}">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="schema-arrow-${ti}" style="transition:transform .15s"><polyline points="9 18 15 12 9 6"/></svg>
+        ${t.table}
+      </div>
+      <div class="schema-cols" id="schema-cols-${ti}">
+        ${t.cols.map(([n,type,flag]) => `
+          <div class="schema-col">
+            ${flag === 'PK' ? '<span class="pk-badge">PK</span>' : flag === 'FK' ? '<span class="pk-badge" style="background:var(--text-muted)">FK</span>' : ''}
+            <span>${n}</span>
+            <span class="col-type">${type}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleCols(ti) {
+  const cols  = document.getElementById('schema-cols-' + ti);
+  const arrow = document.getElementById('schema-arrow-' + ti);
+  const open  = cols.classList.toggle('open');
+  arrow.style.transform = open ? 'rotate(90deg)' : '';
+}
+
+function loadExample(key) {
+  if (!key) return;
+  document.getElementById('sqlEditor').value = EXAMPLES[key] || '';
+  document.getElementById('exampleSelect').value = '';
+}
+
+async function initSqlJs() {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = SQL_JS_CDN;
+    s.onload = async () => {
+      try {
+        const SQL = await window.initSqlJs({ locateFile: () => WASM_URL });
+        resolve(SQL);
+      } catch(e) { reject(e); }
+    };
+    s.onerror = () => reject(new Error('Failed to load sql.js'));
+    document.head.appendChild(s);
+  });
+}
+
+function createDb(SQL) {
+  const d = new SQL.Database();
+  d.run(SEED_SQL);
+  return d;
+}
+
+async function init() {
+  try {
+    const SQL = await initSqlJs();
+    db = createDb(SQL);
+    window._SQL = SQL; // store for reset
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    buildSchema();
+    document.getElementById('sqlEditor').value = EXAMPLES.emp_dept;
+    runQuery();
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML =
+      `<span style="color:var(--danger)">Failed to load SQLite engine: ${e.message}.<br>Check your internet connection and try refreshing.</span>`;
+  }
+}
+
+function resetDb() {
+  if (!window._SQL) return;
+  db = createDb(window._SQL);
+  showMsg('Database reset to original state.', 'success');
+}
+
+function runQuery() {
+  if (!db) return;
+  const sql = document.getElementById('sqlEditor').value.trim();
+  if (!sql) { showMsg('Enter a SQL statement.', ''); return; }
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  const t0 = performance.now();
+  try {
+    // Split by ; but keep statements
+    const stmts = sql.split(/;\s*/).map(s => s.trim()).filter(Boolean);
+    let lastResult = null;
+    let rowsAffected = 0;
+    for (const stmt of stmts) {
+      const res = db.exec(stmt);
+      if (res.length) lastResult = res[res.length - 1];
+    }
+    const elapsed = (performance.now() - t0).toFixed(1);
+    if (lastResult) {
+      renderTable(lastResult.columns, lastResult.values, elapsed);
+    } else {
+      // DML
+      const changes = db.getRowsModified();
+      showMsg(`Query OK — ${changes} row(s) affected. (${elapsed} ms)`, 'success');
+    }
+  } catch(e) {
+    showMsg(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderTable(cols, rows, elapsed) {
+  const area = document.getElementById('resultsArea');
+  if (!rows.length) {
+    area.innerHTML = `<div class="msg-box">(${cols.length} column${cols.length!==1?'s':''}, 0 rows — ${elapsed} ms)</div>`;
+    return;
+  }
+  const csvBtn = `<button class="btn" onclick="exportCsv()" style="font-size:var(--text-xs);padding:0.25rem 0.6rem;">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    CSV
+  </button>`;
+  const meta = `<div class="results-meta"><span>${rows.length} row${rows.length!==1?'s':''} &nbsp;|&nbsp; ${cols.length} column${cols.length!==1?'s':''} &nbsp;|&nbsp; ${elapsed} ms</span>${csvBtn}</div>`;
+  const thead = `<thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>`;
+  const tbody = '<tbody>' + rows.map(row =>
+    '<tr>' + row.map(cell =>
+      cell === null ? '<td class="null-val">NULL</td>' : `<td title="${esc(String(cell))}">${esc(String(cell))}</td>`
+    ).join('') + '</tr>'
+  ).join('') + '</tbody>';
+  area.innerHTML = `${meta}<div class="results-table-wrap"><table class="results-tbl">${thead}${tbody}</table></div>`;
+  // store for CSV export
+  window._lastCols = cols;
+  window._lastRows = rows;
+}
+
+function showMsg(text, type) {
+  document.getElementById('resultsArea').innerHTML =
+    `<div class="msg-box ${type}">${esc(text)}</div>`;
+}
+
+function exportCsv() {
+  if (!window._lastCols) return;
+  const cols = window._lastCols;
+  const rows = window._lastRows;
+  const lines = [cols.map(csvCell).join(',')].concat(
+    rows.map(row => row.map(cell => csvCell(cell === null ? '' : String(cell))).join(','))
+  );
+  const blob = new Blob([lines.join('\r\n')], {type:'text/csv'});
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'query_results.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function csvCell(v) {
+  if (/[,"\n\r]/.test(v)) return '"' + v.replace(/"/g, '""') + '"';
+  return v;
+}
+
+function clearEditor() {
+  document.getElementById('sqlEditor').value = '';
+  document.getElementById('resultsArea').innerHTML = '';
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runQuery(); }
+});
+
+init();
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</body>
+</html>

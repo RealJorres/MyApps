@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='36' font-family='serif' fill='%237c3aed'%3Ex%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/base.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://jorresapps.onrender.com/equation-solver/">
+<meta name="description" content="Solve linear, quadratic, and simultaneous equations with step-by-step solutions and graph visualization.">
+<meta name="keywords" content="equation solver, quadratic formula, linear equation, system of equations, algebra, math solver">
+<meta name="author" content="Jorres Apps">
+<meta property="og:title" content="Equation Solver">
+<meta property="og:description" content="Solve linear, quadratic, and simultaneous equations with step-by-step solutions and graph visualization.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta name="twitter:title" content="Equation Solver">
+<meta name="twitter:description" content="Solve linear, quadratic, and simultaneous equations with step-by-step solutions.">
+<title>Equation Solver | Jorres Apps</title>
+<style>
+.mode-strip { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
+.mode-btn { background: none; border: none; padding: 0.65rem 1.25rem; font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color var(--transition), border-color var(--transition); font-family: inherit; }
+.mode-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
+.mode-btn:hover:not(.active) { color: var(--text); }
+.mode-panel { display: none; }
+.mode-panel.active { display: block; }
+.eq-input-row { display: flex; align-items: center; gap: 0.5rem; }
+.eq-input-row label { white-space: nowrap; font-size: var(--text-sm); color: var(--text-muted); }
+.coeff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+.coeff-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.coeff-group label { font-size: var(--text-xs); color: var(--text-muted); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.04em; }
+.coeff-group input { text-align: center; }
+.sys-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+.sys-eq { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem; }
+.sys-eq h4 { font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 0.65rem; }
+.sys-coeff-row { display: flex; align-items: center; gap: 0.35rem; font-size: var(--text-sm); color: var(--text-muted); }
+.sys-coeff-row input { width: 56px; text-align: center; padding: 0.35rem; }
+.result-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-top: 1.25rem; }
+.result-card.success { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 8%, var(--surface)); }
+.result-card.error { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 8%, var(--surface)); }
+.result-value { font-size: 1.5rem; font-weight: var(--weight-bold); color: var(--brand); margin-bottom: 0.5rem; }
+.result-value.danger { color: var(--danger); font-size: var(--text-base); }
+.steps-list { list-style: none; padding: 0; margin: 0.75rem 0 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.steps-list li { font-size: var(--text-sm); color: var(--text-muted); display: flex; gap: 0.5rem; align-items: flex-start; }
+.steps-list li::before { content: attr(data-n); display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.steps-list .step-math { font-family: var(--font-mono); color: var(--text); }
+canvas#quadGraph { width: 100%; height: 220px; border-radius: var(--radius-md); margin-top: 1rem; background: var(--surface-2); border: 1px solid var(--border); display: block; }
+.example-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+.chip { background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.75rem; font-size: var(--text-xs); cursor: pointer; transition: background var(--transition), border-color var(--transition); color: var(--text); }
+.chip:hover { background: color-mix(in srgb, var(--brand) 12%, var(--surface-2)); border-color: var(--brand); }
+.field { margin-bottom: 1.25rem; }
+@media (max-width: 500px) {
+  .coeff-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .sys-grid { grid-template-columns: 1fr; }
+  .mode-btn { padding: 0.55rem 0.85rem; font-size: var(--text-xs); }
+}
+</style>
+</head>
+<body>
+<script src="/static/app-nav.js?v=3" data-app-id="equation-solver" data-app-name="Equation Solver"></script>
+<div class="container" style="max-width:660px;">
+  <header>
+    <h1>Equation Solver</h1>
+    <p>Solve linear, quadratic, and simultaneous equations with step-by-step solutions.</p>
+  </header>
+
+  <div class="card">
+    <div class="mode-strip" role="tablist">
+      <button class="mode-btn active" role="tab" aria-selected="true"  id="tab-linear" onclick="switchMode('linear')">Linear</button>
+      <button class="mode-btn"        role="tab" aria-selected="false" id="tab-quad"   onclick="switchMode('quad')">Quadratic</button>
+      <button class="mode-btn"        role="tab" aria-selected="false" id="tab-sys"    onclick="switchMode('sys')">System of 2</button>
+    </div>
+
+    <!-- LINEAR -->
+    <div class="mode-panel active" id="panel-linear">
+      <p style="font-size:var(--text-xs);color:var(--text-muted);margin:0 0 0.75rem;">Enter an equation like <code>2x + 3 = 7</code> or <code>3(x-2) = x + 4</code></p>
+      <div class="example-chips" id="linear-chips">
+        <span class="chip" onclick="setLinear('2x + 3 = 7')">2x + 3 = 7</span>
+        <span class="chip" onclick="setLinear('3x - 5 = x + 11')">3x - 5 = x + 11</span>
+        <span class="chip" onclick="setLinear('5(x + 2) = 3x + 16')">5(x + 2) = 3x + 16</span>
+        <span class="chip" onclick="setLinear('x/2 + 1 = 4')">x/2 + 1 = 4</span>
+        <span class="chip" onclick="setLinear('0.5x = 2.5')">0.5x = 2.5</span>
+      </div>
+      <div class="field">
+        <label for="linearInput">Equation</label>
+        <input type="text" id="linearInput" placeholder="e.g. 2x + 3 = 7" oninput="solveLinear()" autocomplete="off" spellcheck="false">
+      </div>
+      <div id="linearResult"></div>
+    </div>
+
+    <!-- QUADRATIC -->
+    <div class="mode-panel" id="panel-quad">
+      <p style="font-size:var(--text-xs);color:var(--text-muted);margin:0 0 0.75rem;">Solve <strong>ax&sup2; + bx + c = 0</strong> using the quadratic formula.</p>
+      <div class="example-chips">
+        <span class="chip" onclick="setQuad(1,-3,2)">x&sup2; - 3x + 2 = 0</span>
+        <span class="chip" onclick="setQuad(1,0,-4)">x&sup2; - 4 = 0</span>
+        <span class="chip" onclick="setQuad(2,-4,2)">2x&sup2; - 4x + 2 = 0</span>
+        <span class="chip" onclick="setQuad(1,2,5)">x&sup2; + 2x + 5 = 0</span>
+        <span class="chip" onclick="setQuad(1,-5,6)">x&sup2; - 5x + 6 = 0</span>
+      </div>
+      <div class="coeff-grid">
+        <div class="coeff-group">
+          <label>a (x&sup2;)</label>
+          <input type="number" id="qa" value="1" step="any" oninput="solveQuad()" aria-label="Coefficient a">
+        </div>
+        <div class="coeff-group">
+          <label>b (x)</label>
+          <input type="number" id="qb" value="-3" step="any" oninput="solveQuad()" aria-label="Coefficient b">
+        </div>
+        <div class="coeff-group">
+          <label>c (constant)</label>
+          <input type="number" id="qc" value="2" step="any" oninput="solveQuad()" aria-label="Coefficient c">
+        </div>
+      </div>
+      <div id="quadResult"></div>
+      <canvas id="quadGraph" width="620" height="220" aria-label="Parabola graph"></canvas>
+    </div>
+
+    <!-- SYSTEM -->
+    <div class="mode-panel" id="panel-sys">
+      <p style="font-size:var(--text-xs);color:var(--text-muted);margin:0 0 0.75rem;">Solve a system of two linear equations: <strong>a&#8321;x + b&#8321;y = c&#8321;</strong> and <strong>a&#8322;x + b&#8322;y = c&#8322;</strong></p>
+      <div class="example-chips">
+        <span class="chip" onclick="setSys(2,1,5,1,-1,1)">2x+y=5, x-y=1</span>
+        <span class="chip" onclick="setSys(3,2,12,1,-1,1)">3x+2y=12, x-y=1</span>
+        <span class="chip" onclick="setSys(1,1,4,2,-1,2)">x+y=4, 2x-y=2</span>
+        <span class="chip" onclick="setSys(2,3,8,4,6,16)">2x+3y=8, 4x+6y=16</span>
+      </div>
+      <div class="sys-grid">
+        <div class="sys-eq">
+          <h4>Equation 1</h4>
+          <div class="sys-coeff-row">
+            <input type="number" id="s1a" value="2"  step="any" oninput="solveSys()" aria-label="a1">
+            <span>x +</span>
+            <input type="number" id="s1b" value="1"  step="any" oninput="solveSys()" aria-label="b1">
+            <span>y =</span>
+            <input type="number" id="s1c" value="5"  step="any" oninput="solveSys()" aria-label="c1">
+          </div>
+        </div>
+        <div class="sys-eq">
+          <h4>Equation 2</h4>
+          <div class="sys-coeff-row">
+            <input type="number" id="s2a" value="1"  step="any" oninput="solveSys()" aria-label="a2">
+            <span>x +</span>
+            <input type="number" id="s2b" value="-1" step="any" oninput="solveSys()" aria-label="b2">
+            <span>y =</span>
+            <input type="number" id="s2c" value="1"  step="any" oninput="solveSys()" aria-label="c2">
+          </div>
+        </div>
+      </div>
+      <div id="sysResult"></div>
+    </div>
+  </div>
+</div>
+<script src="/static/footer.js?v=3"></script>
+<script>
+let currentMode = 'linear';
+
+function switchMode(m) {
+  currentMode = m;
+  ['linear','quad','sys'].forEach(id => {
+    document.getElementById('panel-' + id).classList.toggle('active', id === m);
+    document.getElementById('tab-'   + id).classList.toggle('active', id === m);
+    document.getElementById('tab-'   + id).setAttribute('aria-selected', id === m);
+  });
+  if (m === 'quad')   solveQuad();
+  if (m === 'sys')    solveSys();
+  if (m === 'linear') solveLinear();
+}
+
+/* ========== LINEAR ========== */
+function setLinear(eq) {
+  document.getElementById('linearInput').value = eq;
+  solveLinear();
+}
+
+function parseLinear(raw) {
+  // Normalize: expand parentheses, strip spaces
+  let eq = raw.replace(/\s+/g, '');
+  if (!eq.includes('=')) return null;
+  const [lhs, rhs] = eq.split('=');
+  if (rhs === undefined) return null;
+
+  // Expand parentheses like 3(x+2) => 3x+6
+  function expand(expr) {
+    return expr.replace(/([+-]?\d*\.?\d*)?\(([^)]+)\)/g, (_, coef, inner) => {
+      const k = (coef === '' || coef === '+') ? 1 : (coef === '-' ? -1 : parseFloat(coef));
+      // Add leading + to inner terms if needed for splitting
+      const terms = inner.replace(/([+-])/g, ' $1').trim().split(/\s+/);
+      return terms.map(t => {
+        const m = t.match(/^([+-]?\d*\.?\d*)(x)?$/);
+        if (!m) return '0';
+        const v = (m[1] === '' || m[1] === '+') ? 1 : (m[1] === '-' ? -1 : parseFloat(m[1]));
+        return (k * v) + (m[2] || '');
+      }).join('+');
+    });
+  }
+
+  // Move everything to left: lhs - rhs = 0
+  // Parse expression: sum of terms (a*x or constant)
+  function parseSide(expr) {
+    expr = expand(expr);
+    // Tokenize into terms
+    const tokens = expr.match(/[+-]?[^+-]+/g) || [];
+    let xCoef = 0, cst = 0;
+    for (let tok of tokens) {
+      tok = tok.trim();
+      if (!tok) continue;
+      if (/x/.test(tok)) {
+        const c = tok.replace('x','');
+        xCoef += (c === '' || c === '+') ? 1 : (c === '-' ? -1 : parseFloat(c));
+      } else if (/\//.test(tok)) {
+        // handle x/n
+        if (/x/.test(tok)) {
+          const parts = tok.split('/');
+          xCoef += parseFloat(parts[0].replace('x','1')) / parseFloat(parts[1]);
+        } else {
+          cst += eval(tok); // safe: only numbers here
+        }
+      } else {
+        const v = parseFloat(tok);
+        if (!isNaN(v)) cst += v;
+      }
+    }
+    return { xCoef, cst };
+  }
+
+  // Special-case: handle x/n terms before parseSide
+  function tokenizeSide(expr) {
+    expr = expand(expr);
+    // Replace x/n with (1/n)x
+    expr = expr.replace(/([+-]?\d*\.?\d*)?x\/(\d+\.?\d*)/g, (_, num, den) => {
+      const k = (num === undefined || num === '' || num === '+') ? 1 : (num === '-' ? -1 : parseFloat(num));
+      return (k / parseFloat(den)) + 'x';
+    });
+    const tokens = expr.match(/[+-]?[^+-]+/g) || [];
+    let xCoef = 0, cst = 0;
+    for (let tok of tokens) {
+      tok = tok.trim();
+      if (!tok) continue;
+      if (tok.includes('x')) {
+        const c = tok.replace('x','').trim();
+        xCoef += (c === '' || c === '+') ? 1 : (c === '-' ? -1 : parseFloat(c));
+      } else {
+        const v = parseFloat(tok);
+        if (!isNaN(v)) cst += v;
+      }
+    }
+    return { xCoef, cst };
+  }
+
+  const L = tokenizeSide(lhs);
+  const R = tokenizeSide(rhs);
+  // L.xCoef * x + L.cst = R.xCoef * x + R.cst
+  // (L.xCoef - R.xCoef) * x = R.cst - L.cst
+  const A = L.xCoef - R.xCoef;
+  const B = R.cst - L.cst;
+  return { A, B, L, R };
+}
+
+function fmtNum(n) {
+  if (!isFinite(n)) return String(n);
+  const r = Math.round(n * 1e10) / 1e10;
+  return r % 1 === 0 ? String(r) : r.toFixed(6).replace(/\.?0+$/, '');
+}
+
+function solveLinear() {
+  const raw = document.getElementById('linearInput').value.trim();
+  const out  = document.getElementById('linearResult');
+  if (!raw) { out.innerHTML = ''; return; }
+
+  const parsed = parseLinear(raw);
+  if (!parsed) {
+    out.innerHTML = resultCard('error','<span class="result-value danger">Invalid equation format.</span>','');
+    return;
+  }
+
+  const { A, B, L, R } = parsed;
+  const steps = [];
+
+  // Build display of sides
+  function termStr(xCoef, cst, side) {
+    let s = '';
+    if (xCoef !== 0) s += fmtNum(xCoef) + 'x';
+    if (cst !== 0)   s += (cst > 0 && s ? ' + ' : (cst < 0 ? (s ? ' - ' : '-') : '')) + fmtNum(Math.abs(cst));
+    return s || '0';
+  }
+
+  steps.push({ n:1, text: 'Original equation:', math: `${termStr(L.xCoef, L.cst)} = ${termStr(R.xCoef, R.cst)}` });
+
+  if (Math.abs(A) < 1e-12) {
+    if (Math.abs(B) < 1e-12) {
+      out.innerHTML = resultCard('success','<span class="result-value">Infinite solutions</span>','<p style="font-size:var(--text-sm);color:var(--text-muted);margin:0.5rem 0 0">The equation is an identity — true for all x.</p>',steps);
+    } else {
+      out.innerHTML = resultCard('error','<span class="result-value danger">No solution</span>','<p style="font-size:var(--text-sm);color:var(--text-muted);margin:0.5rem 0 0">The equation is a contradiction.</p>',steps);
+    }
+    return;
+  }
+
+  // Move x terms left, constants right
+  if (R.xCoef !== 0) steps.push({ n:2, text: 'Move x terms to left:', math: `${fmtNum(A)}x = ${fmtNum(B)}` });
+  else steps.push({ n:2, text: 'Isolate x terms:', math: `${fmtNum(A)}x = ${fmtNum(B)}` });
+
+  const x = B / A;
+  steps.push({ n:3, text: 'Divide both sides by ' + fmtNum(A) + ':', math: `x = ${fmtNum(B)} / ${fmtNum(A)} = ${fmtNum(x)}` });
+
+  // Verify
+  steps.push({ n:4, text: 'Verify:', math: `LHS = ${fmtNum(L.xCoef * x + L.cst)}, RHS = ${fmtNum(R.xCoef * x + R.cst)}` });
+
+  out.innerHTML = resultCard('success', `<span class="result-value">x = ${fmtNum(x)}</span>`, '', steps);
+}
+
+/* ========== QUADRATIC ========== */
+let quadCanvas, quadCtx;
+window.addEventListener('load', () => {
+  quadCanvas = document.getElementById('quadGraph');
+  quadCtx    = quadCanvas.getContext('2d');
+  solveQuad();
+  solveSys();
+});
+
+function setQuad(a,b,c) {
+  document.getElementById('qa').value = a;
+  document.getElementById('qb').value = b;
+  document.getElementById('qc').value = c;
+  solveQuad();
+}
+
+function solveQuad() {
+  const a = parseFloat(document.getElementById('qa').value);
+  const b = parseFloat(document.getElementById('qb').value);
+  const c = parseFloat(document.getElementById('qc').value);
+  const out = document.getElementById('quadResult');
+
+  if (isNaN(a) || isNaN(b) || isNaN(c)) { out.innerHTML = ''; return; }
+  if (a === 0) {
+    out.innerHTML = resultCard('error','<span class="result-value danger">a cannot be 0 for a quadratic.</span>','');
+    drawGraph(a, b, c, [], null);
+    return;
+  }
+
+  const disc = b*b - 4*a*c;
+  const steps = [
+    { n:1, text:'Equation:', math: `${fmtNum(a)}x² + (${fmtNum(b)})x + (${fmtNum(c)}) = 0` },
+    { n:2, text:'Discriminant Δ = b² - 4ac:', math: `${fmtNum(b)}² - 4(${fmtNum(a)})(${fmtNum(c)}) = ${fmtNum(disc)}` },
+  ];
+
+  let roots = [], html = '';
+  if (disc > 0) {
+    const x1 = (-b + Math.sqrt(disc)) / (2*a);
+    const x2 = (-b - Math.sqrt(disc)) / (2*a);
+    roots = [x1, x2];
+    steps.push({ n:3, text:'Two distinct real roots:', math: `x = (-${fmtNum(b)} ± √${fmtNum(disc)}) / ${fmtNum(2*a)}` });
+    steps.push({ n:4, text:'Solutions:', math: `x₁ = ${fmtNum(x1)},  x₂ = ${fmtNum(x2)}` });
+    html = `<span class="result-value">x₁ = ${fmtNum(x1)}</span><br><span class="result-value">x₂ = ${fmtNum(x2)}</span>`;
+  } else if (Math.abs(disc) < 1e-12) {
+    const x0 = -b / (2*a);
+    roots = [x0];
+    steps.push({ n:3, text:'One repeated root (Δ = 0):', math: `x = -b / 2a = ${fmtNum(-b)} / ${fmtNum(2*a)}` });
+    steps.push({ n:4, text:'Solution:', math: `x = ${fmtNum(x0)}` });
+    html = `<span class="result-value">x = ${fmtNum(x0)} (repeated)</span>`;
+  } else {
+    const realPart = -b / (2*a);
+    const imagPart = Math.sqrt(-disc) / (2*a);
+    steps.push({ n:3, text:'No real roots (Δ < 0) — complex:', math: `x = ${fmtNum(realPart)} ± ${fmtNum(imagPart)}i` });
+    html = `<span class="result-value" style="font-size:var(--text-lg)">x₁ = ${fmtNum(realPart)} + ${fmtNum(imagPart)}i</span><br><span class="result-value" style="font-size:var(--text-lg)">x₂ = ${fmtNum(realPart)} − ${fmtNum(imagPart)}i</span>`;
+  }
+
+  const vertex = { x: -b/(2*a), y: c - b*b/(4*a) };
+  steps.push({ n: steps.length+1, text:'Vertex:', math: `(${fmtNum(vertex.x)}, ${fmtNum(vertex.y)})` });
+
+  out.innerHTML = resultCard(disc < -1e-12 ? 'success' : 'success', html, '', steps);
+  drawGraph(a, b, c, roots, vertex);
+}
+
+function drawGraph(a, b, c, roots, vertex) {
+  if (!quadCtx) return;
+  const canvas = quadCanvas;
+  const W = canvas.width, H = canvas.height;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = quadCtx;
+  ctx.scale(dpr, dpr);
+
+  // Background
+  const style = getComputedStyle(document.documentElement);
+  const bg     = style.getPropertyValue('--surface-2').trim()   || '#1a1f2e';
+  const grid   = style.getPropertyValue('--border').trim()      || '#2d3348';
+  const axCol  = style.getPropertyValue('--text-muted').trim()  || '#888';
+  const brand  = style.getPropertyValue('--brand').trim()       || '#2f57ff';
+  const danger = style.getPropertyValue('--danger').trim()      || '#dc2626';
+  const textC  = style.getPropertyValue('--text').trim()        || '#e8eaf0';
+
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Determine view range
+  let xMin = -6, xMax = 6;
+  if (vertex && isFinite(vertex.x)) {
+    xMin = Math.min(xMin, vertex.x - 5);
+    xMax = Math.max(xMax, vertex.x + 5);
+  }
+  if (roots.length) {
+    xMin = Math.min(xMin, ...roots) - 2;
+    xMax = Math.max(xMax, ...roots) + 2;
+  }
+  const pad = 32;
+  const scaleX = (W - pad*2) / (xMax - xMin);
+  const yVals = [];
+  for (let xi = xMin; xi <= xMax; xi += 0.1) yVals.push(a*xi*xi + b*xi + c);
+  let yMin = Math.min(...yVals), yMax = Math.max(...yVals);
+  if (yMax - yMin < 2) { yMin -= 1; yMax += 1; }
+  yMin -= Math.abs(yMax - yMin) * 0.15;
+  yMax += Math.abs(yMax - yMin) * 0.15;
+  const scaleY = (H - pad*2) / (yMax - yMin);
+
+  function toCanvas(x, y) {
+    return { cx: pad + (x - xMin) * scaleX, cy: H - pad - (y - yMin) * scaleY };
+  }
+
+  // Grid
+  ctx.strokeStyle = grid;
+  ctx.lineWidth = 1;
+  for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+    const {cx} = toCanvas(gx, 0);
+    ctx.beginPath(); ctx.moveTo(cx, pad); ctx.lineTo(cx, H - pad); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = axCol;
+  ctx.lineWidth = 1.5;
+  const o = toCanvas(0, 0);
+  if (o.cx >= pad && o.cx <= W-pad) { ctx.beginPath(); ctx.moveTo(o.cx, pad); ctx.lineTo(o.cx, H-pad); ctx.stroke(); }
+  if (o.cy >= pad && o.cy <= H-pad) { ctx.beginPath(); ctx.moveTo(pad, o.cy); ctx.lineTo(W-pad, o.cy); ctx.stroke(); }
+
+  // Axis labels
+  ctx.fillStyle = axCol;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+    if (gx === 0) continue;
+    const {cx, cy} = toCanvas(gx, 0);
+    const ly = Math.max(pad+2, Math.min(H-pad-12, cy+12));
+    ctx.fillText(gx, cx, ly);
+  }
+
+  // Parabola
+  ctx.beginPath();
+  ctx.strokeStyle = brand;
+  ctx.lineWidth = 2.5;
+  let first = true;
+  for (let px = 0; px <= W - pad*2; px += 1) {
+    const xi = xMin + px / scaleX;
+    const yi = a*xi*xi + b*xi + c;
+    const {cx, cy} = toCanvas(xi, yi);
+    if (cy < -200 || cy > H + 200) { first = true; continue; }
+    if (first) { ctx.moveTo(cx, cy); first = false; }
+    else        ctx.lineTo(cx, cy);
+  }
+  ctx.stroke();
+
+  // Roots
+  roots.forEach(rx => {
+    const {cx, cy} = toCanvas(rx, 0);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, 2*Math.PI);
+    ctx.fillStyle = danger;
+    ctx.fill();
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(fmtNum(rx), cx, cy - 8);
+  });
+
+  // Vertex
+  if (vertex && isFinite(vertex.x) && isFinite(vertex.y)) {
+    const {cx, cy} = toCanvas(vertex.x, vertex.y);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, 2*Math.PI);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fill();
+  }
+}
+
+/* ========== SYSTEM ========== */
+function setSys(a1,b1,c1,a2,b2,c2) {
+  document.getElementById('s1a').value = a1;
+  document.getElementById('s1b').value = b1;
+  document.getElementById('s1c').value = c1;
+  document.getElementById('s2a').value = a2;
+  document.getElementById('s2b').value = b2;
+  document.getElementById('s2c').value = c2;
+  solveSys();
+}
+
+function solveSys() {
+  const a1 = parseFloat(document.getElementById('s1a').value);
+  const b1 = parseFloat(document.getElementById('s1b').value);
+  const c1 = parseFloat(document.getElementById('s1c').value);
+  const a2 = parseFloat(document.getElementById('s2a').value);
+  const b2 = parseFloat(document.getElementById('s2b').value);
+  const c2 = parseFloat(document.getElementById('s2c').value);
+  const out = document.getElementById('sysResult');
+  if ([a1,b1,c1,a2,b2,c2].some(isNaN)) { out.innerHTML=''; return; }
+
+  const D  = a1*b2 - a2*b1;
+  const Dx = c1*b2 - c2*b1;
+  const Dy = a1*c2 - a2*c1;
+
+  const steps = [
+    { n:1, text:'System:', math: `${fmtNum(a1)}x + ${fmtNum(b1)}y = ${fmtNum(c1)};  ${fmtNum(a2)}x + ${fmtNum(b2)}y = ${fmtNum(c2)}` },
+    { n:2, text:"Cramer's Rule — Determinant D:", math: `D = (${fmtNum(a1)})(${fmtNum(b2)}) - (${fmtNum(a2)})(${fmtNum(b1)}) = ${fmtNum(D)}` },
+  ];
+
+  if (Math.abs(D) < 1e-12) {
+    if (Math.abs(Dx) < 1e-12 && Math.abs(Dy) < 1e-12) {
+      out.innerHTML = resultCard('success','<span class="result-value">Infinite solutions</span>','<p style="font-size:var(--text-sm);color:var(--text-muted);margin:0.5rem 0 0">The equations are dependent (same line).</p>',steps);
+    } else {
+      out.innerHTML = resultCard('error','<span class="result-value danger">No solution</span>','<p style="font-size:var(--text-sm);color:var(--text-muted);margin:0.5rem 0 0">The lines are parallel — no intersection.</p>',steps);
+    }
+    return;
+  }
+
+  const x = Dx / D;
+  const y = Dy / D;
+  steps.push({ n:3, text:'Dx (replace x column with constants):', math: `Dx = (${fmtNum(c1)})(${fmtNum(b2)}) - (${fmtNum(c2)})(${fmtNum(b1)}) = ${fmtNum(Dx)}` });
+  steps.push({ n:4, text:'Dy (replace y column with constants):', math: `Dy = (${fmtNum(a1)})(${fmtNum(c2)}) - (${fmtNum(a2)})(${fmtNum(c1)}) = ${fmtNum(Dy)}` });
+  steps.push({ n:5, text:'Solve:', math: `x = Dx/D = ${fmtNum(Dx)}/${fmtNum(D)} = ${fmtNum(x)},  y = Dy/D = ${fmtNum(Dy)}/${fmtNum(D)} = ${fmtNum(y)}` });
+  steps.push({ n:6, text:'Verify in Eq.1:', math: `${fmtNum(a1)}(${fmtNum(x)}) + ${fmtNum(b1)}(${fmtNum(y)}) = ${fmtNum(a1*x + b1*y)}` });
+
+  out.innerHTML = resultCard('success',
+    `<span class="result-value">x = ${fmtNum(x)}</span><br><span class="result-value">y = ${fmtNum(y)}</span>`,
+    '', steps);
+}
+
+/* ========== SHARED ========== */
+function resultCard(type, mainHtml, extra, steps) {
+  let stepsHtml = '';
+  if (steps && steps.length) {
+    stepsHtml = '<ul class="steps-list">' + steps.map(s =>
+      `<li data-n="${s.n}"><div><span>${s.text}</span> <span class="step-math">${s.math}</span></div></li>`
+    ).join('') + '</ul>';
+  }
+  return `<div class="result-card ${type}">${mainHtml}${extra}${stepsHtml}</div>`;
+}
+
+// Init
+solveLinear();
+</script>
+</body>
+</html>

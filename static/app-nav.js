@@ -11,7 +11,7 @@
   // ── Related tools map — full 130-app graph ─────────────────────────────────
   var RELATED = {
     // Developer Tools
-    'json-formatter':          ['json-to-yaml','diff-checker','regex-tester'],
+    'json-formatter':          ['json-to-yaml','diff-checker','sql-playground'],
     'json-to-yaml':            ['json-formatter','diff-checker','code-beautifier'],
     'diff-checker':            ['json-formatter','code-beautifier','regex-tester'],
     'code-beautifier':         ['css-formatter','sql-formatter','diff-checker'],
@@ -20,7 +20,7 @@
     'html-previewer':          ['css-formatter','code-beautifier','markdown-editor'],
     'markdown-editor':         ['diff-checker','word-counter','markdown-table-generator'],
     'markdown-table-generator':['markdown-editor','csv-json-converter','json-formatter'],
-    'regex-tester':            ['diff-checker','json-formatter','code-beautifier'],
+    'regex-tester':            ['diff-checker','json-formatter','sql-playground'],
     'base64-tool':             ['hash-generator','url-parser','cipher-tool'],
     'base-converter':          ['ascii-table','hash-generator','base64-tool'],
     'ascii-table':             ['base-converter','html-entity-encoder','hash-generator'],
@@ -81,7 +81,7 @@
     'barcode-generator':       ['qr-generator','image-tools','url-parser'],
     'qr-generator':            ['barcode-generator','url-parser','image-tools'],
     // Data & Analysis
-    'csv-viewer':              ['csv-json-converter','pivot-table','chart-visualizer'],
+    'csv-viewer':              ['csv-json-converter','sql-playground','chart-visualizer'],
     'csv-json-converter':      ['json-formatter','csv-viewer','diff-checker'],
     'chart-visualizer':        ['statistics-calculator','pivot-table','csv-viewer'],
     'pivot-table':             ['csv-viewer','chart-visualizer','statistics-calculator'],
@@ -105,13 +105,13 @@
     'kanban-board':            ['todo-list','gantt-chart','okr-tracker'],
     'gantt-chart':             ['okr-tracker','kanban-board','decision-matrix'],
     'okr-tracker':             ['gantt-chart','kanban-board','swot-analysis'],
-    'pomodoro-timer':          ['meeting-timer','habit-tracker','todo-list'],
+    'pomodoro-timer':          ['hiit-timer','habit-tracker','todo-list'],
     'meeting-timer':           ['pomodoro-timer','meeting-agenda','meeting-time-planner'],
     'meeting-agenda':          ['survey-builder','meeting-timer','meeting-time-planner'],
     'meeting-time-planner':    ['world-clock','meeting-agenda','meeting-timer'],
     'world-clock':             ['meeting-time-planner','timestamp-converter','meeting-agenda'],
-    'habit-tracker':           ['todo-list','water-tracker','calorie-tracker'],
-    'water-tracker':           ['habit-tracker','calorie-tracker','tdee-calculator'],
+    'habit-tracker':           ['todo-list','hiit-timer','water-tracker'],
+    'water-tracker':           ['habit-tracker','hiit-timer','calorie-tracker'],
     'calorie-tracker':         ['water-tracker','tdee-calculator','habit-tracker'],
     'swot-analysis':           ['decision-matrix','okr-tracker','gantt-chart'],
     'decision-matrix':         ['swot-analysis','okr-tracker','survey-builder'],
@@ -124,14 +124,22 @@
     'sleep-calculator':        ['bmi-calculator','habit-tracker','water-tracker'],
     'age-calculator':          ['bmi-calculator','sleep-calculator','habit-tracker'],
     // Science & Learning
-    'periodic-table':          ['unit-converter','graph-plotter','prime-factorizer'],
-    'unit-converter':          ['periodic-table','graph-plotter','tip-calculator'],
-    'graph-plotter':           ['statistics-calculator','unit-converter','prime-factorizer'],
-    'prime-factorizer':        ['hash-generator','statistics-calculator','unit-converter'],
+    'periodic-table':          ['molar-mass-calculator','unit-converter','graph-plotter'],
+    'unit-converter':          ['periodic-table','equation-solver','graph-plotter'],
+    'graph-plotter':           ['equation-solver','statistics-calculator','prime-factorizer'],
+    'prime-factorizer':        ['equation-solver','statistics-calculator','unit-converter'],
+    'equation-solver':         ['graph-plotter','molar-mass-calculator','unit-converter'],
+    'molar-mass-calculator':   ['equation-solver','periodic-table','unit-converter'],
     // Security & Network
-    'password-generator':      ['hash-generator','jwt-generator','cipher-tool'],
-    'hash-generator':          ['password-generator','cipher-tool','jwt-generator'],
-    'cipher-tool':             ['hash-generator','password-generator','base64-tool'],
+    'password-generator':      ['text-encryptor','hash-generator','cipher-tool'],
+    'hash-generator':          ['text-encryptor','password-generator','cipher-tool'],
+    'jwt-generator':           ['text-encryptor','hash-generator','api-tester'],
+    'cipher-tool':             ['text-encryptor','hash-generator','base64-tool'],
+    'text-encryptor':          ['password-generator','hash-generator','jwt-generator'],
+    // Developer Tools (new)
+    'sql-playground':          ['json-formatter','csv-viewer','regex-tester'],
+    // Health & Wellness (new)
+    'hiit-timer':              ['pomodoro-timer','habit-tracker','water-tracker'],
     // Games (grouped by style)
     'chess':                   ['tic-tac-toe','connect-four','battleship'],
     'tic-tac-toe':             ['chess','connect-four','battleship'],

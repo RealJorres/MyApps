@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/base.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://jorresapps.onrender.com/molar-mass-calculator/">
+<meta name="description" content="Calculate the molar mass of any chemical compound. Enter a formula like H2O or Ca(OH)2 and get an instant element-by-element breakdown.">
+<meta name="keywords" content="molar mass calculator, molecular weight, chemical formula, periodic table, chemistry calculator">
+<meta name="author" content="Jorres Apps">
+<meta property="og:title" content="Molar Mass Calculator">
+<meta property="og:description" content="Calculate the molar mass of any chemical formula with a full element breakdown. Supports parentheses and nested groups.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta name="twitter:title" content="Molar Mass Calculator">
+<meta name="twitter:description" content="Calculate molar mass from any chemical formula with element-by-element breakdown.">
+<title>Molar Mass Calculator | Jorres Apps</title>
+<style>
+.container--narrow { max-width: 580px; margin: 0 auto; padding: 0 1rem; }
+.formula-wrap { position: relative; margin-bottom: 1.25rem; }
+.formula-input {
+  width: 100%; font-size: 1.5rem; font-family: var(--font-mono);
+  padding: 0.75rem 3rem 0.75rem 1rem; border: 2px solid var(--border);
+  border-radius: var(--radius-md); background: var(--surface);
+  color: var(--text); transition: border-color var(--transition);
+  letter-spacing: 0.02em;
+}
+.formula-input:focus { border-color: var(--brand); outline: none; }
+.formula-input.error  { border-color: var(--danger); }
+.formula-clear { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); display: none; padding: 0.25rem; }
+.formula-clear:hover { color: var(--text); }
+.examples { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.example-chip { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.25rem 0.65rem; font-size: var(--text-xs); font-family: var(--font-mono); cursor: pointer; color: var(--text-muted); transition: all var(--transition); }
+.example-chip:hover { background: var(--brand-light); color: var(--brand); border-color: var(--brand-light); }
+
+/* Result card */
+.result-card { background: var(--brand); color: #fff; border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; display: none; }
+.result-card.show { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.result-mass { font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.result-unit { font-size: var(--text-sm); opacity: 0.8; margin-top: 0.2rem; }
+.result-formula-display { font-family: var(--font-mono); font-size: var(--text-sm); opacity: 0.85; }
+.copy-result { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: var(--radius); padding: 0.35rem 0.75rem; font-size: var(--text-xs); font-weight: var(--weight-semibold); cursor: pointer; transition: background var(--transition); font-family: inherit; }
+.copy-result:hover { background: rgba(255,255,255,0.3); }
+
+/* Error state */
+.error-msg { color: var(--danger); font-size: var(--text-sm); margin-bottom: 1rem; display: none; padding: 0.6rem 0.85rem; background: var(--danger-bg); border-radius: var(--radius-md); border: 1px solid var(--danger-border); }
+.error-msg.show { display: block; }
+
+/* Breakdown table */
+.breakdown-title { font-size: var(--text-xs); font-weight: var(--weight-bold); text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 0.75rem; }
+table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+th { text-align: left; padding: 0.5rem 0.75rem; font-size: var(--text-xs); font-weight: var(--weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+.td-symbol { font-family: var(--font-mono); font-weight: var(--weight-bold); color: var(--brand); }
+.td-pct { color: var(--text-muted); }
+.td-bar-wrap { width: 80px; }
+.td-bar { height: 6px; border-radius: 3px; background: var(--brand-muted); }
+.td-bar-fill { height: 100%; border-radius: 3px; background: var(--brand); }
+tfoot td { font-weight: var(--weight-bold); border-top: 2px solid var(--border); padding-top: 0.75rem; }
+
+@media (max-width: 480px) {
+  .formula-input { font-size: 1.2rem; }
+  .td-bar-wrap { display: none; }
+}
+</style>
+</head>
+<body>
+<script src="/static/app-nav.js?v=3" data-app-id="molar-mass-calculator" data-app-name="Molar Mass Calculator"></script>
+<div class="container--narrow">
+  <header>
+    <h1>Molar Mass Calculator</h1>
+    <p>Enter any chemical formula to get the molar mass and an element-by-element breakdown.</p>
+  </header>
+
+  <div class="formula-wrap">
+    <input type="text" class="formula-input" id="formulaInput" placeholder="e.g. H2O" autocomplete="off" spellcheck="false" aria-label="Chemical formula" oninput="onInput()" onkeydown="if(event.key==='Escape')clearFormula()">
+    <button class="formula-clear" id="clearBtn" onclick="clearFormula()" aria-label="Clear formula">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="examples" role="group" aria-label="Example formulas">
+    <span style="font-size:var(--text-xs);color:var(--text-muted);align-self:center;">Examples:</span>
+    <button class="example-chip" onclick="setFormula('H2O')">H2O</button>
+    <button class="example-chip" onclick="setFormula('NaCl')">NaCl</button>
+    <button class="example-chip" onclick="setFormula('C6H12O6')">C6H12O6</button>
+    <button class="example-chip" onclick="setFormula('Ca(OH)2')">Ca(OH)2</button>
+    <button class="example-chip" onclick="setFormula('Fe2(SO4)3')">Fe2(SO4)3</button>
+    <button class="example-chip" onclick="setFormula('C8H10N4O2')">Caffeine</button>
+    <button class="example-chip" onclick="setFormula('Al2(SO4)3')">Al2(SO4)3</button>
+  </div>
+
+  <div class="error-msg" id="errorMsg" role="alert"></div>
+
+  <div class="result-card" id="resultCard" aria-live="polite">
+    <div>
+      <div class="result-mass" id="resultMass">18.015</div>
+      <div class="result-unit">g/mol</div>
+      <div class="result-formula-display" id="resultFormula"></div>
+    </div>
+    <button class="copy-result" onclick="copyResult()" id="copyBtn">Copy</button>
+  </div>
+
+  <div class="card" id="breakdownCard" style="display:none;">
+    <div class="breakdown-title">Element Breakdown</div>
+    <table id="breakdownTable" aria-label="Element breakdown">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Element</th>
+          <th>Count</th>
+          <th>Atomic Mass</th>
+          <th>Contribution</th>
+          <th>%</th>
+          <th class="td-bar-wrap"></th>
+        </tr>
+      </thead>
+      <tbody id="breakdownBody"></tbody>
+      <tfoot id="breakdownFoot"></tfoot>
+    </table>
+  </div>
+</div>
+<script src="/static/footer.js?v=3"></script>
+<script>
+const ELEMENTS = {
+  H:{n:'Hydrogen',m:1.008},He:{n:'Helium',m:4.0026},Li:{n:'Lithium',m:6.941},
+  Be:{n:'Beryllium',m:9.0122},B:{n:'Boron',m:10.811},C:{n:'Carbon',m:12.011},
+  N:{n:'Nitrogen',m:14.007},O:{n:'Oxygen',m:15.999},F:{n:'Fluorine',m:18.998},
+  Ne:{n:'Neon',m:20.180},Na:{n:'Sodium',m:22.990},Mg:{n:'Magnesium',m:24.305},
+  Al:{n:'Aluminum',m:26.982},Si:{n:'Silicon',m:28.086},P:{n:'Phosphorus',m:30.974},
+  S:{n:'Sulfur',m:32.065},Cl:{n:'Chlorine',m:35.453},Ar:{n:'Argon',m:39.948},
+  K:{n:'Potassium',m:39.098},Ca:{n:'Calcium',m:40.078},Sc:{n:'Scandium',m:44.956},
+  Ti:{n:'Titanium',m:47.867},V:{n:'Vanadium',m:50.942},Cr:{n:'Chromium',m:51.996},
+  Mn:{n:'Manganese',m:54.938},Fe:{n:'Iron',m:55.845},Co:{n:'Cobalt',m:58.933},
+  Ni:{n:'Nickel',m:58.693},Cu:{n:'Copper',m:63.546},Zn:{n:'Zinc',m:65.38},
+  Ga:{n:'Gallium',m:69.723},Ge:{n:'Germanium',m:72.640},As:{n:'Arsenic',m:74.922},
+  Se:{n:'Selenium',m:78.971},Br:{n:'Bromine',m:79.904},Kr:{n:'Krypton',m:83.798},
+  Rb:{n:'Rubidium',m:85.468},Sr:{n:'Strontium',m:87.620},Y:{n:'Yttrium',m:88.906},
+  Zr:{n:'Zirconium',m:91.224},Nb:{n:'Niobium',m:92.906},Mo:{n:'Molybdenum',m:95.960},
+  Tc:{n:'Technetium',m:98},Ru:{n:'Ruthenium',m:101.07},Rh:{n:'Rhodium',m:102.91},
+  Pd:{n:'Palladium',m:106.42},Ag:{n:'Silver',m:107.87},Cd:{n:'Cadmium',m:112.41},
+  In:{n:'Indium',m:114.82},Sn:{n:'Tin',m:118.71},Sb:{n:'Antimony',m:121.76},
+  Te:{n:'Tellurium',m:127.60},I:{n:'Iodine',m:126.90},Xe:{n:'Xenon',m:131.29},
+  Cs:{n:'Cesium',m:132.91},Ba:{n:'Barium',m:137.33},La:{n:'Lanthanum',m:138.91},
+  Ce:{n:'Cerium',m:140.12},Pr:{n:'Praseodymium',m:140.91},Nd:{n:'Neodymium',m:144.24},
+  Pm:{n:'Promethium',m:145},Sm:{n:'Samarium',m:150.36},Eu:{n:'Europium',m:151.96},
+  Gd:{n:'Gadolinium',m:157.25},Tb:{n:'Terbium',m:158.93},Dy:{n:'Dysprosium',m:162.50},
+  Ho:{n:'Holmium',m:164.93},Er:{n:'Erbium',m:167.26},Tm:{n:'Thulium',m:168.93},
+  Yb:{n:'Ytterbium',m:173.05},Lu:{n:'Lutetium',m:174.97},Hf:{n:'Hafnium',m:178.49},
+  Ta:{n:'Tantalum',m:180.95},W:{n:'Tungsten',m:183.84},Re:{n:'Rhenium',m:186.21},
+  Os:{n:'Osmium',m:190.23},Ir:{n:'Iridium',m:192.22},Pt:{n:'Platinum',m:195.08},
+  Au:{n:'Gold',m:196.97},Hg:{n:'Mercury',m:200.59},Tl:{n:'Thallium',m:204.38},
+  Pb:{n:'Lead',m:207.20},Bi:{n:'Bismuth',m:208.98},Po:{n:'Polonium',m:209},
+  At:{n:'Astatine',m:210},Rn:{n:'Radon',m:222},Fr:{n:'Francium',m:223},
+  Ra:{n:'Radium',m:226},Ac:{n:'Actinium',m:227},Th:{n:'Thorium',m:232.04},
+  Pa:{n:'Protactinium',m:231.04},U:{n:'Uranium',m:238.03},Np:{n:'Neptunium',m:237},
+  Pu:{n:'Plutonium',m:244},Am:{n:'Americium',m:243},Cm:{n:'Curium',m:247},
+  Bk:{n:'Berkelium',m:247},Cf:{n:'Californium',m:251},Es:{n:'Einsteinium',m:252},
+  Fm:{n:'Fermium',m:257},Md:{n:'Mendelevium',m:258},No:{n:'Nobelium',m:259},
+  Lr:{n:'Lawrencium',m:262},Rf:{n:'Rutherfordium',m:267},Db:{n:'Dubnium',m:268},
+  Sg:{n:'Seaborgium',m:271},Bh:{n:'Bohrium',m:274},Hs:{n:'Hassium',m:277},
+  Mt:{n:'Meitnerium',m:278},Ds:{n:'Darmstadtium',m:281},Rg:{n:'Roentgenium',m:282},
+  Cn:{n:'Copernicium',m:285},Nh:{n:'Nihonium',m:286},Fl:{n:'Flerovium',m:289},
+  Mc:{n:'Moscovium',m:290},Lv:{n:'Livermorium',m:293},Ts:{n:'Tennessine',m:294},
+  Og:{n:'Oganesson',m:294}
+};
+
+function parseFormula(f) {
+  const stack = [{}];
+  let i = 0;
+  while (i < f.length) {
+    if (f[i] === '(') {
+      stack.push({});
+      i++;
+    } else if (f[i] === ')') {
+      i++;
+      let numStr = '';
+      while (i < f.length && /\d/.test(f[i])) numStr += f[i++];
+      const n   = numStr ? parseInt(numStr) : 1;
+      const top = stack.pop();
+      if (!stack.length) throw new Error('Unmatched )');
+      for (const [el, cnt] of Object.entries(top))
+        stack[stack.length-1][el] = (stack[stack.length-1][el] || 0) + cnt * n;
+    } else if (/[A-Z]/.test(f[i])) {
+      let sym = f[i++];
+      while (i < f.length && /[a-z]/.test(f[i])) sym += f[i++];
+      if (!ELEMENTS[sym]) throw new Error('Unknown element: ' + sym);
+      let numStr = '';
+      while (i < f.length && /\d/.test(f[i])) numStr += f[i++];
+      const n = numStr ? parseInt(numStr) : 1;
+      stack[stack.length-1][sym] = (stack[stack.length-1][sym] || 0) + n;
+    } else if (/\d/.test(f[i])) {
+      throw new Error('Unexpected digit at position ' + i + ' — numbers must follow an element symbol or )');
+    } else {
+      throw new Error('Invalid character: "' + f[i] + '"');
+    }
+  }
+  if (stack.length > 1) throw new Error('Unclosed parenthesis');
+  return stack[0];
+}
+
+function onInput() {
+  const val = document.getElementById('formulaInput').value;
+  document.getElementById('clearBtn').style.display = val ? 'flex' : 'none';
+  document.getElementById('formulaInput').classList.remove('error');
+  if (!val.trim()) { hideResults(); clearError(); return; }
+  calculate(val.trim());
+}
+
+function calculate(formula) {
+  try {
+    const counts = parseFormula(formula);
+    if (!Object.keys(counts).length) { hideResults(); return; }
+
+    let total = 0;
+    const breakdown = Object.entries(counts).map(([sym, cnt]) => {
+      const el = ELEMENTS[sym];
+      const contribution = el.m * cnt;
+      total += contribution;
+      return { sym, name: el.n, cnt, mass: el.m, contribution };
+    });
+
+    // Display result card
+    document.getElementById('resultMass').textContent = total.toFixed(3);
+    document.getElementById('resultFormula').textContent = formula;
+    document.getElementById('resultCard').classList.add('show');
+
+    // Build breakdown table
+    const tbody = document.getElementById('breakdownBody');
+    const tfoot = document.getElementById('breakdownFoot');
+    tbody.innerHTML = '';
+    breakdown.forEach(row => {
+      const pct = (row.contribution / total * 100).toFixed(1);
+      const tr  = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-symbol">${row.sym}</td>
+        <td>${row.name}</td>
+        <td>${row.cnt}</td>
+        <td>${row.mass.toFixed(4)}</td>
+        <td>${row.contribution.toFixed(4)}</td>
+        <td class="td-pct">${pct}%</td>
+        <td class="td-bar-wrap"><div class="td-bar"><div class="td-bar-fill" style="width:${pct}%"></div></div></td>`;
+      tbody.appendChild(tr);
+    });
+    tfoot.innerHTML = `<tr><td colspan="4"><strong>Total</strong></td><td><strong>${total.toFixed(3)}</strong></td><td colspan="2"><strong>g/mol</strong></td></tr>`;
+    document.getElementById('breakdownCard').style.display = 'block';
+    clearError();
+  } catch(e) {
+    showError(e.message);
+    hideResults();
+    document.getElementById('formulaInput').classList.add('error');
+  }
+}
+
+function hideResults() {
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('breakdownCard').style.display = 'none';
+}
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = 'Error: ' + msg;
+  el.classList.add('show');
+}
+function clearError() {
+  document.getElementById('errorMsg').classList.remove('show');
+}
+function clearFormula() {
+  document.getElementById('formulaInput').value = '';
+  document.getElementById('formulaInput').classList.remove('error');
+  document.getElementById('clearBtn').style.display = 'none';
+  hideResults();
+  clearError();
+  document.getElementById('formulaInput').focus();
+}
+function setFormula(f) {
+  document.getElementById('formulaInput').value = f;
+  document.getElementById('clearBtn').style.display = 'flex';
+  calculate(f);
+}
+function copyResult() {
+  const mass    = document.getElementById('resultMass').textContent;
+  const formula = document.getElementById('resultFormula').textContent;
+  navigator.clipboard.writeText(mass + ' g/mol (' + formula + ')').then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  });
+}
+
+document.getElementById('formulaInput').focus();
+</script>
+</body>
+</html>

@@ -2124,4 +2124,65 @@
                      "writing"
                  ]
     }
+,
+    {
+        "id":          "sql-playground",
+        "name":        "SQL Playground",
+        "description": "Write and run SQL queries in your browser with a built-in SQLite database. No server needed.",
+        "port":        5140,
+        "path":        "./the-apps/sql-playground",
+        "entry":       "app.py",
+        "icon":        "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='12' cy='5' rx='9' ry='3'/><path d='M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5'/><path d='M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3'/></svg>",
+        "color":       "#0891b2",
+        "tags":        ["SQL","Database","Query","SQLite","Developer"],
+        "category":    "Developer Tools"
+    },
+    {
+        "id":          "equation-solver",
+        "name":        "Equation Solver",
+        "description": "Solve linear, quadratic, and simultaneous equations with step-by-step solutions and graph visualization.",
+        "port":        5141,
+        "path":        "./the-apps/equation-solver",
+        "entry":       "app.py",
+        "icon":        "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><line x1='4' y1='9' x2='20' y2='9'/><line x1='4' y1='15' x2='20' y2='15'/><line x1='10' y1='3' x2='8' y2='21'/><line x1='16' y1='3' x2='14' y2='21'/></svg>",
+        "color":       "#7c3aed",
+        "tags":        ["Equations","Math","Algebra","Quadratic","Linear"],
+        "category":    "Science & Learning"
+    },
+    {
+        "id":          "molar-mass-calculator",
+        "name":        "Molar Mass Calculator",
+        "description": "Calculate the molar mass of any chemical formula with element-by-element breakdown. Supports parentheses and nested groups.",
+        "port":        5142,
+        "path":        "./the-apps/molar-mass-calculator",
+        "entry":       "app.py",
+        "icon":        "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><circle cx='6' cy='6' r='3'/><circle cx='6' cy='18' r='3'/><path d='M20 4 8.12 15.88'/><path d='M14.47 14.48 20 20'/><path d='M8.12 8.12 12 12'/></svg>",
+        "color":       "#059669",
+        "tags":        ["Chemistry","Molar Mass","Chemical Formula","Periodic Table","Science"],
+        "category":    "Science & Learning"
+    },
+    {
+        "id":          "hiit-timer",
+        "name":        "HIIT / Interval Timer",
+        "description": "Professional workout interval timer with Tabata, HIIT, and EMOM presets. Audio cues, fullscreen mode, and configurable work/rest rounds.",
+        "port":        5143,
+        "path":        "./the-apps/hiit-timer",
+        "entry":       "app.py",
+        "icon":        "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>",
+        "color":       "#dc2626",
+        "tags":        ["HIIT","Workout","Timer","Tabata","Fitness","Interval"],
+        "category":    "Health & Wellness"
+    },
+    {
+        "id":          "text-encryptor",
+        "name":        "Text Encryptor",
+        "description": "Encrypt and decrypt text with AES-256-GCM directly in your browser. Password-based, client-side only — nothing is ever sent to a server.",
+        "port":        5144,
+        "path":        "./the-apps/text-encryptor",
+        "entry":       "app.py",
+        "icon":        "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><rect width='18' height='11' x='3' y='11' rx='2'/><path d='M7 11V7a5 5 0 0 1 10 0v4'/></svg>",
+        "color":       "#1d4ed8",
+        "tags":        ["Encryption","AES","Security","Decrypt","Privacy"],
+        "category":    "Security & Network"
+    }
 ]
