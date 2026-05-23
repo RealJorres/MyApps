@@ -223,46 +223,51 @@
     skip.href        = '#app-main-content';
     skip.textContent = 'Skip to main content';
 
-    // Nav bar container
-    var navBar = document.createElement('div');
+    // ── SVG icon helpers ───────────────────────────────────────────────────────
+    var SVG_STAR_EMPTY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    var SVG_STAR_FILL  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+
+    // Nav bar — semantic <nav> element carries implicit role="navigation"
+    var navBar = document.createElement('nav');
     navBar.id = 'app-nav-bar';
-    navBar.setAttribute('role', 'navigation');
     navBar.setAttribute('aria-label', 'App navigation');
 
     // Back link
     var back = document.createElement('a');
     back.className = 'app-nav-back';
     back.href = '/';
-    back.setAttribute('aria-label', 'Back to Jorres Apps');
+    back.setAttribute('aria-label', 'Back to Jorres Apps home');
     back.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> Jorres Apps';
 
-    // Title
+    // Current app title — labelled as current page location
     var titleSpan = document.createElement('span');
     titleSpan.className = 'app-nav-title';
     titleSpan.setAttribute('aria-current', 'page');
+    titleSpan.setAttribute('aria-label', 'Current app: ' + appName);
     titleSpan.textContent = appName;
 
-    // Favourite star
+    // Favourite toggle — toggle button pattern with aria-pressed
     var star = document.createElement('button');
+    star.type = 'button';
     star.className = 'app-nav-star' + (isFav ? ' fav-active' : '');
-    star.setAttribute('aria-label',   isFav ? 'Remove from favorites' : 'Add to favorites');
+    star.setAttribute('aria-label',   isFav ? 'Remove ' + appName + ' from favorites' : 'Add ' + appName + ' to favorites');
     star.setAttribute('aria-pressed', isFav ? 'true' : 'false');
-    star.textContent = isFav ? '★' : '☆'; // ★ / ☆
+    star.innerHTML = isFav ? SVG_STAR_FILL : SVG_STAR_EMPTY;
 
     star.addEventListener('click', function () {
       var f2 = getFavorites();
       if (f2.has(appId)) {
         f2.delete(appId);
-        star.textContent = '☆';
+        star.innerHTML = SVG_STAR_EMPTY;
         star.classList.remove('fav-active');
         star.setAttribute('aria-pressed', 'false');
-        star.setAttribute('aria-label', 'Add to favorites');
+        star.setAttribute('aria-label', 'Add ' + appName + ' to favorites');
       } else {
         f2.add(appId);
-        star.textContent = '★';
+        star.innerHTML = SVG_STAR_FILL;
         star.classList.add('fav-active');
         star.setAttribute('aria-pressed', 'true');
-        star.setAttribute('aria-label', 'Remove from favorites');
+        star.setAttribute('aria-label', 'Remove ' + appName + ' from favorites');
       }
       saveFavorites(f2);
     });
