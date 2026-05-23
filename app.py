@@ -7,7 +7,7 @@ import threading
 from collections import defaultdict
 from json import dumps as _json_dumps
 import importlib.util
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
+# DispatcherMiddleware replaced by LazyDispatcher (see below)
 
 # ── Optional per-route rate limiting (Flask-Limiter) ─────────────────────────
 try:
@@ -158,6 +158,119 @@ class SecurityHeadersMiddleware:
         return self.wsgi_app(environ, add_security_headers)
 
 
+class LazyDispatcher:
+    """
+    Replaces DispatcherMiddleware with on-demand sub-app loading.
+
+    Sub-apps are imported and initialized the first time they receive a
+    request — not at server startup.  This eliminates the ~135-app eager
+    load that previously consumed the entire 512 MB Render free-tier
+    allocation before the first user request was served.
+
+    Memory profile with lazy loading:
+      Startup  : only the registry config dict — effectively 0 app RAM
+      Steady   : footprint of apps actually visited in the current session
+      Cold start: responds to the launcher / in <1 s instead of waiting for
+                  all 135 Flask instances to initialize
+
+    Thread safety (gthread: 1 OS process, 8 threads):
+      - Per-app locks prevent two threads from double-loading the same app
+      - Double-checked locking: fast path (dict lookup) avoids lock overhead
+        on every request after the first
+      - Unrelated apps never block each other
+    """
+
+    def __init__(self, default_app, registry, loader):
+        self.default_app = default_app
+        # prefix (/app-id) → registry config dict
+        self._cfg_map = {f"/{cfg['id']}": cfg for cfg in registry}
+        self._loader  = loader
+        self._apps    = {}   # prefix → loaded WSGI app (populated on first hit)
+        self._errors  = {}   # prefix → error string (permanent; won't retry)
+        # One lock per app so unrelated apps never block each other
+        self._locks   = {p: threading.Lock() for p in self._cfg_map}
+
+    @property
+    def prefixes(self):
+        """All registered /<id> prefixes (used by _slash_redirect)."""
+        return set(self._cfg_map.keys())
+
+    def status(self, prefix):
+        """Return 'loaded', 'error', or 'ready' for use in API responses."""
+        if prefix in self._errors:
+            return 'error'
+        if prefix in self._apps:
+            return 'loaded'
+        return 'ready'
+
+    def _ensure_loaded(self, prefix):
+        """
+        Load the sub-app for *prefix* if not already done.
+        Returns the WSGI callable on success, None on failure.
+        Uses double-checked locking for thread safety.
+        """
+        # Fast path — already resolved (covers >99 % of requests)
+        if prefix in self._apps:
+            return self._apps[prefix]
+        if prefix in self._errors:
+            return None
+
+        with self._locks[prefix]:
+            # Re-check inside the lock (another thread may have beaten us)
+            if prefix in self._apps:
+                return self._apps[prefix]
+            if prefix in self._errors:
+                return None
+            try:
+                cfg     = self._cfg_map[prefix]
+                wsgi_app = self._loader(cfg)
+                self._apps[prefix] = wsgi_app
+                print(f'[launcher] Loaded {prefix[1:]} on first request', flush=True)
+                return wsgi_app
+            except Exception as exc:
+                self._errors[prefix] = str(exc)
+                print(f'[launcher] Failed to load {prefix[1:]}: {exc}', flush=True)
+                return None
+
+    def __call__(self, environ, start_response):
+        path = environ.get('PATH_INFO', '/')
+
+        # Find the matching registered prefix (e.g. /json-formatter)
+        matched = None
+        for p in self._cfg_map:
+            if path == p or path.startswith(p + '/'):
+                matched = p
+                break
+
+        if matched is None:
+            # Root Flask app handles /, /static/, /api/*, /sitemap.xml, etc.
+            return self.default_app(environ, start_response)
+
+        wsgi_app = self._ensure_loaded(matched)
+
+        if wsgi_app is None:
+            err  = self._errors.get(matched, 'unknown load error')
+            body = (
+                f'<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
+                f'<title>Unavailable | Jorres Apps</title></head><body>'
+                f'<p>This tool is temporarily unavailable ({err}).</p>'
+                f'<p><a href="/">Back to all tools</a></p>'
+                f'</body></html>'
+            ).encode()
+            start_response('503 Service Unavailable', [
+                ('Content-Type', 'text/html; charset=utf-8'),
+                ('Content-Length', str(len(body))),
+            ])
+            return [body]
+
+        # Strip the prefix from PATH_INFO and extend SCRIPT_NAME
+        # (mirrors what DispatcherMiddleware does)
+        env = environ.copy()
+        env['SCRIPT_NAME'] = environ.get('SCRIPT_NAME', '') + matched
+        env['PATH_INFO']   = path[len(matched):] or '/'
+        return wsgi_app(env, start_response)
+
+
 flask_app = Flask(__name__)
 flask_app.static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 LAUNCHER_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -207,14 +320,6 @@ def load_sub_app(cfg):
     return module.app
 
 
-mounts = {}
-for _cfg in REGISTRY:
-    try:
-        mounts[f"/{_cfg['id']}"] = load_sub_app(_cfg)
-    except Exception as _e:
-        print(f"[launcher] Could not load {_cfg['id']}: {_e}")
-
-
 def _slash_redirect(wsgi_app, prefixes):
     """Redirect /<id> → /<id>/ so relative URLs in sub-app HTML resolve correctly."""
     def middleware(environ, start_response):
@@ -229,14 +334,18 @@ def _slash_redirect(wsgi_app, prefixes):
     return middleware
 
 
-# 'app' is the full WSGI stack imported by wsgi.py and gunicorn
+# Build the lazy dispatcher — no sub-apps are loaded here.
+# Each app is imported on the first request it receives.
+lazy_dispatcher = LazyDispatcher(flask_app, REGISTRY, load_sub_app)
+
+# 'app' is the full WSGI stack imported by wsgi.py and gunicorn.
 # Layers (innermost → outermost):
-#   DispatcherMiddleware → _slash_redirect → ApiRateLimitMiddleware → SecurityHeadersMiddleware
+#   LazyDispatcher → _slash_redirect → ApiRateLimitMiddleware → SecurityHeadersMiddleware
 app = SecurityHeadersMiddleware(
     ApiRateLimitMiddleware(
         _slash_redirect(
-            DispatcherMiddleware(flask_app, mounts),
-            set(mounts.keys()),
+            lazy_dispatcher,
+            lazy_dispatcher.prefixes,   # all registered /<id> prefixes
         )
     )
 )
@@ -407,7 +516,7 @@ def index():
             'color':       a['color'],
             'tags':        a.get('tags', []),
             'category':    a.get('category', 'Other'),
-            'status':      'running' if f"/{a['id']}" in mounts else 'error',
+            'status':      lazy_dispatcher.status(f"/{a['id']}"),
             'url':         f"/{a['id']}/",
         }
         for a in REGISTRY
@@ -585,7 +694,7 @@ def list_apps():
             'id': a['id'], 'name': a['name'], 'description': a['description'],
             'icon': a['icon'], 'color': a['color'], 'tags': a.get('tags', []),
             'category': a.get('category', 'Other'),
-            'status': 'running' if f"/{a['id']}" in mounts else 'error',
+            'status': lazy_dispatcher.status(f"/{a['id']}"),
             'url': f"/{a['id']}/",
         }
         for a in REGISTRY
