@@ -235,6 +235,21 @@ header p {
 .page-title  { font-size: var(--text-3xl); font-weight: var(--weight-extrabold); line-height: 1.2; }
 .page-subtitle { color: var(--text-muted); margin-top: var(--space-2); }
 
+/* ── Privacy notice (file-handling apps) ─────────────── */
+.privacy-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: var(--radius-md);
+  padding: 0.45rem 0.85rem;
+  font-size: var(--text-sm);
+  color: var(--success);
+  margin-bottom: var(--space-6);
+}
+.privacy-notice svg { flex-shrink: 0; }
+
 /* ── Section label ────────────────────────────── */
 label, .field-label {
   display: block;
