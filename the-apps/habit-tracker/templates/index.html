@@ -22,17 +22,17 @@
 <meta name="twitter:description" content="Track your daily habits and build streaks to reach your goals. Stay consistent and motivated.">
 <title>Habit Tracker | Jorres Apps</title>
 <style>
-:root { --primary: #16a34a; --brand: var(--primary); --primary-h: #15803d; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+:root { --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
 .container { max-width: 860px; margin: 0 auto; }
  
 
 .btn-danger { background: var(--error-bg); color: var(--error-fg); border: 1px solid #fecaca; } .btn-danger:hover { background: #fecaca; }
 .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; }
 input[type=text] { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus { border-color: var(--primary); }
+input:focus { border-color: var(--brand); }
 
 .date-display { text-align: center; padding: 1rem; }
-.date-display .day { font-size: 3rem; font-weight: 900; line-height: 1; color: var(--primary); }
+.date-display .day { font-size: 3rem; font-weight: 900; line-height: 1; color: var(--brand); }
 .date-display .full-date { font-size: 1rem; color: var(--muted); margin-top: 0.25rem; }
 
 .add-form { display: flex; gap: 0.5rem; }
@@ -49,7 +49,7 @@ input:focus { border-color: var(--primary); }
 
 .habit-top { display: flex; align-items: center; gap: 0.75rem; }
 .habit-checkbox { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); background: #fff; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-.habit-checkbox.checked { background: var(--primary); border-color: var(--primary); }
+.habit-checkbox.checked { background: var(--brand); border-color: var(--brand); }
 .habit-name { flex: 1; font-size: 1rem; font-weight: 600; }
 .habit-streak { font-size: 0.875rem; color: var(--muted); }
 .habit-streak strong { color: var(--text); }

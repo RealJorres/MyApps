@@ -23,35 +23,35 @@
 <title>Focus Timer | Jorres Apps</title>
 <style>
 :root {
-  --primary: #dc2626; --brand: var(--primary); --primary-h: #b91c1c;
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2; --error-fg: #dc2626;
 }
 .container { max-width: 560px; margin: 0 auto; }
-header h1 { color: var(--primary); }
+header h1 { color: var(--brand); }
  
 
 input[type=number] { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus { border-color: var(--primary); }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+input:focus { border-color: var(--brand); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
 .timer-wrap { display: flex; justify-content: center; padding: 1rem 0; }
 .timer-circle-container { position: relative; width: 240px; height: 240px; }
 .timer-circle-container svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
 .timer-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.mode-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); margin-bottom: 0.3rem; }
+.mode-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand); margin-bottom: 0.3rem; }
 .time-display { font-size: 3.5rem; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1; }
 .controls { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1rem; }
 .controls .btn { padding: 0.65rem 1.5rem; font-size: 0.95rem; }
-.btn-start { background: var(--primary); color: white; min-width: 110px; justify-content: center; }
-.btn-start:hover { background: var(--primary-h); }
+.btn-start { background: var(--brand); color: white; min-width: 110px; justify-content: center; }
+.btn-start:hover { background: var(--brand-hover); }
 .sessions-row { display: flex; justify-content: center; gap: 0.35rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
 .session-icon { font-size: 1.2rem; opacity: 0.3; transition: opacity 0.2s; }
 .session-icon.done { opacity: 1; }
 .mode-tabs { display: flex; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; margin-bottom: 1.25rem; }
 .mode-tab { flex: 1; padding: 0.5rem; font-size: 0.82rem; font-weight: 600; text-align: center; cursor: pointer; border: none; background: var(--bg); color: var(--muted); font-family: inherit; transition: all 0.15s; }
-.mode-tab.active { background: var(--primary); color: white; }
+.mode-tab.active { background: var(--brand); color: white; }
 details summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; color: var(--muted); }
 details summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
 details[open] summary::before { transform: rotate(90deg); }
@@ -72,7 +72,7 @@ details[open] summary::before { transform: rotate(90deg); }
 
   <!-- Top-level mode switcher -->
   <div style="display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:.3rem;margin-bottom:1.5rem">
-    <button id="appTabPom" onclick="switchAppTab('pom',this)" style="flex:1;padding:.6rem;border:none;background:var(--primary);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;border-radius:.5rem;font-family:inherit" aria-pressed="true">Pomodoro</button>
+    <button id="appTabPom" onclick="switchAppTab('pom',this)" style="flex:1;padding:.6rem;border:none;background:var(--brand);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;border-radius:.5rem;font-family:inherit" aria-pressed="true">Pomodoro</button>
     <button id="appTabCd" onclick="switchAppTab('cd',this)" style="flex:1;padding:.6rem;border:none;background:none;color:var(--muted);font-size:.9rem;font-weight:700;cursor:pointer;border-radius:.5rem;font-family:inherit" aria-pressed="false">Countdown</button>
   </div>
 
@@ -317,9 +317,9 @@ function switchAppTab(tab, btn) {
   document.getElementById('panelCd').style.display  = isPom ? 'none' : '';
   const p = document.getElementById('appTabPom');
   const c = document.getElementById('appTabCd');
-  p.style.background = isPom ? 'var(--primary)' : 'none';
+  p.style.background = isPom ? 'var(--brand)' : 'none';
   p.style.color = isPom ? '#fff' : 'var(--muted)';
-  c.style.background = isPom ? 'none' : 'var(--primary)';
+  c.style.background = isPom ? 'none' : 'var(--brand)';
   c.style.color = isPom ? 'var(--muted)' : '#fff';
   p.setAttribute('aria-pressed', isPom ? 'true' : 'false');
   c.setAttribute('aria-pressed', isPom ? 'false' : 'true');
@@ -352,7 +352,7 @@ function cdUpdate() {
     if (!el) { clearInterval(cdInterval); return; }
     if (diff <= 0) {
       clearInterval(cdInterval);
-      el.innerHTML = '<div style="font-size:1.4rem;font-weight:800;color:var(--primary)">Time\'s up!</div><div style="color:var(--muted);margin-top:.4rem;font-size:.9rem">' + label + '</div>';
+      el.innerHTML = '<div style="font-size:1.4rem;font-weight:800;color:var(--brand)">Time\'s up!</div><div style="color:var(--muted);margin-top:.4rem;font-size:.9rem">' + label + '</div>';
       return;
     }
     const d = Math.floor(diff / 86400000);

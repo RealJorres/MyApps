@@ -21,22 +21,22 @@
 <meta name="twitter:title" content="To-Do List">
 <meta name="twitter:description" content="Simple task checklist with High / Medium / Low priorities. Filter by status or priority. Saved in browser.">
 <style>
-:root{--primary:#1d4ed8; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:640px;margin:0 auto}
 .add-row{display:flex;gap:.5rem;flex-wrap:wrap}
 .add-row input[type=text]{flex:1;min-width:0;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-.add-row input:focus{border-color:var(--primary)}
+.add-row input:focus{border-color:var(--brand)}
 .add-row select{padding:.6rem .5rem;border:1px solid var(--border);border-radius:.5rem;font-size:.85rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-.btn { background: var(--primary); color: #fff; }
+.btn { background: var(--brand); color: #fff; }
 .btn:hover{opacity:.85}
 .filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
 .fb{padding:.35rem .75rem;border-radius:.4rem;border:1px solid var(--border);font-size:.78rem;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit}
-.fb.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.fb.active{background:var(--brand);color:#fff;border-color:var(--brand)}
 .stats{display:flex;gap:1rem;font-size:.8rem;color:var(--muted);margin-bottom:.75rem;flex-wrap:wrap}
 .stats span b{color:var(--text)}
 .todo-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
 .todo-item:last-child{border-bottom:none}
-.todo-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.todo-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand);flex-shrink:0;cursor:pointer}
 .todo-text{flex:1;min-width:0;font-size:.9rem;word-break:break-word;cursor:pointer}
 .todo-text.done{text-decoration:line-through;color:var(--muted)}
 .priority-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}

@@ -21,18 +21,18 @@
 <meta name="twitter:title" content="CIDR / Subnet Calculator">
 <meta name="twitter:description" content="Enter an IP/CIDR notation to get network address, broadcast, subnet mask, usable hosts, and a bit layout.">
 <style>
-:root{--primary:#1d4ed8; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:720px;margin:0 auto}
 .input-row{display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap}
 .input-row .field{flex:1;min-width:180px}
 input[type=text],input[type=number]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.95rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus{border-color:var(--primary)}
-.btn { background: var(--primary); color: #fff; }
+input:focus{border-color:var(--brand)}
+.btn { background: var(--brand); color: #fff; }
 .btn:hover{opacity:.85}
 .results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.25rem}
 .rc{background:var(--bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem}
 .rc .rl{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
-.rc .rv{font-size:1.05rem;font-weight:700;color:var(--primary);word-break:break-all}
+.rc .rv{font-size:1.05rem;font-weight:700;color:var(--brand);word-break:break-all}
 .bits-row{display:flex;gap:2px;flex-wrap:wrap;margin-top:.5rem}
 .bit{width:20px;height:20px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700}
 .bit.net{background:#1d4ed8;color:#fff}

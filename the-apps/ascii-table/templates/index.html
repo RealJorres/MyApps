@@ -21,20 +21,20 @@
 <meta name="twitter:title" content="ASCII Table">
 <meta name="twitter:description" content="All 128 ASCII characters with decimal, hex, octal, binary values and descriptions. Searchable and filterable.">
 <style>
-:root{--primary:#7c3aed; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:980px;margin:0 auto}
 .search-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
 input[type=text]{flex:1;min-width:160px;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus{border-color:var(--primary)}
+input:focus{border-color:var(--brand)}
 .filter-btn{padding:.45rem .9rem;border-radius:.5rem;border:1px solid var(--border);font-size:.8rem;font-weight:600;cursor:pointer;background:#fff;color:var(--text);font-family:inherit;transition:all .15s}
-.filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.filter-btn.active{background:var(--brand);color:#fff;border-color:var(--brand)}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:.83rem}
 thead th{background:var(--bg);padding:.5rem .75rem;text-align:left;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);white-space:nowrap}
 tbody td{padding:.45rem .75rem;border-bottom:1px solid var(--border);font-family:monospace}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:#f8fafc}
-.char-cell{font-size:1rem;font-weight:700;color:var(--primary);min-width:32px;display:inline-block;text-align:center}
+.char-cell{font-size:1rem;font-weight:700;color:var(--brand);min-width:32px;display:inline-block;text-align:center}
 .ctrl-badge{background:#f1f5f9;border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.72rem;color:var(--muted);font-family:monospace}
 .count{color:var(--muted);font-size:.8rem}
 @media (max-width: 600px) {

@@ -21,26 +21,26 @@
 <meta name="twitter:title" content="Password Tools">
 <meta name="twitter:description" content="Generate secure passwords and check the strength of any password — entropy score, crack time estimate, and actionable tips. All analysis runs locally.">
 <style>
-:root{--primary:#15803d; --brand: var(--primary);--primary-h:#166534;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:720px;margin:0 auto}
 
 /* Tabs */
 .tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border)}
 .tab-btn{flex:1;padding:.65rem 1rem;border:none;background:none;font-size:.9rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;font-family:inherit}
-.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-btn.active{color:var(--brand);border-bottom-color:var(--brand)}
 .tab-btn:hover:not(.active){color:var(--text)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
 /* Generator */
-input[type=range]{width:100%;accent-color:var(--primary)}
+input[type=range]{width:100%;accent-color:var(--brand)}
 input[type=text],input[type=number],input[type=password]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus{border-color:var(--primary)}
+input:focus{border-color:var(--brand)}
 .slider-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
-.slider-row .slider-val{font-size:1.1rem;font-weight:800;color:var(--primary);min-width:3rem;text-align:center}
+.slider-row .slider-val{font-size:1.1rem;font-weight:800;color:var(--brand);min-width:3rem;text-align:center}
 .checkboxes{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.25rem}
 .check-item{display:flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;cursor:pointer}
-.check-item input[type=checkbox]{accent-color:var(--primary);width:1.1rem;height:1.1rem}
+.check-item input[type=checkbox]{accent-color:var(--brand);width:1.1rem;height:1.1rem}
 .count-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
 .count-row label{margin-bottom:0;white-space:nowrap}
 .count-row input[type=number]{width:80px}
@@ -60,7 +60,7 @@ input:focus{border-color:var(--primary)}
 /* Checker */
 .input-wrap{position:relative;margin-bottom:1.5rem}
 .input-wrap input{padding:.85rem 3rem .85rem 1rem;font-size:1.05rem;border:2px solid var(--border);border-radius:.6rem;font-family:monospace}
-.input-wrap input:focus{border-color:var(--primary)}
+.input-wrap input:focus{border-color:var(--brand)}
 .toggle-eye{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted);font-size:1.1rem;background:none;border:none;padding:.2rem;line-height:1}
 .toggle-eye:hover{color:var(--text)}
 .meter-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.9rem}

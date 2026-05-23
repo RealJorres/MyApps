@@ -21,12 +21,12 @@
 <meta name="twitter:description" content="A simple online notepad to jot down notes. Text auto-saves in your browser — always there when you need it.">
 <title>Notepad | Jorres Apps</title>
 <style>
-:root{--primary:#1d4ed8; --brand: var(--primary);--primary-h:#1e40af;--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 html,body{ height:100%; }
 body{ display:flex; flex-direction:column; height:100vh; }
 .top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:.6rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;flex-wrap:wrap}
 .top-bar h1{font-size:1rem;font-weight:800;color:var(--text)}
-.top-bar h1 span{color:var(--primary)}
+.top-bar h1 span{color:var(--brand)}
 .meta{font-size:.78rem;color:var(--muted);display:flex;gap:1rem}
 .save-indicator{font-size:.78rem;font-weight:600;margin-left:.25rem}
 .save-indicator.saved{color:#16a34a}
@@ -35,7 +35,7 @@ body{ display:flex; flex-direction:column; height:100vh; }
 .btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
 .btn-danger{background:transparent;color:#dc2626;border:1px solid #fca5a5}.btn-danger:hover{background:#fef2f2}
 .editor-wrap{flex:1;min-height:0;display:flex;flex-direction:column}
-#editor{flex:1;min-height:0;width:100%;padding:1.75rem 2rem;border:none;outline:none;resize:none;font-family:'Georgia','Times New Roman',serif;font-size:1.05rem;line-height:1.85;color:var(--text);background:var(--card);caret-color:var(--primary);overflow-y:auto}
+#editor{flex:1;min-height:0;width:100%;padding:1.75rem 2rem;border:none;outline:none;resize:none;font-family:'Georgia','Times New Roman',serif;font-size:1.05rem;line-height:1.85;color:var(--text);background:var(--card);caret-color:var(--brand);overflow-y:auto}
 @media(max-width:600px){ body { overflow-x: hidden; } #editor{padding:1rem}}
 </style>
 </head>

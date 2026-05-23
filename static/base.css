@@ -8,6 +8,7 @@
 :root {
   /* ── Brand (Cobalt — Jorres Apps identity) ── */
   --brand:       #2f57ff;
+  --brand-hover: #1d44e6;
   --brand-dark:  #1a2f8f;
   --brand-light: #d9e0ff;
   --brand-muted: rgba(47,87,255,.35);

@@ -23,8 +23,8 @@
 <title>Hash Generator | Jorres Apps</title>
 <style>
 :root {
-  --primary: #7c3aed; --brand: var(--primary);
-  --primary-h: #6d28d9;
+
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
@@ -38,11 +38,11 @@
 .status.error { background: var(--error-bg); color: var(--error-fg); }
 .status.success { background: var(--success-bg); color: var(--success-fg); }
 input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+input:focus, textarea:focus, select:focus { border-color: var(--brand); }
 
 .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
 .tab-btn { background: none; border: none; padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color 0.15s, border-color 0.15s; font-family: inherit; }
-.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
 .tab-btn:hover:not(.active) { color: var(--text); }
 
 .tab-panel { display: none; }
@@ -62,10 +62,10 @@ textarea#textInput { min-height: 120px; resize: vertical; }
   transition: border-color 0.2s, background 0.2s;
   margin-bottom: 1rem;
 }
-.drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: #f5f3ff; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--brand); background: #f5f3ff; }
 .drop-zone input[type=file] { display: none; }
 .drop-zone p { color: var(--muted); font-size: 0.9rem; }
-.drop-zone strong { color: var(--primary); }
+.drop-zone strong { color: var(--brand); }
 .drop-zone .file-name { font-weight: 700; color: var(--text); margin-top: 0.3rem; }
 
 .results-card { display: none; }
@@ -74,7 +74,7 @@ textarea#textInput { min-height: 120px; resize: vertical; }
 .results-table th { text-align: left; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); }
 .results-table td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
 .results-table tr:last-child td { border-bottom: none; }
-.algo-badge { display: inline-block; background: #ede9fe; color: var(--primary); border-radius: 0.35rem; padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; }
+.algo-badge { display: inline-block; background: #ede9fe; color: var(--brand); border-radius: 0.35rem; padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; }
 .hash-val { font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace; font-size: 0.78rem; color: #334155; word-break: break-all; }
 @media (max-width: 600px) {
   body { overflow-x: hidden; }

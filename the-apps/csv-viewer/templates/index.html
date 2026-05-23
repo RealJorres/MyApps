@@ -23,8 +23,8 @@
 <title>CSV Viewer | Jorres Apps</title>
 <style>
 :root {
-  --primary: #059669; --brand: var(--primary);
-  --primary-h: #047857;
+
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
@@ -38,7 +38,7 @@
 .status.error { background: var(--error-bg); color: var(--error-fg); }
 .status.success { background: var(--success-bg); color: var(--success-fg); }
 input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+input:focus, textarea:focus, select:focus { border-color: var(--brand); }
 
 .drop-zone {
   border: 2px dashed var(--border);
@@ -48,11 +48,11 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
-.drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: #f0fdf9; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--brand); background: #f0fdf9; }
 .drop-zone input[type=file] { display: none; }
 .drop-zone-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
 .drop-zone p { color: var(--muted); font-size: 0.9rem; }
-.drop-zone strong { color: var(--primary); cursor: pointer; }
+.drop-zone strong { color: var(--brand); cursor: pointer; }
 
 .info-bar {
   display: none;
@@ -65,7 +65,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 .info-bar.show { display: flex; }
 .info-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .pill { background: var(--bg); border: 1px solid var(--border); border-radius: 2rem; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
-.pill span { color: var(--primary); }
+.pill span { color: var(--brand); }
 
 .search-row { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem; }
 .search-row input { flex: 1; }
@@ -90,7 +90,7 @@ thead th {
   user-select: none;
   cursor: pointer;
 }
-thead th:hover { color: var(--primary); }
+thead th:hover { color: var(--brand); }
 tbody tr:nth-child(even) { background: #f8fafc; }
 tbody tr:hover { background: #f0fdf9; }
 tbody td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

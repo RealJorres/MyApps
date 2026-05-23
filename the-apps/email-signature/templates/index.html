@@ -20,13 +20,13 @@
 <meta name="twitter:description" content="Create a professional HTML email signature in seconds. No sign-up required.">
 <title>Email Signature Generator | Jorres Apps</title>
 <style>
-:root { --primary: #0f766e; --brand: var(--primary); --primary-h: #0d6b63; --bg: #f0fdfa; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
+:root { --bg: #f0fdfa; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
 .container { max-width: 1100px; margin: 0 auto; }
-header h1 { color: var(--primary); }
-.btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-h); }
+header h1 { color: var(--brand); }
+.btn-primary { background: var(--brand); color: #fff; } .btn-primary:hover { background: var(--brand-hover); }
 
 input[type=text], input[type=email], input[type=url] { width: 100%; padding: .55rem .75rem; border: 1px solid var(--border); border-radius: .5rem; font-size: .875rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus { border-color: var(--primary); }
+input:focus { border-color: var(--brand); }
 .label { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem; display: block; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
 .full { grid-column: 1 / -1; }
@@ -35,12 +35,12 @@ input:focus { border-color: var(--primary); }
 .preview-box { border: 1px solid var(--border); border-radius: .75rem; padding: 1.5rem; background: #fafafa; min-height: 140px; overflow: auto; }
 .theme-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .theme-btn { padding: .35rem .85rem; border: 2px solid var(--border); border-radius: .4rem; font-size: .78rem; font-weight: 600; cursor: pointer; background: #fff; font-family: inherit; transition: all .15s; color: var(--text); }
-.theme-btn.active { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
+.theme-btn.active { border-color: var(--brand); color: var(--brand); background: #f0fdfa; }
 .color-row { display: flex; align-items: center; gap: .75rem; }
 .color-row input[type=color] { width: 48px; height: 38px; padding: 2px; cursor: pointer; border-radius: .4rem; border: 1px solid var(--border); }
 .color-row input[type=text] { flex: 1; }
 .action-row { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
-.status-msg { font-size: .78rem; color: var(--primary); font-weight: 600; display: none; }
+.status-msg { font-size: .78rem; color: var(--brand); font-weight: 600; display: none; }
 @media (max-width: 768px) {
   body { overflow-x: hidden; }
   .layout { grid-template-columns: 1fr; }

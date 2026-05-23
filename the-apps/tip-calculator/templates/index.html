@@ -21,33 +21,33 @@
 <meta name="twitter:title" content="Tip Calculator">
 <meta name="twitter:description" content="Split a bill with tip — evenly or by what each person ordered.">
 <style>
-:root { --primary: #059669; --primary-h: #047857; --brand: var(--primary); }
+
 
 .container { max-width: 640px; margin: 0 auto; }
 
 /* ── Tabs ── */
 .tabs { display: flex; gap: 0; background: #fff; border: 1px solid var(--border); border-radius: .75rem; padding: .3rem; margin-bottom: 1.5rem; }
 .tab-btn { flex: 1; padding: .55rem; border: none; background: none; font-size: .875rem; font-weight: 700; cursor: pointer; border-radius: .5rem; font-family: inherit; transition: all .15s; color: var(--text-muted); }
-.tab-btn.active { background: var(--primary); color: #fff; }
+.tab-btn.active { background: var(--brand); color: #fff; }
 
 /* ── Tip quick-select ── */
 .chip-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .75rem; }
 .qchip { padding: .4rem .9rem; border-radius: .4rem; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: .875rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
-.qchip:hover { border-color: var(--primary); color: var(--primary); }
-.qchip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.qchip:hover { border-color: var(--brand); color: var(--brand); }
+.qchip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 
 /* ── Form ── */
 .form-row { margin-bottom: 1rem; }
-.section-title { font-size: .8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .75rem; padding-bottom: .4rem; border-bottom: 2px solid var(--border); }
+.section-title { font-size: .8rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .75rem; padding-bottom: .4rem; border-bottom: 2px solid var(--border); }
 
 /* ── Results grid ── */
 .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
 .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: .5rem; padding: .9rem; text-align: center; }
-.result-card.hi { background: var(--primary); border-color: var(--primary-h); }
+.result-card.hi { background: var(--brand); border-color: var(--brand-hover); }
 .result-card.hi .rl { color: rgba(255,255,255,.8); }
 .result-card.hi .rv { color: #fff; }
 .rl { font-size: .68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .3rem; }
-.rv { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+.rv { font-size: 1.5rem; font-weight: 800; color: var(--brand); }
 
 /* ── Toggle ── */
 .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: .65rem 0; border-top: 1px solid var(--border); margin-top: .5rem; }
@@ -56,7 +56,7 @@
 .toggle-switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #cbd5e1; border-radius: 24px; transition: .2s; }
 .slider:before { position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
-input:checked + .slider { background: var(--primary); }
+input:checked + .slider { background: var(--brand); }
 input:checked + .slider:before { transform: translateX(18px); }
 
 /* ── Unequal split ── */
@@ -66,9 +66,9 @@ input:checked + .slider:before { transform: translateX(18px); }
 .person-row { display: flex; align-items: center; gap: .5rem; }
 .person-row label { font-size: .8rem; font-weight: 600; color: var(--text-muted); min-width: 68px; }
 .person-row input { flex: 1; }
-.person-row .person-share { font-size: .82rem; font-weight: 700; color: var(--primary); min-width: 80px; text-align: right; }
+.person-row .person-share { font-size: .82rem; font-weight: 700; color: var(--brand); min-width: 80px; text-align: right; }
 .unequal-total-row { display: flex; justify-content: space-between; align-items: center; font-size: .82rem; padding-top: .5rem; border-top: 1px solid var(--border); }
-.unequal-total-row span:last-child { font-weight: 800; color: var(--primary); }
+.unequal-total-row span:last-child { font-weight: 800; color: var(--brand); }
 .unequal-warn { font-size: .75rem; color: var(--warning); font-weight: 600; }
 
 /* ── Percentage tab ── */
@@ -78,7 +78,7 @@ input:checked + .slider:before { transform: translateX(18px); }
 .inline-field input { width: 120px; }
 .result-box { display: flex; align-items: center; gap: .75rem; padding: .85rem 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: .5rem; }
 .result-eq  { font-size: .9rem; color: var(--text-muted); }
-.result-num { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+.result-num { font-size: 1.5rem; font-weight: 800; color: var(--brand); }
 .result-num.increase { color: #16a34a; }
 .result-num.decrease { color: #dc2626; }
 
@@ -362,7 +362,7 @@ function calculate() {
       return `<div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:.4rem;font-size:.88rem">
         <span style="font-weight:600">Person ${i+1}</span>
         <span style="color:var(--text-muted);font-size:.8rem">$${sub.toFixed(2)} + $${personTip.toFixed(2)} tip</span>
-        <span style="font-weight:800;color:var(--primary)">${fmt(personTotal)}</span>
+        <span style="font-weight:800;color:var(--brand)">${fmt(personTotal)}</span>
       </div>`;
     }).join('');
     document.getElementById('uneqTipTotal').textContent   = fmt(totalTip);

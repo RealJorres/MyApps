@@ -23,25 +23,25 @@
 <title>UUID Generator | Jorres Apps</title>
 <style>
 :root {
-  --primary: #d97706; --brand: var(--primary); --primary-h: #b45309;
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2; --error-fg: #dc2626;
 }
 .container { max-width: 860px; margin: 0 auto; }
-header h1 { color: var(--primary); }
+header h1 { color: var(--brand); }
  
 
 .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; }
 input[type=number], select { padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, select:focus { border-color: var(--primary); }
+input:focus, select:focus { border-color: var(--brand); }
 .controls { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end; }
 .control-group { display: flex; flex-direction: column; }
 .toggle-group { display: flex; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
 .toggle-btn { padding: 0.5rem 1.1rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; background: var(--bg); color: var(--muted); font-family: inherit; transition: all 0.15s; }
-.toggle-btn.active { background: var(--primary); color: white; }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.toggle-btn.active { background: var(--brand); color: white; }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .uuid-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .uuid-row { display: flex; align-items: center; gap: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem 0.9rem; }
 .uuid-text { flex: 1; font-family: 'Courier New', monospace; font-size: 0.9rem; letter-spacing: 0.03em; color: var(--text); word-break: break-all; }

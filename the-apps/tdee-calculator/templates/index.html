@@ -23,8 +23,8 @@
   <title>TDEE Calculator | Jorres Apps</title>
   <style>
     :root {
-      --primary: #dc2626; --brand: var(--primary);
-      --primary-h: #b91c1c;
+
+
       --bg: #f1f5f9;
       --card: #ffffff;
       --border: #e2e8f0;
@@ -40,14 +40,14 @@
     
     
     input[type=number], input[type=date], select { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.95rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-    input:focus, select:focus { border-color: var(--primary); }
-    .result-card { background: var(--primary); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+    input:focus, select:focus { border-color: var(--brand); }
+    .result-card { background: var(--brand); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
     .result-value { font-size: 3rem; font-weight: 800; line-height: 1; }
     .result-label { font-size: 0.85rem; opacity: 0.85; margin-top: 0.35rem; }
 
     .toggle-group { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; width: fit-content; }
     .toggle-group button { padding: 0.55rem 1.25rem; border: none; background: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--muted); transition: all 0.15s; font-family: inherit; }
-    .toggle-group button.active { background: var(--primary); color: #fff; }
+    .toggle-group button.active { background: var(--brand); color: #fff; }
 
     .input-row { display: grid; gap: 1rem; margin-top: 1rem; }
     .input-row.cols-2 { grid-template-columns: 1fr 1fr; }
@@ -62,10 +62,10 @@
 
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
     .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; text-align: center; }
-    .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
+    .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--brand); }
     .stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-top: 0.2rem; }
 
-    .goal-card { background: var(--primary); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+    .goal-card { background: var(--brand); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
     .goal-kcal { font-size: 2.8rem; font-weight: 800; line-height: 1; }
     .goal-label { font-size: 0.85rem; opacity: 0.85; margin-top: 0.35rem; }
     .goal-note { font-size: 0.78rem; opacity: 0.7; margin-top: 0.3rem; }

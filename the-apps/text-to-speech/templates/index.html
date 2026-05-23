@@ -20,28 +20,28 @@
 <meta name="twitter:description" content="Convert text to speech in your browser. Choose from all available voices, adjust speed and pitch, and listen instantly.">
 <title>Text to Speech | Jorres Apps</title>
 <style>
-:root { --primary: #7c3aed; --brand: var(--primary); --primary-h: #6d28d9; --bg: #f5f3ff; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
+:root { --bg: #f5f3ff; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
 .container { max-width: 720px; margin: 0 auto; }
-header h1 { color: var(--primary); }
-.btn-play  { background: var(--primary); color: #fff; }
-.btn-play:hover { background: var(--primary-h); }
+header h1 { color: var(--brand); }
+.btn-play  { background: var(--brand); color: #fff; }
+.btn-play:hover { background: var(--brand-hover); }
 .btn-pause { background: #f59e0b; color: #fff; }
 .btn-pause:hover { background: #d97706; }
 .btn-stop  { background: #e2e8f0; color: var(--text); }
 .btn-stop:hover { background: #cbd5e1; }
 
 textarea { width: 100%; padding: .75rem; border: 1px solid var(--border); border-radius: .5rem; font-size: .95rem; font-family: inherit; background: #fff; color: var(--text); outline: none; resize: vertical; min-height: 180px; line-height: 1.6; }
-textarea:focus { border-color: var(--primary); }
+textarea:focus { border-color: var(--brand); }
 select { width: 100%; padding: .55rem .75rem; border: 1px solid var(--border); border-radius: .5rem; font-size: .875rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-select:focus { border-color: var(--primary); }
+select:focus { border-color: var(--brand); }
 .label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4rem; display: block; }
 .slider-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
 .slider-field label { font-size: .8rem; color: var(--muted); font-weight: 600; display: flex; justify-content: space-between; }
-input[type=range] { width: 100%; margin-top: .35rem; accent-color: var(--primary); }
+input[type=range] { width: 100%; margin-top: .35rem; accent-color: var(--brand); }
 .action-row { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; align-items: center; }
 .char-count { font-size: .75rem; color: var(--muted); margin-left: auto; }
 .progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: .75rem; }
-.progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width .3s; border-radius: 2px; }
+.progress-fill { height: 100%; background: var(--brand); width: 0%; transition: width .3s; border-radius: 2px; }
 .voice-meta { font-size: .75rem; color: var(--muted); margin-top: .3rem; }
 .no-support { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; border-radius: .5rem; padding: .75rem 1rem; font-size: .875rem; font-weight: 500; display: none; }
 @media (max-width: 600px) {

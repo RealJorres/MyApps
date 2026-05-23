@@ -21,15 +21,15 @@
 <meta name="twitter:description" content="Parse and decode URLs into their components: protocol, host, path, query parameters, and hash.">
 <title>URL Parser | Jorres Apps</title>
 <style>
-:root { --primary:#be185d; --brand: var(--primary); --primary-h:#9d174d; --bg:#f1f5f9; --card:#ffffff; --border:#e2e8f0; --text:#1e293b; --muted:#64748b; }
+:root { --bg:#f1f5f9; --card:#ffffff; --border:#e2e8f0; --text:#1e293b; --muted:#64748b; }
 .container{max-width:860px;margin:0 auto}
 .tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:.85rem;padding:.3rem;margin-bottom:1.5rem;gap:.3rem}
 .tab{flex:1;padding:.6rem 1rem;border:none;background:none;border-radius:.6rem;font-size:.9rem;font-weight:600;cursor:pointer;color:var(--muted);transition:background .15s,color .15s;font-family:inherit}
-.tab.active{background:var(--primary);color:#fff}
+.tab.active{background:var(--brand);color:#fff}
 .tab:not(.active):hover{background:var(--bg);color:var(--text)}
 .panel{display:none}.panel.active{display:block}
 input[type=text],textarea{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus,textarea:focus{border-color:var(--primary)}
+input:focus,textarea:focus{border-color:var(--brand)}
 textarea{resize:vertical;font-family:'Courier New',monospace;font-size:.85rem}
 
 .btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
@@ -49,7 +49,7 @@ textarea{resize:vertical;font-family:'Courier New',monospace;font-size:.85rem}
 .param-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem}
 .param-row input{flex:1}
 .param-row button{flex-shrink:0}
-.tag{display:inline-block;font-size:.72rem;padding:.1rem .4rem;border-radius:3px;background:#fce7f3;color:var(--primary);font-weight:600}
+.tag{display:inline-block;font-size:.72rem;padding:.1rem .4rem;border-radius:3px;background:#fce7f3;color:var(--brand);font-weight:600}
 .copy-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:.35rem;padding:.2rem .5rem;font-size:.75rem;cursor:pointer;white-space:nowrap}
 .copy-btn:hover{background:var(--border);color:var(--text)}
 .empty{color:var(--muted);font-size:.875rem;font-style:italic;padding:.5rem 0}

@@ -23,35 +23,35 @@
 <title>EXIF Viewer | Jorres Apps</title>
 <style>
 :root {
-  --primary: #0891b2; --brand: var(--primary); --primary-h: #0e7490;
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2; --error-fg: #dc2626;
 }
 .container { max-width: 860px; margin: 0 auto; }
-header h1 { color: var(--primary); }
+header h1 { color: var(--brand); }
  
 
 .drop-zone { border: 2px dashed var(--border); border-radius: 0.75rem; padding: 3rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
-.drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: #ecfeff; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--brand); background: #ecfeff; }
 .drop-zone input { display: none; }
 .drop-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
 .drop-text { color: var(--muted); font-size: 0.9rem; }
-.drop-text strong { color: var(--primary); }
+.drop-text strong { color: var(--brand); }
 .preview-row { display: flex; gap: 1.5rem; align-items: flex-start; }
 .thumb { width: 160px; height: 160px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border); flex-shrink: 0; }
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem; flex: 1; }
 .info-item { display: flex; flex-direction: column; }
 .info-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
 .info-value { font-size: 0.95rem; font-weight: 600; margin-top: 0.1rem; }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .exif-table { width: 100%; border-collapse: collapse; }
 .exif-table tr:nth-child(even) { background: #f8fafc; }
 .exif-table td { padding: 0.4rem 0.6rem; font-size: 0.83rem; vertical-align: top; }
 .exif-table td:first-child { font-weight: 600; color: var(--muted); width: 40%; white-space: nowrap; }
 .exif-table td:last-child { word-break: break-all; }
-.group-label { font-size: 0.75rem; font-weight: 700; color: var(--primary); background: #ecfeff; padding: 0.3rem 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.group-label { font-size: 0.75rem; font-weight: 700; color: var(--brand); background: #ecfeff; padding: 0.3rem 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; }
 details summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; padding: 0.4rem 0; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
 details summary::before { content: '▶'; font-size: 0.65rem; color: var(--muted); transition: transform 0.2s; }
 details[open] summary::before { transform: rotate(90deg); }

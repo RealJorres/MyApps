@@ -22,18 +22,18 @@
 <meta name="twitter:description" content="Encrypt and decrypt text using classic ciphers like Caesar, ROT13, and Vigenere. Fun and educational.">
 <title>Cipher Tool | Jorres Apps</title>
 <style>
-:root { --primary: #7c3aed; --brand: var(--primary); --primary-h: #6d28d9; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+:root { --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
 .container { max-width: 860px; margin: 0 auto; }
  
 
 .btn-teal { background: #0f766e; color: #fff; } .btn-teal:hover { background: #0d6b63; }
 input[type=text], input[type=number], textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, textarea:focus { border-color: var(--primary); }
+input:focus, textarea:focus { border-color: var(--brand); }
 textarea { resize: vertical; min-height: 90px; font-family: monospace; }
 
 .cipher-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
 .cipher-tab { padding: 0.6rem 1.1rem; border: none; background: none; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; transition: color 0.1s, border-color 0.1s; }
-.cipher-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.cipher-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
 .cipher-panel { display: none; }
 .cipher-panel.active { display: block; }
 
@@ -50,8 +50,8 @@ textarea { resize: vertical; min-height: 90px; font-family: monospace; }
 .cipher-option label { margin-bottom: 0.3rem; }
 
 .morse-char { display: inline-block; font-family: monospace; }
-.audio-btn { background: var(--primary); color: #fff; border: none; border-radius: 0.375rem; padding: 0.4rem 0.75rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; }
-.audio-btn:hover { background: var(--primary-h); }
+.audio-btn { background: var(--brand); color: #fff; border: none; border-radius: 0.375rem; padding: 0.4rem 0.75rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; }
+.audio-btn:hover { background: var(--brand-hover); }
 .audio-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>
 </head>

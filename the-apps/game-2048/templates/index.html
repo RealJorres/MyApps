@@ -27,8 +27,7 @@
     --surface: #16213e;
     --board: #0f3460;
     --text: #eee;
-    --primary: #d97706; --brand: var(--primary);
-    --primary-d: #b45309;
+
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; }
@@ -43,7 +42,7 @@
   h1 {
     font-size: 2.8rem;
     font-weight: 900;
-    color: var(--primary);
+    color: var(--brand);
     letter-spacing: -1px;
   }
   .scores-wrap {
@@ -76,8 +75,8 @@
     margin-bottom: 1rem;
     justify-content: flex-end;
   }
-  .btn { background: var(--primary); color: #fff; }
-  .btn:hover { background: var(--primary-d); }
+  .btn { background: var(--brand); color: #fff; }
+  .btn:hover { background: var(--brand-hover); }
   .btn:active { transform: scale(0.97); }
   .btn-secondary {
     background: var(--board);
@@ -155,7 +154,7 @@
   .overlay h2 {
     font-size: 2rem;
     font-weight: 900;
-    color: var(--primary);
+    color: var(--brand);
   }
   .overlay p {
     color: #ccc;

@@ -22,7 +22,7 @@
 <meta name="twitter:description" content="Merge multiple PDF files into one document instantly. Free, no watermarks, no sign-up needed.">
 <title>PDF Merger | Jorres Apps</title>
 <style>
-:root { --primary: #4f46e5; --brand: var(--primary); --primary-h: #4338ca; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+:root { --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
 .container { max-width: 860px; margin: 0 auto; }
  
 
@@ -39,7 +39,7 @@
   transition: border-color 0.15s, background 0.15s;
   background: var(--bg);
 }
-.drop-zone.drag-over { border-color: var(--primary); background: #eef2ff; }
+.drop-zone.drag-over { border-color: var(--brand); background: #eef2ff; }
 .drop-zone svg { width: 48px; height: 48px; margin-bottom: 0.75rem; color: var(--muted); }
 .drop-zone h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
 .drop-zone p { color: var(--muted); font-size: 0.85rem; }
@@ -54,9 +54,9 @@
   transition: box-shadow 0.1s;
 }
 .file-item.dragging { opacity: 0.5; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-.file-item.drag-target { border-color: var(--primary); background: #eef2ff; }
+.file-item.drag-target { border-color: var(--brand); background: #eef2ff; }
 .file-drag-handle { color: var(--muted); flex-shrink: 0; }
-.file-icon { flex-shrink: 0; color: var(--primary); }
+.file-icon { flex-shrink: 0; color: var(--brand); }
 .file-name { flex: 1; font-size: 0.9rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .file-pages { font-size: 0.78rem; color: var(--muted); flex-shrink: 0; }
 .file-remove { background: none; border: none; cursor: pointer; color: var(--muted); padding: 0.25rem; border-radius: 0.25rem; transition: color 0.1s; }

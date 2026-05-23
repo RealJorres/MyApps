@@ -23,7 +23,7 @@
 <style>
 :root {
   --bg: #0f172a; --surface: #1e293b; --border: #334155;
-  --text: #e2e8f0; --muted: #64748b; --primary: #0891b2; --brand: var(--primary); --accent: #38bdf8;
+  --text: #e2e8f0; --muted: #64748b; --accent: #38bdf8;
 }
 body { display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 4rem; }
 h1 { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.25rem; }
@@ -39,18 +39,18 @@ h1 { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0
 .stat { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
 .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); line-height: 1; }
 .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-.timer-val { color: var(--primary) !important; }
+.timer-val { color: var(--brand) !important; }
 
 /* Progress bar */
 .prog-wrap { background: var(--border); border-radius: 4px; height: 4px; margin-bottom: 1rem; overflow: hidden; }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s linear; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--brand), var(--accent)); width: 0%; transition: width 0.5s linear; }
 
 /* Main typing container */
 .typing-box {
   background: var(--surface); border: 2px solid var(--border);
   border-radius: 12px; margin-bottom: 1rem; cursor: text;
 }
-.typing-box:focus-within { border-color: var(--primary); }
+.typing-box:focus-within { border-color: var(--brand); }
 
 /* Text display */
 .text-display {
@@ -80,12 +80,12 @@ h1 { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0
 /* Status + controls */
 .status-msg { text-align: center; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; min-height: 1.2em; }
 .btn-row { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
-.btn { background: var(--primary); color: #fff; }
+.btn { background: var(--brand); color: #fff; }
 .btn:hover { background: #0e7490; }
 
 /* Results */
 .results-panel {
-  display: none; background: var(--surface); border: 1px solid var(--primary);
+  display: none; background: var(--surface); border: 1px solid var(--brand);
   border-radius: 12px; padding: 1.75rem; margin-bottom: 1.5rem; text-align: center;
 }
 .results-panel.show { display: block; }

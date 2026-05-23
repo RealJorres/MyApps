@@ -21,12 +21,12 @@
 <meta name="twitter:description" content="Extract text from images using Optical Character Recognition (OCR) directly in your browser.">
 <title>OCR Tool | Jorres Apps</title>
 <style>
-:root { --primary: #7c3aed; --brand: var(--primary); --primary-h: #6d28d9; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+:root { --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
 .container { max-width: 860px; margin: 0 auto; }
 select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; }
-select:focus { border-color: var(--primary); }
+select:focus { border-color: var(--brand); }
 textarea { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.85rem; font-family: monospace; background: #fff; color: var(--text); outline: none; resize: vertical; }
-textarea:focus { border-color: var(--primary); }
+textarea:focus { border-color: var(--brand); }
  
 .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
 
@@ -35,7 +35,7 @@ textarea:focus { border-color: var(--primary); }
 .status.success { background: var(--success-bg); color: var(--success-fg); }
 
 .drop-zone { border: 2px dashed var(--border); border-radius: 0.75rem; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; user-select: none; }
-.drop-zone:hover, .drop-zone.over { border-color: var(--primary); background: #f5f3ff; }
+.drop-zone:hover, .drop-zone.over { border-color: var(--brand); background: #f5f3ff; }
 .drop-zone .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
 .drop-zone h3 { font-size: 0.95rem; font-weight: 600; }
 .drop-zone p { color: var(--muted); font-size: 0.82rem; margin-top: 0.25rem; }
@@ -45,7 +45,7 @@ textarea:focus { border-color: var(--primary); }
 .preview-img { max-width: 100%; max-height: 260px; border-radius: 0.5rem; display: block; margin-top: 0.5rem; border: 1px solid var(--border); object-fit: contain; background: #f8fafc; }
 
 .progress-bar-wrap { background: var(--border); border-radius: 4px; height: 6px; margin-top: 0.6rem; overflow: hidden; display: none; }
-.progress-bar { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.3s; width: 0%; }
+.progress-bar { height: 100%; background: var(--brand); border-radius: 4px; transition: width 0.3s; width: 0%; }
 
 .stats-row { display: flex; gap: 0.75rem; margin-top: 0.65rem; flex-wrap: wrap; }
 .stat-chip { background: var(--bg); border: 1px solid var(--border); border-radius: .35rem; padding: 0.3rem 0.65rem; font-size: 0.8rem; color: var(--muted); }

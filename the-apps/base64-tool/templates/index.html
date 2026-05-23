@@ -21,17 +21,17 @@
 <meta name="twitter:description" content="Encode and decode Base64 strings instantly. Supports plain text and file input. No install needed.">
 <title>Base64 Tool | Jorres Apps</title>
 <style>
-:root{--primary:#c2410c; --brand: var(--primary);--primary-h:#9a3412;--bg:#f1f5f9;--card:#ffffff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--error-bg:#fef2f2;--error-fg:#dc2626}
+:root{--bg:#f1f5f9;--card:#ffffff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--error-bg:#fef2f2;--error-fg:#dc2626}
 .container{max-width:860px;margin:0 auto}
 .tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:.85rem;padding:.3rem;margin-bottom:1.5rem;gap:.3rem}
 .tab{flex:1;padding:.6rem 1rem;border:none;background:none;border-radius:.6rem;font-size:.9rem;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;transition:background .15s,color .15s}
-.tab.active{background:var(--primary);color:#fff}
+.tab.active{background:var(--brand);color:#fff}
 .tab:not(.active):hover{background:var(--bg);color:var(--text)}
 .panel{display:none}.panel.active{display:block}
 textarea{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.82rem;font-family:'Courier New',monospace;background:#fff;color:var(--text);outline:none;resize:vertical;line-height:1.6}
-textarea:focus{border-color:var(--primary)}
+textarea:focus{border-color:var(--brand)}
 input[type=text]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus{border-color:var(--primary)}
+input:focus{border-color:var(--brand)}
 select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.875rem;background:#fff;color:var(--text);outline:none}
 
 .btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
@@ -39,10 +39,10 @@ select{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;
 .actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;align-items:center}
 .between{display:flex;gap:.5rem;justify-content:center;padding:1rem 0}
 .drop-zone{border:2px dashed var(--border);border-radius:.75rem;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
-.drop-zone:hover,.drop-zone.over{border-color:var(--primary);background:#fff3ed}
+.drop-zone:hover,.drop-zone.over{border-color:var(--brand);background:#fff3ed}
 .drop-zone .icon{font-size:2rem;margin-bottom:.5rem}
 .drop-zone p{color:var(--muted);font-size:.875rem}
-.drop-zone strong{color:var(--primary)}
+.drop-zone strong{color:var(--brand)}
 .char-count{font-size:.75rem;color:var(--muted);margin-left:auto}
 .status{padding:.65rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:500;margin-top:.75rem}
 .status.error{background:var(--error-bg);color:var(--error-fg)}

@@ -23,8 +23,8 @@
 <title>Regex Tester | Jorres Apps</title>
 <style>
 :root {
-  --primary: #be185d; --brand: var(--primary);
-  --primary-h: #9d174d;
+
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
@@ -38,7 +38,7 @@
 .status.error { background: var(--error-bg); color: var(--error-fg); }
 .status.success { background: var(--success-bg); color: var(--success-fg); }
 input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+input:focus, textarea:focus, select:focus { border-color: var(--brand); }
 
 .pattern-row { display: flex; gap: 0.75rem; align-items: flex-end; margin-bottom: 1.25rem; flex-wrap: wrap; }
 .pattern-wrap { flex: 1; min-width: 200px; }
@@ -47,13 +47,13 @@ input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 }
 .flags-row { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
 .flag-check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
-.flag-check input[type=checkbox] { accent-color: var(--primary); width: 1rem; height: 1rem; }
-.flag-badge { background: #fce7f3; color: var(--primary); border-radius: 0.3rem; padding: 0.1rem 0.4rem; font-size: 0.75rem; font-weight: 700; font-family: monospace; }
+.flag-check input[type=checkbox] { accent-color: var(--brand); width: 1rem; height: 1rem; }
+.flag-badge { background: #fce7f3; color: var(--brand); border-radius: 0.3rem; padding: 0.1rem 0.4rem; font-size: 0.75rem; font-weight: 700; font-family: monospace; }
 
 textarea#testText { min-height: 150px; resize: vertical; font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace; font-size: 0.85rem; }
 
 .actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-.match-badge { display: inline-flex; align-items: center; background: #fce7f3; color: var(--primary); border-radius: 2rem; padding: 0.3rem 0.85rem; font-size: 0.85rem; font-weight: 700; }
+.match-badge { display: inline-flex; align-items: center; background: #fce7f3; color: var(--brand); border-radius: 2rem; padding: 0.3rem 0.85rem; font-size: 0.85rem; font-weight: 700; }
 
 .section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
 
@@ -61,7 +61,7 @@ textarea#testText { min-height: 150px; resize: vertical; font-family: 'Cascadia 
 .match-table th { text-align: left; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.45rem 0.65rem; border-bottom: 2px solid var(--border); }
 .match-table td { padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--border); font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace; font-size: 0.8rem; }
 .match-table tr:last-child td { border-bottom: none; }
-.match-num { background: #fce7f3; color: var(--primary); border-radius: 0.3rem; padding: 0.15rem 0.45rem; font-size: 0.75rem; font-weight: 700; }
+.match-num { background: #fce7f3; color: var(--brand); border-radius: 0.3rem; padding: 0.15rem 0.45rem; font-size: 0.75rem; font-weight: 700; }
 
 .highlight-box {
   background: #1e293b;

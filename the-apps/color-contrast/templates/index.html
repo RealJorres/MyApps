@@ -22,12 +22,12 @@
 <meta name="twitter:description" content="Check color contrast ratios for WCAG accessibility compliance. Ensure your text is readable for everyone.">
 <title>Color Contrast Checker | Jorres Apps</title>
 <style>
-:root { --primary: #059669; --brand: var(--primary); --primary-h: #047857; --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
+:root { --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; --success-bg: #f0fdf4; --success-fg: #16a34a; --error-bg: #fef2f2; --error-fg: #dc2626; }
 .container { max-width: 860px; margin: 0 auto; }
  
 
 input[type=text] { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus { border-color: var(--primary); }
+input:focus { border-color: var(--brand); }
 
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 @media (max-width: 600px) { body { overflow-x: hidden; } .two-col { grid-template-columns: 1fr; } }

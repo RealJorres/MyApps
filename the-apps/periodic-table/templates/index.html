@@ -23,8 +23,8 @@
 <title>Interactive Periodic Table | Jorres Apps</title>
 <style>
   :root {
-    --primary: #0891b2; --brand: var(--primary);
-    --primary-h: #0e7490;
+
+
     --bg: #f0f9ff;
     --surface: #ffffff;
     --border: #e0f2fe;
@@ -57,7 +57,7 @@
     background: var(--surface);
     color: var(--text);
   }
-  .search-box:focus { border-color: var(--primary); }
+  .search-box:focus { border-color: var(--brand); }
   .search-box::placeholder { color: var(--muted); }
 
   .table-wrap {
@@ -228,7 +228,7 @@
 
   .modal-desc {
     background: #f0f9ff;
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--brand);
     border-radius: 0 8px 8px 0;
     padding: 0.75rem 1rem;
     font-size: 0.92rem;
@@ -599,7 +599,7 @@ function buildLegend() {
   // Add "Show All" reset
   const resetItem = document.createElement('div');
   resetItem.className = 'legend-item';
-  resetItem.innerHTML = '<span style="font-weight:700;color:var(--primary);">Show All</span>';
+  resetItem.innerHTML = '<span style="font-weight:700;color:var(--brand);">Show All</span>';
   resetItem.addEventListener('click', () => {
     searchBox.value = '';
     document.querySelectorAll('.el-cell').forEach(c => c.classList.remove('dimmed','highlighted'));

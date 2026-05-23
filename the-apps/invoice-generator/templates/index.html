@@ -23,32 +23,32 @@
 <title>Invoice Manager | Jorres Apps</title>
 <style>
 :root {
-  --primary: #0f766e; --brand: var(--primary); --primary-h: #0d6b63;
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2; --error-fg: #dc2626;
 }
 .container { max-width: 1200px; margin: 0 auto; }
-header h1 { color: var(--primary); }
+header h1 { color: var(--brand); }
  
 
  
 
 input[type=text], input[type=number], input[type=email], input[type=date], input[type=color], textarea, select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+input:focus, textarea:focus, select:focus { border-color: var(--brand); }
 textarea { resize: vertical; min-height: 80px; }
 .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
 .form-grid.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
 .full { grid-column: 1 / -1; }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
 .items-table { width: 100%; border-collapse: collapse; margin-bottom: 0.75rem; }
 .items-table th { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
 .items-table td { padding: 0.4rem 0.3rem; vertical-align: middle; }
 .items-table td input { padding: 0.4rem 0.5rem; font-size: 0.85rem; }
-.items-table .total-cell { font-weight: 600; color: var(--primary); padding-right: 0.5rem; font-size: 0.9rem; }
+.items-table .total-cell { font-weight: 600; color: var(--brand); padding-right: 0.5rem; font-size: 0.9rem; }
 .preview-area { position: sticky; top: 1rem; }
 .preview-invoice { background: white; padding: 2rem; border: 1px solid var(--border); border-radius: 0.75rem; font-size: 0.85rem; min-height: 400px; }
 .inv-header { margin-bottom: 1.5rem; }
@@ -65,7 +65,7 @@ textarea { resize: vertical; min-height: 80px; }
 .inv-table td { padding: 0.45rem 0.75rem; font-size: 0.82rem; border-bottom: 1px solid #f1f5f9; }
 .inv-table td:not(:first-child) { text-align: right; }
 .inv-table .subtotal-row td { border-top: 1px solid #e2e8f0; border-bottom: none; padding-top: 0.65rem; color: #64748b; }
-.inv-table .total-row td { font-weight: 800; font-size: 0.95rem; border-top: 2px solid var(--primary); border-bottom: none; padding-top: 0.5rem; }
+.inv-table .total-row td { font-weight: 800; font-size: 0.95rem; border-top: 2px solid var(--brand); border-bottom: none; padding-top: 0.5rem; }
 .inv-notes { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
 .inv-notes-label { font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.4rem; }
 .totals-summary { text-align: right; margin-top: 0.5rem; }
@@ -92,7 +92,7 @@ textarea { resize: vertical; min-height: 80px; }
   font-family: inherit; transition: all .15s;
   background: none; color: var(--muted);
 }
-.mob-inv-btn.active { background: var(--primary); color: #fff; }
+.mob-inv-btn.active { background: var(--brand); color: #fff; }
 
 @media (max-width: 767px) {
   body { overflow-x: hidden; }
@@ -141,7 +141,7 @@ textarea { resize: vertical; min-height: 80px; }
 
   <!-- Tab nav -->
   <div style="display:flex;gap:0;background:#fff;border:1px solid var(--border);border-radius:.75rem;padding:.3rem;margin-bottom:1.5rem;max-width:360px">
-    <button id="invTabCreate" onclick="switchInvTab('create')" style="flex:1;padding:.6rem 1rem;border:none;background:var(--primary);color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;border-radius:.5rem;font-family:inherit">Create Invoice</button>
+    <button id="invTabCreate" onclick="switchInvTab('create')" style="flex:1;padding:.6rem 1rem;border:none;background:var(--brand);color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;border-radius:.5rem;font-family:inherit">Create Invoice</button>
     <button id="invTabTrack" onclick="switchInvTab('track')" style="flex:1;padding:.6rem 1rem;border:none;background:none;color:var(--muted);font-size:.9rem;font-weight:600;cursor:pointer;border-radius:.5rem;font-family:inherit">Track Invoices</button>
   </div>
 
@@ -330,7 +330,7 @@ textarea { resize: vertical; min-height: 80px; }
 .stat-card .sv{font-size:1.4rem;font-weight:800}
 .stat-card .sl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem}
 .inv-filter-btn{padding:.35rem .85rem;border:1px solid var(--border);border-radius:2rem;font-size:.8rem;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit}
-.inv-filter-btn.inv-filter-active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.inv-filter-btn.inv-filter-active{background:var(--brand);color:#fff;border-color:var(--brand)}
 .inv-badge{display:inline-block;padding:.18rem .6rem;border-radius:2rem;font-size:.72rem;font-weight:700;cursor:pointer}
 .inv-badge-paid{background:#d1fae5;color:#065f46}
 .inv-badge-unpaid{background:#fef3c7;color:#92400e}
@@ -547,9 +547,9 @@ function switchInvTab(tab){
   document.getElementById('invPanelTrack').style.display  = isCreate ? 'none' : '';
   const btnC = document.getElementById('invTabCreate');
   const btnT = document.getElementById('invTabTrack');
-  btnC.style.background = isCreate ? 'var(--primary)' : 'none';
+  btnC.style.background = isCreate ? 'var(--brand)' : 'none';
   btnC.style.color       = isCreate ? '#fff' : 'var(--muted)';
-  btnT.style.background  = isCreate ? 'none' : 'var(--primary)';
+  btnT.style.background  = isCreate ? 'none' : 'var(--brand)';
   btnT.style.color        = isCreate ? 'var(--muted)' : '#fff';
   if (!isCreate) renderInvTracker();
 }
@@ -622,7 +622,7 @@ function renderInvStats(){
   const outstanding = trackedInvoices.filter(i=>i.status!=='paid').reduce((a,i)=>a+i.amount,0);
   const overdue = trackedInvoices.filter(i=>i.status==='overdue'||isInvOverdue(i)).length;
   document.getElementById('invStats').innerHTML=`
-    <div class="stat-card"><div class="sv" style="color:var(--primary)">${trackedInvoices.length}</div><div class="sl">Total</div></div>
+    <div class="stat-card"><div class="sv" style="color:var(--brand)">${trackedInvoices.length}</div><div class="sl">Total</div></div>
     <div class="stat-card"><div class="sv" style="color:#059669">${fmt$(paid)}</div><div class="sl">Paid</div></div>
     <div class="stat-card"><div class="sv" style="color:#d97706">${fmt$(outstanding)}</div><div class="sl">Outstanding</div></div>
     <div class="stat-card"><div class="sv" style="color:#dc2626">${overdue}</div><div class="sl">Overdue</div></div>`;

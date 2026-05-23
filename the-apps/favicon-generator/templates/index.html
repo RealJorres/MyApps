@@ -23,30 +23,30 @@
 <title>Favicon Generator | Jorres Apps</title>
 <style>
 :root {
-  --primary: #7c3aed; --brand: var(--primary); --primary-h: #6d28d9;
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2; --error-fg: #dc2626;
 }
 .container { max-width: 860px; margin: 0 auto; }
-header h1 { color: var(--primary); }
+header h1 { color: var(--brand); }
  
 
 .drop-zone { border: 2px dashed var(--border); border-radius: 0.75rem; padding: 3rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
-.drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: #f5f3ff; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--brand); background: #f5f3ff; }
 .drop-zone input { display: none; }
 .drop-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
 .drop-text { color: var(--muted); font-size: 0.9rem; }
-.drop-text strong { color: var(--primary); }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+.drop-text strong { color: var(--brand); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
 .sizes-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
 .size-check { display: flex; align-items: center; gap: 0.35rem; background: var(--bg); border: 1px solid var(--border); border-radius: 0.4rem; padding: 0.35rem 0.6rem; cursor: pointer; font-size: 0.85rem; transition: border-color 0.15s; }
-.size-check:hover { border-color: var(--primary); }
-.size-check input[type=checkbox] { cursor: pointer; accent-color: var(--primary); }
+.size-check:hover { border-color: var(--brand); }
+.size-check input[type=checkbox] { cursor: pointer; accent-color: var(--brand); }
 .format-toggle { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; width: fit-content; }
 .format-btn { padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; background: var(--bg); color: var(--muted); font-family: inherit; transition: all 0.15s; }
-.format-btn.active { background: var(--primary); color: white; }
+.format-btn.active { background: var(--brand); color: white; }
 .source-preview { display: none; text-align: center; margin-bottom: 1rem; }
 .source-preview img { max-width: 200px; max-height: 200px; border-radius: 0.5rem; border: 1px solid var(--border); }
 .preview-grid { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-top: 1rem; }

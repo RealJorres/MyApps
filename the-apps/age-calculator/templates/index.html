@@ -23,8 +23,8 @@
   <title>Age Calculator | Jorres Apps</title>
   <style>
     :root {
-      --primary: #7c3aed; --brand: var(--primary);
-      --primary-h: #6d28d9;
+
+
       --bg: #f1f5f9;
       --card: #ffffff;
       --border: #e2e8f0;
@@ -37,8 +37,8 @@
     }
     .container { max-width: 680px; margin: 0 auto; }
     input[type=number], input[type=date], select { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.95rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-    input:focus { border-color: var(--primary); }
-    .result-card { background: var(--primary); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+    input:focus { border-color: var(--brand); }
+    .result-card { background: var(--brand); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
     .result-value { font-size: 3rem; font-weight: 800; line-height: 1; }
     .result-label { font-size: 0.85rem; opacity: 0.85; margin-top: 0.35rem; }
 
@@ -49,23 +49,23 @@
     .result-section { display: none; }
     .result-section.visible { display: block; }
 
-    .exact-age-card { background: var(--primary); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+    .exact-age-card { background: var(--brand); color: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem; }
     .exact-age-value { font-size: 1.6rem; font-weight: 800; line-height: 1.3; }
     .exact-age-label { font-size: 0.85rem; opacity: 0.75; margin-top: 0.4rem; }
 
     .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
     .fun-card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
-    .fun-value { font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+    .fun-value { font-size: 1.35rem; font-weight: 800; color: var(--brand); }
     .fun-label { font-size: 0.78rem; color: var(--muted); font-weight: 600; margin-top: 0.25rem; }
 
-    .birthday-card { border-radius: 1rem; padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; border: 2px solid var(--primary); background: var(--card); }
+    .birthday-card { border-radius: 1rem; padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; border: 2px solid var(--brand); background: var(--card); }
     .birthday-title { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-    .birthday-main { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .birthday-main { font-size: 1.4rem; font-weight: 800; color: var(--brand); }
     .birthday-sub { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
 
     .signs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
     .sign-card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; text-align: center; }
-    .sign-icon { font-size: 1rem; font-weight: 700; color: var(--primary); letter-spacing: .03em; }
+    .sign-icon { font-size: 1rem; font-weight: 700; color: var(--brand); letter-spacing: .03em; }
     .sign-name { font-size: 1rem; font-weight: 700; color: var(--text); margin-top: 0.3rem; }
     .sign-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-top: 0.15rem; }
   @media (max-width: 600px) {

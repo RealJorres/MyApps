@@ -23,8 +23,8 @@
   <title>Water Intake Tracker | Jorres Apps</title>
   <style>
     :root {
-      --primary: #0284c7; --brand: var(--primary);
-      --primary-h: #0369a1;
+
+
       --bg: #f1f5f9;
       --card: #ffffff;
       --border: #e2e8f0;
@@ -40,11 +40,11 @@
     
     
     input[type=number], input[type=date], select { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.95rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-    input:focus, select:focus { border-color: var(--primary); }
+    input:focus, select:focus { border-color: var(--brand); }
 
     .toggle-group { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; width: fit-content; }
     .toggle-group button { padding: 0.55rem 1.25rem; border: none; background: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--muted); transition: all 0.15s; font-family: inherit; }
-    .toggle-group button.active { background: var(--primary); color: #fff; }
+    .toggle-group button.active { background: var(--brand); color: #fff; }
 
     .date-display { text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--muted); margin-bottom: 1.5rem; }
 
@@ -52,13 +52,13 @@
     .circle-wrap { display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; }
     .circle-svg { transform: rotate(-90deg); }
     .circle-bg { fill: none; stroke: var(--border); stroke-width: 14; }
-    .circle-fg { fill: none; stroke: var(--primary); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+    .circle-fg { fill: none; stroke: var(--brand); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
     .circle-center { position: absolute; text-align: center; }
     .circle-container { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-    .circle-text-big { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .circle-text-big { font-size: 2rem; font-weight: 800; color: var(--brand); line-height: 1; }
     .circle-text-small { font-size: 0.78rem; color: var(--muted); font-weight: 600; margin-top: 0.2rem; }
 
-    .motivational { text-align: center; font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 1.25rem; }
+    .motivational { text-align: center; font-size: 0.95rem; font-weight: 600; color: var(--brand); margin-bottom: 1.25rem; }
 
     /* Add buttons row */
     .add-row { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem; }

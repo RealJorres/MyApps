@@ -21,15 +21,15 @@
 <meta name="twitter:title" content="Prime Factorizer">
 <meta name="twitter:description" content="Enter any number to get its prime factorization, all divisors, and properties like perfect number check.">
 <style>
-:root{--primary:#7c3aed; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:680px;margin:0 auto}
 .input-row{display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap}
 .input-row .field{flex:1;min-width:200px}
 input[type=number]{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.95rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus{border-color:var(--primary)}
-.btn { background: var(--primary); color: #fff; }
+input:focus{border-color:var(--brand)}
+.btn { background: var(--brand); color: #fff; }
 .btn:hover{opacity:.85}
-.factorization{font-size:1.5rem;font-weight:800;color:var(--primary);margin:.75rem 0;word-break:break-all;line-height:1.5}
+.factorization{font-size:1.5rem;font-weight:800;color:var(--brand);margin:.75rem 0;word-break:break-all;line-height:1.5}
 .badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
 .badge{padding:.3rem .7rem;border-radius:.4rem;font-size:.8rem;font-weight:700}
 .badge-prime{background:#f3e8ff;color:#7c3aed}
@@ -42,7 +42,7 @@ input:focus{border-color:var(--primary)}
 .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;margin-top:.75rem}
 .ic{background:var(--bg);border:1px solid var(--border);border-radius:.5rem;padding:.75rem;text-align:center}
 .ic .il{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem}
-.ic .iv{font-size:1.1rem;font-weight:800;color:var(--primary)}
+.ic .iv{font-size:1.1rem;font-weight:800;color:var(--brand)}
 #output{display:none}
 .error{color:#dc2626;font-size:.875rem;margin-top:.5rem;display:none}
 @media (max-width: 600px) {

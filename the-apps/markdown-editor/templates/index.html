@@ -23,8 +23,8 @@
 <title>Markdown Editor | Jorres Apps</title>
 <style>
 :root {
-  --primary: #0f766e; --brand: var(--primary);
-  --primary-h: #0d6b63;
+
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
@@ -41,9 +41,9 @@ body { display: flex; flex-direction: column; }
   flex-wrap: wrap;
 }
 .top-bar h1 { font-size: 1.15rem; font-weight: 800; flex: 1; min-width: 120px; }
-.top-bar h1 span { color: var(--primary); }
+.top-bar h1 span { color: var(--brand); }
 
-.btn-ghost.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-ghost.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 
 .view-toggle { display: flex; gap: 0.25rem; }
 
@@ -115,7 +115,7 @@ body { display: flex; flex-direction: column; }
 .preview-content p { margin-bottom: 1em; line-height: 1.7; }
 .preview-content ul, .preview-content ol { margin: 0.5em 0 1em 1.5em; }
 .preview-content li { margin-bottom: 0.3em; line-height: 1.6; }
-.preview-content a { color: var(--primary); text-decoration: underline; }
+.preview-content a { color: var(--brand); text-decoration: underline; }
 .preview-content code {
   background: #f1f5f9;
   color: #be185d;
@@ -139,7 +139,7 @@ body { display: flex; flex-direction: column; }
   font-size: 0.85rem;
 }
 .preview-content blockquote {
-  border-left: 4px solid var(--primary);
+  border-left: 4px solid var(--brand);
   margin: 1em 0;
   padding: 0.5em 1em;
   background: #f0fdfa;
@@ -196,7 +196,7 @@ body { display: flex; flex-direction: column; }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--primary);
+  color: var(--brand);
   margin-bottom: 0.6rem;
 }
 .cheat-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -216,7 +216,7 @@ body { display: flex; flex-direction: column; }
 .cheat-table td:last-child strong { color: var(--text); font-weight: 700; }
 .cheat-table td:last-child em { font-style: italic; color: var(--text); }
 .cheat-table td:last-child del { color: var(--muted); }
-.cheat-table td:last-child a { color: var(--primary); text-decoration: underline; }
+.cheat-table td:last-child a { color: var(--brand); text-decoration: underline; }
 .cheat-table td:last-child code {
   background: #f1f5f9; color: #be185d;
   padding: 0.1em 0.35em; border-radius: 3px;
@@ -236,7 +236,7 @@ body { display: flex; flex-direction: column; }
   flex-shrink: 0;
   transition: background 0.12s, color 0.12s;
 }
-.btn-help:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-help:hover { background: var(--brand); color: #fff; border-color: var(--brand); }
 @media (max-width: 767px) {
   body { overflow-x: hidden; }
 

@@ -23,8 +23,8 @@
 <title>Color Palette Extractor | Jorres Apps</title>
 <style>
   :root {
-    --primary: #7c3aed; --brand: var(--primary);
-    --primary-h: #6d28d9;
+
+
     --bg: #f8f7ff;
     --surface: #ffffff;
     --border: #e5e7eb;
@@ -40,7 +40,7 @@
   .card { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
 
   .drop-zone {
-    border: 2.5px dashed var(--primary);
+    border: 2.5px dashed var(--brand);
     border-radius: var(--radius);
     padding: 3rem 2rem;
     text-align: center;
@@ -50,11 +50,11 @@
   }
   .drop-zone:hover, .drop-zone.drag-over {
     background: #ede9fe;
-    border-color: var(--primary-h);
+    border-color: var(--brand-hover);
   }
   .drop-zone .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
   .drop-zone p { color: var(--muted); margin-bottom: 0.5rem; }
-  .drop-zone strong { color: var(--primary); }
+  .drop-zone strong { color: var(--brand); }
   .drop-zone input[type="file"] { display: none; }
 
   .preview-wrap {
@@ -72,7 +72,7 @@
   .preview-wrap .change-btn {
     display: inline-block;
     margin-top: 0.75rem;
-    color: var(--primary);
+    color: var(--brand);
     cursor: pointer;
     font-size: 0.9rem;
     text-decoration: underline;
@@ -80,7 +80,7 @@
     border: none;
     padding: 0;
   }
-  .preview-wrap .change-btn:hover { color: var(--primary-h); }
+  .preview-wrap .change-btn:hover { color: var(--brand-hover); }
 
   .controls {
     display: flex;
@@ -93,12 +93,12 @@
   .slider-group label { font-weight: 600; white-space: nowrap; color: var(--text); min-width: 120px; }
   .slider-group input[type="range"] {
     flex: 1;
-    accent-color: var(--primary);
+    accent-color: var(--brand);
     height: 4px;
     cursor: pointer;
   }
   .slider-group .count-badge {
-    background: var(--primary);
+    background: var(--brand);
     color: #fff;
     border-radius: 999px;
     padding: 0.1rem 0.65rem;
@@ -108,7 +108,7 @@
     text-align: center;
   }
 
-  .btn { background: linear-gradient(135deg, var(--primary), var(--primary-h)); color: #fff; }
+  .btn { background: linear-gradient(135deg, var(--brand), var(--brand-hover)); color: #fff; }
   .btn:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -154,7 +154,7 @@
     margin: 0.2rem 0 0.5rem;
   }
   .copy-btn {
-    background: var(--primary);
+    background: var(--brand);
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -165,7 +165,7 @@
     width: 100%;
     font-weight: 600;
   }
-  .copy-btn:hover { background: var(--primary-h); }
+  .copy-btn:hover { background: var(--brand-hover); }
   .copy-btn.copied { background: #059669; }
 
   .gradient-bar {

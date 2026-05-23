@@ -21,27 +21,27 @@
 <meta name="twitter:title" content="OKR Tracker">
 <meta name="twitter:description" content="Define Objectives and Key Results, set target progress per KR, and track overall completion percentage.">
 <style>
-:root{--primary:#16a34a; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:780px;margin:0 auto}
 
 .btn-danger{background:#dc2626;color:#fff}
 .btn-sm{padding:.3rem .65rem;font-size:.78rem}
 input,textarea{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus,textarea:focus{border-color:var(--primary)}
+input:focus,textarea:focus{border-color:var(--brand)}
 .overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-bottom:1.25rem}
 .stat{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem;text-align:center}
-.stat .val{font-size:1.6rem;font-weight:800;color:var(--primary)}
+.stat .val{font-size:1.6rem;font-weight:800;color:var(--brand)}
 .stat .lbl{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem}
 .obj-card{border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:1rem;background:#fff}
 .obj-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;margin-bottom:.75rem}
 .obj-title{font-size:1rem;font-weight:800;flex:1}
-.obj-pct{font-size:1.2rem;font-weight:800;color:var(--primary);white-space:nowrap}
+.obj-pct{font-size:1.2rem;font-weight:800;color:var(--brand);white-space:nowrap}
 .progress-bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-bottom:.75rem}
-.progress-fill{height:100%;background:var(--primary);border-radius:4px;transition:width .3s}
+.progress-fill{height:100%;background:var(--brand);border-radius:4px;transition:width .3s}
 .kr-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
 .kr-text{flex:1;min-width:160px;font-size:.875rem}
-.kr-slider{flex:1;min-width:100px;accent-color:var(--primary)}
-.kr-pct{font-size:.85rem;font-weight:700;color:var(--primary);min-width:36px;text-align:right}
+.kr-slider{flex:1;min-width:100px;accent-color:var(--brand)}
+.kr-pct{font-size:.85rem;font-weight:700;color:var(--brand);min-width:36px;text-align:right}
 .add-kr{display:flex;gap:.5rem;margin-top:.5rem}
 .add-kr input{flex:1}
 .add-obj{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}

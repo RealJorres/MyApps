@@ -21,10 +21,10 @@
 <meta name="twitter:title" content="Meeting Time Planner">
 <meta name="twitter:description" content="Add cities or timezones and see a 24-hour color-coded overlap grid to find the best meeting time across regions.">
 <style>
-:root{--primary:#0891b2; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:900px;margin:0 auto}
 select,input{padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-select:focus,input:focus{border-color:var(--primary)}
+select:focus,input:focus{border-color:var(--brand)}
 
 .btn-danger{background:#dc2626;color:#fff}
 .btn-sm{padding:.28rem .65rem;font-size:.78rem}
@@ -215,7 +215,7 @@ function renderGrid() {
       const isCurrent = h === nowUTC;
       html += `<td class="${cls}" style="${isCurrent?'outline:2px solid #f59e0b;outline-offset:-2px;':''}">${String(lh).padStart(2,'0')}:00</td>`;
     });
-    html += `<td style="font-weight:700;color:var(--primary)">${String(nowLocal).padStart(2,'0')}:00</td></tr>`;
+    html += `<td style="font-weight:700;color:var(--brand)">${String(nowLocal).padStart(2,'0')}:00</td></tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('gridWrap').innerHTML = html;

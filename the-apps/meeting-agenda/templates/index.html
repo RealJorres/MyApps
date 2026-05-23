@@ -21,10 +21,10 @@
 <meta name="twitter:title" content="Meeting Agenda Builder">
 <meta name="twitter:description" content="Create structured meeting agendas with timed items, presenters, and notes. Auto-calculates time slots. Copy or print.">
 <style>
-:root{--primary:#be185d; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:800px;margin:0 auto}
 input,textarea,select{width:100%;padding:.55rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus,textarea:focus{border-color:var(--primary)}
+input:focus,textarea:focus{border-color:var(--brand)}
 .row{display:flex;gap:.75rem;flex-wrap:wrap}
 .field{flex:1;min-width:140px;display:flex;flex-direction:column;gap:.35rem}
 
@@ -32,12 +32,12 @@ input:focus,textarea:focus{border-color:var(--primary)}
 .btn-danger{background:#dc2626;color:#fff}
 .btn:hover{opacity:.87}
 .agenda-item{display:flex;gap:.75rem;align-items:flex-start;background:var(--bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.6rem}
-.item-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;margin-top:.15rem}
+.item-num{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;margin-top:.15rem}
 .item-body{ flex:1; }
 .item-body strong{font-size:.95rem}
 .item-meta{font-size:.8rem;color:var(--muted);margin-top:.2rem}
 .item-actions{display:flex;gap:.35rem;flex-shrink:0}
-.total-time{font-weight:700;color:var(--primary)}
+.total-time{font-weight:700;color:var(--brand)}
 
 /* Print styles */
 @media print{

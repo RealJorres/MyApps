@@ -21,12 +21,12 @@
 <meta name="twitter:title" content="Image Filters & Effects">
 <meta name="twitter:description" content="Upload an image and adjust brightness, contrast, saturation, grayscale, sepia, blur, and more. Download the result.">
 <style>
-:root{--primary:#7c3aed; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:820px;margin:0 auto}
 .upload-zone{border:2px dashed var(--border);border-radius:.75rem;padding:2.5rem 1rem;text-align:center;cursor:pointer;transition:border-color .2s;background:#fafafa}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--primary);background:#f5f0ff}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--brand);background:#f5f0ff}
 .upload-zone p{color:var(--muted);margin-top:.5rem;font-size:.875rem}
-.btn { background: var(--primary); color: #fff; }
+.btn { background: var(--brand); color: #fff; }
 .btn:hover{opacity:.85}
 .btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
 .preview-wrap{display:flex;gap:1rem;flex-wrap:wrap}
@@ -35,11 +35,11 @@
 .sliders{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem}
 .slider-row{display:flex;flex-direction:column;gap:.25rem}
 .slider-row label{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.slider-row label span{font-size:.82rem;font-weight:700;color:var(--primary);text-transform:none;letter-spacing:0}
-input[type=range]{width:100%;accent-color:var(--primary);height:4px}
+.slider-row label span{font-size:.82rem;font-weight:700;color:var(--brand);text-transform:none;letter-spacing:0}
+input[type=range]{width:100%;accent-color:var(--brand);height:4px}
 .presets{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem}
 .preset-btn{padding:.3rem .75rem;border-radius:.4rem;border:1px solid var(--border);font-size:.78rem;font-weight:600;cursor:pointer;background:#fff;color:var(--text);font-family:inherit}
-.preset-btn:hover{border-color:var(--primary);color:var(--primary)}
+.preset-btn:hover{border-color:var(--brand);color:var(--brand)}
 .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.75rem}
 #editorSection{display:none}
 @media (max-width: 600px) {

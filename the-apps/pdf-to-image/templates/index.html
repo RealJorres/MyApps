@@ -24,8 +24,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root {
-      --primary: #4f46e5; --brand: var(--primary);
-      --primary-h: #4338ca;
+
+
       --bg: #f1f5f9;
       --card: #ffffff;
       --border: #e2e8f0;
@@ -63,7 +63,7 @@
       color: var(--muted);
       transition: background 0.15s, color 0.15s;
     }
-    .tab.active { background: var(--primary); color: #fff; }
+    .tab.active { background: var(--brand); color: #fff; }
     .tab:not(.active):hover { background: var(--bg); color: var(--text); }
 
     /* Panels */
@@ -84,12 +84,12 @@
       user-select: none;
     }
     .drop-zone:hover, .drop-zone.over {
-      border-color: var(--primary);
+      border-color: var(--brand);
       background: #eef2ff;
     }
     .drop-zone .icon { font-size: 2.5rem; line-height: 1; margin-bottom: 0.75rem; }
     .drop-zone p { color: var(--muted); font-size: 0.9rem; }
-    .drop-zone strong { color: var(--primary); }
+    .drop-zone strong { color: var(--brand); }
 
     /* PDF file list */
     .pdf-file-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.9rem; }
@@ -105,7 +105,7 @@
     .pdf-file-item .pfi-name {
       flex: 1;
       font-weight: 500;
-      color: var(--primary);
+      color: var(--brand);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -116,7 +116,7 @@
       border-radius: 50%;
       background: transparent;
       border: 1px solid #a5b4fc;
-      color: var(--primary);
+      color: var(--brand);
       font-size: 11px;
       cursor: pointer;
       flex-shrink: 0;
@@ -155,7 +155,7 @@
       cursor: pointer;
       outline: none;
     }
-    select:focus { border-color: var(--primary); }
+    select:focus { border-color: var(--brand); }
 
     /* Buttons */
     
@@ -226,7 +226,7 @@
     }
     .page-card footer span { color: var(--muted); }
     .page-card footer a {
-      color: var(--primary);
+      color: var(--brand);
       text-decoration: none;
       font-weight: 600;
     }

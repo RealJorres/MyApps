@@ -23,14 +23,14 @@
 <title>Flashcards | Jorres Apps</title>
 <style>
 :root {
-  --primary: #7c3aed; --brand: var(--primary); --primary-h: #6d28d9;
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2; --error-fg: #dc2626;
 }
 .container { max-width: 720px; margin: 0 auto; }
-header h1 { color: var(--primary); }
+header h1 { color: var(--brand); }
  
 
 .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
@@ -38,8 +38,8 @@ header h1 { color: var(--primary); }
 .btn-success { background: var(--success-bg); color: var(--success-fg); border: 1px solid #bbf7d0; }
 input[type=text], textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
 textarea { resize: vertical; min-height: 60px; }
-input:focus, textarea:focus { border-color: var(--primary); }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+input:focus, textarea:focus { border-color: var(--brand); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .hidden { display: none !important; }
 /* Manage view */
 .deck-list { display: flex; flex-direction: column; gap: 0.6rem; }
@@ -53,18 +53,18 @@ input:focus, textarea:focus { border-color: var(--primary); }
 .card-edit-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.5rem; align-items: start; margin-bottom: 0.5rem; }
 /* Study view */
 .progress-bar-outer { height: 8px; background: var(--border); border-radius: 4px; margin-bottom: 1.5rem; }
-.progress-bar-inner { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.3s; }
+.progress-bar-inner { height: 100%; background: var(--brand); border-radius: 4px; transition: width 0.3s; }
 .flashcard { width: 100%; min-height: 200px; perspective: 1000px; cursor: pointer; margin-bottom: 1.5rem; }
 .flashcard-inner { position: relative; width: 100%; min-height: 200px; transform-style: preserve-3d; transition: transform 0.4s; }
 .flashcard-inner.flipped { transform: rotateY(180deg); }
 .flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 0.75rem; border: 2px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background: white; }
-.flashcard-face.back { transform: rotateY(180deg); background: #f5f3ff; border-color: var(--primary); }
+.flashcard-face.back { transform: rotateY(180deg); background: #f5f3ff; border-color: var(--brand); }
 .card-face-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; letter-spacing: 0.08em; }
 .card-text { font-size: 1.2rem; font-weight: 600; text-align: center; line-height: 1.5; }
 .study-controls { display: flex; gap: 0.75rem; justify-content: center; }
 .study-controls .btn { padding: 0.7rem 2rem; font-size: 0.95rem; }
 .score-display { text-align: center; padding: 1rem 0; }
-.score-num { font-size: 3rem; font-weight: 800; color: var(--primary); }
+.score-num { font-size: 3rem; font-weight: 800; color: var(--brand); }
 .score-label { color: var(--muted); font-size: 0.9rem; margin-top: 0.3rem; }
 @media (max-width: 600px) {
   body { overflow-x: hidden; }

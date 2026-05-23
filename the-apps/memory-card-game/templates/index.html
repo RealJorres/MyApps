@@ -25,8 +25,8 @@
   :root {
     --bg: #f1f5f9;
     --card: #fff;
-    --primary: #7c3aed; --brand: var(--primary);
-    --primary-h: #6d28d9;
+
+
     --text: #1e293b;
     --muted: #64748b;
     --border: #e2e8f0;
@@ -37,7 +37,7 @@
   h1 {
     font-size: 2rem;
     font-weight: 800;
-    color: var(--primary);
+    color: var(--brand);
     margin-bottom: 0.25rem;
   }
   .subtitle {
@@ -82,18 +82,18 @@
     align-items: center;
   }
   .diff-btn:hover, .diff-btn.selected {
-    border-color: var(--primary);
+    border-color: var(--brand);
     background: rgba(124,58,237,0.06);
-    color: var(--primary);
+    color: var(--brand);
   }
   .diff-btn .diff-detail {
     font-size: 0.8rem;
     font-weight: 400;
     color: var(--muted);
   }
-  .diff-btn.selected .diff-detail { color: var(--primary-h); }
+  .diff-btn.selected .diff-detail { color: var(--brand-hover); }
   .start-btn {
-    background: var(--primary);
+    background: var(--brand);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -104,7 +104,7 @@
     transition: background 0.15s, transform 0.1s;
     width: 100%;
   }
-  .start-btn:hover { background: var(--primary-h); }
+  .start-btn:hover { background: var(--brand-hover); }
   .start-btn:active { transform: scale(0.98); }
 
   .best-scores {
@@ -157,7 +157,7 @@
   .stat-val {
     font-size: 1.4rem;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--brand);
     line-height: 1;
   }
   .stat-label {
@@ -172,13 +172,13 @@
     margin-bottom: 1rem;
     justify-content: flex-end;
   }
-  .btn { background: var(--primary); color: #fff; }
-  .btn:hover { background: var(--primary-h); }
+  .btn { background: var(--brand); color: #fff; }
+  .btn:hover { background: var(--brand-hover); }
   .btn:active { transform: scale(0.97); }
   .btn-outline {
     background: transparent;
-    border: 2px solid var(--primary);
-    color: var(--primary);
+    border: 2px solid var(--brand);
+    color: var(--brand);
   }
   .btn-outline:hover { background: rgba(124,58,237,0.08); }
 
@@ -213,7 +213,7 @@
     justify-content: center;
   }
   .card-back {
-    background: var(--primary);
+    background: var(--brand);
     background-image:
       repeating-linear-gradient(45deg, rgba(255,255,255,0.07) 0, rgba(255,255,255,0.07) 4px, transparent 4px, transparent 16px),
       repeating-linear-gradient(-45deg, rgba(255,255,255,0.07) 0, rgba(255,255,255,0.07) 4px, transparent 4px, transparent 16px);
@@ -279,7 +279,7 @@
   .win-box h2 {
     font-size: 1.8rem;
     font-weight: 900;
-    color: var(--primary);
+    color: var(--brand);
     margin-bottom: 0.5rem;
   }
   .win-stats {
@@ -296,7 +296,7 @@
     justify-content: space-between;
     font-size: 0.95rem;
   }
-  .win-stat-row span:last-child { font-weight: 700; color: var(--primary); }
+  .win-stat-row span:last-child { font-weight: 700; color: var(--brand); }
   .stars {
     font-size: 2rem;
     margin: 0.75rem 0;

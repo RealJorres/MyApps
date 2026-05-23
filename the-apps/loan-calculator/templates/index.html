@@ -23,28 +23,28 @@
 <title>Loan Calculator | Jorres Apps</title>
 <style>
 :root {
-  --primary: #1d4ed8; --brand: var(--primary); --primary-h: #1e40af;
+
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b;
   --success-bg: #f0fdf4; --success-fg: #16a34a;
   --error-bg: #fef2f2; --error-fg: #dc2626;
 }
 .container { max-width: 860px; margin: 0 auto; }
-header h1 { color: var(--primary); }
+header h1 { color: var(--brand); }
 
 .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
 input[type=number], select { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; background: #fff; color: var(--text); outline: none; font-family: inherit; }
-input:focus, select:focus { border-color: var(--primary); }
-.section-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+input:focus, select:focus { border-color: var(--brand); }
+.section-title { font-size: 0.85rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-grid.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
 .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
 .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; text-align: center; }
 .result-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 0.4rem; }
-.result-value { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+.result-value { font-size: 1.4rem; font-weight: 800; color: var(--brand); }
 .result-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
 .breakdown-bar { height: 20px; border-radius: 10px; overflow: hidden; display: flex; margin: 1rem 0 0.5rem; }
-.bar-principal { background: var(--primary); height: 100%; transition: width 0.3s; }
+.bar-principal { background: var(--brand); height: 100%; transition: width 0.3s; }
 .bar-interest { background: #fbbf24; height: 100%; transition: width 0.3s; }
 .bar-legend { display: flex; gap: 1.5rem; font-size: 0.8rem; }
 .legend-item { display: flex; align-items: center; gap: 0.4rem; }
@@ -131,7 +131,7 @@ details[open] summary::before { transform: rotate(90deg); }
       <div class="bar-interest" id="barInterest" style="width:50%"></div>
     </div>
     <div class="bar-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--primary)"></div><span id="principalPct">—% Principal</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--brand)"></div><span id="principalPct">—% Principal</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div><span id="interestPctBar">—% Interest</span></div>
     </div>
   </div>

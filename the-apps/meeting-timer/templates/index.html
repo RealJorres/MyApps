@@ -21,12 +21,12 @@
 <meta name="twitter:title" content="Meeting Timer">
 <meta name="twitter:description" content="Add agenda items with time limits. A bell rings when each item ends and the timer auto-advances.">
 <style>
-:root{--primary:#be185d; --brand: var(--primary);--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
+:root{--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b}
 .container{max-width:640px;margin:0 auto}
 .add-row{display:flex;gap:.5rem;flex-wrap:wrap}
 .add-row input[type=text]{flex:2;min-width:0;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
 .add-row input[type=number]{flex:1;min-width:60px;padding:.6rem .5rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
-input:focus{border-color:var(--primary)}
+input:focus{border-color:var(--brand)}
 
 .btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
 .btn-success{background:#059669;color:#fff}
@@ -34,7 +34,7 @@ input:focus{border-color:var(--primary)}
 .btn:hover{opacity:.85}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .agenda-item{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.6rem;margin-bottom:.4rem;background:#fff}
-.agenda-item.active-item{border-color:var(--primary);background:#fdf2f8}
+.agenda-item.active-item{border-color:var(--brand);background:#fdf2f8}
 .agenda-item.done-item{opacity:.55;text-decoration:line-through}
 .item-name{flex:1;font-size:.9rem;min-width:0;word-break:break-word}
 .item-dur{font-size:.8rem;color:var(--muted);flex-shrink:0}
@@ -43,10 +43,10 @@ input:focus{border-color:var(--primary)}
 .timer-display{text-align:center;padding:1.5rem 1rem}
 .timer-label{font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:.4rem}
 .timer-name{font-size:1.2rem;font-weight:800;margin-bottom:.5rem}
-.timer-clock{font-size:3.5rem;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.05em;color:var(--primary)}
+.timer-clock{font-size:3.5rem;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.05em;color:var(--brand)}
 .timer-clock.warning{color:#dc2626}
 .progress-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin:.75rem 0}
-.progress-fill{height:100%;background:var(--primary);border-radius:4px;transition:width .5s}
+.progress-fill{height:100%;background:var(--brand);border-radius:4px;transition:width .5s}
 .progress-fill.warning{background:#dc2626}
 .controls{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.75rem}
 .meeting-total{text-align:center;font-size:.85rem;color:var(--muted);margin-top:.5rem}
