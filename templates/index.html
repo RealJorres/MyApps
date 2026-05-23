@@ -377,7 +377,35 @@
         color: var(--muted);
         border-radius: 2px;
         letter-spacing: 0.02em;
+        /* clickable tag button */
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        line-height: inherit;
+        transition: background 0.12s, color 0.12s;
+        text-decoration: none;
       }
+      .tag:hover { background: var(--accent); color: #fff; }
+      .tag.tag--active { background: var(--accent); color: #fff; font-weight: 600; }
+
+      /* Active-tag clear chip shown in results header */
+      .tag-filter-bar {
+        display: flex; align-items: center; gap: .5rem;
+        flex-wrap: wrap;
+      }
+      .tag-filter-chip {
+        display: inline-flex; align-items: center; gap: .35rem;
+        background: var(--accent); color: #fff;
+        font-size: .72rem; font-weight: 700;
+        padding: .2rem .6rem; border-radius: 2rem;
+        white-space: nowrap;
+      }
+      .tag-filter-chip button {
+        background: none; border: none; color: inherit; cursor: pointer;
+        font-size: .85rem; line-height: 1; padding: 0;
+        opacity: .8;
+      }
+      .tag-filter-chip button:hover { opacity: 1; }
       .card-footer {
         display: flex;
         align-items: center;
@@ -1237,9 +1265,10 @@
         return "#" + c(n >> 16) + c((n >> 8) & 0xff) + c(n & 0xff);
       }
 
-      // ── Category filter state ──────────────────────────
+      // ── Category / tag filter state ────────────────────
       let activeCat = "All";
       let activeSubcat = "All";
+      let activeTag = null;
 
       // ── Subcategory definitions ─────────────────────────
       // Keys = category name. Values = array of { label, ids[] }.
@@ -1390,9 +1419,28 @@
       function filterByCategory(cat) {
         activeCat = cat;
         activeSubcat = "All";
+        activeTag = null;
         document.getElementById("searchInput").value = "";
         renderCategoryNav();
         renderSubcatNav();
+        applyFilters();
+      }
+
+      // ── Tag filter ─────────────────────────────────────
+      function filterByTag(tag) {
+        activeTag = tag;
+        activeCat = "All";
+        activeSubcat = "All";
+        document.getElementById("searchInput").value = "";
+        renderCategoryNav();
+        renderSubcatNav();
+        applyFilters();
+        // Scroll grid into view
+        document.getElementById("grid").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function clearTag() {
+        activeTag = null;
         applyFilters();
       }
 
@@ -1517,8 +1565,13 @@
             renderCategoryNav();
             renderSubcatNav();
           }
+          activeTag = null;
           // Render flat — preserve Fuse.js relevance order, don't group by category
           renderSearchResults(visible, q);
+        } else if (activeTag) {
+          // Tag filter — flat list of all apps carrying this tag
+          visible = allApps.filter(a => (a.tags || []).includes(activeTag));
+          renderTagResults(visible, activeTag);
         } else {
           if (activeCat !== "All") {
             // Category filter
@@ -1549,6 +1602,24 @@
         _pendingGroups = null;
         const label = apps.length === 1 ? "1 result" : `${apps.length} results`;
         grid.innerHTML = `<div class="category-header">Search results — ${label}</div>`;
+        apps.forEach(a => grid.insertAdjacentHTML("beforeend", cardHTML(a)));
+      }
+
+      // ── Tag results — flat list of all apps with the given tag ──────────────
+      function renderTagResults(apps, tag) {
+        const grid = document.getElementById("grid");
+        _pendingGroups = null;
+        if (!apps.length) {
+          grid.innerHTML = `<div class="empty"><p>No apps tagged "<strong>${esc(tag)}</strong>".</p></div>`;
+          return;
+        }
+        const label = apps.length === 1 ? "1 app" : `${apps.length} apps`;
+        grid.innerHTML = `<div class="category-header">
+          <div class="tag-filter-bar">
+            <span>${label} tagged</span>
+            <span class="tag-filter-chip">${esc(tag)}<button onclick="clearTag()" aria-label="Clear tag filter">×</button></span>
+          </div>
+        </div>`;
         apps.forEach(a => grid.insertAdjacentHTML("beforeend", cardHTML(a)));
       }
 
@@ -1660,7 +1731,7 @@
       function cardHTML(a) {
         const grad = `linear-gradient(140deg, ${darken(a.color)}, ${a.color})`;
         const tags = a.tags
-          .map((t) => `<span class="tag">${esc(t)}</span>`)
+          .map((t) => `<button class="tag${activeTag === t ? ' tag--active' : ''}" onclick="filterByTag('${esc(t)}')" title="Browse all '${esc(t)}' apps">${esc(t)}</button>`)
           .join("");
         const pinned = isPinned(a.id);
         const ratings = getRatings();
