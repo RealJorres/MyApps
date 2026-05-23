@@ -6,11 +6,11 @@
 <link rel="stylesheet" href="/static/base.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/sql-playground/">
-<meta name="description" content="Write and run SQL queries in your browser with a built-in SQLite database. No server needed — powered by sql.js WASM.">
-<meta name="keywords" content="SQL playground, SQLite, browser SQL, SQL editor, query runner, sql.js">
+<meta name="description" content="Write and run SQL queries in your browser with a built-in SQLite database, or import your own CSV files. No server needed.">
+<meta name="keywords" content="SQL playground, SQLite, browser SQL, SQL editor, CSV import, query runner, sql.js">
 <meta name="author" content="Jorres Apps">
 <meta property="og:title" content="SQL Playground">
-<meta property="og:description" content="Write and run SQL queries in your browser with a built-in SQLite database. No server needed.">
+<meta property="og:description" content="Write and run SQL queries in your browser with a built-in SQLite database. Import CSV files to query your own data.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
 <meta property="og:image:width" content="1200">
@@ -18,64 +18,220 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
 <meta name="twitter:title" content="SQL Playground">
-<meta name="twitter:description" content="Write and run SQL queries in your browser with a built-in SQLite database.">
+<meta name="twitter:description" content="Write and run SQL queries in your browser. Import CSV files to query your own data.">
 <title>SQL Playground | Jorres Apps</title>
 <style>
-.sql-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; align-items: start; }
-.schema-panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; }
-.schema-panel h3 { font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 0.65rem; }
-.schema-table { margin-bottom: 0.85rem; }
-.schema-table-name { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--brand); cursor: pointer; display: flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0; }
+/* ── Layout ─────────────────────────────────────────────── */
+.sql-layout { display: grid; grid-template-columns: 230px 1fr; gap: 1rem; align-items: start; }
+
+/* ── Schema panel ───────────────────────────────────────── */
+.schema-panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; position: sticky; top: 56px; max-height: calc(100vh - 80px); overflow-y: auto; }
+.schema-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem; }
+.schema-panel-header h3 { font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 0; }
+.schema-section-label { font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 0.5rem; display: flex; align-items: center; gap: 0.35rem; }
+.schema-section-label .count { font-weight: var(--weight-normal); opacity: 0.7; }
+.schema-divider { border: none; border-top: 1px solid var(--border); margin: 0.85rem 0; }
+.schema-table { margin-bottom: 0.6rem; }
+.schema-table-name { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--brand); cursor: pointer; display: flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0; user-select: none; }
 .schema-table-name:hover { opacity: 0.8; }
+.schema-table-name.user-table { color: var(--success); justify-content: space-between; }
+.schema-table-name.user-table .name-inner { display: flex; align-items: center; gap: 0.3rem; flex: 1; }
 .schema-cols { padding-left: 0.85rem; display: none; }
 .schema-cols.open { display: block; }
-.schema-col { font-size: var(--text-xs); color: var(--text-muted); padding: 0.15rem 0; display: flex; gap: 0.4rem; }
-.schema-col .col-type { color: var(--text-muted); opacity: 0.6; font-style: italic; }
-.schema-col .pk-badge { font-size: 9px; background: var(--brand); color: #fff; border-radius: 3px; padding: 0 3px; font-weight: 700; }
+.schema-col { font-size: var(--text-xs); color: var(--text-muted); padding: 0.15rem 0; display: flex; gap: 0.4rem; align-items: center; }
+.schema-col .col-type { opacity: 0.6; font-style: italic; }
+.pk-badge { font-size: 9px; background: var(--brand); color: #fff; border-radius: 3px; padding: 0 3px; font-weight: 700; flex-shrink: 0; }
+.fk-badge { font-size: 9px; background: var(--text-muted); color: #fff; border-radius: 3px; padding: 0 3px; font-weight: 700; flex-shrink: 0; }
+.schema-drop-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 4px; border-radius: 3px; display: flex; align-items: center; flex-shrink: 0; opacity: 0.6; transition: opacity var(--transition), color var(--transition); }
+.schema-drop-btn:hover { opacity: 1; color: var(--danger); }
+.schema-row-count { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin-top: 0.2rem; padding-left: 0; }
+
+/* Import hint link in schema panel */
+.schema-import-btn { display: flex; align-items: center; gap: 0.4rem; font-size: var(--text-xs); color: var(--brand); cursor: pointer; background: none; border: 1px dashed var(--brand); border-radius: var(--radius-sm); padding: 0.4rem 0.6rem; width: 100%; margin-bottom: 0.85rem; opacity: 0.75; transition: opacity var(--transition); }
+.schema-import-btn:hover { opacity: 1; }
+
+/* ── Editor pane ────────────────────────────────────────── */
 .editor-pane { display: flex; flex-direction: column; gap: 0.65rem; }
 .toolbar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-.toolbar select { font-size: var(--text-xs); padding: 0.35rem 0.6rem; max-width: 200px; }
-.run-btn { display: flex; align-items: center; gap: 0.4rem; }
+.toolbar select { font-size: var(--text-xs); padding: 0.35rem 0.6rem; max-width: 190px; }
 textarea#sqlEditor { font-family: var(--font-mono); font-size: var(--text-sm); min-height: 140px; resize: vertical; }
-.results-section { }
-.results-meta { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
-.results-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); max-height: 360px; overflow-y: auto; }
+
+/* ── Results ────────────────────────────────────────────── */
+.results-meta { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.results-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); max-height: 380px; overflow-y: auto; }
 table.results-tbl { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
-table.results-tbl th { background: var(--surface-2); color: var(--text-muted); font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.75rem; text-align: left; position: sticky; top: 0; border-bottom: 1px solid var(--border); white-space: nowrap; }
-table.results-tbl td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: var(--text-xs); white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
+table.results-tbl th { background: var(--surface-2); color: var(--text-muted); font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.75rem; text-align: left; position: sticky; top: 0; border-bottom: 1px solid var(--border); white-space: nowrap; z-index: 1; }
+table.results-tbl td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: var(--text-xs); white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
 table.results-tbl tr:last-child td { border-bottom: none; }
-table.results-tbl tr:hover td { background: var(--surface-2); }
+table.results-tbl tr:hover td { background: color-mix(in srgb, var(--brand) 5%, var(--surface-2)); }
 table.results-tbl td.null-val { color: var(--text-muted); font-style: italic; }
 .msg-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.75rem 1rem; font-size: var(--text-sm); }
 .msg-box.success { border-color: var(--success-border); color: var(--success); }
 .msg-box.error   { border-color: var(--danger); color: var(--danger); }
-.loading-state { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: var(--text-sm); }
-@media (max-width: 620px) {
+.loading-state { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: var(--text-sm); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+
+/* ── Drop overlay ───────────────────────────────────────── */
+.drop-overlay { position: fixed; inset: 0; z-index: 1000; background: color-mix(in srgb, var(--brand) 15%, rgb(0 0 0 / 0.7)); display: none; align-items: center; justify-content: center; pointer-events: none; }
+.drop-overlay-inner { background: var(--surface); border: 2px dashed var(--brand); border-radius: var(--radius-xl); padding: 3rem 4rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.drop-overlay-inner svg { color: var(--brand); }
+.drop-overlay-inner p { font-size: 1.1rem; font-weight: var(--weight-semibold); color: var(--text); margin: 0; }
+.drop-overlay-inner small { color: var(--text-muted); font-size: var(--text-sm); }
+.drop-overlay.active { display: flex; pointer-events: all; }
+
+/* ── Import preview modal ───────────────────────────────── */
+.modal-overlay { position: fixed; inset: 0; z-index: 900; background: rgb(0 0 0 / 0.65); display: none; align-items: center; justify-content: center; padding: 1rem; }
+.modal-overlay.open { display: flex; }
+.modal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 720px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgb(0 0 0 / 0.5); }
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.modal-head h2 { font-size: var(--text-base); font-weight: var(--weight-semibold); margin: 0; }
+.modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0.25rem; border-radius: var(--radius-sm); display: flex; align-items: center; }
+.modal-close:hover { color: var(--text); background: var(--surface-2); }
+.modal-body { padding: 1.25rem; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+.modal-foot { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-shrink: 0; flex-wrap: wrap; }
+.modal-foot .foot-left { font-size: var(--text-sm); color: var(--text-muted); }
+.modal-foot .foot-right { display: flex; gap: 0.5rem; }
+
+/* Table name row */
+.modal-name-row { display: flex; align-items: center; gap: 0.75rem; }
+.modal-name-row label { font-size: var(--text-sm); font-weight: var(--weight-semibold); white-space: nowrap; }
+.modal-name-row input { flex: 1; font-family: var(--font-mono); }
+.modal-name-error { font-size: var(--text-xs); color: var(--danger); margin-top: 0.25rem; display: none; }
+.modal-name-error.show { display: block; }
+
+/* Column preview table */
+.preview-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
+table.preview-tbl { width: 100%; border-collapse: collapse; font-size: var(--text-xs); }
+table.preview-tbl th { background: var(--surface-2); color: var(--text-muted); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.04em; padding: 0.45rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+table.preview-tbl td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+table.preview-tbl tr:last-child td { border-bottom: none; }
+table.preview-tbl tr:hover td { background: var(--surface-2); }
+table.preview-tbl .col-orig { font-family: var(--font-mono); color: var(--text); }
+table.preview-tbl .col-safe { font-family: var(--font-mono); color: var(--text-muted); }
+table.preview-tbl .col-sample { font-family: var(--font-mono); color: var(--text-muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+table.preview-tbl .same-name { color: var(--text-muted); font-style: italic; font-size: 10px; }
+table.preview-tbl select { font-size: var(--text-xs); padding: 0.2rem 0.35rem; }
+
+/* Warnings */
+.import-warning { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); font-size: var(--text-sm); }
+.import-warning.warn { background: color-mix(in srgb, var(--warning) 12%, var(--surface-2)); border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border)); color: var(--warning); }
+.import-warning.error-box { background: color-mix(in srgb, var(--danger) 12%, var(--surface-2)); border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border)); color: var(--danger); }
+.import-warning.info { background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info); }
+
+/* Responsive */
+@media (max-width: 660px) {
   .sql-layout { grid-template-columns: 1fr; }
-  .schema-panel { order: 2; }
+  .schema-panel { order: 2; position: static; max-height: none; }
   .editor-pane  { order: 1; }
+  .toolbar select { max-width: 140px; }
 }
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 <script src="/static/app-nav.js?v=3" data-app-id="sql-playground" data-app-name="SQL Playground"></script>
+
+<!-- Drag-drop overlay -->
+<div id="dropOverlay" class="drop-overlay" role="presentation">
+  <div class="drop-overlay-inner">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <p>Drop your CSV file</p>
+    <small>Your data will be imported as a queryable SQL table</small>
+  </div>
+</div>
+
+<!-- Import preview modal -->
+<div id="importModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="modalTitle">Import CSV — Preview</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Table name -->
+      <div>
+        <div class="modal-name-row">
+          <label for="modalTableName">Table name</label>
+          <input type="text" id="modalTableName" autocomplete="off" spellcheck="false" oninput="clearNameError()">
+        </div>
+        <div class="modal-name-error" id="modalNameError"></div>
+      </div>
+
+      <!-- Warning area -->
+      <div id="modalWarning"></div>
+
+      <!-- Column preview -->
+      <div>
+        <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:0.5rem;">
+          <span id="modalColCount"></span> &nbsp;|&nbsp; <span id="modalRowCount"></span>. Review column names and types before importing.
+        </div>
+        <div class="preview-table-wrap">
+          <table class="preview-tbl" aria-label="Column preview">
+            <thead>
+              <tr>
+                <th>CSV header</th>
+                <th>SQL column name</th>
+                <th>Type</th>
+                <th>Sample values</th>
+              </tr>
+            </thead>
+            <tbody id="modalColBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="foot-left" id="modalFootNote">All processing happens in your browser — your file is never uploaded.</div>
+      <div class="foot-right">
+        <button class="btn" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="modalImportBtn" onclick="confirmImport()">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file input -->
+<input type="file" id="csvFileInput" accept=".csv,text/csv,text/plain" style="display:none;" aria-hidden="true" onchange="handleFileInputChange(event)">
+
 <div class="container">
   <header>
     <h1>SQL Playground</h1>
-    <p>Run SQL queries directly in your browser — no server, no setup. Powered by SQLite via WebAssembly.</p>
+    <p>Run SQL queries in your browser — no server, no setup. Import a CSV file to query your own data.</p>
   </header>
 
   <div id="loadingState" class="card loading-state">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="animation:spin 1s linear infinite;display:inline-block"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="animation:spin 1s linear infinite;flex-shrink:0"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
     Loading SQLite engine...
   </div>
 
   <div id="mainContent" style="display:none;">
     <div class="sql-layout">
+
       <!-- Schema Browser -->
       <div class="schema-panel" id="schemaPanel">
-        <h3>Schema</h3>
+        <div class="schema-panel-header">
+          <h3>Schema</h3>
+        </div>
+
+        <!-- Import CSV shortcut -->
+        <button class="schema-import-btn" onclick="triggerFilePicker()" title="Import a CSV file as a SQL table">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import CSV
+        </button>
+
+        <!-- Sample Database section -->
+        <div class="schema-section-label">Sample Database</div>
         <div id="schemaTables"></div>
+
+        <!-- Your Tables section -->
+        <div id="userTablesSection" style="display:none;">
+          <hr class="schema-divider">
+          <div class="schema-section-label">
+            Your Tables <span class="count" id="userTablesCount"></span>
+          </div>
+          <div id="userSchemaTables"></div>
+        </div>
       </div>
 
       <!-- Editor + Results -->
@@ -91,7 +247,7 @@ table.results-tbl td.null-val { color: var(--text-muted); font-style: italic; }
                 <option value="dept_avg">Avg salary by department</option>
                 <option value="emp_hire">Hired after 2021</option>
               </optgroup>
-              <optgroup label="Products & Orders">
+              <optgroup label="Products &amp; Orders">
                 <option value="sel_prod">All products</option>
                 <option value="prod_cat">Products by category</option>
                 <option value="order_total">Order totals</option>
@@ -101,20 +257,26 @@ table.results-tbl td.null-val { color: var(--text-muted); font-style: italic; }
               <optgroup label="Advanced">
                 <option value="agg_dept">Department summary</option>
                 <option value="cte_rank">Salary rank (CTE)</option>
-                <option value="subquery">Employees above avg salary</option>
+                <option value="subquery">Above avg salary</option>
                 <option value="insert_ex">INSERT example</option>
                 <option value="update_ex">UPDATE example</option>
               </optgroup>
             </select>
-            <button class="btn btn-primary run-btn" onclick="runQuery()" id="runBtn">
+            <button class="btn btn-primary" onclick="runQuery()" id="runBtn" style="display:flex;align-items:center;gap:0.4rem;">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Run
+            </button>
+            <button class="btn" onclick="triggerFilePicker()" style="display:flex;align-items:center;gap:0.4rem;" title="Import a CSV file as a SQL table">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import CSV
             </button>
             <button class="btn" onclick="clearEditor()">Clear</button>
             <button class="btn" onclick="resetDb()">Reset DB</button>
           </div>
           <textarea id="sqlEditor" placeholder="SELECT * FROM employees LIMIT 10;" aria-label="SQL editor" spellcheck="false"></textarea>
-          <p style="font-size:var(--text-xs);color:var(--text-muted);margin:0.4rem 0 0;">Ctrl+Enter to run &nbsp;|&nbsp; Multiple statements separated by <code>;</code></p>
+          <p style="font-size:var(--text-xs);color:var(--text-muted);margin:0.4rem 0 0;">
+            Ctrl+Enter to run &nbsp;|&nbsp; Multiple statements separated by <code>;</code> &nbsp;|&nbsp; Drag a CSV file anywhere to import
+          </p>
         </div>
 
         <div id="resultsArea"></div>
@@ -122,32 +284,47 @@ table.results-tbl td.null-val { color: var(--text-muted); font-style: italic; }
     </div>
   </div>
 </div>
+
 <script src="/static/footer.js?v=3"></script>
 <script>
-// sql.js loaded from CDN
-const SQL_JS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js';
-const WASM_URL   = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm';
+/* ═══════════════════════════════════════════════════════════
+   CDN URLs
+═══════════════════════════════════════════════════════════ */
+const SQL_JS_CDN    = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js';
+const WASM_URL      = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm';
+const PAPA_PARSE_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js';
 
-let db = null;
+/* ═══════════════════════════════════════════════════════════
+   State
+═══════════════════════════════════════════════════════════ */
+let db             = null;
+let importedTables = [];   // { name, cols:[{raw,safe,type}], rowCount }
+let pendingImport  = null; // set while preview modal is open
 
+/* ═══════════════════════════════════════════════════════════
+   Example queries
+═══════════════════════════════════════════════════════════ */
 const EXAMPLES = {
-  sel_emp:    'SELECT * FROM employees ORDER BY last_name;',
-  emp_dept:   `SELECT e.first_name, e.last_name, d.name AS department, e.salary\nFROM employees e\nJOIN departments d ON e.department_id = d.id\nORDER BY d.name, e.last_name;`,
-  emp_sal:    'SELECT first_name, last_name, salary FROM employees ORDER BY salary DESC LIMIT 5;',
-  dept_avg:   `SELECT d.name AS department,\n       COUNT(e.id) AS headcount,\n       ROUND(AVG(e.salary), 2) AS avg_salary,\n       MIN(e.salary) AS min_sal,\n       MAX(e.salary) AS max_sal\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nGROUP BY d.id\nORDER BY avg_salary DESC;`,
-  emp_hire:   `SELECT first_name, last_name, hire_date, salary\nFROM employees\nWHERE hire_date >= '2021-01-01'\nORDER BY hire_date DESC;`,
-  sel_prod:   'SELECT * FROM products ORDER BY category, name;',
-  prod_cat:   `SELECT category, COUNT(*) AS count, ROUND(AVG(price),2) AS avg_price\nFROM products\nGROUP BY category\nORDER BY count DESC;`,
-  order_total:`SELECT o.id AS order_id, e.first_name || ' ' || e.last_name AS employee,\n       o.customer, o.order_date,\n       ROUND(SUM(oi.qty * oi.unit_price), 2) AS total\nFROM orders o\nJOIN employees e ON e.id = o.employee_id\nJOIN order_items oi ON oi.order_id = o.id\nGROUP BY o.id\nORDER BY total DESC;`,
-  top_prod:   `SELECT p.name, p.category, SUM(oi.qty) AS units_sold,\n       ROUND(SUM(oi.qty * oi.unit_price), 2) AS revenue\nFROM order_items oi\nJOIN products p ON p.id = oi.product_id\nGROUP BY p.id\nORDER BY units_sold DESC\nLIMIT 5;`,
-  low_stock:  `SELECT name, category, stock, price\nFROM products\nWHERE stock < 20\nORDER BY stock ASC;`,
-  agg_dept:   `SELECT d.name,\n       COUNT(e.id)                       AS employees,\n       ROUND(AVG(e.salary), 2)           AS avg_salary,\n       ROUND(SUM(e.salary), 2)           AS payroll\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nGROUP BY d.id\nORDER BY payroll DESC;`,
-  cte_rank:   `WITH ranked AS (\n  SELECT first_name, last_name, salary, department_id,\n         RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rnk\n  FROM employees\n)\nSELECT r.first_name, r.last_name, d.name AS dept, r.salary, r.rnk\nFROM ranked r\nJOIN departments d ON d.id = r.department_id\nWHERE r.rnk <= 2\nORDER BY d.name, r.rnk;`,
-  subquery:   `SELECT first_name, last_name, salary\nFROM employees\nWHERE salary > (SELECT AVG(salary) FROM employees)\nORDER BY salary DESC;`,
-  insert_ex:  `-- Insert a new employee (rolled back after page reload)\nINSERT INTO employees (first_name, last_name, email, hire_date, salary, department_id)\nVALUES ('Alex', 'Taylor', 'alex.taylor@company.com', '2024-03-15', 72000, 1);\n\nSELECT * FROM employees ORDER BY id DESC LIMIT 5;`,
-  update_ex:  `-- Give everyone in Engineering a 5% raise\nUPDATE employees SET salary = ROUND(salary * 1.05, 2)\nWHERE department_id = (SELECT id FROM departments WHERE name = 'Engineering');\n\nSELECT first_name, last_name, salary FROM employees\nWHERE department_id = (SELECT id FROM departments WHERE name = 'Engineering');`,
+  sel_emp:     'SELECT * FROM employees ORDER BY last_name;',
+  emp_dept:    `SELECT e.first_name, e.last_name, d.name AS department, e.salary\nFROM employees e\nJOIN departments d ON e.department_id = d.id\nORDER BY d.name, e.last_name;`,
+  emp_sal:     'SELECT first_name, last_name, salary FROM employees ORDER BY salary DESC LIMIT 5;',
+  dept_avg:    `SELECT d.name AS department,\n       COUNT(e.id) AS headcount,\n       ROUND(AVG(e.salary), 2) AS avg_salary,\n       MIN(e.salary) AS min_sal,\n       MAX(e.salary) AS max_sal\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nGROUP BY d.id\nORDER BY avg_salary DESC;`,
+  emp_hire:    `SELECT first_name, last_name, hire_date, salary\nFROM employees\nWHERE hire_date >= '2021-01-01'\nORDER BY hire_date DESC;`,
+  sel_prod:    'SELECT * FROM products ORDER BY category, name;',
+  prod_cat:    `SELECT category, COUNT(*) AS count, ROUND(AVG(price),2) AS avg_price\nFROM products\nGROUP BY category\nORDER BY count DESC;`,
+  order_total: `SELECT o.id AS order_id, e.first_name || ' ' || e.last_name AS employee,\n       o.customer, o.order_date,\n       ROUND(SUM(oi.qty * oi.unit_price), 2) AS total\nFROM orders o\nJOIN employees e ON e.id = o.employee_id\nJOIN order_items oi ON oi.order_id = o.id\nGROUP BY o.id\nORDER BY total DESC;`,
+  top_prod:    `SELECT p.name, p.category, SUM(oi.qty) AS units_sold,\n       ROUND(SUM(oi.qty * oi.unit_price), 2) AS revenue\nFROM order_items oi\nJOIN products p ON p.id = oi.product_id\nGROUP BY p.id\nORDER BY units_sold DESC\nLIMIT 5;`,
+  low_stock:   `SELECT name, category, stock, price\nFROM products\nWHERE stock < 20\nORDER BY stock ASC;`,
+  agg_dept:    `SELECT d.name,\n       COUNT(e.id) AS employees,\n       ROUND(AVG(e.salary), 2) AS avg_salary,\n       ROUND(SUM(e.salary), 2) AS payroll\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nGROUP BY d.id\nORDER BY payroll DESC;`,
+  cte_rank:    `WITH ranked AS (\n  SELECT first_name, last_name, salary, department_id,\n         RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rnk\n  FROM employees\n)\nSELECT r.first_name, r.last_name, d.name AS dept, r.salary, r.rnk\nFROM ranked r\nJOIN departments d ON d.id = r.department_id\nWHERE r.rnk <= 2\nORDER BY d.name, r.rnk;`,
+  subquery:    `SELECT first_name, last_name, salary\nFROM employees\nWHERE salary > (SELECT AVG(salary) FROM employees)\nORDER BY salary DESC;`,
+  insert_ex:   `-- Insert a new employee (resets on page reload)\nINSERT INTO employees (first_name, last_name, email, hire_date, salary, department_id)\nVALUES ('Alex', 'Taylor', 'alex.taylor@company.com', '2024-03-15', 72000, 1);\n\nSELECT * FROM employees ORDER BY id DESC LIMIT 5;`,
+  update_ex:   `-- Give Engineering a 5% raise\nUPDATE employees SET salary = ROUND(salary * 1.05, 2)\nWHERE department_id = (SELECT id FROM departments WHERE name = 'Engineering');\n\nSELECT first_name, last_name, salary FROM employees\nWHERE department_id = (SELECT id FROM departments WHERE name = 'Engineering');`,
 };
 
+/* ═══════════════════════════════════════════════════════════
+   Seed SQL (sample database)
+═══════════════════════════════════════════════════════════ */
 const SEED_SQL = `
 CREATE TABLE departments (
   id   INTEGER PRIMARY KEY,
@@ -239,7 +416,7 @@ INSERT INTO order_items VALUES
 (22,8,1,3,1299.99),(23,8,6,2,349.99),(24,8,9,3,199.99);
 `;
 
-const SCHEMA_DEF = [
+const SAMPLE_SCHEMA = [
   { table: 'departments', cols: [['id','INTEGER','PK'],['name','TEXT'],['city','TEXT']] },
   { table: 'employees',   cols: [['id','INTEGER','PK'],['first_name','TEXT'],['last_name','TEXT'],['email','TEXT'],['hire_date','TEXT'],['salary','REAL'],['department_id','INTEGER','FK']] },
   { table: 'products',    cols: [['id','INTEGER','PK'],['name','TEXT'],['category','TEXT'],['price','REAL'],['stock','INTEGER']] },
@@ -247,18 +424,21 @@ const SCHEMA_DEF = [
   { table: 'order_items', cols: [['id','INTEGER','PK'],['order_id','INTEGER','FK'],['product_id','INTEGER','FK'],['qty','INTEGER'],['unit_price','REAL']] },
 ];
 
+/* ═══════════════════════════════════════════════════════════
+   Schema panel — sample database
+═══════════════════════════════════════════════════════════ */
 function buildSchema() {
   const wrap = document.getElementById('schemaTables');
-  wrap.innerHTML = SCHEMA_DEF.map((t, ti) => `
+  wrap.innerHTML = SAMPLE_SCHEMA.map((t, ti) => `
     <div class="schema-table">
-      <div class="schema-table-name" onclick="toggleCols(${ti})" aria-expanded="false" id="schema-hd-${ti}">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="schema-arrow-${ti}" style="transition:transform .15s"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="schema-table-name" onclick="toggleCols('s',${ti})" id="schema-hd-s${ti}">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="schema-arrow-s${ti}" style="transition:transform .15s;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
         ${t.table}
       </div>
-      <div class="schema-cols" id="schema-cols-${ti}">
-        ${t.cols.map(([n,type,flag]) => `
+      <div class="schema-cols" id="schema-cols-s${ti}">
+        ${t.cols.map(([n, type, flag]) => `
           <div class="schema-col">
-            ${flag === 'PK' ? '<span class="pk-badge">PK</span>' : flag === 'FK' ? '<span class="pk-badge" style="background:var(--text-muted)">FK</span>' : ''}
+            ${flag === 'PK' ? '<span class="pk-badge">PK</span>' : flag === 'FK' ? '<span class="fk-badge">FK</span>' : ''}
             <span>${n}</span>
             <span class="col-type">${type}</span>
           </div>`).join('')}
@@ -266,30 +446,68 @@ function buildSchema() {
     </div>`).join('');
 }
 
-function toggleCols(ti) {
-  const cols  = document.getElementById('schema-cols-' + ti);
-  const arrow = document.getElementById('schema-arrow-' + ti);
-  const open  = cols.classList.toggle('open');
+function toggleCols(prefix, ti) {
+  const cols  = document.getElementById('schema-cols-' + prefix + ti);
+  const arrow = document.getElementById('schema-arrow-' + prefix + ti);
+  if (!cols) return;
+  const open = cols.classList.toggle('open');
   arrow.style.transform = open ? 'rotate(90deg)' : '';
 }
 
-function loadExample(key) {
-  if (!key) return;
-  document.getElementById('sqlEditor').value = EXAMPLES[key] || '';
-  document.getElementById('exampleSelect').value = '';
+/* ═══════════════════════════════════════════════════════════
+   Schema panel — user-imported tables
+═══════════════════════════════════════════════════════════ */
+function buildUserSchema() {
+  const section  = document.getElementById('userTablesSection');
+  const wrap     = document.getElementById('userSchemaTables');
+  const countEl  = document.getElementById('userTablesCount');
+
+  if (!importedTables.length) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  countEl.textContent = '(' + importedTables.length + ')';
+
+  wrap.innerHTML = importedTables.map((t, ti) => `
+    <div class="schema-table">
+      <div class="schema-table-name user-table">
+        <span class="name-inner" onclick="toggleCols('u',${ti})" style="cursor:pointer;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="schema-arrow-u${ti}" style="transition:transform .15s;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+          ${esc(t.name)}
+        </span>
+        <button class="schema-drop-btn" onclick="dropTable(${ti})" title="Remove table" aria-label="Remove table ${esc(t.name)}">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="schema-cols" id="schema-cols-u${ti}">
+        ${t.cols.map(c => `
+          <div class="schema-col">
+            <span>${esc(c.safe)}</span>
+            <span class="col-type">${c.type}</span>
+          </div>`).join('')}
+        <div class="schema-row-count">${t.rowCount.toLocaleString()} rows</div>
+      </div>
+    </div>`).join('');
 }
 
-async function initSqlJs() {
+function dropTable(ti) {
+  if (!db) return;
+  const name = importedTables[ti].name;
+  try { db.run('DROP TABLE IF EXISTS ' + quoteId(name) + ';'); } catch (_) {}
+  importedTables.splice(ti, 1);
+  buildUserSchema();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   sql.js init
+═══════════════════════════════════════════════════════════ */
+function loadScript(src) {
   return new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = SQL_JS_CDN;
-    s.onload = async () => {
-      try {
-        const SQL = await window.initSqlJs({ locateFile: () => WASM_URL });
-        resolve(SQL);
-      } catch(e) { reject(e); }
-    };
-    s.onerror = () => reject(new Error('Failed to load sql.js'));
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Failed to load ' + src));
     document.head.appendChild(s);
   });
 }
@@ -302,26 +520,33 @@ function createDb(SQL) {
 
 async function init() {
   try {
-    const SQL = await initSqlJs();
+    await loadScript(SQL_JS_CDN);
+    const SQL = await window.initSqlJs({ locateFile: () => WASM_URL });
     db = createDb(SQL);
-    window._SQL = SQL; // store for reset
+    window._SQL = SQL;
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('mainContent').style.display = 'block';
     buildSchema();
+    buildUserSchema();
     document.getElementById('sqlEditor').value = EXAMPLES.emp_dept;
     runQuery();
-  } catch(e) {
+  } catch (e) {
     document.getElementById('loadingState').innerHTML =
-      `<span style="color:var(--danger)">Failed to load SQLite engine: ${e.message}.<br>Check your internet connection and try refreshing.</span>`;
+      `<span style="color:var(--danger)">Failed to load SQLite engine: ${esc(e.message)}.<br>Check your internet connection and refresh.</span>`;
   }
 }
 
 function resetDb() {
   if (!window._SQL) return;
   db = createDb(window._SQL);
-  showMsg('Database reset to original state.', 'success');
+  importedTables = [];
+  buildUserSchema();
+  showMsg('Database reset — sample data restored, imported tables removed.', 'success');
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Query execution
+═══════════════════════════════════════════════════════════ */
 function runQuery() {
   if (!db) return;
   const sql = document.getElementById('sqlEditor').value.trim();
@@ -330,10 +555,8 @@ function runQuery() {
   btn.disabled = true;
   const t0 = performance.now();
   try {
-    // Split by ; but keep statements
     const stmts = sql.split(/;\s*/).map(s => s.trim()).filter(Boolean);
     let lastResult = null;
-    let rowsAffected = 0;
     for (const stmt of stmts) {
       const res = db.exec(stmt);
       if (res.length) lastResult = res[res.length - 1];
@@ -342,53 +565,59 @@ function runQuery() {
     if (lastResult) {
       renderTable(lastResult.columns, lastResult.values, elapsed);
     } else {
-      // DML
       const changes = db.getRowsModified();
-      showMsg(`Query OK — ${changes} row(s) affected. (${elapsed} ms)`, 'success');
+      showMsg('Query OK — ' + changes + ' row' + (changes !== 1 ? 's' : '') + ' affected. (' + elapsed + ' ms)', 'success');
     }
-  } catch(e) {
+  } catch (e) {
     showMsg(e.message, 'error');
   } finally {
     btn.disabled = false;
   }
 }
 
+function loadExample(key) {
+  if (!key) return;
+  document.getElementById('sqlEditor').value = EXAMPLES[key] || '';
+  document.getElementById('exampleSelect').value = '';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Results rendering
+═══════════════════════════════════════════════════════════ */
 function renderTable(cols, rows, elapsed) {
   const area = document.getElementById('resultsArea');
   if (!rows.length) {
-    area.innerHTML = `<div class="msg-box">(${cols.length} column${cols.length!==1?'s':''}, 0 rows — ${elapsed} ms)</div>`;
+    area.innerHTML = '<div class="msg-box">(' + cols.length + ' column' + (cols.length !== 1 ? 's' : '') + ', 0 rows — ' + elapsed + ' ms)</div>';
     return;
   }
-  const csvBtn = `<button class="btn" onclick="exportCsv()" style="font-size:var(--text-xs);padding:0.25rem 0.6rem;">
+  const csvBtn = `<button class="btn" onclick="exportCsv()" style="font-size:var(--text-xs);padding:0.25rem 0.6rem;display:inline-flex;align-items:center;gap:0.3rem;">
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    CSV
-  </button>`;
-  const meta = `<div class="results-meta"><span>${rows.length} row${rows.length!==1?'s':''} &nbsp;|&nbsp; ${cols.length} column${cols.length!==1?'s':''} &nbsp;|&nbsp; ${elapsed} ms</span>${csvBtn}</div>`;
-  const thead = `<thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>`;
+    Export CSV</button>`;
+  const meta  = '<div class="results-meta"><span>' + rows.length + ' row' + (rows.length !== 1 ? 's' : '') + ' &nbsp;|&nbsp; ' + cols.length + ' column' + (cols.length !== 1 ? 's' : '') + ' &nbsp;|&nbsp; ' + elapsed + ' ms</span>' + csvBtn + '</div>';
+  const thead = '<thead><tr>' + cols.map(c => '<th>' + esc(c) + '</th>').join('') + '</tr></thead>';
   const tbody = '<tbody>' + rows.map(row =>
     '<tr>' + row.map(cell =>
-      cell === null ? '<td class="null-val">NULL</td>' : `<td title="${esc(String(cell))}">${esc(String(cell))}</td>`
+      cell === null
+        ? '<td class="null-val">NULL</td>'
+        : '<td title="' + esc(String(cell)) + '">' + esc(String(cell)) + '</td>'
     ).join('') + '</tr>'
   ).join('') + '</tbody>';
-  area.innerHTML = `${meta}<div class="results-table-wrap"><table class="results-tbl">${thead}${tbody}</table></div>`;
-  // store for CSV export
+  area.innerHTML = meta + '<div class="results-table-wrap"><table class="results-tbl">' + thead + tbody + '</table></div>';
   window._lastCols = cols;
   window._lastRows = rows;
 }
 
 function showMsg(text, type) {
   document.getElementById('resultsArea').innerHTML =
-    `<div class="msg-box ${type}">${esc(text)}</div>`;
+    '<div class="msg-box ' + type + '">' + esc(text) + '</div>';
 }
 
 function exportCsv() {
   if (!window._lastCols) return;
-  const cols = window._lastCols;
-  const rows = window._lastRows;
-  const lines = [cols.map(csvCell).join(',')].concat(
-    rows.map(row => row.map(cell => csvCell(cell === null ? '' : String(cell))).join(','))
+  const lines = [window._lastCols.map(csvCell).join(',')].concat(
+    window._lastRows.map(row => row.map(cell => csvCell(cell === null ? '' : String(cell))).join(','))
   );
-  const blob = new Blob([lines.join('\r\n')], {type:'text/csv'});
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/csv' });
   const a    = document.createElement('a');
   a.href     = URL.createObjectURL(blob);
   a.download = 'query_results.csv';
@@ -397,6 +626,7 @@ function exportCsv() {
 }
 
 function csvCell(v) {
+  v = String(v);
   if (/[,"\n\r]/.test(v)) return '"' + v.replace(/"/g, '""') + '"';
   return v;
 }
@@ -406,18 +636,351 @@ function clearEditor() {
   document.getElementById('resultsArea').innerHTML = '';
 }
 
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* ═══════════════════════════════════════════════════════════
+   CSV Import — identifier helpers
+═══════════════════════════════════════════════════════════ */
+function sanitizeId(str) {
+  let s = String(str || 'col')
+    .trim()
+    .replace(/[^a-zA-Z0-9_]/g, '_')
+    .replace(/^(\d)/, '_$1')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  return s || 'col';
 }
 
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runQuery(); }
+function quoteId(name) {
+  return '`' + String(name).replace(/`/g, '``') + '`';
+}
+
+function dedupeColNames(names) {
+  const seen = {};
+  return names.map(n => {
+    if (!seen[n]) { seen[n] = 1; return n; }
+    return n + '_' + (++seen[n]);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CSV Import — type inference
+═══════════════════════════════════════════════════════════ */
+function inferType(values) {
+  const nonEmpty = values.filter(v => v !== null && v !== undefined && String(v).trim() !== '');
+  if (!nonEmpty.length) return 'TEXT';
+  if (nonEmpty.every(v => /^-?\d+$/.test(String(v).trim()))) return 'INTEGER';
+  if (nonEmpty.every(v => /^-?\d*\.?\d+([eE][+-]?\d+)?$/.test(String(v).trim()))) return 'REAL';
+  return 'TEXT';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CSV Import — drag and drop
+═══════════════════════════════════════════════════════════ */
+let dragDepth = 0;
+
+window.addEventListener('dragenter', e => {
+  if (e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files')) {
+    dragDepth++;
+    document.getElementById('dropOverlay').classList.add('active');
+  }
+});
+window.addEventListener('dragleave', () => {
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) document.getElementById('dropOverlay').classList.remove('active');
+});
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  dragDepth = 0;
+  document.getElementById('dropOverlay').classList.remove('active');
+  const file = e.dataTransfer && e.dataTransfer.files[0];
+  if (file) handleFileSelect(file);
 });
 
+function triggerFilePicker() {
+  document.getElementById('csvFileInput').click();
+}
+function handleFileInputChange(e) {
+  const file = e.target.files[0];
+  if (file) handleFileSelect(file);
+  e.target.value = '';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CSV Import — file reading and parse
+═══════════════════════════════════════════════════════════ */
+async function handleFileSelect(file) {
+  if (!db) { showMsg('Database not ready yet. Please wait.', 'error'); return; }
+
+  const name = file.name.toLowerCase();
+  if (!name.endsWith('.csv') && !file.type.includes('csv') && !file.type.startsWith('text/')) {
+    showMsg('Please select a .csv file.', 'error');
+    return;
+  }
+
+  // Lazy-load Papa Parse
+  if (!window.Papa) {
+    try {
+      await loadScript(PAPA_PARSE_CDN);
+    } catch (_) {
+      showMsg('Failed to load CSV parser. Check your internet connection and try again.', 'error');
+      return;
+    }
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    if (!text || !text.trim()) {
+      showMsg('The file appears to be empty.', 'error');
+      return;
+    }
+
+    const result = Papa.parse(text, {
+      header:         true,
+      skipEmptyLines: true,
+      dynamicTyping:  false,
+    });
+
+    if (result.errors && result.errors.length && !result.data.length) {
+      showMsg('Could not parse the file: ' + result.errors[0].message, 'error');
+      return;
+    }
+
+    if (!result.data || !result.data.length) {
+      showMsg('No data rows found. Make sure the file has a header row and at least one data row.', 'error');
+      return;
+    }
+
+    if (!result.meta || !result.meta.fields || !result.meta.fields.length) {
+      showMsg('No column headers detected. The first row should be column names.', 'error');
+      return;
+    }
+
+    showPreview(result, file.name);
+  };
+  reader.onerror = () => showMsg('Failed to read the file.', 'error');
+  reader.readAsText(file, 'UTF-8');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CSV Import — preview modal
+═══════════════════════════════════════════════════════════ */
+function showPreview(parsed, filename) {
+  const fields   = parsed.meta.fields;
+  const rows     = parsed.data;
+  const rowCount = rows.length;
+
+  // Default table name
+  const defaultName = sanitizeId(filename.replace(/\.csv$/i, ''));
+
+  // Sanitize and deduplicate column names
+  const rawSafe  = fields.map(sanitizeId);
+  const safeCols = dedupeColNames(rawSafe);
+
+  // Infer types from up to first 300 rows
+  const sample = rows.slice(0, 300);
+  const types  = fields.map((f, i) => inferType(sample.map(r => r[f])));
+
+  // Sample values per column (first 3 non-empty values)
+  const sampleVals = fields.map(f =>
+    rows.map(r => r[f])
+      .filter(v => v !== null && v !== undefined && String(v).trim() !== '')
+      .slice(0, 3)
+  );
+
+  pendingImport = { fields, safeCols, rows, rowCount, defaultName };
+
+  // Row count / size warnings
+  const TOO_LARGE = rowCount > 200000;
+  const LARGE     = rowCount > 50000;
+
+  let warningHtml = '';
+  if (TOO_LARGE) {
+    warningHtml = `<div class="import-warning warn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>${rowCount.toLocaleString()} rows is very large and may slow your browser or cause a crash. Import is disabled above 200,000 rows.</span>
+    </div>`;
+  } else if (LARGE) {
+    warningHtml = `<div class="import-warning warn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Importing ${rowCount.toLocaleString()} rows may take a few seconds.</span>
+    </div>`;
+  }
+
+  // Build column rows
+  const colRows = fields.map((f, i) => {
+    const sameAsRaw = safeCols[i] === f;
+    const samples   = sampleVals[i].map(v => esc(String(v))).join(', ') || '<em style="opacity:.5">—</em>';
+    return `<tr>
+      <td class="col-orig">${esc(f)}</td>
+      <td class="col-safe">${sameAsRaw ? '<span class="same-name">(same)</span>' : esc(safeCols[i])}</td>
+      <td>
+        <select class="col-type-select" data-idx="${i}" style="font-size:var(--text-xs);padding:0.2rem 0.35rem;">
+          <option value="TEXT"    ${types[i] === 'TEXT'    ? 'selected' : ''}>TEXT</option>
+          <option value="INTEGER" ${types[i] === 'INTEGER' ? 'selected' : ''}>INTEGER</option>
+          <option value="REAL"    ${types[i] === 'REAL'    ? 'selected' : ''}>REAL</option>
+        </select>
+      </td>
+      <td class="col-sample">${samples}</td>
+    </tr>`;
+  }).join('');
+
+  // Populate modal
+  document.getElementById('modalTableName').value = defaultName;
+  document.getElementById('modalTableName').style.borderColor = '';
+  document.getElementById('modalNameError').textContent = '';
+  document.getElementById('modalNameError').classList.remove('show');
+  document.getElementById('modalColCount').textContent = fields.length + ' column' + (fields.length !== 1 ? 's' : '');
+  document.getElementById('modalRowCount').textContent = rowCount.toLocaleString() + ' row' + (rowCount !== 1 ? 's' : '');
+  document.getElementById('modalColBody').innerHTML = colRows;
+  document.getElementById('modalWarning').innerHTML = warningHtml;
+
+  const importBtn = document.getElementById('modalImportBtn');
+  importBtn.textContent = 'Import ' + rowCount.toLocaleString() + ' rows';
+  importBtn.disabled    = TOO_LARGE;
+
+  document.getElementById('importModal').classList.add('open');
+  document.getElementById('modalTableName').focus();
+  document.getElementById('modalTableName').select();
+}
+
+function closeModal() {
+  document.getElementById('importModal').classList.remove('open');
+  pendingImport = null;
+}
+
+function clearNameError() {
+  document.getElementById('modalTableName').style.borderColor = '';
+  document.getElementById('modalNameError').textContent = '';
+  document.getElementById('modalNameError').classList.remove('show');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CSV Import — execute import
+═══════════════════════════════════════════════════════════ */
+function confirmImport() {
+  if (!pendingImport || !db) return;
+
+  const { fields, safeCols, rows, rowCount } = pendingImport;
+
+  // Resolve table name
+  const rawName   = document.getElementById('modalTableName').value.trim();
+  const tableName = sanitizeId(rawName) || 'imported_table';
+
+  // Check for collision with sample DB + already-imported tables
+  const reservedNames = ['departments','employees','products','orders','order_items'];
+  const usedNames     = [...reservedNames, ...importedTables.map(t => t.name)];
+  if (usedNames.includes(tableName)) {
+    document.getElementById('modalTableName').style.borderColor = 'var(--danger)';
+    const err = document.getElementById('modalNameError');
+    err.textContent = 'A table named "' + tableName + '" already exists. Choose a different name.';
+    err.classList.add('show');
+    document.getElementById('modalTableName').focus();
+    return;
+  }
+
+  // Collect type overrides from dropdowns
+  const typeSelects = document.querySelectorAll('.col-type-select');
+  const types       = Array.from(typeSelects).map(s => s.value);
+
+  // Disable import button to prevent double-click
+  const importBtn = document.getElementById('modalImportBtn');
+  importBtn.disabled    = true;
+  importBtn.textContent = 'Importing...';
+
+  // Use setTimeout to let the UI update before the blocking insert loop
+  setTimeout(() => {
+    try {
+      // CREATE TABLE
+      const colDefs   = safeCols.map((c, i) => quoteId(c) + ' ' + types[i]).join(', ');
+      const createSql = 'CREATE TABLE ' + quoteId(tableName) + ' (' + colDefs + ');';
+      db.run(createSql);
+
+      // Batch INSERT inside a single transaction — critical for performance
+      const placeholders = safeCols.map(() => '?').join(', ');
+      const insertSql    = 'INSERT INTO ' + quoteId(tableName) + ' VALUES (' + placeholders + ');';
+      db.run('BEGIN TRANSACTION');
+      const stmt = db.prepare(insertSql);
+      let skipped = 0;
+      for (const row of rows) {
+        const vals = fields.map((f, i) => {
+          const v = row[f];
+          if (v === null || v === undefined || v === '') return null;
+          if (types[i] === 'INTEGER') { const n = parseInt(v, 10);  return isNaN(n) ? null : n; }
+          if (types[i] === 'REAL')    { const n = parseFloat(v);    return isNaN(n) ? null : n; }
+          return String(v);
+        });
+        try { stmt.run(vals); } catch (_) { skipped++; }
+      }
+      stmt.free();
+      db.run('COMMIT');
+
+      // Track imported table
+      importedTables.push({
+        name:     tableName,
+        cols:     safeCols.map((c, i) => ({ raw: fields[i], safe: c, type: types[i] })),
+        rowCount: rowCount - skipped,
+      });
+
+      closeModal();
+      buildUserSchema();
+
+      // Auto-query: show first 100 rows
+      const query = 'SELECT * FROM ' + quoteId(tableName) + ' LIMIT 100;';
+      document.getElementById('sqlEditor').value = query;
+      runQuery();
+
+      // Friendly status if rows were skipped
+      if (skipped > 0) {
+        const area = document.getElementById('resultsArea');
+        area.innerHTML = '<div class="import-warning info" style="margin-bottom:0.65rem;">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+          '<span>' + skipped + ' row' + (skipped !== 1 ? 's were' : ' was') + ' skipped due to formatting issues. ' + (rowCount - skipped).toLocaleString() + ' rows imported.</span>' +
+          '</div>' + area.innerHTML;
+      }
+
+    } catch (e) {
+      try { db.run('ROLLBACK'); } catch (_) {}
+      // Try to drop a partially-created table
+      try { db.run('DROP TABLE IF EXISTS ' + quoteId(tableName) + ';'); } catch (_) {}
+      importBtn.disabled    = false;
+      importBtn.textContent = 'Import ' + rowCount.toLocaleString() + ' rows';
+      document.getElementById('modalWarning').innerHTML =
+        '<div class="import-warning error-box">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>' +
+        '<span>Import failed: ' + esc(e.message) + '</span></div>';
+    }
+  }, 20);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Utilities
+═══════════════════════════════════════════════════════════ */
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Keyboard shortcuts
+═══════════════════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runQuery(); }
+  if (e.key === 'Escape') { closeModal(); }
+});
+
+// Close modal on overlay click (outside card)
+document.getElementById('importModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('importModal')) closeModal();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   Boot
+═══════════════════════════════════════════════════════════ */
 init();
 </script>
-<style>
-@keyframes spin { to { transform: rotate(360deg); } }
-</style>
 </body>
 </html>
