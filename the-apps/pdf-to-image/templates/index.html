@@ -74,13 +74,6 @@
     .panel.active { display: block; }
 
     /* Card */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.75rem;
-      margin-bottom: 1.25rem;
-    }
     .card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
     /* Drop zone */
@@ -168,18 +161,6 @@
     select:focus { border-color: var(--primary); }
 
     /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.65rem 1.4rem;
-      border-radius: 0.5rem;
-      border: none;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
-    }
     
     
     .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
@@ -305,8 +286,7 @@
   @media (max-width: 600px) {
     body { overflow-x: hidden; }
     input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
-    .action-row .btn { width: 100%; }
-    .pages-grid { grid-template-columns: 1fr 1fr !important; }
+    .action-row    .pages-grid { grid-template-columns: 1fr 1fr !important; }
 }
   </style>
 </head>

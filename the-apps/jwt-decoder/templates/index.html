@@ -15,7 +15,7 @@ body{ display:flex; align-items:center; justify-content:center; padding:2rem; }
 .icon{font-size:1.4rem;font-weight:800;margin-bottom:1rem;color:#be185d;letter-spacing:.04em}
 h1{font-size:1.3rem;font-weight:800;margin-bottom:.5rem}
 p{color:#64748b;font-size:.9rem;line-height:1.6;margin-bottom:1.5rem}
-.btn{display:inline-block;padding:.7rem 1.75rem;background:#be185d;color:#fff;border-radius:.5rem;font-weight:700;font-size:.9rem;text-decoration:none}
+.btn { background: #be185d; color: #fff; }
 .note{margin-top:1rem;font-size:.78rem;color:#94a3b8}
 .bar{height:3px;background:#e2e8f0;border-radius:2px;overflow:hidden;margin-bottom:1.5rem}
 .bar-fill{height:100%;width:0%;background:#be185d;border-radius:2px;animation:fill 3s linear forwards}
@@ -24,10 +24,8 @@ p{color:#64748b;font-size:.9rem;line-height:1.6;margin-bottom:1.5rem}
 @media (max-width: 600px) {
   body { overflow-x: hidden; }
   .container, .container--wide, .container--narrow { padding: var(--space-4) var(--space-3) var(--space-10) !important; }
-  .card { padding: 1rem; }
   input, select, textarea { width: 100% !important; min-width: 0 !important; }
   input[type=color] { width: 48px !important; }
-  .btn { width: 100%; justify-content: center; }
   table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .stats-row, .form-grid { grid-template-columns: 1fr !important; }
   h1 { font-size: 1.5rem !important; }

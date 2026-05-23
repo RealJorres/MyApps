@@ -44,14 +44,7 @@
   header p { opacity: 0.85; margin-top: 0.4rem; font-size: 1rem; }
   main { max-width: 860px; margin: 2.5rem auto; padding: 0 1.5rem; }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
+  .card { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
 
   .drop-zone {
     border: 2.5px dashed var(--primary);
@@ -122,18 +115,7 @@
     text-align: center;
   }
 
-  .btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-h));
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.7rem 1.8rem;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    white-space: nowrap;
-  }
+  .btn { background: linear-gradient(135deg, var(--primary), var(--primary-h)); color: #fff; }
   .btn:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }

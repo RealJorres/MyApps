@@ -27,12 +27,10 @@ body{ padding:2rem 1rem 4rem; }
 header{text-align:center;margin-bottom:2rem}
 header h1{font-size:2rem;font-weight:800}
 header p{color:var(--muted);margin-top:.4rem}
-.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem}
 textarea,select,input{width:100%;padding:.6rem .75rem;border:1px solid var(--border);border-radius:.5rem;font-size:.9rem;background:#fff;color:var(--text);outline:none;font-family:inherit}
 textarea:focus,select:focus,input:focus{border-color:var(--primary)}
 .row{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end}
 .row .field{flex:1;min-width:140px}
-.btn{padding:.6rem 1.25rem;border:none;border-radius:.5rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .15s}
 
 .btn-primary:hover{opacity:.87}
 .btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
@@ -48,10 +46,8 @@ canvas{display:block;width:100%;height:auto;border-radius:.5rem}
 @media (max-width: 600px) {
   body { overflow-x: hidden; }
   .container, .container--wide, .container--narrow { padding: var(--space-4) var(--space-3) var(--space-10) !important; }
-  .card { padding: 1rem; }
   input, select, textarea { width: 100% !important; min-width: 0 !important; }
   input[type=color] { width: 48px !important; }
-  .btn { width: 100%; justify-content: center; }
   table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .stats-row, .form-grid { grid-template-columns: 1fr !important; }
   h1 { font-size: 1.5rem !important; }

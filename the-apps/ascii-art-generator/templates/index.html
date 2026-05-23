@@ -46,13 +46,6 @@
   }
   header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
   .container { max-width: 900px; margin: 0 auto; }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 20px;
-  }
   .row {
     display: flex;
     flex-wrap: wrap;
@@ -127,17 +120,7 @@
     gap: 10px;
     margin-top: 16px;
   }
-  .btn {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
+  .btn { background: var(--primary); color: #fff; }
   .btn:hover { background: var(--primary-dark); }
   .btn:active { transform: scale(0.97); }
   .btn-outline {
@@ -174,7 +157,6 @@
   .font-name { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
   .font-sample { font-family: monospace; font-size: 0.38rem; line-height: 1.2; color: #a78bfa; white-space: pre; overflow: hidden; max-height: 48px; }
   @media (max-width: 480px) {
-    .card { padding: 16px; }
     .output-area pre { font-size: 0.42rem; }
     .font-grid { grid-template-columns: repeat(2, 1fr); }
   }
