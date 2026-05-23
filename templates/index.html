@@ -226,7 +226,7 @@
       }
       .search-wrap input {
         width: 100%;
-        padding: 0.85rem 1.25rem 0.85rem 2.8rem;
+        padding: 0.85rem 4.5rem 0.85rem 2.8rem;
         background: #fff;
         border: 1.5px solid var(--border);
         border-radius: 40px;
@@ -245,6 +245,29 @@
       .search-wrap input:focus {
         border-color: var(--accent);
         box-shadow: 0 0 0 3px rgba(47,87,255, 0.12);
+      }
+      /* Ctrl+K hint badge inside search bar */
+      .search-kbd {
+        position: absolute;
+        right: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.65rem;
+        font-family: inherit;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.15rem 0.45rem;
+        color: var(--muted);
+        pointer-events: none;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        line-height: 1.6;
+      }
+      /* Hide the hint on touch-only devices and narrow screens */
+      @media (hover: none), (max-width: 480px) {
+        .search-kbd { display: none; }
+        .search-wrap input { padding-right: 1.25rem; }
       }
 
       /* Stats pills */
@@ -1036,6 +1059,7 @@
           oninput="applyFilters()"
           autocomplete="off"
         />
+        <kbd class="search-kbd">Ctrl K</kbd>
       </div>
       <div class="hero-stats" id="heroStats">
         <span class="stat-pill"><strong id="statApps">—</strong> apps</span>
@@ -1400,6 +1424,24 @@
         renderNewThisMonth();
         renderRecentlyUsed();
         buildSearchIndex();
+        // ── Restore filter state from URL (deep-link support) ──
+        const _p = new URLSearchParams(window.location.search);
+        const _q   = _p.get('q');
+        const _cat = _p.get('category');
+        const _sub = _p.get('subcategory');
+        const _tag = _p.get('tag');
+        if (_q) {
+          document.getElementById('searchInput').value = _q;
+        } else if (_tag) {
+          activeTag = _tag;
+        } else if (_cat && CATEGORY_ORDER.includes(_cat)) {
+          activeCat = _cat;
+          if (_sub && SUBCATEGORIES[_cat] && SUBCATEGORIES[_cat].some(s => s.label === _sub)) {
+            activeSubcat = _sub;
+          }
+          renderCategoryNav();
+          renderSubcatNav();
+        }
         applyFilters();
         renderFavorites();
       }
@@ -1442,6 +1484,25 @@
       function clearTag() {
         activeTag = null;
         applyFilters();
+      }
+
+      // ── URL deep-link state ─────────────────────────────────────────
+      // Mirrors the current filter state into the address bar so
+      // /?q=chess, /?category=Games, /?tag=finance, /?subcategory=Arcade
+      // all restore correctly on page load / share / browser back.
+      function updateURL() {
+        const q = document.getElementById('searchInput').value.trim();
+        const params = new URLSearchParams();
+        if (q) {
+          params.set('q', q);
+        } else if (activeTag) {
+          params.set('tag', activeTag);
+        } else if (activeCat !== 'All') {
+          params.set('category', activeCat);
+          if (activeSubcat !== 'All') params.set('subcategory', activeSubcat);
+        }
+        const qs = params.toString();
+        history.replaceState(null, '', qs ? '/?' + qs : '/');
       }
 
       function filterBySubcat(label) {
@@ -1518,7 +1579,8 @@
         if (!el) return;
         const apps = NEW_THIS_MONTH_IDS
           .map(id => allApps.find(a => a.id === id))
-          .filter(Boolean);
+          .filter(Boolean)
+          .slice(0, 6);
         if (!apps.length) { el.style.display = "none"; return; }
         el.style.display = "";
         el.innerHTML = `<div class="shelf-title">New This Month</div>
@@ -1589,6 +1651,7 @@
           }
           renderGrid(visible);
         }
+        updateURL();
       }
 
       // ── Search results — flat list in Fuse.js relevance order ──────────────
@@ -1779,6 +1842,13 @@
           closeDonate();
           closeModal('tncModal');
           closeModal('bugModal');
+        }
+        // Ctrl+K (or Cmd+K on Mac) — focus the search bar from anywhere
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          const inp = document.getElementById('searchInput');
+          inp.focus();
+          inp.select();
         }
       });
 
