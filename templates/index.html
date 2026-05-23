@@ -221,7 +221,8 @@
         top: 50%;
         transform: translateY(-50%);
         color: var(--muted);
-        font-size: 1rem;
+        display: flex;
+        align-items: center;
         pointer-events: none;
       }
       .search-wrap input {
@@ -359,6 +360,22 @@
           transparent 55%,
           rgba(0, 0, 0, 0.45)
         );
+      }
+      .game-badge {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        z-index: 1;
+        background: rgba(0,0,0,0.52);
+        color: #fff;
+        font-size: 0.58rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 99px;
+        border: 1px solid rgba(255,255,255,0.18);
+        pointer-events: none;
       }
       .card-body {
         padding: 0.9rem;
@@ -1024,7 +1041,7 @@
         </div>
       </a>
       <div class="header-right">
-        <button class="btn-donate" onclick="openDonate()">☕ Support</button>
+        <button class="btn-donate" onclick="openDonate()"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 21.593c-.52-.327-9-5.63-9-11.593a6 6 0 0 1 9-5.196A6 6 0 0 1 21 10c0 5.963-8.48 11.266-9 11.593z"/></svg> Support</button>
       </div>
     </header>
 
@@ -1051,7 +1068,7 @@
         <span class="privacy-pill">Runs in your browser</span>
       </div>
       <div class="search-wrap">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
         <input
           id="searchInput"
           type="text"
@@ -1077,9 +1094,9 @@
     >
       <div class="donate-modal">
         <div class="donate-header">
-          <div class="icon">☕</div>
+          <div class="icon" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.593c-.52-.327-9-5.63-9-11.593a6 6 0 0 1 9-5.196A6 6 0 0 1 21 10c0 5.963-8.48 11.266-9 11.593z"/></svg></div>
           <h2>Support this project</h2>
-          <p>If this saved you time, a coffee would mean a lot!</p>
+          <p>If this saved you time, your support means a lot!</p>
         </div>
         <div class="donate-body">
           <div class="qr-wrap">
@@ -1090,11 +1107,11 @@
             />
           </div>
           <p class="donate-bank-info">
-            🏦 Land Bank of the Philippines<br />Joshua M. Relatorres
+            Land Bank of the Philippines<br />Joshua M. Relatorres
           </p>
           <p class="donate-note">
             Scan the QR code with your banking app to send any amount. Every
-            contribution is deeply appreciated. 💜
+            contribution is deeply appreciated.
           </p>
           <button class="donate-close" onclick="closeDonate()">
             Maybe next time
@@ -1114,6 +1131,9 @@
 
     <!-- New This Month shelf -->
     <div class="shelf-section" id="newSection"></div>
+
+    <!-- Editor's Picks shelf -->
+    <div class="shelf-section" id="picksSection"></div>
 
     <!-- Recently Used shelf -->
     <div class="shelf-section" id="recentSection" style="display:none"></div>
@@ -1150,11 +1170,11 @@
     <div class="modal-backdrop" id="tncModal" onclick="closeModalOutside(event,'tncModal')">
       <div class="modal-box">
         <div class="modal-header">
-          <h2>📄 Terms &amp; Conditions</h2>
+          <h2>Terms &amp; Conditions</h2>
           <button class="modal-close" onclick="closeModal('tncModal')">✕</button>
         </div>
         <div class="modal-body">
-          <p class="tnc-updated">Last updated: May 2025</p>
+          <p class="tnc-updated">Last updated: May 2026</p>
 
           <div class="tnc-section">
             <h3>1. Use of Service</h3>
@@ -1422,6 +1442,7 @@
         renderSubcatNav();
         renderQuickTools();
         renderNewThisMonth();
+        renderPicks();
         renderRecentlyUsed();
         buildSearchIndex();
         // ── Restore filter state from URL (deep-link support) ──
@@ -1584,6 +1605,29 @@
         if (!apps.length) { el.style.display = "none"; return; }
         el.style.display = "";
         el.innerHTML = `<div class="shelf-title">New This Month</div>
+          <div class="shelf-row">${apps.map(a =>
+            `<a class="shelf-chip" href="${a.url}" onclick="trackClick('${a.id}')">
+              <span class="chip-dot" style="background:${a.color}"></span>${esc(a.name)}
+            </a>`).join("")}</div>`;
+      }
+
+      // ── Editor's Picks shelf ───────────────────────────
+      // Manually curated — one standout from each major category
+      const PICKS_IDS = [
+        "markdown-editor",     // Documents & Writing
+        "json-formatter",      // Developer Tools
+        "color-picker",        // Design & Visuals
+        "pomodoro-timer",      // Productivity & Planning
+        "password-generator",  // Security & Network
+        "tip-calculator",      // Finance & Business
+      ];
+      function renderPicks() {
+        const el = document.getElementById("picksSection");
+        if (!el) return;
+        const apps = PICKS_IDS.map(id => allApps.find(a => a.id === id)).filter(Boolean);
+        if (!apps.length) { el.style.display = "none"; return; }
+        el.style.display = "";
+        el.innerHTML = `<div class="shelf-title">Editor&#8217;s Picks</div>
           <div class="shelf-row">${apps.map(a =>
             `<a class="shelf-chip" href="${a.url}" onclick="trackClick('${a.id}')">
               <span class="chip-dot" style="background:${a.color}"></span>${esc(a.name)}
@@ -1801,9 +1845,10 @@
         const likeCount = ratings[a.id] || 0;
         const pinSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="${pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>`;
         const thumbSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="${likeCount > 0 ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>`;
+        const gameBadge = a.category === 'Games' ? '<span class="game-badge" aria-label="Game">Game</span>' : '';
         return `
       <div class="card" id="card-${esc(a.id)}">
-        <div class="card-cover" style="background:${grad}">${a.icon}</div>
+        <div class="card-cover" style="background:${grad}">${a.icon}${gameBadge}</div>
         <div class="card-body">
           <div class="card-name" title="${esc(a.name)}">${esc(a.name)}</div>
           <div class="card-desc">${esc(a.description)}</div>
