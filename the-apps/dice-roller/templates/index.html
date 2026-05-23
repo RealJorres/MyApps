@@ -2,219 +2,469 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/static/base.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/dice-roller/">
-<meta name="description" content="Roll any number of dice with any number of sides. Perfect for tabletop RPGs, board games, and more.">
-<meta name="keywords" content="dice roller, random dice, D&D dice, tabletop games, RPG dice">
+<meta name="description" content="Roll any dice — type an expression like 2d6+3 or click a die. Perfect for tabletop RPGs and board games.">
+<meta name="keywords" content="dice roller, random dice, D&D dice, tabletop games, RPG dice, dice expression">
 <meta name="author" content="Jorres Apps">
 <meta property="og:title" content="Dice Roller">
-<meta property="og:description" content="Roll any number of dice with any number of sides. Perfect for tabletop RPGs, board games, and more.">
+<meta property="og:description" content="Roll any dice — type an expression like 2d6+3 or click a die. Perfect for tabletop RPGs and board games.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dice Roller">
-<meta name="twitter:description" content="Roll any number of dice with any number of sides. Perfect for tabletop RPGs, board games, and more.">
+<meta name="twitter:description" content="Roll any dice — type an expression like 2d6+3 or click a die.">
 <title>Dice Roller | Jorres Apps</title>
 <style>
-  
-  header { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 1.25rem 2rem; }
-  header h1 { font-size: 1.4rem; font-weight: 700; }
-  header p { font-size: 0.85rem; opacity: 0.85; }
-  .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.25rem; }
-  .dice-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
-  .die-btn { width: 90px; height: 90px; border: none; border-radius: 14px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem; transition: all 0.18s; font-family: inherit; }
-  .die-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 18px rgba(220,38,38,0.2); }
-  .die-btn:active { transform: scale(0.97); }
-  .die-btn .die-emoji { font-size: 2rem; }
-  .die-btn .die-label { font-size: 0.8rem; font-weight: 700; color: #dc2626; }
-  .die-btn.rolling { animation: shake 0.4s ease; }
-  @keyframes shake {
-    0%,100%{transform:translateY(0) rotate(0)}
-    15%{transform:translateY(-6px) rotate(-10deg)}
-    30%{transform:translateY(-4px) rotate(8deg)}
-    45%{transform:translateY(-8px) rotate(-6deg)}
-    60%{transform:translateY(-2px) rotate(5deg)}
-    75%{transform:translateY(-5px) rotate(-3deg)}
-  }
-  .controls { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-  .ctrl-group { display: flex; align-items: center; gap: 0.5rem; }
-  .ctrl-group label { font-size: 0.82rem; font-weight: 600; color: #374151; }
-  .ctrl-group input { width: 70px; padding: 0.45rem 0.5rem; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.9rem; text-align: center; }
-  .ctrl-group input:focus { outline: none; border-color: #dc2626; }
-  .ctrl-group.custom input { width: 55px; }
-  .roll-btn { background: #dc2626; color: white; border: none; border-radius: 9px; padding: 0.65rem 1.75rem; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.18s; }
-  .roll-btn:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
-  .roll-btn:active { transform: translateY(0); }
-  .result-area { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); margin-bottom: 1.5rem; text-align: center; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; }
-  .result-dice { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
-  .result-die { width: 60px; height: 60px; background: #dc2626; color: white; border-radius: 10px; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(220,38,38,0.3); animation: popIn 0.25s ease; }
-  @keyframes popIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-  .result-total { font-size: 2.5rem; font-weight: 900; color: #dc2626; }
-  .result-formula { font-size: 0.88rem; color: #6b7280; }
-  .result-placeholder { color: #9ca3af; font-size: 1rem; }
-  .history-section { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
-  .section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #dc2626; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; }
-  .clear-hist { background: none; border: none; font-size: 0.75rem; color: #9ca3af; cursor: pointer; }
-  .clear-hist:hover { color: #dc2626; }
-  .history-list { max-height: 260px; overflow-y: auto; }
-  .hist-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.45rem 0.5rem; border-radius: 6px; font-size: 0.85rem; }
-  .hist-row:nth-child(even) { background: #f8fafc; }
-  .hist-notation { font-weight: 600; color: #374151; flex: 1; }
-  .hist-result { font-weight: 800; color: #dc2626; }
-  .sound-toggle { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: #6b7280; cursor: pointer; margin-left: auto; }
-  .sound-toggle input { accent-color: #dc2626; cursor: pointer; }
-  .custom-label { font-size: 0.82rem; color: #6b7280; }
+:root { --primary: #dc2626; --primary-h: #b91c1c; }
+
+header { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 1.25rem 2rem; }
+header h1 { font-size: 1.4rem; font-weight: 700; }
+header p  { font-size: 0.85rem; opacity: 0.85; }
+
+.main { max-width: 680px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+
+/* ── Expression input ── */
+.expr-row {
+  display: flex; gap: .5rem; margin-bottom: 1.25rem;
+}
+.expr-input {
+  flex: 1; padding: .6rem .9rem;
+  border: 2px solid var(--border); border-radius: 10px;
+  font-size: 1.1rem; font-family: var(--font-mono);
+  background: #fff; color: var(--text);
+  outline: none; transition: border-color .15s;
+}
+.expr-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,.1); }
+.expr-input::placeholder { color: var(--text-subtle); font-size: .9rem; font-family: var(--font-sans); }
+.expr-roll-btn {
+  background: #dc2626; color: #fff; border: none;
+  border-radius: 10px; padding: .6rem 1.4rem;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: all .18s; white-space: nowrap; font-family: inherit;
+}
+.expr-roll-btn:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(220,38,38,.3); }
+.expr-roll-btn:active { transform: translateY(0); }
+.expr-hint { font-size: .72rem; color: var(--text-muted); margin-bottom: 1.25rem; margin-top: -.6rem; }
+.expr-hint code { background: var(--surface-2); padding: .1rem .3rem; border-radius: 3px; font-size: .72rem; }
+
+/* ── Quick dice grid ── */
+.section-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--text-muted); margin-bottom: .6rem;
+}
+.dice-grid {
+  display: flex; flex-wrap: wrap; gap: .6rem;
+  justify-content: flex-start; margin-bottom: 1rem;
+}
+.die-btn {
+  width: 76px; height: 76px; border: 2px solid var(--border);
+  border-radius: 12px; background: #fff;
+  box-shadow: var(--shadow-sm); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: .15rem;
+  transition: all .18s; font-family: inherit;
+}
+.die-btn:hover { border-color: #dc2626; transform: translateY(-3px); box-shadow: 0 6px 18px rgba(220,38,38,.2); }
+.die-btn:active { transform: scale(.97); }
+.die-btn .die-face {
+  width: 30px; height: 30px;
+}
+.die-btn .die-label { font-size: .78rem; font-weight: 700; color: #dc2626; }
+.die-btn.rolling { animation: shake .4s ease; }
+@keyframes shake {
+  0%,100%{transform:translateY(0) rotate(0)}
+  15%{transform:translateY(-6px) rotate(-10deg)}
+  30%{transform:translateY(-4px) rotate(8deg)}
+  45%{transform:translateY(-8px) rotate(-6deg)}
+  60%{transform:translateY(-2px) rotate(5deg)}
+  75%{transform:translateY(-5px) rotate(-3deg)}
+}
+
+/* ── Count chips ── */
+.count-row { display: flex; align-items: center; gap: .5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.count-label { font-size: .78rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.count-chip {
+  padding: .3rem .75rem; border-radius: 2rem;
+  border: 1.5px solid var(--border); background: #fff;
+  font-size: .8rem; font-weight: 700; cursor: pointer;
+  transition: all .15s; color: var(--text); font-family: inherit;
+}
+.count-chip:hover { border-color: #dc2626; color: #dc2626; }
+.count-chip.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+.modifier-row { display: flex; align-items: center; gap: .5rem; margin-bottom: 1.25rem; }
+.modifier-row label { font-size: .78rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.modifier-row input { width: 80px; padding: .4rem .5rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: .9rem; text-align: center; }
+.modifier-row input:focus { outline: none; border-color: #dc2626; }
+.sound-toggle { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: var(--text-muted); cursor: pointer; margin-left: auto; }
+.sound-toggle input { accent-color: #dc2626; cursor: pointer; }
+
+/* ── Result ── */
+.result-area {
+  background: #fff; border: 1px solid var(--border); border-radius: 14px;
+  padding: 1.5rem; margin-bottom: 1.25rem;
+  text-align: center; min-height: 130px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+}
+.result-dice { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; }
+.result-die {
+  min-width: 52px; height: 52px; padding: 0 .5rem;
+  background: #dc2626; color: white; border-radius: 9px;
+  font-size: 1.4rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(220,38,38,.3);
+  animation: popIn .22s ease;
+}
+@keyframes popIn { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
+.result-total  { font-size: 2.5rem; font-weight: 900; color: #dc2626; line-height: 1; }
+.result-formula{ font-size: .85rem; color: var(--text-muted); }
+.result-placeholder { color: var(--text-subtle); font-size: .95rem; }
+
+/* ── History ── */
+.history-section { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem; }
+.hist-head { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #dc2626; margin-bottom: .6rem; display: flex; align-items: center; justify-content: space-between; }
+.clear-hist { background: none; border: none; font-size: .72rem; color: var(--text-muted); cursor: pointer; font-family: inherit; }
+.clear-hist:hover { color: #dc2626; }
+.history-list { max-height: 240px; overflow-y: auto; }
+.hist-row { display: flex; align-items: center; gap: .6rem; padding: .4rem .3rem; border-radius: 5px; font-size: .82rem; cursor: pointer; }
+.hist-row:hover { background: var(--surface-2); }
+.hist-row:nth-child(even) { background: var(--bg); }
+.hist-row:nth-child(even):hover { background: var(--surface-2); }
+.hist-notation { font-weight: 700; color: var(--text); flex: 0 0 auto; min-width: 70px; }
+.hist-detail { color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hist-total  { font-weight: 800; color: #dc2626; flex: 0 0 auto; }
+
 @media (max-width: 600px) {
   body { overflow-x: hidden; }
-  input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
-  .main { width: 100% !important; max-width: 900px !important; margin: 0 auto !important; }
+  .dice-grid { justify-content: center; }
+  .die-btn { width: 68px; height: 68px; }
+  .expr-hint { display: none; }
 }
 </style>
 </head>
 <body>
 <header>
   <h1>Dice Roller</h1>
-  <p>Roll any dice — perfect for tabletop RPGs</p>
+  <p>Quick clicks or full expressions — perfect for tabletop RPGs</p>
 </header>
+
 <div class="main">
+
+  <!-- Expression input -->
+  <div class="expr-row">
+    <input type="text" class="expr-input" id="exprInput"
+           placeholder="e.g. 2d6+3 or 1d20+1d4-1"
+           aria-label="Dice expression">
+    <button class="expr-roll-btn" onclick="rollExpr()">Roll</button>
+  </div>
+  <div class="expr-hint">
+    Type any expression: <code>2d6</code> &nbsp; <code>3d8+5</code> &nbsp; <code>1d20+2d4-1</code> — then press Enter or Roll
+  </div>
+
+  <!-- Quick dice -->
+  <div class="section-label">Quick Roll</div>
   <div class="dice-grid">
-    <button class="die-btn" onclick="quickRoll(4)"><span class="die-label">d4</span></button>
-    <button class="die-btn" onclick="quickRoll(6)"><span class="die-label">d6</span></button>
-    <button class="die-btn" onclick="quickRoll(8)"><span class="die-label">d8</span></button>
-    <button class="die-btn" onclick="quickRoll(10)"><span class="die-label">d10</span></button>
-    <button class="die-btn" onclick="quickRoll(12)"><span class="die-label">d12</span></button>
-    <button class="die-btn" onclick="quickRoll(20)"><span class="die-label">d20</span></button>
-    <button class="die-btn" onclick="quickRoll(100)"><span class="die-emoji">⭕</span><span class="die-label">d100</span></button>
+    <button class="die-btn" onclick="quickRoll(4)"  title="Roll d4">
+      <svg class="die-face" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <polygon points="15,3 27,24 3,24" stroke="#dc2626" stroke-width="2" fill="none"/>
+        <circle cx="15" cy="19" r="1.8" fill="#dc2626"/>
+      </svg>
+      <span class="die-label">d4</span>
+    </button>
+    <button class="die-btn" onclick="quickRoll(6)"  title="Roll d6">
+      <svg class="die-face" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="4" y="4" width="22" height="22" rx="4" stroke="#dc2626" stroke-width="2"/>
+        <circle cx="10" cy="10" r="2" fill="#dc2626"/><circle cx="20" cy="10" r="2" fill="#dc2626"/>
+        <circle cx="15" cy="15" r="2" fill="#dc2626"/>
+        <circle cx="10" cy="20" r="2" fill="#dc2626"/><circle cx="20" cy="20" r="2" fill="#dc2626"/>
+      </svg>
+      <span class="die-label">d6</span>
+    </button>
+    <button class="die-btn" onclick="quickRoll(8)"  title="Roll d8">
+      <svg class="die-face" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <polygon points="15,2 28,12 28,20 15,28 2,20 2,12" stroke="#dc2626" stroke-width="2" fill="none"/>
+        <circle cx="15" cy="15" r="2" fill="#dc2626"/>
+      </svg>
+      <span class="die-label">d8</span>
+    </button>
+    <button class="die-btn" onclick="quickRoll(10)" title="Roll d10">
+      <svg class="die-face" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <polygon points="15,2 27,10 23,25 7,25 3,10" stroke="#dc2626" stroke-width="2" fill="none"/>
+        <circle cx="15" cy="15" r="2" fill="#dc2626"/>
+      </svg>
+      <span class="die-label">d10</span>
+    </button>
+    <button class="die-btn" onclick="quickRoll(12)" title="Roll d12">
+      <svg class="die-face" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <polygon points="15,2 24,6 28,15 24,24 15,28 6,24 2,15 6,6" stroke="#dc2626" stroke-width="2" fill="none"/>
+        <circle cx="15" cy="15" r="2" fill="#dc2626"/>
+      </svg>
+      <span class="die-label">d12</span>
+    </button>
+    <button class="die-btn" onclick="quickRoll(20)" title="Roll d20">
+      <svg class="die-face" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <polygon points="15,1 29,9 29,21 15,29 1,21 1,9" stroke="#dc2626" stroke-width="2" fill="none"/>
+        <text x="15" y="19" text-anchor="middle" fill="#dc2626" font-size="8" font-weight="700">20</text>
+      </svg>
+      <span class="die-label">d20</span>
+    </button>
+    <button class="die-btn" onclick="quickRoll(100)" title="Roll d100">
+      <svg class="die-face" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <circle cx="15" cy="15" r="12" stroke="#dc2626" stroke-width="2"/>
+        <text x="15" y="19" text-anchor="middle" fill="#dc2626" font-size="7" font-weight="700">100</text>
+      </svg>
+      <span class="die-label">d100</span>
+    </button>
   </div>
 
-  <div class="controls">
-    <div class="ctrl-group">
-      <label for="num-dice">Number of dice</label>
-      <input type="number" id="num-dice" value="2" min="1" max="10">
-    </div>
-    <div class="ctrl-group">
-      <label for="die-type">Die type (dX)</label>
-      <input type="number" id="die-type" value="6" min="2" max="1000">
-    </div>
-    <div class="ctrl-group">
-      <label for="modifier">Modifier</label>
-      <input type="number" id="modifier" value="0" min="-99" max="99">
-    </div>
-    <button class="roll-btn" onclick="rollDice()">Roll!</button>
-    <label class="sound-toggle"><input type="checkbox" id="sound-on" checked>Sound</label>
+  <!-- Count chips -->
+  <div class="count-row">
+    <span class="count-label">Dice count:</span>
+    <button class="count-chip active" onclick="setCount(1,this)">1</button>
+    <button class="count-chip" onclick="setCount(2,this)">2</button>
+    <button class="count-chip" onclick="setCount(3,this)">3</button>
+    <button class="count-chip" onclick="setCount(4,this)">4</button>
+    <button class="count-chip" onclick="setCount(5,this)">5</button>
+    <button class="count-chip" onclick="setCount(6,this)">6</button>
+    <button class="count-chip" onclick="setCount(8,this)">8</button>
+    <button class="count-chip" onclick="setCount(10,this)">10</button>
+  </div>
+  <div class="modifier-row">
+    <label for="modifier">Modifier</label>
+    <input type="number" id="modifier" value="0" min="-99" max="99">
+    <label class="sound-toggle">
+      <input type="checkbox" id="sound-on" checked> Sound
+    </label>
   </div>
 
+  <!-- Result -->
   <div class="result-area" id="result-area">
-    <div class="result-placeholder">Click a die or roll to see results</div>
+    <div class="result-placeholder">Click a die or type an expression to roll</div>
   </div>
 
+  <!-- History -->
   <div class="history-section">
-    <div class="section-title">
+    <div class="hist-head">
       Roll History
       <button class="clear-hist" onclick="clearHistory()">Clear</button>
     </div>
     <div class="history-list" id="history-list"></div>
   </div>
+
 </div>
 
 <script>
-let rollHistory = [];
-let lastDieType = 6;
+const HIST_KEY = 'jorres_dice_history';
+let diceCount = 1;
+let rollHistory = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
 
-function rollN(n, sides) { return Array.from({length:n}, () => Math.floor(Math.random()*sides)+1); }
-
-function playClick() {
-  if (!document.getElementById('sound-on').checked) return;
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.frequency.setValueAtTime(400, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime+0.08);
-  gain.gain.setValueAtTime(0.15, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.12);
-  osc.start(); osc.stop(ctx.currentTime+0.12);
+// ── Dice count chips ────────────────────────────
+function setCount(n, btn) {
+  diceCount = n;
+  document.querySelectorAll('.count-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
 }
 
-function quickRoll(sides) {
-  document.getElementById('die-type').value = sides;
-  document.getElementById('num-dice').value = 1;
-  rollDice();
+// ── Expression parser ───────────────────────────
+// Parses strings like "2d6+1d4-3" into { groups: [{n,sides},...], modifier }
+function parseExpr(str) {
+  str = str.replace(/\s/g, '').toLowerCase();
+  if (!str) return null;
+
+  const tokens = str.match(/[+-]?(\d+d\d+|\d+)/g);
+  if (!tokens) return null;
+
+  const groups = [];
+  let modifier = 0;
+
+  for (const tok of tokens) {
+    const sign = tok.startsWith('-') ? -1 : 1;
+    const clean = tok.replace(/^[+-]/, '');
+    if (clean.includes('d')) {
+      const parts = clean.split('d');
+      const n     = Math.max(1, Math.min(99, parseInt(parts[0]) || 1));
+      const sides = Math.max(2, Math.min(10000, parseInt(parts[1]) || 6));
+      groups.push({ n, sides, sign });
+    } else {
+      modifier += parseInt(clean) * sign;
+    }
+  }
+
+  return groups.length ? { groups, modifier } : null;
 }
 
-function rollDice() {
-  const n = Math.max(1, Math.min(10, parseInt(document.getElementById('num-dice').value)||1));
-  const sides = Math.max(2, parseInt(document.getElementById('die-type').value)||6);
-  const mod = parseInt(document.getElementById('modifier').value)||0;
-  lastDieType = sides;
-  const results = rollN(n, sides);
-  const sum = results.reduce((a,b)=>a+b,0);
-  const total = sum + mod;
-  const modStr = mod > 0 ? `+${mod}` : (mod < 0 ? `${mod}` : '');
-  const notation = `${n}d${sides}${modStr}`;
-  const formula = `[${results.join(', ')}]${modStr ? ' '+modStr : ''} = ${total}`;
-  showResult(results, total, notation, formula, sides);
-  addHistory(notation, total, formula);
-  animateDiceBtns(sides);
+// ── Core roll ───────────────────────────────────
+function rollN(n, sides) {
+  return Array.from({ length: n }, () => Math.floor(Math.random() * sides) + 1);
+}
+
+function executeRoll(parsed) {
+  const allRolls = [];   // {value, sides, sign}
+  let sum = 0;
+
+  for (const g of parsed.groups) {
+    const rolls = rollN(g.n, g.sides);
+    rolls.forEach(v => {
+      allRolls.push({ value: v, sides: g.sides, sign: g.sign });
+      sum += v * g.sign;
+    });
+  }
+
+  sum += parsed.modifier;
+
+  // Build notation string
+  const parts = parsed.groups.map((g, i) => {
+    const prefix = i === 0 ? (g.sign < 0 ? '-' : '') : (g.sign < 0 ? '-' : '+');
+    return `${prefix}${g.n}d${g.sides}`;
+  });
+  if (parsed.modifier > 0) parts.push(`+${parsed.modifier}`);
+  if (parsed.modifier < 0) parts.push(`${parsed.modifier}`);
+  const notation = parts.join('');
+
+  // Build formula string
+  const rollStrs = parsed.groups.map((g, i) => {
+    const rolls = allRolls.filter(r => r.sides === g.sides).map(r => r.value);
+    const prefix = i === 0 ? (g.sign < 0 ? '-[' : '[') : (g.sign < 0 ? ' -[' : ' +[');
+    return `${prefix}${rolls.join(', ')}]`;
+  });
+  let formula = rollStrs.join('');
+  if (parsed.modifier !== 0) formula += (parsed.modifier > 0 ? `+${parsed.modifier}` : `${parsed.modifier}`);
+  formula += ` = ${sum}`;
+
+  showResult(allRolls, sum, notation, formula);
+  addHistory(notation, sum, formula);
+  animateDiceBtns(parsed.groups);
   playClick();
 }
 
-function animateDiceBtns(sides) {
-  const sideToDie = {4:0,6:1,8:2,10:3,12:4,20:5,100:6};
+// ── Quick roll (from die buttons) ───────────────
+function quickRoll(sides) {
+  const mod = parseInt(document.getElementById('modifier').value) || 0;
+  const parsed = {
+    groups: [{ n: diceCount, sides, sign: 1 }],
+    modifier: mod
+  };
+  document.getElementById('exprInput').value =
+    `${diceCount}d${sides}${mod > 0 ? '+'+mod : mod < 0 ? mod : ''}`;
+  executeRoll(parsed);
+}
+
+// ── Expression roll (from text field) ──────────
+function rollExpr() {
+  const str = document.getElementById('exprInput').value.trim();
+  if (!str) return;
+  const parsed = parseExpr(str);
+  if (!parsed) {
+    document.getElementById('result-area').innerHTML =
+      `<div class="result-placeholder" style="color:var(--danger)">Could not parse "<strong>${esc(str)}</strong>" — try something like 2d6+3</div>`;
+    return;
+  }
+  executeRoll(parsed);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Sound ───────────────────────────────────────
+function playClick() {
+  if (!document.getElementById('sound-on').checked) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(400, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    osc.start(); osc.stop(ctx.currentTime + 0.12);
+  } catch(e) {}
+}
+
+// ── Animate die buttons ─────────────────────────
+function animateDiceBtns(groups) {
+  const sideMap = {4:0,6:1,8:2,10:3,12:4,20:5,100:6};
   const btns = document.querySelectorAll('.die-btn');
-  const idx = sideToDie[sides];
-  if (idx !== undefined) {
-    const btn = btns[idx];
-    btn.classList.remove('rolling');
-    void btn.offsetWidth;
-    btn.classList.add('rolling');
-    setTimeout(() => btn.classList.remove('rolling'), 400);
+  const animated = new Set();
+  for (const g of groups) {
+    const idx = sideMap[g.sides];
+    if (idx !== undefined && !animated.has(idx)) {
+      animated.add(idx);
+      const btn = btns[idx];
+      if (btn) {
+        btn.classList.remove('rolling');
+        void btn.offsetWidth;
+        btn.classList.add('rolling');
+        setTimeout(() => btn.classList.remove('rolling'), 400);
+      }
+    }
   }
 }
 
-function showResult(results, total, notation, formula, sides) {
-  const maxVal = sides;
-  const diceHtml = results.map(r => {
-    const isCrit = r === maxVal;
-    const isFail = r === 1 && sides >= 4;
-    const bg = isCrit ? '#059669' : (isFail ? '#7f1d1d' : '#dc2626');
-    return `<div class="result-die" style="background:${bg}">${r}</div>`;
+// ── Display result ──────────────────────────────
+function showResult(rolls, total, notation, formula) {
+  const diceHtml = rolls.map(r => {
+    const isCrit = r.value === r.sides;
+    const isFail = r.value === 1 && r.sides >= 4;
+    const bg = isCrit ? '#059669' : isFail ? '#7f1d1d' : '#dc2626';
+    return `<div class="result-die" style="background:${bg}" title="${r.sides}-sided">${r.value}</div>`;
   }).join('');
   document.getElementById('result-area').innerHTML = `
     <div class="result-dice">${diceHtml}</div>
     <div class="result-total">${total}</div>
-    <div class="result-formula">${formula}</div>
+    <div class="result-formula">${esc(formula)}</div>
   `;
 }
 
+// ── History ─────────────────────────────────────
 function addHistory(notation, total, formula) {
-  rollHistory.unshift({notation, total, formula});
-  if (rollHistory.length > 20) rollHistory.pop();
+  rollHistory.unshift({ notation, total, formula });
+  if (rollHistory.length > 30) rollHistory.pop();
+  try { localStorage.setItem(HIST_KEY, JSON.stringify(rollHistory)); } catch(e) {}
   renderHistory();
 }
 
 function renderHistory() {
   const list = document.getElementById('history-list');
-  if (!rollHistory.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:0.85rem;padding:0.5rem">No rolls yet.</div>'; return; }
-  list.innerHTML = rollHistory.map(h => `
-    <div class="hist-row">
-      <div class="hist-notation">${h.notation}</div>
-      <div style="font-size:0.8rem;color:#6b7280;flex:2">${h.formula}</div>
-      <div class="hist-result">${h.total}</div>
+  if (!rollHistory.length) {
+    list.innerHTML = '<div style="color:var(--text-subtle);font-size:.82rem;padding:.4rem">No rolls yet.</div>';
+    return;
+  }
+  list.innerHTML = rollHistory.map((h, i) => `
+    <div class="hist-row" onclick="rerollEntry(${i})" title="Click to re-roll ${esc(h.notation)}">
+      <div class="hist-notation">${esc(h.notation)}</div>
+      <div class="hist-detail">${esc(h.formula)}</div>
+      <div class="hist-total">${h.total}</div>
     </div>
   `).join('');
 }
 
+function rerollEntry(i) {
+  const expr = rollHistory[i].notation;
+  document.getElementById('exprInput').value = expr;
+  rollExpr();
+}
+
+function clearHistory() {
+  rollHistory = [];
+  try { localStorage.removeItem(HIST_KEY); } catch(e) {}
+  renderHistory();
+}
+
+// ── Enter key on expression input ───────────────
+document.getElementById('exprInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') rollExpr();
+});
+
 renderHistory();
 </script>
 <script src="/static/footer.js?v=3"></script>
-
 <script src="/static/app-nav.js?v=3"></script>
 </body>
 </html>
