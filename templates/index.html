@@ -948,7 +948,9 @@
       .like-count { font-size: .7rem; }
     </style>
   <!-- Fuse.js — lightweight fuzzy search with weighted fields -->
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"
+          integrity="sha384-PCSoOZTpbkikBEtd/+uV3WNdc676i9KUf01KOA8CnJotvlx8rRrETbDuwdjqTYvt"
+          crossorigin="anonymous"></script>
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -1057,6 +1059,9 @@
 
     <!-- Quick Tools shelf -->
     <div class="shelf-section" id="quickSection"></div>
+
+    <!-- New This Month shelf -->
+    <div class="shelf-section" id="newSection"></div>
 
     <!-- Recently Used shelf -->
     <div class="shelf-section" id="recentSection" style="display:none"></div>
@@ -1363,6 +1368,7 @@
         renderCategoryNav();
         renderSubcatNav();
         renderQuickTools();
+        renderNewThisMonth();
         renderRecentlyUsed();
         buildSearchIndex();
         applyFilters();
@@ -1449,6 +1455,31 @@
             </a>`).join("")}</div>`;
       }
 
+      // ── New This Month shelf ───────────────────────────
+      // Hardcoded list of app IDs added in May 2026 (most recent first)
+      const NEW_THIS_MONTH_IDS = [
+        "readability-analyzer", "email-signature", "text-to-speech",
+        "org-chart", "meeting-time-planner", "depreciation-calculator",
+        "break-even-calculator", "meeting-agenda", "barcode-generator",
+        "certificate-generator", "business-letter", "okr-tracker",
+        "swot-analysis", "decision-matrix", "gantt-chart",
+        "survey-builder", "pivot-table", "chart-visualizer",
+      ];
+      function renderNewThisMonth() {
+        const el = document.getElementById("newSection");
+        if (!el) return;
+        const apps = NEW_THIS_MONTH_IDS
+          .map(id => allApps.find(a => a.id === id))
+          .filter(Boolean);
+        if (!apps.length) { el.style.display = "none"; return; }
+        el.style.display = "";
+        el.innerHTML = `<div class="shelf-title">New This Month</div>
+          <div class="shelf-row">${apps.map(a =>
+            `<a class="shelf-chip" href="${a.url}" onclick="trackClick('${a.id}')">
+              <span class="chip-dot" style="background:${a.color}"></span>${esc(a.name)}
+            </a>`).join("")}</div>`;
+      }
+
       // ── Fuse.js index (built once after apps load) ─────────────────────────
       let _fuse = null;
       function buildSearchIndex() {
@@ -1486,21 +1517,39 @@
             renderCategoryNav();
             renderSubcatNav();
           }
-        } else if (activeCat !== "All") {
-          // Category filter
-          visible = allApps.filter((a) => (a.category || "Other") === activeCat);
+          // Render flat — preserve Fuse.js relevance order, don't group by category
+          renderSearchResults(visible, q);
+        } else {
+          if (activeCat !== "All") {
+            // Category filter
+            visible = allApps.filter((a) => (a.category || "Other") === activeCat);
 
-          // Subcategory filter (within the category)
-          if (activeSubcat !== "All") {
-            const subs = SUBCATEGORIES[activeCat] || [];
-            const sub = subs.find(s => s.label === activeSubcat);
-            if (sub) {
-              const idSet = new Set(sub.ids);
-              visible = visible.filter(a => idSet.has(a.id));
+            // Subcategory filter (within the category)
+            if (activeSubcat !== "All") {
+              const subs = SUBCATEGORIES[activeCat] || [];
+              const sub = subs.find(s => s.label === activeSubcat);
+              if (sub) {
+                const idSet = new Set(sub.ids);
+                visible = visible.filter(a => idSet.has(a.id));
+              }
             }
           }
+          renderGrid(visible);
         }
-        renderGrid(visible);
+      }
+
+      // ── Search results — flat list in Fuse.js relevance order ──────────────
+      function renderSearchResults(apps, q) {
+        const grid = document.getElementById("grid");
+        if (!apps.length) {
+          grid.innerHTML = `<div class="empty"><p>No results for "<strong>${esc(q)}</strong>" — try a shorter term, check the spelling, or browse by category.</p></div>`;
+          return;
+        }
+        // Cancel any pending virtualization from a previous renderGrid call
+        _pendingGroups = null;
+        const label = apps.length === 1 ? "1 result" : `${apps.length} results`;
+        grid.innerHTML = `<div class="category-header">Search results — ${label}</div>`;
+        apps.forEach(a => grid.insertAdjacentHTML("beforeend", cardHTML(a)));
       }
 
       const CATEGORY_ORDER = [
