@@ -1,15 +1,18 @@
 # Gunicorn configuration
-# Single process with 8 threads — avoids duplicating 127 Flask app instances
-# in memory while allowing 8 concurrent requests (up from 4).
+# Single process with 8 threads — sub-apps are now lazy-loaded on first
+# request (LazyDispatcher), so startup RAM is near zero and only apps that
+# are actually visited consume memory.  A second worker would duplicate that
+# growing footprint for no benefit on a single-core free-tier dyno.
 # gthread is built into gunicorn (no extra dependency).
 #
-# Why single worker: loading all 127 sub-apps takes ~512 MB. Two workers
-# would need ~1 GB, exceeding Render free tier. Eight threads lets 8 requests
-# run concurrently within that single process; only one can hold the GIL at a
-# time for CPU-bound work (PDF generation), but I/O-bound requests (most API
-# calls, static files) genuinely overlap.
+# Why single worker: Render free tier is 512 MB / single vCPU. With lazy
+# loading, the 135 sub-apps are imported on demand rather than all at once,
+# so steady-state memory is proportional to traffic mix, not app count.
+# Eight threads let 8 requests run concurrently within that one process;
+# only one holds the GIL at a time for CPU-bound work (PDF generation), but
+# I/O-bound requests (most API calls, static files) genuinely overlap.
 
-workers     = 1           # 1 OS process — keeps ~512 MB Render free tier happy
+workers     = 1           # 1 OS process — lazy loading keeps RAM proportional to traffic
 worker_class = 'gthread'  # thread-based concurrency within the single process
 threads     = 8           # 8 threads = 8 concurrent requests (was 4)
 timeout     = 120         # PDF generation (ReportLab) can be slow
