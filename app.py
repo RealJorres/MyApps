@@ -377,7 +377,7 @@ def privacy():
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/privacy">
 <meta name="description" content="Jorres Apps Privacy Policy — no tracking, no ads, no sign-up. All data stays in your browser.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='40' height='40' rx='12' fill='%233B82F6'/%3E%3Crect x='54' y='6' width='40' height='40' rx='12' fill='%238B5CF6'/%3E%3Crect x='6' y='54' width='40' height='40' rx='12' fill='%2310B981'/%3E%3Crect x='54' y='54' width='40' height='40' rx='12' fill='%23F97316'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
 <title>Privacy Policy | Jorres Apps</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -501,6 +501,79 @@ footer{text-align:center;color:#94a3b8;font-size:.78rem;padding:2rem;border-top:
 </html>''')
     resp.headers['Content-Type'] = 'text/html; charset=utf-8'
     resp.headers['Cache-Control'] = 'public, max-age=3600'
+    return resp
+
+
+# ── Custom 404 ────────────────────────────────────────────────────────────────
+_BRAND_FAVICON = (
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E"
+    "%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E"
+    "%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E"
+    "%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E"
+    "%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E"
+    "%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E"
+    "%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E"
+    "%3C/svg%3E"
+)
+
+_404_HTML = """\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="{favicon}">
+<title>Page Not Found | Jorres Apps</title>
+<style>
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}}
+nav{{background:#0f172a;padding:.9rem 1.75rem;display:flex;align-items:center}}
+nav a{{color:#94a3b8;text-decoration:none;font-size:.85rem;font-weight:600;display:inline-flex;align-items:center;gap:.4rem;transition:color .15s}}
+nav a:hover{{color:#e2e8f0}}
+main{{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 1.5rem}}
+.box{{text-align:center;max-width:480px;width:100%}}
+.code{{font-size:6rem;font-weight:900;line-height:1;color:#2f57ff;letter-spacing:-.04em;margin-bottom:.5rem}}
+h1{{font-size:1.35rem;font-weight:700;color:#1e293b;margin-bottom:.6rem}}
+p{{font-size:.9rem;color:#64748b;line-height:1.6;margin-bottom:1.75rem}}
+.btn{{display:inline-block;background:#2f57ff;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;padding:.7rem 1.6rem;border-radius:8px;transition:opacity .15s,transform .15s;margin-bottom:1.5rem}}
+.btn:hover{{opacity:.88;transform:translateY(-1px)}}
+.search-form{{display:flex;gap:.5rem;max-width:340px;margin:0 auto}}
+.search-form input{{flex:1;padding:.6rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:inherit;outline:none;background:#fff;color:#0f172a;transition:border-color .15s}}
+.search-form input:focus{{border-color:#2f57ff}}
+.search-form button{{padding:.6rem 1rem;background:#2f57ff;color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.875rem;font-family:inherit;cursor:pointer;white-space:nowrap;transition:opacity .15s}}
+.search-form button:hover{{opacity:.88}}
+footer{{padding:1.25rem;text-align:center;font-size:.75rem;color:#94a3b8;border-top:1px solid #e2e8f0}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Jorres Apps
+  </a>
+</nav>
+<main>
+  <div class="box">
+    <div class="code" aria-hidden="true">404</div>
+    <h1>Page not found</h1>
+    <p>The tool you were looking for may have moved, been removed, or never existed.<br>Try searching below or browse all tools.</p>
+    <a class="btn" href="/">Browse all 135 tools</a>
+    <form class="search-form" action="/" method="get" role="search" aria-label="Search tools">
+      <input name="q" type="search" placeholder="Search tools..." aria-label="Search">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+</main>
+<footer>&copy; 2026 Jorres Apps</footer>
+</body>
+</html>""".format(favicon=_BRAND_FAVICON)
+
+
+@flask_app.errorhandler(404)
+def not_found(e):
+    resp = make_response(_404_HTML, 404)
+    resp.headers['Content-Type'] = 'text/html; charset=utf-8'
+    resp.headers['Cache-Control'] = 'no-store'
     return resp
 
 
