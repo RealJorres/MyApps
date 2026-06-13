@@ -24,10 +24,12 @@ Run:
 """
 import base64
 import hashlib
+import io
 import json
 import os
 import re
 import sys
+import zipfile
 
 import pytest
 
@@ -247,6 +249,47 @@ def test_base64_unicode(client):
     assert s == 200
     s, d, _ = _post_json(client, '/base64-tool/api/decode-text', {'text': d['result']})
     assert s == 200 and d['result'] == 'café ☕ 日本語'
+
+
+# ── PDF to Word (file-upload conversion) ──────────────────────────────────────
+def _make_pdf(text=None):
+    """Build a tiny in-memory PDF; text=None yields a blank (no-text) page."""
+    from reportlab.pdfgen import canvas
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf)
+    if text:
+        c.drawString(72, 720, text)
+    c.showPage()
+    c.save()
+    return buf.getvalue()
+
+
+def _post_file(client, path, file_bytes, filename):
+    r = client.post(path, data={'file': (io.BytesIO(file_bytes), filename)},
+                    content_type='multipart/form-data')
+    return r
+
+
+def test_pdf_to_word_converts_text_pdf(client):
+    pdf = _make_pdf('Hello Jorres Apps. This is a convertible paragraph.')
+    r = _post_file(client, '/pdf-to-word/api/convert', pdf, 'sample.pdf')
+    assert r.status_code == 200
+    out = r.get_data()
+    # Output must be a real .docx (zip containing word/document.xml)
+    assert zipfile.is_zipfile(io.BytesIO(out))
+    assert 'word/document.xml' in zipfile.ZipFile(io.BytesIO(out)).namelist()
+
+
+def test_pdf_to_word_flags_scanned_pdf(client):
+    blank = _make_pdf(None)  # a page with no extractable text
+    r = _post_file(client, '/pdf-to-word/api/convert', blank, 'scan.pdf')
+    assert r.status_code == 422
+    assert r.get_json().get('scanned') is True
+
+
+def test_pdf_to_word_rejects_non_pdf(client):
+    r = _post_file(client, '/pdf-to-word/api/convert', b'this is not a pdf', 'notes.txt')
+    assert r.status_code == 400 and 'error' in r.get_json()
 
 
 # ══════════════════════════════════════════════════════════════════════════════

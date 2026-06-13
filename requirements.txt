@@ -19,3 +19,4 @@ PyJWT
 autopep8
 jsbeautifier
 python-whois
+pdf2docx

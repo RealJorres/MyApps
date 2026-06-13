@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='14' fill='%230d1117'/%3E%3Crect x='14' y='14' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='30' y='14' width='12' height='12' rx='3' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='30' y='30' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3Crect x='14' y='46' width='12' height='12' rx='3' fill='%232f57ff'/%3E%3Crect x='30' y='46' width='12' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/base.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://jorresapps.onrender.com/pdf-to-word/">
+<meta name="description" content="Convert PDF documents into editable Microsoft Word (.docx) files online. Free, fast, no sign-up. Works best with text-based PDFs.">
+<meta name="keywords" content="PDF to Word, PDF to DOCX, convert PDF to Word, PDF converter, editable Word from PDF">
+<meta name="author" content="Jorres Apps">
+<meta property="og:title" content="PDF to Word">
+<meta property="og:description" content="Convert PDF documents into editable Microsoft Word (.docx) files online. Free, fast, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
+<meta name="twitter:title" content="PDF to Word">
+<meta name="twitter:description" content="Convert PDF documents into editable Microsoft Word (.docx) files online. Free, fast, no sign-up.">
+<title>PDF to Word | Jorres Apps</title>
+<style>
+  .drop-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10) var(--space-4);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+    background: var(--surface-2);
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--brand);
+    background: var(--brand-light);
+  }
+  .drop-zone svg { color: var(--brand); margin-bottom: var(--space-2); }
+  .drop-zone p { color: var(--text-muted); font-size: var(--text-sm); }
+  .drop-zone .browse { color: var(--brand); font-weight: var(--weight-bold); text-decoration: underline; }
+  #fileInput { display: none; }
+  .file-name { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--brand); font-weight: var(--weight-semibold); word-break: break-all; }
+  .status-msg {
+    margin-top: var(--space-4); padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md); font-size: var(--text-sm); display: none;
+  }
+  .status-msg.error   { background: var(--danger-bg);  border: 1px solid var(--danger-border);  color: var(--danger); }
+  .status-msg.warn    { background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning); }
+  .status-msg.success { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success); }
+  .spinner-row { display: none; align-items: center; gap: var(--space-2); margin-top: var(--space-4); color: var(--text-muted); font-size: var(--text-sm); }
+  .result-box { display: none; margin-top: var(--space-4); }
+</style>
+</head>
+<body>
+<script src="/static/app-nav.js?v=3" data-app-id="pdf-to-word" data-app-name="PDF to Word"></script>
+
+<div class="container--narrow">
+  <header>
+    <h1>PDF to Word</h1>
+    <p>Convert a PDF into an editable Microsoft Word (.docx) document. Works best with text-based PDFs.</p>
+  </header>
+
+  <div class="privacy-notice">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Your PDF is processed on our server and deleted immediately after conversion. We never store your files.
+  </div>
+
+  <div class="card">
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload a PDF file">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+      <p>Drop your PDF here or <span class="browse">browse files</span></p>
+      <p style="margin-top:var(--space-1)">Maximum file size: 25 MB</p>
+      <div class="file-name" id="fileName"></div>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf,application/pdf">
+
+    <button class="btn btn-primary btn--full" id="convertBtn" style="margin-top:var(--space-5)" disabled>Convert to Word</button>
+
+    <div class="spinner-row" id="spinnerRow">
+      <svg class="spin-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      Converting your PDF. Larger documents can take a few seconds...
+    </div>
+
+    <div class="status-msg" id="statusMsg" role="alert" aria-live="polite"></div>
+
+    <div class="result-box" id="resultBox">
+      <button class="btn btn-primary btn--full" id="downloadBtn">Download Word document</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/footer.js?v=3"></script>
+<script>
+  const dropZone   = document.getElementById('dropZone');
+  const fileInput  = document.getElementById('fileInput');
+  const fileName   = document.getElementById('fileName');
+  const convertBtn = document.getElementById('convertBtn');
+  const spinnerRow = document.getElementById('spinnerRow');
+  const statusMsg  = document.getElementById('statusMsg');
+  const resultBox  = document.getElementById('resultBox');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  let currentFile = null;
+  let downloadUrl = null;
+  let downloadName = 'document.docx';
+
+  function formatSize(bytes) {
+    if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    return (bytes / 1024).toFixed(1) + ' KB';
+  }
+
+  function showStatus(kind, text) {
+    statusMsg.className = 'status-msg ' + kind;
+    statusMsg.textContent = text;
+    statusMsg.style.display = 'block';
+  }
+
+  function isPdf(f) {
+    return f && (f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
+  }
+
+  function setFile(f) {
+    if (!isPdf(f)) { showStatus('error', 'Please choose a PDF file.'); return; }
+    currentFile = f;
+    fileName.textContent = f.name + ' (' + formatSize(f.size) + ')';
+    convertBtn.disabled = false;
+    statusMsg.style.display = 'none';
+    resultBox.style.display = 'none';
+  }
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+  });
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
+
+  convertBtn.addEventListener('click', async () => {
+    if (!currentFile) return;
+    convertBtn.disabled = true;
+    spinnerRow.style.display = 'flex';
+    statusMsg.style.display = 'none';
+    resultBox.style.display = 'none';
+
+    const form = new FormData();
+    form.append('file', currentFile);
+
+    try {
+      const resp = await fetch('api/convert', { method: 'POST', body: form });
+      if (!resp.ok) {
+        let msg = 'Conversion failed (HTTP ' + resp.status + ').';
+        let scanned = false;
+        try { const d = await resp.json(); msg = d.error || msg; scanned = !!d.scanned; } catch (_) {}
+        showStatus(scanned ? 'warn' : 'error', msg);
+        return;
+      }
+      const blob = await resp.blob();
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+      downloadUrl = URL.createObjectURL(blob);
+      downloadName = currentFile.name.replace(/\.pdf$/i, '') + '.docx';
+      showStatus('success', 'Done. Your Word document is ready to download.');
+      resultBox.style.display = 'block';
+    } catch (e) {
+      showStatus('error', 'Could not reach the server. Check your connection and try again.');
+    } finally {
+      spinnerRow.style.display = 'none';
+      convertBtn.disabled = false;
+    }
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    if (!downloadUrl) return;
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = downloadName;
+    a.click();
+  });
+</script>
+</body>
+</html>

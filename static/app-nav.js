@@ -74,8 +74,9 @@
     'ocr-tool':                ['speech-to-text','image-filters','image-tools'],
     'pdf-merger':              ['pdf-splitter','pdf-to-image','pdf-compressor'],
     'pdf-splitter':            ['pdf-merger','pdf-to-image','pdf-compressor'],
-    'pdf-compressor':          ['pdf-merger','pdf-splitter','image-tools'],
-    'pdf-to-image':            ['image-tools','image-filters','pdf-merger'],
+    'pdf-compressor':          ['pdf-merger','pdf-splitter','pdf-to-word'],
+    'pdf-to-image':            ['image-tools','pdf-to-word','pdf-merger'],
+    'pdf-to-word':             ['pdf-merger','pdf-to-image','pdf-splitter'],
     'survey-builder':          ['meeting-agenda','decision-matrix','okr-tracker'],
     // Design & Visuals
     'color-picker':            ['color-contrast','color-palette-extractor','color-gradient-generator'],
