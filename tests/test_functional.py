@@ -26,6 +26,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 import sys
 
 import pytest
@@ -44,6 +45,32 @@ def _load_registry():
 
 REGISTRY = _load_registry()
 APP_IDS = [a['id'] for a in REGISTRY]
+
+
+def test_sitemap_covers_every_app_and_public_page(client):
+    """sitemap.xml must list every registered app plus the homepage and
+    /privacy — so Google can discover and index the whole public surface."""
+    import re
+    _, _, xml = _get(client, '/sitemap.xml')
+    locs = set(re.findall(r'<loc>(.*?)</loc>', xml))
+    base = 'https://jorresapps.onrender.com'
+    required = {f'{base}/{aid}/' for aid in APP_IDS}
+    required |= {f'{base}/', f'{base}/privacy'}
+    missing = sorted(required - locs)
+    assert not missing, f'URLs missing from sitemap.xml: {missing}'
+
+
+def test_robots_allows_crawl_and_points_to_sitemap(client):
+    """robots.txt must permit indexing and advertise the sitemap; only
+    /api/ and retired apps may be disallowed (never a live app)."""
+    _, _, body = _get(client, '/robots.txt')
+    assert 'Allow: /' in body
+    assert 'Sitemap: https://jorresapps.onrender.com/sitemap.xml' in body
+    assert 'Disallow: /api/' in body
+    # No currently-registered app may be blocked from crawling
+    disallowed = set(re.findall(r'Disallow:\s*/([a-z0-9-]+)/', body))
+    blocked_live = disallowed & set(APP_IDS)
+    assert not blocked_live, f'robots.txt blocks live apps: {sorted(blocked_live)}'
 
 
 def test_launcher_hardcoded_ids_all_exist():

@@ -640,6 +640,12 @@ def sitemap():
         f'<lastmod>{today}</lastmod>'
         f'<changefreq>weekly</changefreq>'
         f'<priority>1.0</priority>'
+        f'</url>',
+        f'  <url>'
+        f'<loc>{BASE_URL}/privacy</loc>'
+        f'<lastmod>{today}</lastmod>'
+        f'<changefreq>yearly</changefreq>'
+        f'<priority>0.3</priority>'
         f'</url>'
     ]
     for a in REGISTRY:
