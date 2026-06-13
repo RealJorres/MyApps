@@ -1,0 +1,6 @@
+# Test-only dependencies (not needed to run the app in production).
+#   pip install -r requirements-dev.txt
+#   playwright install chromium      # one-time browser download for e2e tests
+-r requirements.txt
+pytest
+pytest-playwright
