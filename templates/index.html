@@ -861,8 +861,8 @@
       .bug-submit {
         width: 100%;
         padding: .7rem;
-        background: linear-gradient(135deg, #1b8fc4, #66c0f4);
-        color: #0a1520;
+        background: var(--accent);
+        color: #fff;
         border: none;
         border-radius: 8px;
         font-size: .9rem;
@@ -906,7 +906,7 @@
         font-family: inherit;
       }
       .subcat-pill:hover { border-color: var(--accent); color: var(--accent); }
-      .subcat-pill.active { background: rgba(102,192,244,.12); color: var(--accent); border-color: var(--accent); }
+      .subcat-pill.active { background: rgba(47,87,255,.12); color: var(--accent); border-color: var(--accent); }
 
       /* ── Category nav bar ── */
       .cat-nav {
@@ -938,7 +938,7 @@
         font-family: inherit;
       }
       .cat-pill:hover { border-color: var(--accent); color: var(--accent); }
-      .cat-pill.active { background: var(--accent); color: #0a1520; border-color: var(--accent); font-weight: 700; }
+      .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
 
       /* ── Quick Tools & Recently Used ── */
       .shelf-section {
@@ -973,7 +973,7 @@
         transition: border-color .15s, background .15s;
         white-space: nowrap;
       }
-      .shelf-chip:hover { border-color: var(--accent); background: #1e3448; color: #fff; }
+      .shelf-chip:hover { border-color: var(--accent); background: var(--accent-dark); color: #fff; }
       .shelf-chip .chip-dot {
         width: 8px; height: 8px;
         border-radius: 50%;
@@ -1217,7 +1217,7 @@
     <div class="modal-backdrop" id="bugModal" onclick="closeModalOutside(event,'bugModal')">
       <div class="modal-box">
         <div class="modal-header">
-          <h2>🐛 Report a Bug</h2>
+          <h2>Report a Bug</h2>
           <button class="modal-close" onclick="closeModal('bugModal')">✕</button>
         </div>
         <div class="modal-body">
@@ -1228,11 +1228,11 @@
           <div class="bug-form-group">
             <label>Issue type</label>
             <select id="bug_type">
-              <option value="Bug">🐛 Bug / Something broken</option>
-              <option value="UI">🎨 UI / Display problem</option>
-              <option value="Performance">⚡ Performance issue</option>
-              <option value="Feature">💡 Feature suggestion</option>
-              <option value="Other">📝 Other</option>
+              <option value="Bug">Bug / Something broken</option>
+              <option value="UI">UI / Display problem</option>
+              <option value="Performance">Performance issue</option>
+              <option value="Feature">Feature suggestion</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div class="bug-form-group">
@@ -1251,6 +1251,18 @@
 
     <script>
       let allApps = [];
+      // One-time migration: older builds of app-nav.js stored in-app favorites
+      // under 'jorresApps_favorites'. Fold them into the canonical key so the
+      // home page and in-app star share one source of truth.
+      try {
+        const _legacyFavs = localStorage.getItem('jorresApps_favorites');
+        if (_legacyFavs !== null) {
+          const _merged = new Set(JSON.parse(localStorage.getItem('jorres_favs') || '[]'));
+          (JSON.parse(_legacyFavs) || []).forEach(id => _merged.add(id));
+          localStorage.setItem('jorres_favs', JSON.stringify([..._merged]));
+          localStorage.removeItem('jorresApps_favorites');
+        }
+      } catch (e) { /* ignore malformed legacy data */ }
       let favorites = new Set(JSON.parse(localStorage.getItem('jorres_favs') || '[]'));
 
       function saveFavs() {

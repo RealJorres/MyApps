@@ -5,8 +5,23 @@
 (function () {
   'use strict';
 
-  var FAV_KEY   = 'jorresApps_favorites';
+  // Canonical favorites key — MUST match the launcher (templates/index.html).
+  // Previously this file used 'jorresApps_favorites', which silently desynced
+  // the in-app star from the launcher's Favorites strip.
+  var FAV_KEY   = 'jorres_favs';
   var RECENT_KEY = 'jorres_recent_v1';
+
+  // One-time migration: fold any favorites saved under the old key into the
+  // canonical key, then drop the legacy entry.
+  try {
+    var _legacy = localStorage.getItem('jorresApps_favorites');
+    if (_legacy !== null) {
+      var _merged = new Set(JSON.parse(localStorage.getItem(FAV_KEY)) || []);
+      (JSON.parse(_legacy) || []).forEach(function (id) { _merged.add(id); });
+      localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(_merged)));
+      localStorage.removeItem('jorresApps_favorites');
+    }
+  } catch (e) { /* ignore malformed legacy data */ }
 
   // ── Related tools map — full 130-app graph ─────────────────────────────────
   var RELATED = {

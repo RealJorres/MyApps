@@ -217,7 +217,11 @@ function parseLinear(raw) {
           const parts = tok.split('/');
           xCoef += parseFloat(parts[0].replace('x','1')) / parseFloat(parts[1]);
         } else {
-          cst += eval(tok); // safe: only numbers here
+          // Numeric fraction like "3/4" — divide directly. Never eval():
+          // a token such as "1/alert(1)" would otherwise execute arbitrary JS.
+          const p = tok.split('/');
+          const num = parseFloat(p[0]), den = parseFloat(p[1]);
+          if (!isNaN(num) && !isNaN(den) && den !== 0) cst += num / den;
         }
       } else {
         const v = parseFloat(tok);

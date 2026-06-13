@@ -63,7 +63,11 @@ def make_request():
 
     try:
         start = time.time()
-        kwargs = {'headers': safe_headers, 'timeout': timeout, 'allow_redirects': True}
+        # Do NOT follow redirects: a validated public URL could 3xx to an
+        # internal address (e.g. 169.254.169.254), bypassing the SSRF check
+        # above. The 3xx status + Location header are surfaced to the caller
+        # instead, who can re-issue the request through the same validation.
+        kwargs = {'headers': safe_headers, 'timeout': timeout, 'allow_redirects': False}
         if body and method in ('POST', 'PUT', 'PATCH'):
             try:
                 json.loads(body)

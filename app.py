@@ -738,7 +738,10 @@ def bug_report():
 </table>
 </body></html>"""
 
-    print(f'[BUG REPORT] {subject}\n{text_body}', flush=True)
+    # Log only non-PII metadata. The reporter's email and free-text
+    # description are NOT written to stdout — our privacy policy states no
+    # personal data is stored server-side, and Render retains stdout logs.
+    print(f'[BUG REPORT] {issue_type} for {app_name} ({len(desc)} chars)', flush=True)
 
     resend_key = os.environ.get('RESEND_API_KEY', '')
     if not resend_key:

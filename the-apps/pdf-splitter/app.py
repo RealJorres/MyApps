@@ -2,7 +2,7 @@ from flask import Flask, request, send_file, jsonify, render_template
 import fitz, io, zipfile
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
 @app.route('/')
 def index():
