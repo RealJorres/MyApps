@@ -1158,13 +1158,74 @@
         &copy; <strong>2026 Jorres Apps</strong> &mdash; 100+ free browser tools. No ads. No tracking. No sign-up.
       </div>
       <div class="footer-links">
-        <a class="footer-link" href="/privacy" style="text-decoration:none">Privacy</a>
+        <button class="footer-link" onclick="openPrivacy()">Privacy</button>
         <span style="color:var(--border)">|</span>
         <button class="footer-link" onclick="openTnC()">Terms &amp; Conditions</button>
         <span style="color:var(--border)">|</span>
         <button class="footer-bug" onclick="openBugReport()">Report a Bug</button>
       </div>
     </footer>
+
+    <!-- ── Privacy Policy modal ── -->
+    <div class="modal-backdrop" id="privacyModal" onclick="closeModalOutside(event,'privacyModal')">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>Privacy Policy</h2>
+          <button class="modal-close" onclick="closeModal('privacyModal')">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="tnc-updated">Last updated: May 2026</p>
+
+          <div class="tnc-section">
+            <p><strong>The short version:</strong> Jorres Apps collects nothing about you. No data leaves your browser. No accounts. No tracking. Free forever.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>What we collect</h3>
+            <p><strong>Nothing.</strong> No personal information is collected, stored, or transmitted. There are no analytics scripts, tracking pixels, or third-party data collectors on our pages.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Cookies</h3>
+            <p>We do not use cookies of any kind &mdash; not for sessions, not for preferences, not for advertising.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Local storage</h3>
+            <ul>
+              <li>Some tools save data to your browser's <code>localStorage</code> so your work persists between visits (e.g. Notepad, Kanban Board, Journal).</li>
+              <li>This data stays entirely on your device and is never transmitted to our server or any third party.</li>
+              <li>It can be cleared at any time via your browser settings.</li>
+            </ul>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Server logs</h3>
+            <p>Our hosting provider (Render.com) may retain standard HTTP access logs (IP address, timestamp, requested URL) for security and operational purposes. These are not used by us for analytics or marketing.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Bug reports</h3>
+            <p>When you voluntarily submit a bug report, we receive the text you enter (app name, description, and optional email). This is used solely to fix reported issues and is never shared or sold.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Third-party API tools</h3>
+            <p>A few tools (e.g. DNS Lookup, IP Info, Whois Lookup) query public APIs on your behalf. These requests originate from our server and contain no identifying information beyond the query itself.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Children</h3>
+            <p>Jorres Apps is not directed at children under 13. We do not knowingly collect data from children.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Contact</h3>
+            <p>Questions about this policy? Email <a href="mailto:joshuarelatorres28@gmail.com" style="color:var(--accent)">joshuarelatorres28@gmail.com</a> or use the <strong>Report a Bug</strong> button. The full policy also lives at <a href="/privacy" style="color:var(--accent)">/privacy</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- ── Terms & Conditions modal ── -->
     <div class="modal-backdrop" id="tncModal" onclick="closeModalOutside(event,'tncModal')">
@@ -1943,6 +2004,7 @@
         if (e.target === document.getElementById(id)) closeModal(id);
       }
       function openTnC()       { openModal('tncModal'); }
+      function openPrivacy()   { openModal('privacyModal'); }
       function openBugReport() {
         document.getElementById('bugMsg').style.display = 'none';
         document.getElementById('bugSubmitBtn').disabled = false;
