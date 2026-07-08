@@ -50,14 +50,15 @@ APP_IDS = [a['id'] for a in REGISTRY]
 
 
 def test_sitemap_covers_every_app_and_public_page(client):
-    """sitemap.xml must list every registered app plus the homepage and
-    /privacy — so Google can discover and index the whole public surface."""
+    """sitemap.xml must list every registered app plus the homepage —
+    so Google can discover and index the whole public surface."""
     import re
     _, _, xml = _get(client, '/sitemap.xml')
     locs = set(re.findall(r'<loc>(.*?)</loc>', xml))
     base = 'https://jorresapps.onrender.com'
     required = {f'{base}/{aid}/' for aid in APP_IDS}
-    required |= {f'{base}/', f'{base}/privacy'}
+    required |= {f'{base}/'}
+    assert f'{base}/privacy' not in locs, 'retired /privacy must not be in sitemap'
     missing = sorted(required - locs)
     assert not missing, f'URLs missing from sitemap.xml: {missing}'
 

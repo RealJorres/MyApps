@@ -137,11 +137,11 @@ def test_sitemap_xml(flask_client):
     assert b'jorresapps.onrender.com' in resp.data
 
 
-def test_privacy_page(flask_client):
-    """GET /privacy must return 200 with privacy content."""
+def test_privacy_page_removed(flask_client):
+    """/privacy was retired (2026-07-09) — the policy lives in the footer modal.
+    The old URL must 404 (custom 404 page), not error."""
     resp = flask_client.get('/privacy')
-    assert resp.status_code == 200
-    assert b'Privacy' in resp.data
+    assert resp.status_code == 404
 
 
 def test_static_base_css(flask_client):

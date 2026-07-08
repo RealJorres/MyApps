@@ -84,7 +84,7 @@
     '      <h4>Children</h4>',
     '      <p>Jorres Apps is not directed at children under 13. We do not knowingly collect data from children.</p>',
     '      <h4>Contact</h4>',
-    '      <p>Questions? Email <a href="mailto:joshuarelatorres28@gmail.com" style="color:#2f57ff">joshuarelatorres28@gmail.com</a> or use the Bug Report form. Full policy: <a href="/privacy" style="color:#2f57ff">jorresapps.onrender.com/privacy</a>.</p>',
+    '      <p>Questions? Email <a href="mailto:joshuarelatorres28@gmail.com" style="color:#2f57ff">joshuarelatorres28@gmail.com</a> or use the Bug Report form.</p>',
     '    </div>',
     '  </div>',
     '</div>',
