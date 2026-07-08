@@ -65,13 +65,13 @@ select:focus{border-color:var(--brand)}
       <div>
         <label for="fromVal" id="fromLabel">From</label>
         <input type="number" id="fromVal" value="1" oninput="convertFrom()">
-        <select id="fromUnit" onchange="convertFrom()" style="margin-top:.5rem"></select>
+        <select id="fromUnit" onchange="convertFrom()" style="margin-top:.5rem" aria-label="From unit"></select>
       </div>
       <button class="swap-btn" onclick="swapUnits()" title="Swap units">⇅</button>
       <div>
         <label for="toVal" id="toLabel">To</label>
         <input type="number" id="toVal" oninput="convertTo()">
-        <select id="toUnit" onchange="convertFrom()" style="margin-top:.5rem"></select>
+        <select id="toUnit" onchange="convertFrom()" style="margin-top:.5rem" aria-label="To unit"></select>
       </div>
     </div>
     <div class="formula" id="formula"></div>

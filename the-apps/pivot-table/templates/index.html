@@ -112,6 +112,10 @@ function parseCSV() {
   return true;
 }
 
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function populateSelects() {
   if (!parseCSV()) return;
   const numHeaders = headers.filter(h => rows.some(r => !isNaN(parseFloat(r[h]))));
@@ -119,7 +123,7 @@ function populateSelects() {
     const sel = document.getElementById(id);
     const hasNone = id === 'colField';
     sel.innerHTML = hasNone ? '<option value="">(none)</option>' : '';
-    headers.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`);
+    headers.forEach(h => sel.innerHTML += `<option value="${esc(h)}">${esc(h)}</option>`);
   });
   // Default value field to first numeric
   if (numHeaders.length) document.getElementById('valField').value = numHeaders[0];
@@ -169,15 +173,15 @@ function buildPivot() {
 
   let html = '<div class="pivot-wrap"><table>';
   // Header
-  html += '<thead><tr><th class="row-header">' + rowF + '</th>';
-  if (colF) colVals.forEach(c => html += `<th>${c}</th>`);
-  else html += `<th>${valF}</th>`;
+  html += '<thead><tr><th class="row-header">' + esc(rowF) + '</th>';
+  if (colF) colVals.forEach(c => html += `<th>${esc(c)}</th>`);
+  else html += `<th>${esc(valF)}</th>`;
   html += '<th class="col-total">Total</th></tr></thead>';
 
   // Body
   html += '<tbody>';
   rowVals.forEach(rv => {
-    html += `<tr><td class="row-header">${rv}</td>`;
+    html += `<tr><td class="row-header">${esc(rv)}</td>`;
     let rowTotal = [];
     const keys = colF ? colVals : ['_'];
     keys.forEach(ck => {

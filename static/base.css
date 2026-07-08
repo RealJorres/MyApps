@@ -412,6 +412,7 @@ input[type=checkbox], input[type=radio] { accent-color: var(--brand); width: aut
 /* ── Screen-reader only (accessibility) ──────── */
 .sr-only {
   position: absolute;
+  left: 0; /* pin so the 1px box can't extend the page's scrollable width */
   width: 1px; height: 1px;
   padding: 0; margin: -1px;
   overflow: hidden;

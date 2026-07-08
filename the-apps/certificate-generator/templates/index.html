@@ -26,6 +26,7 @@
 .layout{display:grid;grid-template-columns:320px 1fr;gap:1.25rem}
 @media(max-width:700px){
   .layout{grid-template-columns:1fr}
+  .layout>*{min-width:0}
   .canvas-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .canvas-wrap canvas{min-width:480px}
   .canvas-mobile-note{display:block!important}

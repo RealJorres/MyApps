@@ -68,7 +68,7 @@
 @media (max-width: 600px) {
   body { overflow-x: hidden; }
   input[type=text] { width: 100% !important; min-width: 0 !important; }
-  .game-wrap { width: 100% !important; max-width: 700px !important; } .key { min-width: 30px !important; }
+  .game-wrap { width: 100% !important; max-width: 700px !important; } .key { width: 30px !important; min-width: 30px !important; }
 }
 </style>
 </head>
@@ -215,7 +215,7 @@ function updateHangman() {
     document.getElementById(id).style.display = i < wrongCount ? 'block' : 'none';
   });
   const face = document.getElementById('hm-face');
-  face.style.display = wrongCount >= MAX_WRONG ? 'block' : 'none';
+  if (face) face.style.display = wrongCount >= MAX_WRONG ? 'block' : 'none';
   const head = document.getElementById('hm-head');
   if (head) head.style.display = wrongCount >= 1 ? 'block' : 'none';
 }

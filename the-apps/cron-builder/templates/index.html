@@ -249,6 +249,10 @@ function describeCron([min, hour, dom, month, dow]) {
   return parts.join(', ') || 'Every minute';
 }
 
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 async function validate() {
   const expr = document.getElementById('expr').value.trim();
   const card = document.getElementById('resultsCard');
@@ -257,14 +261,14 @@ async function validate() {
     const res = await fetch('api/describe', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({expr}) });
     const data = await res.json();
     if (data.error) {
-      content.innerHTML = `<div class="error-box">${data.error}</div>`;
+      content.innerHTML = `<div class="error-box">${esc(data.error)}</div>`;
     } else {
       const items = data.next_runs.map((r,i) => `<li><span style="color:var(--muted);font-size:0.75rem;min-width:1.2rem">#${i+1}</span>${r}</li>`).join('');
       content.innerHTML = `<div class="success-box" style="margin-bottom:0.75rem">Valid cron expression</div><ul class="next-runs">${items}</ul>`;
     }
     card.style.display = '';
   } catch(e) {
-    content.innerHTML = `<div class="error-box">Error: ${e.message}</div>`;
+    content.innerHTML = `<div class="error-box">Error: ${esc(e.message)}</div>`;
     card.style.display = '';
   }
 }

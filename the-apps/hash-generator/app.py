@@ -19,7 +19,7 @@ def hash_text():
         data = text.encode(enc, errors='replace')
         return jsonify({algo: hashlib.new(algo, data).hexdigest() for algo in ALGOS})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/hash-file', methods=['POST'])
 def hash_file():
@@ -30,7 +30,7 @@ def hash_file():
         data = f.read()
         return jsonify({algo: hashlib.new(algo, data).hexdigest() for algo in ALGOS})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5006)

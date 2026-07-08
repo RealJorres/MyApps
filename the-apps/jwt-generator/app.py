@@ -19,7 +19,7 @@ def generate():
         token = pyjwt.encode(payload, secret, algorithm=algorithm)
         return jsonify({'token': token})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/decode', methods=['POST'])
 def decode():
@@ -33,7 +33,7 @@ def decode():
             payload = pyjwt.decode(token, options={"verify_signature": False}, algorithms=['HS256','HS384','HS512','RS256'])
         return jsonify({'payload': payload, 'verified': bool(secret)})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5088)

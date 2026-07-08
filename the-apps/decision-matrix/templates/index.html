@@ -136,7 +136,7 @@ function render() {
   }
 
   let html = '<table><thead><tr><th class="opt-header">Option</th>';
-  criteria.forEach(c => html += `<th>${esc(c.name)}<br><small style="font-weight:400;color:var(--muted)">Weight: <input type="number" class="weight-input" min="1" max="10" value="${c.w}" onchange="setCriterionWeight('${c.name.replace(/'/g,"\\'")}',this.value)"></small></th>`);
+  criteria.forEach(c => html += `<th>${esc(c.name)}<br><small style="font-weight:400;color:var(--muted)">Weight: <input type="number" class="weight-input" min="1" max="10" value="${c.w}" aria-label="Criterion weight" onchange="setCriterionWeight('${c.name.replace(/'/g,"\\'")}',this.value)"></small></th>`);
   html += '<th>Weighted Total</th></tr></thead><tbody>';
 
   options.forEach(o => {
@@ -144,7 +144,7 @@ function render() {
     criteria.forEach(c => {
       const key = o+'|'+c.name;
       const v = scores[key] ?? 5;
-      html += `<td><input type="number" class="score-input" min="1" max="10" value="${v}" onchange="setScore('${o.replace(/'/g,"\\'")}','${c.name.replace(/'/g,"\\'")}',this.value)"></td>`;
+      html += `<td><input type="number" class="score-input" min="1" max="10" value="${v}" aria-label="Score" onchange="setScore('${o.replace(/'/g,"\\'")}','${c.name.replace(/'/g,"\\'")}',this.value)"></td>`;
     });
     html += '<td class="total-cell" id="tot_'+encodeId(o)+'">—</td></tr>';
   });

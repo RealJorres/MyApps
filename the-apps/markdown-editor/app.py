@@ -7,15 +7,24 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+MAX_TEXT = 150_000  # chars — PDF build time grows sharply beyond this
+
+def _text_of(d):
+    v = d.get('text', '')
+    return v if isinstance(v, str) else ''
+
 @app.route('/api/render', methods=['POST'])
 def render_md():
     d = request.json or {}
+    text = _text_of(d)
+    if len(text) > MAX_TEXT:
+        return jsonify({'error': f'Document too large (max {MAX_TEXT//1000}k characters)'}), 413
     try:
-        html = markdown.markdown(d.get('text', ''),
+        html = markdown.markdown(text,
                extensions=['fenced_code', 'tables', 'nl2br'])
         return jsonify({'html': html})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/convert', methods=['POST'])
 def convert_pdf():
@@ -26,9 +35,16 @@ def convert_pdf():
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
     d = request.json or {}
-    md_text = d.get('text', '')
+    md_text = _text_of(d)
+    if len(md_text) > MAX_TEXT:
+        return jsonify({'error': f'Document too large (max {MAX_TEXT//1000}k characters)'}), 413
     title = d.get('title', 'Document')
-    font_size = max(8, min(14, int(d.get('font_size', 11))))
+    if not isinstance(title, str):
+        title = 'Document'
+    try:
+        font_size = max(8, min(14, int(d.get('font_size', 11))))
+    except (TypeError, ValueError):
+        font_size = 11
     try:
         buf = io.BytesIO()
         doc = SimpleDocTemplate(buf, pagesize=A4,

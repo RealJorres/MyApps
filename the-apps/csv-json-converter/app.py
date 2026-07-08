@@ -17,7 +17,7 @@ def csv_to_json():
         rows = [dict(r) for r in reader]
         return jsonify({'result': json.dumps(rows, indent=2, ensure_ascii=False), 'count': len(rows)})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/json-to-csv', methods=['POST'])
 def json_to_csv():
@@ -35,7 +35,7 @@ def json_to_csv():
         writer.writerows(data)
         return jsonify({'result': buf.getvalue(), 'count': len(data)})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5074)

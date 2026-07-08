@@ -344,7 +344,7 @@
     <div id="pdfResults" class="card hidden">
       <div class="results-bar">
         <h3 id="resultCount"></h3>
-        <button class="btn btn-ghost" onclick="downloadZip()">⬇ Download All (ZIP)</button>
+        <button class="btn btn-ghost" onclick="downloadZip()">Download All (ZIP)</button>
       </div>
       <div id="pagesContainer"></div>
     </div>
@@ -479,7 +479,7 @@ async function runPdfToImg() {
     pdfResultData = data.files;
     renderPages(data);
   } catch (err) {
-    showStatus(pdfStatus, '⚠ ' + err.message, 'error');
+    showStatus(pdfStatus, err.message, 'error');
   } finally {
     pdfBtn.disabled = false;
     pdfBtn.textContent = 'Convert to Images';
@@ -513,7 +513,7 @@ function renderPages(data) {
         <img src="${src}" alt="Page ${p.page}" loading="lazy" />
         <footer>
           <span>Page ${p.page}</span>
-          <a href="${src}" download="${escHtml(p.filename)}">⬇ Save</a>
+          <a href="${src}" download="${escHtml(p.filename)}">Save</a>
         </footer>`;
       grid.appendChild(card);
     });
@@ -626,7 +626,7 @@ async function runImgToPdf() {
     URL.revokeObjectURL(url);
     showStatus(imgStatus, 'PDF downloaded successfully!', 'success');
   } catch (err) {
-    showStatus(imgStatus, '⚠ ' + err.message, 'error');
+    showStatus(imgStatus, err.message, 'error');
   } finally {
     imgBtn.disabled = false;
     imgBtn.textContent = 'Convert to PDF';

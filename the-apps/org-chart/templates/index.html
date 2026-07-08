@@ -138,12 +138,16 @@ function deletePerson(id) {
   save(); render();
 }
 
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function render() {
   // Update select
   const sel = document.getElementById('pParent');
   const cur = sel.value;
   sel.innerHTML = '<option value="">(No one — root)</option>';
-  people.forEach(p => sel.innerHTML += `<option value="${p.id}">${p.name}</option>`);
+  people.forEach(p => sel.innerHTML += `<option value="${p.id}">${esc(p.name)}</option>`);
   if (cur) sel.value = cur;
 
   // Update table
@@ -153,10 +157,10 @@ function render() {
   tbody.innerHTML = people.map(p => {
     const parent = people.find(x=>x.id===p.parent);
     return `<tr>
-      <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:.4rem"></span><strong>${p.name}</strong></td>
-      <td>${p.title||'—'}</td>
-      <td>${p.dept||'—'}</td>
-      <td>${parent?parent.name:'—'}</td>
+      <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${esc(p.color)};margin-right:.4rem"></span><strong>${esc(p.name)}</strong></td>
+      <td>${esc(p.title||'—')}</td>
+      <td>${esc(p.dept||'—')}</td>
+      <td>${parent?esc(parent.name):'—'}</td>
       <td><button class="btn btn-danger btn-sm" onclick="deletePerson(${p.id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button></td>
     </tr>`;
   }).join('');

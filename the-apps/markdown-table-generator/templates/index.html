@@ -128,7 +128,7 @@
   <div class="card" id="outputCard" style="display:none">
     <h2>Markdown Output</h2>
     <div class="output-area">
-      <textarea id="mdOutput" readonly></textarea>
+      <textarea id="mdOutput" readonly aria-label="Markdown output"></textarea>
       <button class="btn btn-secondary copy-btn" id="copyBtn" onclick="copyMd()">Copy</button>
     </div>
     <div style="margin-top:1.5rem;">
@@ -171,7 +171,7 @@ function renderTable() {
   let thead = '<thead><tr>';
   for (let c = 0; c < cols; c++) {
     const al = alignments[c] || 'left';
-    const alLabel = al === 'left' ? '⬅ Left' : al === 'center' ? '↔ Center' : '➡ Right';
+    const alLabel = al === 'left' ? '← Left' : al === 'center' ? '↔ Center' : '→ Right';
     const existVal = existingData && existingData.headers[c] !== undefined ? existingData.headers[c] : (c === 0 ? 'Column ' + (c+1) : 'Column ' + (c+1));
     thead += `<th><div class="th-inner">
       <button class="align-btn" onclick="cycleAlign(${c})" title="Alignment">${alLabel}</button>

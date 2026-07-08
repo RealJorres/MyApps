@@ -369,8 +369,8 @@ function addItem(desc='', qty=1, price=0) {
   tr.id = 'item-row-' + id;
   tr.innerHTML = `
     <td><input type="text" value="${desc}" placeholder="Service description" oninput="calcRow(${id});updatePreview()"></td>
-    <td><input type="number" value="${qty}" min="0" step="0.01" oninput="calcRow(${id});updatePreview()"></td>
-    <td><input type="number" value="${price}" min="0" step="0.01" oninput="calcRow(${id});updatePreview()"></td>
+    <td><input type="number" value="${qty}" min="0" step="0.01" aria-label="Quantity" oninput="calcRow(${id});updatePreview()"></td>
+    <td><input type="number" value="${price}" min="0" step="0.01" aria-label="Unit price" oninput="calcRow(${id});updatePreview()"></td>
     <td class="total-cell" id="row-total-${id}">${getCurrency()}0.00</td>
     <td><button class="btn btn-danger btn-sm" onclick="removeItem(${id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button></td>
   `;

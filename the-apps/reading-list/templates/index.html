@@ -132,7 +132,7 @@
       <button class="filter-btn" data-filter="unread" onclick="setFilter('unread',this)">Unread</button>
       <button class="filter-btn" data-filter="read" onclick="setFilter('read',this)">Read</button>
       <input type="text" class="search-input" id="searchInput" placeholder="Search..." oninput="renderList()">
-      <select class="sort-select" id="sortSelect" onchange="renderList()">
+      <select class="sort-select" id="sortSelect" onchange="renderList()" aria-label="Sort books">
         <option value="date">Date Added</option>
         <option value="title">Title</option>
         <option value="unread">Unread First</option>

@@ -57,7 +57,7 @@ def format_code():
             result = code
         return jsonify({'result': result})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5089)

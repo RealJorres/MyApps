@@ -121,7 +121,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--brand); }
 
   <div class="card">
     <div class="url-bar">
-      <select id="methodSelect">
+      <select id="methodSelect" aria-label="HTTP method">
         <option>GET</option><option>POST</option><option>PUT</option>
         <option>PATCH</option><option>DELETE</option><option>HEAD</option>
       </select>
@@ -130,7 +130,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--brand); }
     </div>
     <div class="timeout-row">
       <span>Timeout:</span>
-      <input type="number" id="timeoutInput" value="10" min="1" max="30" style="width:60px">
+      <input type="number" id="timeoutInput" value="10" min="1" max="30" style="width:60px" aria-label="Timeout in seconds">
       <span>seconds</span>
     </div>
 

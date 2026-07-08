@@ -8,27 +8,31 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 def index():
     return render_template('index.html')
 
+def _str(d, key, default=''):
+    v = d.get(key, default)
+    return v if isinstance(v, str) else default
+
 @app.route('/api/encode-text', methods=['POST'])
 def encode_text():
     d = request.json or {}
-    text = d.get('text', '')
-    enc = d.get('encoding', 'utf-8')
+    text = _str(d, 'text')
+    enc = _str(d, 'encoding', 'utf-8')
     try:
         result = base64.b64encode(text.encode(enc)).decode('ascii')
         return jsonify({'result': result})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/decode-text', methods=['POST'])
 def decode_text():
     d = request.json or {}
-    b64 = d.get('text', '').strip()
-    enc = d.get('encoding', 'utf-8')
+    b64 = _str(d, 'text').strip()
+    enc = _str(d, 'encoding', 'utf-8')
     try:
         result = base64.b64decode(b64).decode(enc)
         return jsonify({'result': result})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/encode-file', methods=['POST'])
 def encode_file():
@@ -44,13 +48,13 @@ def encode_file():
 @app.route('/api/decode-file', methods=['POST'])
 def decode_file():
     d = request.json or {}
-    b64 = d.get('text', '').strip()
-    filename = d.get('filename', 'output.bin')
+    b64 = _str(d, 'text').strip()
+    filename = _str(d, 'filename', 'output.bin') or 'output.bin'
     try:
         data = base64.b64decode(b64)
         return send_file(io.BytesIO(data), as_attachment=True, download_name=filename)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5017)

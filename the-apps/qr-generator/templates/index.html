@@ -102,14 +102,14 @@ textarea#textInput { min-height: 100px; resize: vertical; }
         <label for="fgPicker">Foreground Color</label>
         <div class="color-row">
           <input type="color" id="fgPicker" value="#000000" oninput="document.getElementById('fgText').value=this.value">
-          <input type="text" id="fgText" value="#000000" oninput="syncColor('fg')">
+          <input type="text" id="fgText" value="#000000" oninput="syncColor('fg')" aria-label="Foreground color hex">
         </div>
       </div>
       <div class="field">
         <label for="bgPicker">Background Color</label>
         <div class="color-row">
           <input type="color" id="bgPicker" value="#ffffff" oninput="document.getElementById('bgText').value=this.value">
-          <input type="text" id="bgText" value="#ffffff" oninput="syncColor('bg')">
+          <input type="text" id="bgText" value="#ffffff" oninput="syncColor('bg')" aria-label="Background color hex">
         </div>
       </div>
     </div>

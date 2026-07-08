@@ -71,7 +71,7 @@
 <div class="toolbar">
   <div class="tool-group">
     <span class="tool-label">Grid</span>
-    <select id="grid-size" onchange="changeGrid()">
+    <select id="grid-size" onchange="changeGrid()" aria-label="Grid size">
       <option value="8">8×8</option>
       <option value="16" selected>16×16</option>
       <option value="32">32×32</option>
@@ -79,14 +79,14 @@
   </div>
   <div class="tool-group">
     <span class="tool-label">Tool</span>
-    <button class="tool-btn active" id="tool-draw" onclick="setTool('draw')">✏ Draw</button>
-    <button class="tool-btn" id="tool-erase" onclick="setTool('erase')">⬜ Erase</button>
+    <button class="tool-btn active" id="tool-draw" onclick="setTool('draw')">Draw</button>
+    <button class="tool-btn" id="tool-erase" onclick="setTool('erase')">Erase</button>
     <button class="tool-btn" id="tool-fill" onclick="setTool('fill')">Fill</button>
     <button class="tool-btn" id="tool-pick" onclick="setTool('pick')">Pick</button>
   </div>
   <div class="tool-group">
     <span class="tool-label">BG</span>
-    <select id="bg-select" onchange="changeBg()">
+    <select id="bg-select" onchange="changeBg()" aria-label="Background style">
       <option value="white">White</option>
       <option value="black">Black</option>
       <option value="checker">Checker</option>

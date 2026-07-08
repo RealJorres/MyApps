@@ -19,7 +19,7 @@ def format_css():
         result = cssbeautifier.beautify(css, opts)
         return jsonify({'result': result})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/minify', methods=['POST'])
 def minify_css():
@@ -34,7 +34,7 @@ def minify_css():
         result = result.strip()
         return jsonify({'result': result})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5039)

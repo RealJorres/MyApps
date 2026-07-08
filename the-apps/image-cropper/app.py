@@ -33,7 +33,7 @@ def crop():
         ext = {'PNG':'png','JPEG':'jpg','WEBP':'webp'}.get(fmt,'png')
         return send_file(buf, mimetype=mime, as_attachment=True, download_name=f'cropped.{ext}')
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5061)

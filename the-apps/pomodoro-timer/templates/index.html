@@ -339,10 +339,14 @@ function cdSaveList(list) {
 
 function cdPad(n) { return String(Math.floor(n)).padStart(2,'0'); }
 
+function cdEsc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function cdUpdate() {
   clearInterval(cdInterval);
   const target = document.getElementById('cdTarget').value;
-  const label  = document.getElementById('cdLabel').value || 'Countdown';
+  const label  = cdEsc(document.getElementById('cdLabel').value || 'Countdown');
   if (!target) { document.getElementById('cdDisplay').innerHTML = '<p style="color:var(--muted);font-size:.9rem">Set a target date to start the countdown.</p>'; return; }
   function tick() {
     const now  = new Date();
@@ -401,7 +405,7 @@ function cdRenderSaved() {
   if (!list.length) { el.innerHTML = '<p style="font-size:.85rem;color:var(--muted)">No saved countdowns yet.</p>'; return; }
   el.innerHTML = list.map(item => `
     <div style="display:flex;align-items:center;gap:.5rem;padding:.45rem 0;border-bottom:1px solid var(--border)">
-      <div style="flex:1;font-size:.85rem;font-weight:600">${item.label}</div>
+      <div style="flex:1;font-size:.85rem;font-weight:600">${cdEsc(item.label)}</div>
       <div style="font-size:.75rem;color:var(--muted)">${new Date(item.target).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
       <button onclick="cdLoad(${JSON.stringify(item).replace(/"/g,'&quot;')})" style="padding:.25rem .6rem;border:1px solid var(--border);border-radius:.4rem;background:var(--bg);font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit">Load</button>
       <button onclick="cdDelete(${item.id})" style="padding:.25rem .6rem;border:1px solid #fca5a5;border-radius:.4rem;background:#fee2e2;color:#dc2626;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit" aria-label="Delete countdown">&#x2715;</button>

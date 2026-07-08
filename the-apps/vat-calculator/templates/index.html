@@ -54,6 +54,8 @@ input:focus { border-color: var(--brand); }
   body { overflow-x: hidden; }
   .results-grid { grid-template-columns: 1fr 1fr !important; }
   input[type=text], input[type=number], select { width: 100% !important; min-width: 0 !important; }
+  .amount-row input[type=text] { width: 60px !important; }
+  .amount-row input[type=number] { width: auto !important; min-width: 0 !important; }
 }
 </style>
 </head>
@@ -74,7 +76,7 @@ input:focus { border-color: var(--brand); }
       <label for="currencySymbol" id="amountLabel">Net Amount (before tax)</label>
       <div class="amount-row">
         <input type="text" id="currencySymbol" value="$" maxlength="3">
-        <input type="number" id="amount" value="100" min="0" step="0.01">
+        <input type="number" id="amount" value="100" min="0" step="0.01" aria-label="Amount">
       </div>
     </div>
 

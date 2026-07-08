@@ -14,7 +14,8 @@ def index():
 @app.route('/api/generate', methods=['POST'])
 def generate():
     d = request.json or {}
-    text = d.get('text', '').strip()
+    text = d.get('text', '')
+    text = text.strip() if isinstance(text, str) else ''
     if not text:
         return jsonify({'error': 'Enter some text or URL'}), 400
     try:
@@ -29,12 +30,13 @@ def generate():
         b64 = base64.b64encode(buf.getvalue()).decode()
         return jsonify({'image': b64})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/download', methods=['POST'])
 def download():
     d = request.json or {}
-    text = d.get('text', '').strip()
+    text = d.get('text', '')
+    text = text.strip() if isinstance(text, str) else ''
     if not text:
         return jsonify({'error': 'No text'}), 400
     try:
@@ -48,7 +50,7 @@ def download():
         buf.seek(0)
         return send_file(buf, mimetype='image/png', as_attachment=True, download_name='qrcode.png')
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=False, port=5003)

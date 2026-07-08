@@ -11,7 +11,10 @@ def index():
 @app.route('/api/describe', methods=['POST'])
 def describe():
     d = request.json or {}
-    expr = d.get('expr', '').strip()
+    expr = d.get('expr', '')
+    if not isinstance(expr, str):
+        return jsonify({'error': 'Expression must be a string'}), 400
+    expr = expr.strip()
     if not expr:
         return jsonify({'error': 'No expression'}), 400
     try:

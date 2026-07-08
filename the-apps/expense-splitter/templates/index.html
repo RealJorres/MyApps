@@ -195,7 +195,7 @@ function renderExpenses() {
         </div>
         <div>
           <label for="${exp.id}">Paid By</label>
-          <select data-field="paidBy" data-id="${exp.id}" style="width:100%">
+          <select data-field="paidBy" data-id="${exp.id}" style="width:100%" aria-label="Paid by">
             ${people.map(p => `<option value="${escHtml(p)}" ${exp.paidBy === p ? 'selected' : ''}>${escHtml(p)}</option>`).join('')}
           </select>
         </div>

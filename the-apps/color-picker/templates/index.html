@@ -130,15 +130,15 @@ input.num-inp:focus{border-color:var(--brand)}
     <div class="slider-section">
       <h3>RGB Sliders</h3>
       <div class="slider-grid">
-        <span>R</span><input type="range" id="rS" min="0" max="255" oninput="fromRgbSlider()"><input class="num-inp" id="rN" type="number" min="0" max="255" oninput="fromRgbNum()">
-        <span>G</span><input type="range" id="gS" min="0" max="255" oninput="fromRgbSlider()"><input class="num-inp" id="gN" type="number" min="0" max="255" oninput="fromRgbNum()">
-        <span>B</span><input type="range" id="bS" min="0" max="255" oninput="fromRgbSlider()"><input class="num-inp" id="bN" type="number" min="0" max="255" oninput="fromRgbNum()">
+        <span>R</span><input type="range" id="rS" min="0" max="255" aria-label="Red" oninput="fromRgbSlider()"><input class="num-inp" id="rN" type="number" min="0" max="255" aria-label="Red value" oninput="fromRgbNum()">
+        <span>G</span><input type="range" id="gS" min="0" max="255" aria-label="Green" oninput="fromRgbSlider()"><input class="num-inp" id="gN" type="number" min="0" max="255" aria-label="Green value" oninput="fromRgbNum()">
+        <span>B</span><input type="range" id="bS" min="0" max="255" aria-label="Blue" oninput="fromRgbSlider()"><input class="num-inp" id="bN" type="number" min="0" max="255" aria-label="Blue value" oninput="fromRgbNum()">
       </div>
       <h3 style="margin-top:.75rem">HSL Sliders</h3>
       <div class="slider-grid">
-        <span>H</span><input type="range" id="hS" min="0" max="360" oninput="fromHslSlider()"><input class="num-inp" id="hN" type="number" min="0" max="360" oninput="fromHslNum()">
-        <span>S</span><input type="range" id="sS" min="0" max="100" oninput="fromHslSlider()"><input class="num-inp" id="sN" type="number" min="0" max="100" oninput="fromHslNum()">
-        <span>L</span><input type="range" id="lS" min="0" max="100" oninput="fromHslSlider()"><input class="num-inp" id="lN" type="number" min="0" max="100" oninput="fromHslNum()">
+        <span>H</span><input type="range" id="hS" min="0" max="360" aria-label="Hue" oninput="fromHslSlider()"><input class="num-inp" id="hN" type="number" min="0" max="360" aria-label="Hue value" oninput="fromHslNum()">
+        <span>S</span><input type="range" id="sS" min="0" max="100" aria-label="Saturation" oninput="fromHslSlider()"><input class="num-inp" id="sN" type="number" min="0" max="100" aria-label="Saturation value" oninput="fromHslNum()">
+        <span>L</span><input type="range" id="lS" min="0" max="100" aria-label="Lightness" oninput="fromHslSlider()"><input class="num-inp" id="lN" type="number" min="0" max="100" aria-label="Lightness value" oninput="fromHslNum()">
       </div>
     </div>
   </div>

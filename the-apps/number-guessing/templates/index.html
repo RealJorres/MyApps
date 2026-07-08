@@ -565,7 +565,7 @@ function submitGuess() {
   } else {
     result = 'low';
     state.lowBound = Math.max(state.lowBound, val + 1);
-    setFeedback('Too Low! ❄️', 'low');
+    setFeedback('Too Low!', 'low');
   }
 
   addHistory(val, result);
