@@ -310,6 +310,25 @@
     anchor.setAttribute('aria-hidden', 'true');
     anchor.style.cssText = 'position:absolute;top:0;left:0;width:0;height:0;overflow:hidden';
 
+    // Some apps pad their <body> horizontally (e.g. games that center a board
+    // with `padding: 1.5rem 1rem`). Since the bars are injected as body
+    // children, that padding insets them so they no longer span edge-to-edge.
+    // Cancel it with compensating negative margins so the full-width bars
+    // reach the viewport edges regardless of the app's body padding.
+    function applyFullBleed() {
+      try {
+        var cs  = getComputedStyle(document.body);
+        var padL = parseFloat(cs.paddingLeft)  || 0;
+        var padR = parseFloat(cs.paddingRight) || 0;
+        if (!padL && !padR) return;
+        [navBar, relBar].forEach(function (el) {
+          if (!el) return;
+          el.style.marginLeft  = '-' + padL + 'px';
+          el.style.marginRight = '-' + padR + 'px';
+        });
+      } catch (e) { /* non-fatal cosmetic adjustment */ }
+    }
+
     // Insert into DOM: skip → navBar → [relBar] → anchor → [existing content]
     var body = document.body;
     if (body) {
@@ -317,12 +336,14 @@
       if (relBar) { body.insertBefore(relBar, anchor); }
       body.insertBefore(navBar, relBar || anchor);
       body.insertBefore(skip, navBar);
+      applyFullBleed();
     } else {
       document.addEventListener('DOMContentLoaded', function () {
         document.body.insertBefore(anchor, document.body.firstChild);
         if (relBar) { document.body.insertBefore(relBar, anchor); }
         document.body.insertBefore(navBar, relBar || anchor);
         document.body.insertBefore(skip, navBar);
+        applyFullBleed();
       });
     }
   }

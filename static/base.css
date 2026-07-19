@@ -129,6 +129,12 @@ body {
 /* ── App navigation bar (injected by app-nav.js) ── */
 #app-nav-bar {
   height: 46px;
+  /* Span full width even when the app centers its <body> with a
+     flex column + align-items:center (games/board apps). Without this,
+     align-items:center shrinks the injected bar to its content width.
+     align-self:stretch (not width:100%) so app-nav.js's negative margins
+     can expand it past any horizontal body padding to the viewport edges. */
+  align-self: stretch;
   background: #0f172a;
   border-bottom: 1px solid #1e293b;
   display: flex;
@@ -382,6 +388,7 @@ input[type=checkbox], input[type=radio] { accent-color: var(--brand); width: aut
   background: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
   padding: .3rem 1.25rem;
+  align-self: stretch;   /* full width inside flex-centered app bodies */
   display: flex;
   align-items: center;
   gap: .5rem;
