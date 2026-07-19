@@ -152,6 +152,39 @@ def test_app_contract(client, app_id):
     assert 0x08 not in raw, f'{app_id}: U+0008 backspace byte in served HTML'
 
 
+_JSONLD_RE = re.compile(
+    r'<script type="application/ld\+json">\s*(\{.*?\})\s*</script>', re.S)
+_JSONLD_REQUIRED = {
+    '@context', '@type', 'name', 'url', 'description',
+    'applicationCategory', 'offers', 'publisher', 'isAccessibleForFree',
+}
+
+
+@pytest.mark.contract
+@pytest.mark.parametrize('app_id', APP_IDS)
+def test_app_jsonld(client, app_id):
+    """Each app must expose exactly one valid SoftwareApplication JSON-LD block.
+
+    Guards SEO structured data: valid JSON, required fields present, correct
+    self-referential URL, and NO fabricated ratings/reviews (Google policy —
+    ratings are localStorage-only, so aggregateRating would be dishonest).
+    """
+    _status, _raw, text = _get(client, f'/{app_id}/')
+    blocks = _JSONLD_RE.findall(text)
+    assert len(blocks) == 1, f'{app_id}: expected 1 JSON-LD block, found {len(blocks)}'
+
+    data = json.loads(blocks[0])  # must be valid JSON
+    assert data.get('@type') == 'SoftwareApplication', f'{app_id}: wrong @type'
+    missing = _JSONLD_REQUIRED - set(data)
+    assert not missing, f'{app_id}: JSON-LD missing {missing}'
+    assert data['url'] == f'https://jorresapps.onrender.com/{app_id}/', \
+        f'{app_id}: JSON-LD url does not match canonical'
+    assert data.get('offers', {}).get('price') == '0', f'{app_id}: offer not free'
+    # Honesty guard: no fabricated ratings/reviews
+    assert 'aggregateRating' not in data and 'review' not in data, \
+        f'{app_id}: fabricated rating/review in JSON-LD (not allowed)'
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Layer 2 — Known-answer functional tests (server-side compute endpoints)
 # ══════════════════════════════════════════════════════════════════════════════
