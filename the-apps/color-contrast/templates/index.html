@@ -213,7 +213,7 @@ function update() {
     if (!pass) anyFail = true;
     const el = document.getElementById(t.id);
     el.className = 'wcag-badge ' + (pass ? 'pass' : 'fail');
-    el.querySelector('.badge-result').textContent = pass ? 'Pass' : '✗ Fail';
+    el.querySelector('.badge-result').textContent = pass ? 'Pass' : 'Fail';
   });
 
   const suggBox = document.getElementById('suggestionBox');
@@ -275,7 +275,7 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
 
 update();
 </script>
-<script src="/static/footer.js?v=4"></script>
+<script src="/static/footer.js?v=5"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>

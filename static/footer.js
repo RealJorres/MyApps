@@ -13,6 +13,21 @@
 (function () {
   'use strict';
 
+  // ── Global safety net: swallow benign clipboard-permission rejections ─────
+  // Many app "Copy" buttons call navigator.clipboard.writeText() without a
+  // .catch(). In a non-secure context, or when the browser/user denies the
+  // clipboard permission, the returned promise rejects; left unhandled it
+  // surfaces as a noisy console error / uncaught pageerror. Suppress ONLY that
+  // specific rejection so genuine application errors still bubble up normally.
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e && e.reason;
+    var name = r && r.name;
+    var msg = (r && (r.message || String(r))) || '';
+    if (name === 'NotAllowedError' || /clipboard|writeText|Write permission/i.test(msg)) {
+      e.preventDefault();
+    }
+  });
+
   // ── Inject CSS ────────────────────────────────────────────────────────────
   var style = document.createElement('style');
   style.textContent = [

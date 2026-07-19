@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import io, struct
 
 app = Flask(__name__)
@@ -16,7 +16,10 @@ def extract():
         return jsonify({'error': 'No image provided'}), 400
     count = max(3, min(10, int(request.form.get('count', 6))))
     try:
-        img = Image.open(f.stream).convert('RGB')
+        try:
+            img = Image.open(f.stream).convert('RGB')
+        except UnidentifiedImageError:
+            return jsonify({'error': 'Invalid or unsupported image file.'}), 400
         # Resize for speed
         img.thumbnail((200, 200))
         # Quantize to get dominant colors

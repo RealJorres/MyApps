@@ -15,8 +15,8 @@ def info():
     try:
         doc = fitz.open(stream=f.read(), filetype='pdf')
         return jsonify({'pages': len(doc), 'title': doc.metadata.get('title','')})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Invalid or corrupted PDF file.'}), 400
 
 @app.route('/api/split', methods=['POST'])
 def split():
@@ -26,7 +26,10 @@ def split():
     if not f: return jsonify({'error': 'No file'}), 400
     try:
         data = f.read()
-        src = fitz.open(stream=data, filetype='pdf')
+        try:
+            src = fitz.open(stream=data, filetype='pdf')
+        except Exception:
+            return jsonify({'error': 'Invalid or corrupted PDF file.'}), 400
         total = len(src)
         pages_to_extract = []
         if mode == 'all':

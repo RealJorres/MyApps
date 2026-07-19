@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from PIL import Image, ExifTags
+from PIL import Image, ExifTags, UnidentifiedImageError
 import io
 
 app = Flask(__name__)
@@ -15,7 +15,10 @@ def exif():
     if not f:
         return jsonify({'error': 'No file'}), 400
     try:
-        img = Image.open(f.stream)
+        try:
+            img = Image.open(f.stream)
+        except UnidentifiedImageError:
+            return jsonify({'error': 'Invalid or unsupported image file.'}), 400
         info = {'format': img.format or 'Unknown', 'mode': img.mode, 'width': img.width, 'height': img.height, 'size_mp': round(img.width * img.height / 1e6, 2)}
         raw = img._getexif() if hasattr(img, '_getexif') else None
         exif_data = {}

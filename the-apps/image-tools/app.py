@@ -1,5 +1,5 @@
 from flask import Flask, request, send_file, jsonify, render_template
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import io
 
 app = Flask(__name__)
@@ -17,6 +17,8 @@ def info():
     try:
         img = Image.open(f.stream)
         return jsonify({'width': img.width, 'height': img.height, 'mode': img.mode, 'format': img.format or 'unknown'})
+    except UnidentifiedImageError:
+        return jsonify({'error': 'Invalid or unsupported image file.'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -29,7 +31,10 @@ def process():
     fmt = request.form.get('format', 'PNG').upper()
     quality = max(1, min(100, int(request.form.get('quality', 85))))
     try:
-        img = Image.open(f.stream)
+        try:
+            img = Image.open(f.stream)
+        except UnidentifiedImageError:
+            return jsonify({'error': 'Invalid or unsupported image file.'}), 400
         if op == 'resize':
             mode = request.form.get('resize_mode', 'percent')
             if mode == 'percent':

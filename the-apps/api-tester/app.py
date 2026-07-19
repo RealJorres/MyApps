@@ -42,12 +42,17 @@ def index():
 
 @app.route('/api/request', methods=['POST'])
 def make_request():
-    d = request.json or {}
-    url = d.get('url', '').strip()
-    method = d.get('method', 'GET').upper()
-    headers = d.get('headers', {})
-    body = d.get('body', '')
-    timeout = min(30, max(1, int(d.get('timeout', 10))))
+    d = request.json if isinstance(request.json, dict) else {}
+    url = str(d.get('url') or '').strip()
+    method = str(d.get('method') or 'GET').upper()
+    headers = d.get('headers') if isinstance(d.get('headers'), dict) else {}
+    body = d.get('body') or ''
+    if not isinstance(body, str):
+        body = str(body)
+    try:
+        timeout = min(30, max(1, int(d.get('timeout', 10))))
+    except (ValueError, TypeError):
+        timeout = 10
 
     if not url:
         return jsonify({'error': 'URL is required'}), 400

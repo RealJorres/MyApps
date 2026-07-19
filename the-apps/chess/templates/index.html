@@ -292,7 +292,7 @@ function doMove(from,to,isHuman){
       else{updateStatus('Stalemate — Draw','');}
       gameOver=true; return;
     }
-    if(isInCheck(board,W)){updateStatus('Your turn — <span style="color:#ef4444">⚠ In Check!</span>','');}
+    if(isInCheck(board,W)){updateStatus('Your turn — <span style="color:#ef4444">In Check!</span>','');}
     else{updateStatus('Your turn','White');}
   }
 }
@@ -431,7 +431,7 @@ function undoMove(){
 
 newGame();
 </script>
-<script src="/static/footer.js?v=4"></script>
+<script src="/static/footer.js?v=5"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>

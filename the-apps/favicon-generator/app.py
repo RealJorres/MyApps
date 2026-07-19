@@ -1,5 +1,5 @@
 from flask import Flask, request, send_file, jsonify, render_template
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import io, zipfile
 
 app = Flask(__name__)
@@ -20,7 +20,10 @@ def generate():
     sizes_raw = request.form.get('sizes', '')
     try:
         sizes = [int(s) for s in sizes_raw.split(',') if s.strip().isdigit()] if sizes_raw else SIZES
-        img = Image.open(f.stream).convert('RGBA')
+        try:
+            img = Image.open(f.stream).convert('RGBA')
+        except UnidentifiedImageError:
+            return jsonify({'error': 'Invalid or unsupported image file.'}), 400
         buf = io.BytesIO()
         with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as zf:
             for size in sizes:

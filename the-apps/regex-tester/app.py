@@ -32,12 +32,19 @@ def index():
 
 @app.route('/api/test', methods=['POST'])
 def test():
-    d = request.json or {}
+    d = request.json if isinstance(request.json, dict) else {}
     pattern = d.get('pattern', '')
     text    = d.get('text', '')
+    if not isinstance(pattern, str):
+        pattern = ''
+    if not isinstance(text, str):
+        text = str(text) if text is not None else ''
+    flags_in = d.get('flags', '')
+    if not isinstance(flags_in, (str, list, tuple)):
+        flags_in = ''
     flags   = 0
     for f, v in [('i', re.IGNORECASE), ('m', re.MULTILINE), ('s', re.DOTALL)]:
-        if f in d.get('flags', []):
+        if f in flags_in:
             flags |= v
 
     if not pattern:

@@ -1,5 +1,5 @@
 from flask import Flask, request, send_file, jsonify, render_template
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
 import io, os
 
 app = Flask(__name__)
@@ -21,7 +21,10 @@ def watermark():
     color = request.form.get('color', '#ffffff')
     fmt = request.form.get('format', 'PNG').upper()
     try:
-        img = Image.open(f.stream).convert('RGBA')
+        try:
+            img = Image.open(f.stream).convert('RGBA')
+        except UnidentifiedImageError:
+            return jsonify({'error': 'Invalid or unsupported image file.'}), 400
         overlay = Image.new('RGBA', img.size, (0,0,0,0))
         draw = ImageDraw.Draw(overlay)
         try:
