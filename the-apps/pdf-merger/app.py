@@ -17,7 +17,16 @@ def merge():
     try:
         merged = fitz.open()
         for f in files:
-            doc = fitz.open(stream=f.read(), filetype='pdf')
+            name = f.filename or 'file'
+            try:
+                doc = fitz.open(stream=f.read(), filetype='pdf')
+            except Exception:
+                merged.close()
+                return jsonify({'error': f'"{name}" is not a valid PDF file.'}), 400
+            if doc.is_encrypted:
+                doc.close()
+                merged.close()
+                return jsonify({'error': f'"{name}" is password-protected. Remove the password and try again.'}), 400
             merged.insert_pdf(doc)
             doc.close()
         buf = io.BytesIO()

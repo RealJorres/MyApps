@@ -1,6 +1,6 @@
 from flask import Flask, request, send_file, jsonify, render_template
 import fitz  # PyMuPDF
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import io
 import base64
 import os
@@ -21,7 +21,11 @@ def pdf_to_images():
     if not files or all(f.filename == '' for f in files):
         return jsonify({'error': 'No PDF files provided'}), 400
 
-    dpi = min(max(int(request.form.get('dpi', 150)), 36), 600)
+    try:
+        dpi = int(request.form.get('dpi', 150))
+    except (ValueError, TypeError):
+        dpi = 150
+    dpi = min(max(dpi, 36), 600)
     fmt = request.form.get('format', 'png').lower()
     if fmt not in ('png', 'jpeg'):
         fmt = 'png'
@@ -31,12 +35,16 @@ def pdf_to_images():
 
     try:
         for f in files:
-            if not f.filename.lower().endswith('.pdf'):
-                return jsonify({'error': f'"{f.filename}" is not a PDF file'}), 400
+            name = f.filename or 'file'
+            if not name.lower().endswith('.pdf'):
+                return jsonify({'error': f'"{name}" is not a PDF file'}), 400
 
-            doc = fitz.open(stream=f.read(), filetype='pdf')
+            try:
+                doc = fitz.open(stream=f.read(), filetype='pdf')
+            except Exception:
+                return jsonify({'error': f'"{name}" is not a valid PDF file.'}), 400
             if doc.is_encrypted:
-                return jsonify({'error': f'"{f.filename}" is password-protected'}), 400
+                return jsonify({'error': f'"{name}" is password-protected'}), 400
 
             base = re.sub(r'[^\w\-]', '_', os.path.splitext(os.path.basename(f.filename))[0])
             scale = dpi / 72
@@ -73,7 +81,11 @@ def images_to_pdf():
     try:
         pil_images = []
         for f in files:
-            img = Image.open(f.stream)
+            try:
+                img = Image.open(f.stream)
+                img.load()
+            except (UnidentifiedImageError, OSError):
+                return jsonify({'error': f'"{f.filename or "file"}" is not a valid image file.'}), 400
             if img.mode == 'RGBA':
                 bg = Image.new('RGB', img.size, (255, 255, 255))
                 bg.paste(img, mask=img.split()[3])
@@ -81,6 +93,9 @@ def images_to_pdf():
             elif img.mode != 'RGB':
                 img = img.convert('RGB')
             pil_images.append(img)
+
+        if not pil_images:
+            return jsonify({'error': 'No valid images provided'}), 400
 
         buf = io.BytesIO()
         pil_images[0].save(

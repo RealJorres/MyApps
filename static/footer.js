@@ -28,6 +28,89 @@
     }
   });
 
+  // ── Clipboard hardening: make "Copy" work even when the async Clipboard API
+  // is blocked, and never let a copy fail silently. Apps call
+  // navigator.clipboard.writeText(x).then(showTheirOwnFeedback) with no
+  // .catch(). In a non-secure context, or when clipboard permission is denied,
+  // writeText rejects (or navigator.clipboard is missing entirely), so the
+  // app's success feedback never fires and the copy silently fails. We wrap
+  // writeText to fall back to execCommand('copy'); on fallback success we
+  // resolve so each app's own "Copied!" feedback still fires normally, and only
+  // when copy is truly impossible do we surface one "Press Ctrl+C" toast.
+  var _toastEl = null, _toastTimer = null;
+  function _showToast(msg) {
+    if (!document.body) return;
+    if (!_toastEl) {
+      var ts = document.createElement('style');
+      ts.textContent =
+        '.jorres-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(12px);' +
+        'background:#0f172a;color:#fff;border:1px solid rgba(255,255,255,.16);padding:.6rem 1.05rem;' +
+        'border-radius:999px;font:600 .82rem/1 system-ui,-apple-system,sans-serif;' +
+        'box-shadow:0 8px 28px rgba(0,0,0,.45);z-index:100000;opacity:0;pointer-events:none;max-width:90vw;' +
+        'text-align:center;transition:opacity .2s ease,transform .2s ease}' +
+        '.jorres-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}' +
+        '@media (prefers-reduced-motion:reduce){.jorres-toast{transition:none}}';
+      document.head.appendChild(ts);
+      _toastEl = document.createElement('div');
+      _toastEl.className = 'jorres-toast';
+      _toastEl.setAttribute('role', 'status');
+      _toastEl.setAttribute('aria-live', 'polite');
+      document.body.appendChild(_toastEl);
+    }
+    _toastEl.textContent = msg;
+    // reflow so the transition re-runs even on rapid repeat calls
+    void _toastEl.offsetWidth;
+    _toastEl.classList.add('show');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function () { _toastEl.classList.remove('show'); }, 2600);
+  }
+
+  function _fallbackCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = (text == null) ? '' : String(text);
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  var _origWrite = (navigator.clipboard && navigator.clipboard.writeText)
+    ? navigator.clipboard.writeText.bind(navigator.clipboard) : null;
+
+  function _writeText(text) {
+    return new Promise(function (resolve, reject) {
+      function tryFallback() {
+        if (_fallbackCopy(text)) {
+          resolve();
+        } else {
+          _showToast('Press Ctrl+C to copy');
+          reject(new DOMException('Copy is blocked in this context', 'NotAllowedError'));
+        }
+      }
+      if (_origWrite) {
+        var p;
+        try { p = _origWrite(text); } catch (e) { tryFallback(); return; }
+        Promise.resolve(p).then(resolve, tryFallback);
+      } else {
+        tryFallback();
+      }
+    });
+  }
+
+  try {
+    if (!navigator.clipboard) {
+      Object.defineProperty(navigator, 'clipboard', { value: {}, configurable: true });
+    }
+    navigator.clipboard.writeText = _writeText;
+  } catch (e) { /* clipboard object is frozen — leave the native one in place */ }
+
   // ── Inject CSS ────────────────────────────────────────────────────────────
   var style = document.createElement('style');
   style.textContent = [

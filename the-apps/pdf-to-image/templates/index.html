@@ -21,7 +21,7 @@
 <meta name="twitter:title" content="PDF ↔ Image Converter">
 <meta name="twitter:description" content="Convert PDF pages to high-quality PNG or JPEG images instantly. Free and no software required. Free, no sign-up, no tracking.">
   <title>PDF ↔ Image Converter | Jorres Apps</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="/static/vendor/jszip-3.10.1.min.js"></script>
   <style>
     :root {
 
@@ -292,8 +292,13 @@
 
   <header>
     <h1>PDF ↔ Image Converter</h1>
-    <p>Runs entirely on your machine — no files leave your computer</p>
+    <p>Convert PDF pages to images, or combine images into a PDF</p>
   </header>
+
+  <div class="privacy-notice">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Your files are processed on our server and deleted immediately after conversion. We never store, log, or share your files.
+  </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('p2i')">PDF → Images</button>
@@ -633,7 +638,7 @@ async function runImgToPdf() {
   }
 }
 </script>
-<script src="/static/footer.js?v=5"></script>
+<script src="/static/footer.js?v=6"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>

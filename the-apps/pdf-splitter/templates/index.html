@@ -6,11 +6,11 @@
 <link rel="stylesheet" href="/static/base.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/pdf-splitter/">
-<meta name="description" content="Split a PDF into individual pages or custom page ranges. Free and works entirely in your browser. Free, no sign-up, no tracking.">
+<meta name="description" content="Split a PDF into individual pages or custom page ranges. Fast and free. Free, no sign-up, no tracking.">
 <meta name="keywords" content="PDF splitter, split PDF, extract pages from PDF, PDF separator">
 <meta name="author" content="Jorres Apps">
 <meta property="og:title" content="PDF Splitter">
-<meta property="og:description" content="Split a PDF into individual pages or custom page ranges. Free and works entirely in your browser. Free, no sign-up, no tracking.">
+<meta property="og:description" content="Split a PDF into individual pages or custom page ranges. Fast and free. Free, no sign-up, no tracking.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PDF Splitter">
-<meta name="twitter:description" content="Split a PDF into individual pages or custom page ranges. Free and works entirely in your browser. Free, no sign-up, no tracking.">
+<meta name="twitter:description" content="Split a PDF into individual pages or custom page ranges. Fast and free. Free, no sign-up, no tracking.">
 <title>PDF Splitter | Jorres Apps</title>
 <style>
   
@@ -76,12 +76,16 @@
   <p>Split a PDF into individual pages or custom page ranges</p>
 </header>
 <main>
+  <div class="privacy-notice">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Your PDF is processed on our server and deleted immediately after splitting. We never store, log, or share your files.
+  </div>
   <div class="card">
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept=".pdf">
       <div class="icon"></div>
       <p>Drag & drop your PDF here, or <strong onclick="document.getElementById('fileInput').click()">browse</strong></p>
-      <p style="margin-top:0.4rem;font-size:0.78rem;color:#94a3b8">Max file size: 100 MB</p>
+      <p style="margin-top:0.4rem;font-size:0.78rem;color:#94a3b8">Max file size: 50 MB</p>
     </div>
     <div class="file-info hidden" id="fileInfo">
       
@@ -235,7 +239,7 @@ async function doSplit() {
   }
 }
 </script>
-<script src="/static/footer.js?v=5"></script>
+<script src="/static/footer.js?v=6"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>

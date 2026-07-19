@@ -76,13 +76,13 @@
 <main>
   <div class="privacy-notice">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    Files never leave your device — all processing happens locally in your browser.
+    Your PDF is processed on our server and deleted immediately after compression. We never store, log, or share your files.
   </div>
   <div class="card">
     <div class="drop-zone" id="dropZone">
       <div class="drop-icon"></div>
       <p>Drop your PDF here or <strong onclick="document.getElementById('fileInput').click()">browse files</strong></p>
-      <p style="font-size:.75rem;color:#94a3b8;margin-top:.3rem">Maximum file size: 100MB</p>
+      <p style="font-size:.75rem;color:#94a3b8;margin-top:.3rem">Maximum file size: 50MB</p>
       <div class="file-name" id="fileName"></div>
     </div>
     <input type="file" id="fileInput" accept=".pdf,application/pdf">
@@ -220,7 +220,7 @@
     }
   });
 </script>
-<script src="/static/footer.js?v=5"></script>
+<script src="/static/footer.js?v=6"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>
