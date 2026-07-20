@@ -114,8 +114,8 @@
   // ── Inject CSS ────────────────────────────────────────────────────────────
   var style = document.createElement('style');
   style.textContent = [
-    '.site-footer{background:#0d1117;border-top:1px solid rgba(255,255,255,.08);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.25rem;flex-wrap:wrap;font-size:.76rem;color:#64748b;margin-top:auto}',
-    '.ft-btn{color:#64748b;background:none;border:none;cursor:pointer;font-size:.76rem;font-family:inherit;padding:0;transition:color .15s;text-decoration:none}',
+    '.site-footer{background:#0d1117;border-top:1px solid rgba(255,255,255,.08);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.25rem;flex-wrap:wrap;font-size:.9rem;color:#64748b;margin-top:auto}',
+    '.ft-btn{color:#64748b;background:none;border:none;cursor:pointer;font-size:.9rem;font-family:inherit;padding:0;transition:color .15s;text-decoration:none}',
     '.ft-btn:hover{color:#94a3b8}',
     '.ft-btn:focus-visible{outline:2px solid #2f57ff;outline-offset:2px;border-radius:2px}',
     '.ft-sep{color:#334155;user-select:none}',
