@@ -114,7 +114,7 @@
   // ── Inject CSS ────────────────────────────────────────────────────────────
   var style = document.createElement('style');
   style.textContent = [
-    '.site-footer{background:#0d1117;border-top:1px solid rgba(255,255,255,.08);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.25rem;flex-wrap:wrap;font-size:.9rem;color:#64748b;margin-top:auto}',
+    '.site-footer{background:#0d1117;border-top:1px solid rgba(255,255,255,.08);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.25rem;flex-wrap:wrap;font-size:.9rem;color:#64748b;margin-top:auto;align-self:stretch}',
     '.ft-btn{color:#64748b;background:none;border:none;cursor:pointer;font-size:.9rem;font-family:inherit;padding:0;transition:color .15s;text-decoration:none}',
     '.ft-btn:hover{color:#94a3b8}',
     '.ft-btn:focus-visible{outline:2px solid #2f57ff;outline-offset:2px;border-radius:2px}',
@@ -259,6 +259,24 @@
   while (container.firstChild) {
     document.body.appendChild(container.firstChild);
   }
+
+  // Some apps pad their <body> (e.g. games that center a board with
+  // `padding: 1.5rem 1rem`). Since the footer is a body child, that padding
+  // insets it from the page edges. Cancel it with compensating negative
+  // margins (same technique as app-nav.js's applyFullBleed) so the dark bar
+  // reaches the viewport sides and bottom regardless of body padding.
+  try {
+    var ftEl = document.querySelector('footer.site-footer');
+    var bcs = getComputedStyle(document.body);
+    var fPadL = parseFloat(bcs.paddingLeft) || 0;
+    var fPadR = parseFloat(bcs.paddingRight) || 0;
+    var fPadB = parseFloat(bcs.paddingBottom) || 0;
+    if (ftEl && (fPadL || fPadR || fPadB)) {
+      ftEl.style.marginLeft = '-' + fPadL + 'px';
+      ftEl.style.marginRight = '-' + fPadR + 'px';
+      ftEl.style.marginBottom = '-' + fPadB + 'px';
+    }
+  } catch (e) { /* non-fatal cosmetic adjustment */ }
 
   // ── JS logic ──────────────────────────────────────────────────────────────
   function ftOpen(id) {
