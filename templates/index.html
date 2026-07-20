@@ -727,6 +727,47 @@
       }
 
       /* ── Footer ── */
+      /* Crawlable all-tools directory (server-rendered) */
+      .all-tools {
+        max-width: 1280px;
+        margin: 2.5rem auto 0;
+        padding: 0 1.5rem;
+      }
+      .all-tools summary {
+        cursor: pointer;
+        color: var(--muted);
+        font-size: .9rem;
+        font-weight: 600;
+        padding: .5rem 0;
+        user-select: none;
+      }
+      .all-tools summary:hover { color: var(--accent); }
+      .all-tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.25rem;
+        padding: 1rem 0 .5rem;
+      }
+      .all-tools-group h3 {
+        font-size: .75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: var(--muted);
+        margin-bottom: .5rem;
+      }
+      .all-tools-group ul { list-style: none; }
+      .all-tools-group li { margin-bottom: .3rem; }
+      .all-tools-group a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: .85rem;
+      }
+      .all-tools-group a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+
       footer {
         background: var(--surface2);
         border-top: 1px solid var(--border);
@@ -1152,6 +1193,27 @@
 
     <main id="main-content">
       <div class="grid" id="grid"></div>
+
+      {# Server-rendered directory: real <a> links to every app so search
+         engines can discover all pages from plain HTML (the card grid above
+         is built by JS and contributes no links to the served document). #}
+      <section class="all-tools" aria-label="All tools by category">
+        <details class="all-tools-details">
+          <summary>Browse all {{ app_count }} tools by category</summary>
+          <div class="all-tools-grid">
+            {% for category, cat_apps in categories %}
+            <div class="all-tools-group">
+              <h3>{{ category }}</h3>
+              <ul>
+                {% for a in cat_apps %}
+                <li><a href="/{{ a.id }}/" title="{{ a.description }}">{{ a.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endfor %}
+          </div>
+        </details>
+      </section>
     </main>
 
     <!-- ── Footer ── -->

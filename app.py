@@ -458,7 +458,15 @@ def index():
         }
         for a in REGISTRY
     ]
-    return render_template('index.html', apps_json=_json_dumps(apps))
+    # Server-rendered category groups so every app has a real <a href> link
+    # in the HTML — search engines discover pages through links; the JS-built
+    # grid alone leaves the served document with no crawlable app links.
+    cats = {}
+    for a in REGISTRY:
+        cats.setdefault(a.get('category', 'Other'), []).append(
+            {'id': a['id'], 'name': a['name'], 'description': a['description']})
+    return render_template('index.html', apps_json=_json_dumps(apps),
+                           categories=list(cats.items()), app_count=len(REGISTRY))
 
 
 BASE_URL = 'https://jorresapps.onrender.com'
@@ -497,7 +505,14 @@ def robots():
 @flask_app.route('/sitemap.xml')
 def sitemap():
     from datetime import date
-    today = date.today().isoformat()
+    # Stable lastmod (registry file's date, i.e. the last deploy that changed
+    # apps) — stamping today's date on every request tells crawlers everything
+    # changes daily, which teaches them to distrust the sitemap's lastmod.
+    try:
+        today = date.fromtimestamp(
+            os.path.getmtime(os.path.join(LAUNCHER_DIR, 'apps.json'))).isoformat()
+    except OSError:
+        today = date.today().isoformat()
     urls = [
         f'  <url>'
         f'<loc>{BASE_URL}/</loc>'

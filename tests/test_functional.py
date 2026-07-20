@@ -63,6 +63,17 @@ def test_sitemap_covers_every_app_and_public_page(client):
     assert not missing, f'URLs missing from sitemap.xml: {missing}'
 
 
+def test_home_has_crawlable_links_to_every_app(client):
+    """The server-rendered home HTML must contain a real <a href="/<id>/">
+    for every registered app. Search engines discover pages through HTML
+    links — the JS-built card grid contributes none to the served document,
+    so the server-rendered directory section is what makes every app
+    discoverable. Guards against that section being dropped or desynced."""
+    _, _, text = _get(client, '/')
+    missing = [aid for aid in APP_IDS if f'href="/{aid}/"' not in text]
+    assert not missing, f'apps with no server-rendered link on home page: {missing}'
+
+
 def test_robots_allows_crawl_and_points_to_sitemap(client):
     """robots.txt must permit indexing and advertise the sitemap; only
     /api/ and retired apps may be disallowed (never a live app)."""
