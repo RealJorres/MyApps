@@ -1160,6 +1160,8 @@
         &copy; <strong>2026 Jorres Apps</strong> &mdash; 100+ free browser tools. No ads. No tracking. No sign-up.
       </div>
       <div class="footer-links">
+        <button class="footer-link" onclick="openAbout()">About</button>
+        <span style="color:var(--border)">|</span>
         <button class="footer-link" onclick="openPrivacy()">Privacy</button>
         <span style="color:var(--border)">|</span>
         <button class="footer-link" onclick="openTnC()">Terms &amp; Conditions</button>
@@ -1167,6 +1169,41 @@
         <button class="footer-bug" onclick="openBugReport()">Report a Bug</button>
       </div>
     </footer>
+
+    <!-- ── About modal ── -->
+    <div class="modal-backdrop" id="aboutModal" onclick="closeModalOutside(event,'aboutModal')">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>About Jorres Apps</h2>
+          <button class="modal-close" onclick="closeModal('aboutModal')">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="tnc-section">
+            <p><strong>Jorres Apps started as a personal collection of small tools I built for my own everyday use.</strong> They turned out to be too useful to keep to myself, so I decided to share them with everyone.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>What this is</h3>
+            <p>Over 130 free tools and mini-games across ten categories &mdash; calculators, converters, formatters, PDF utilities, planners, and classic games. Everything runs in your browser, ready the moment the page loads. No install, no setup.</p>
+          </div>
+
+          <div class="tnc-section">
+            <h3>What we advertise is what you get</h3>
+            <ul>
+              <li><strong>Free.</strong> Every tool, in full. No paywalls, no premium tiers, no upsells.</li>
+              <li><strong>No sign-up.</strong> No accounts, no logins, no email walls. Open a tool and use it.</li>
+              <li><strong>No tracking.</strong> No analytics, no ads, no tracking cookies. We genuinely do not know who you are, and we like it that way.</li>
+              <li><strong>Your data stays yours.</strong> Most tools run entirely in your browser. The few that need our server (like the PDF tools) process your file and delete it immediately &mdash; we never store, log, or share it.</li>
+            </ul>
+          </div>
+
+          <div class="tnc-section">
+            <h3>Contact</h3>
+            <p>Found a bug or have an idea? Use the <strong>Report a Bug</strong> button in the footer or email <a href="mailto:joshuarelatorres28@gmail.com" style="color:var(--accent)">joshuarelatorres28@gmail.com</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- ── Privacy Policy modal ── -->
     <div class="modal-backdrop" id="privacyModal" onclick="closeModalOutside(event,'privacyModal')">
@@ -1962,6 +1999,8 @@
           closeDonate();
           closeModal('tncModal');
           closeModal('bugModal');
+          closeModal('privacyModal');
+          closeModal('aboutModal');
         }
         // Ctrl+K (or Cmd+K on Mac) — focus the search bar from anywhere
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -2007,6 +2046,7 @@
       }
       function openTnC()       { openModal('tncModal'); }
       function openPrivacy()   { openModal('privacyModal'); }
+      function openAbout()     { openModal('aboutModal'); }
       function openBugReport() {
         document.getElementById('bugMsg').style.display = 'none';
         document.getElementById('bugSubmitBtn').disabled = false;
