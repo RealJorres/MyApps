@@ -160,21 +160,29 @@ _JSONLD_REQUIRED = {
 }
 
 
+_REGISTRY_BY_ID = {a['id']: a for a in REGISTRY}
+
+
 @pytest.mark.contract
 @pytest.mark.parametrize('app_id', APP_IDS)
 def test_app_jsonld(client, app_id):
-    """Each app must expose exactly one valid SoftwareApplication JSON-LD block.
+    """Each app must expose exactly two valid JSON-LD blocks:
+    a SoftwareApplication and a BreadcrumbList (Home > Category > App).
 
     Guards SEO structured data: valid JSON, required fields present, correct
-    self-referential URL, and NO fabricated ratings/reviews (Google policy —
-    ratings are localStorage-only, so aggregateRating would be dishonest).
+    self-referential URL, breadcrumb matching the app's registry category,
+    and NO fabricated ratings/reviews (Google policy — ratings are
+    localStorage-only, so aggregateRating would be dishonest).
     """
-    _status, _raw, text = _get(client, f'/{app_id}/')
-    blocks = _JSONLD_RE.findall(text)
-    assert len(blocks) == 1, f'{app_id}: expected 1 JSON-LD block, found {len(blocks)}'
+    from urllib.parse import quote_plus
 
-    data = json.loads(blocks[0])  # must be valid JSON
-    assert data.get('@type') == 'SoftwareApplication', f'{app_id}: wrong @type'
+    _status, _raw, text = _get(client, f'/{app_id}/')
+    blocks = [json.loads(b) for b in _JSONLD_RE.findall(text)]
+    by_type = {b.get('@type'): b for b in blocks}
+    assert len(blocks) == 2 and set(by_type) == {'SoftwareApplication', 'BreadcrumbList'}, \
+        f'{app_id}: expected SoftwareApplication + BreadcrumbList, got {sorted(by_type)}'
+
+    data = by_type['SoftwareApplication']
     missing = _JSONLD_REQUIRED - set(data)
     assert not missing, f'{app_id}: JSON-LD missing {missing}'
     assert data['url'] == f'https://jorresapps.onrender.com/{app_id}/', \
@@ -183,6 +191,41 @@ def test_app_jsonld(client, app_id):
     # Honesty guard: no fabricated ratings/reviews
     assert 'aggregateRating' not in data and 'review' not in data, \
         f'{app_id}: fabricated rating/review in JSON-LD (not allowed)'
+
+    app = _REGISTRY_BY_ID[app_id]
+    crumbs = by_type['BreadcrumbList'].get('itemListElement', [])
+    assert [c.get('position') for c in crumbs] == [1, 2, 3], \
+        f'{app_id}: breadcrumb positions wrong'
+    assert crumbs[0]['name'] == 'Home' and \
+        crumbs[0]['item'] == 'https://jorresapps.onrender.com/', \
+        f'{app_id}: breadcrumb Home item wrong'
+    assert crumbs[1]['name'] == app['category'] and \
+        crumbs[1]['item'] == \
+        f"https://jorresapps.onrender.com/?category={quote_plus(app['category'])}", \
+        f'{app_id}: breadcrumb category item wrong'
+    assert crumbs[2]['name'] == app['name'] and 'item' not in crumbs[2], \
+        f'{app_id}: breadcrumb leaf must be the app name with no item URL'
+
+
+def test_home_jsonld(client):
+    """The launcher home page must expose WebSite (with SearchAction, for the
+    Google sitelinks search box) and Organization JSON-LD blocks."""
+    _status, _raw, text = _get(client, '/')
+    blocks = [json.loads(b) for b in _JSONLD_RE.findall(text)]
+    by_type = {b.get('@type'): b for b in blocks}
+    assert {'WebSite', 'Organization'} <= set(by_type), \
+        f'home: expected WebSite + Organization JSON-LD, got {sorted(by_type)}'
+
+    site = by_type['WebSite']
+    assert site['url'] == 'https://jorresapps.onrender.com/'
+    action = site.get('potentialAction', {})
+    assert action.get('@type') == 'SearchAction', 'home: SearchAction missing'
+    assert '{search_term_string}' in action.get('target', {}).get('urlTemplate', ''), \
+        'home: SearchAction urlTemplate missing placeholder'
+
+    org = by_type['Organization']
+    assert org['url'] == 'https://jorresapps.onrender.com/'
+    assert org.get('logo'), 'home: Organization logo missing'
 
 
 # ══════════════════════════════════════════════════════════════════════════════

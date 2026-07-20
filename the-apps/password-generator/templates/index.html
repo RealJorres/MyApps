@@ -114,6 +114,31 @@ input:focus{border-color:var(--brand)}
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://jorresapps.onrender.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Security & Network",
+      "item": "https://jorresapps.onrender.com/?category=Security+%26+Network"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Password Tools"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <div class="container">
@@ -303,9 +328,10 @@ function generate() {
   const count = Math.max(1, Math.min(20, parseInt(document.getElementById('countInput').value) || 5));
   const passwords = Array.from({ length: count }, () => generateOne(cs, len));
 
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   document.getElementById('resultsList').innerHTML = passwords.map((pw, i) => `
     <div class="pw-row" id="pwrow${i}">
-      <span class="pw-text" id="pw${i}">${pw}</span>
+      <span class="pw-text" id="pw${i}">${esc(pw)}</span>
       <button class="btn btn-ghost btn-sm pw-copy" onclick="copyPw(${i})">Copy</button>
     </div>`).join('');
 
