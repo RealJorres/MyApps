@@ -7,7 +7,7 @@ import os
 import re
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 100 MB
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50 MB
 
 
 @app.route('/')
@@ -68,8 +68,8 @@ def pdf_to_images():
             total_pages += len(doc)
 
         return jsonify({'files': results, 'total_pages': total_pages, 'file_count': len(results)})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Failed to convert the PDF. The file may be corrupted.'}), 500
 
 
 @app.route('/api/images-to-pdf', methods=['POST'])
@@ -107,8 +107,8 @@ def images_to_pdf():
         )
         buf.seek(0)
         return send_file(buf, mimetype='application/pdf', as_attachment=True, download_name='output.pdf')
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Failed to build the PDF. One of the images may be corrupted.'}), 500
 
 
 if __name__ == '__main__':

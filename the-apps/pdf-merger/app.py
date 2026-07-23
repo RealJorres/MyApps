@@ -34,8 +34,8 @@ def merge():
         merged.close()
         buf.seek(0)
         return send_file(buf, mimetype='application/pdf', as_attachment=True, download_name='merged.pdf')
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Failed to merge the PDFs. One of the files may be corrupted.'}), 500
 
 if __name__ == '__main__':
     app.run(debug=False, port=5035)

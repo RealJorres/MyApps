@@ -43,6 +43,7 @@ class ApiRateLimitMiddleware:
         '/api/extract':    (10, 60),   # Colour-palette extraction
         '/api/pdf-to-images': (5, 60), # PDF → images
         '/api/images-to-pdf': (5, 60), # Images → PDF
+        '/api/load':       (15, 60),   # CSV/Excel parse (pandas)
         # Outbound network requests ────────────────────────────────────────────
         '/api/lookup':     (15, 60),   # DNS / IP / Whois
         '/api/check':      (10, 60),   # SSL certificate check

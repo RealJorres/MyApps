@@ -380,6 +380,32 @@ def test_pdf_to_word_rejects_non_pdf(client):
     assert r.status_code == 400 and 'error' in r.get_json()
 
 
+# ── CSV Viewer (file-upload parsing) ──────────────────────────────────────────
+def test_csv_viewer_loads_valid_csv(client):
+    r = _post_file(client, '/csv-viewer/api/load',
+                   b'name,age\nAlice,30\nBob,25\n', 'people.csv')
+    assert r.status_code == 200
+    d = r.get_json()
+    assert d['columns'] == ['name', 'age']
+    assert d['rows'] == [['Alice', '30'], ['Bob', '25']]
+    assert d['total'] == 2 and d['truncated'] is False
+
+
+def test_csv_viewer_rejects_binary_garbage(client):
+    """Binary bytes with a .csv extension must 400, not silently render an
+    empty/garbage table (audit finding, 2026-07-20)."""
+    r = _post_file(client, '/csv-viewer/api/load',
+                   b'\x00\xff\x00\xffPK\x03\x04' + os.urandom(64), 'data.csv')
+    assert r.status_code == 400
+    err = r.get_json()['error']
+    assert 'Traceback' not in err and 'pandas' not in err
+
+
+def test_csv_viewer_empty_file_is_400_not_500(client):
+    r = _post_file(client, '/csv-viewer/api/load', b'', 'empty.csv')
+    assert r.status_code == 400 and 'error' in r.get_json()
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Layer 3 — Network-dependent tools (hermetic by default; opt-in via env)
 # ══════════════════════════════════════════════════════════════════════════════

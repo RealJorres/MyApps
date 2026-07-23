@@ -42,8 +42,8 @@ def encode_file():
     try:
         result = base64.b64encode(f.read()).decode('ascii')
         return jsonify({'result': result, 'filename': f.filename})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Could not encode this file. Please try again.'}), 500
 
 @app.route('/api/decode-file', methods=['POST'])
 def decode_file():
