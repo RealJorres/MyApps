@@ -16,7 +16,6 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OCR Tool">
 <meta name="twitter:description" content="Extract text from images using Optical Character Recognition (OCR) directly in your browser. Free, no sign-up, no tracking.">
 <title>OCR Tool | Jorres Apps</title>
@@ -240,7 +239,11 @@ document.getElementById('extractBtn').addEventListener('click', async () => {
     progressWrap.style.display = 'none';
     progressLabel.textContent = '';
   } catch (err) {
-    statusMsg.innerHTML = `<div class="status error">${err.message}</div>`;
+    statusMsg.innerHTML = '';
+    const errBox = document.createElement('div');
+    errBox.className = 'status error';
+    errBox.textContent = err.message;
+    statusMsg.appendChild(errBox);
     progressWrap.style.display = 'none';
     progressLabel.textContent = '';
   } finally {
@@ -274,7 +277,7 @@ function clearAll() {
   document.getElementById('statusMsg').innerHTML = '';
 }
 </script>
-<script src="/static/footer.js?v=9"></script>
+<script src="/static/footer.js?v=10"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>

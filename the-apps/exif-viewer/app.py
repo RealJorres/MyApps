@@ -25,15 +25,18 @@ def exif():
         if raw:
             for tag_id, value in raw.items():
                 tag = ExifTags.TAGS.get(tag_id, str(tag_id))
-                if isinstance(value, bytes):
-                    try: value = value.decode('utf-8', errors='replace')
-                    except: value = repr(value)
-                elif isinstance(value, tuple) and len(value) == 2:
-                    value = f"{value[0]}/{value[1]} ({value[0]/value[1]:.4f})" if value[1] != 0 else str(value)
-                exif_data[tag] = str(value)
+                try:
+                    if isinstance(value, bytes):
+                        value = value.decode('utf-8', errors='replace')
+                    elif isinstance(value, tuple) and len(value) == 2:
+                        value = f"{value[0]}/{value[1]} ({value[0]/value[1]:.4f})" if value[1] != 0 else str(value)
+                    exif_data[tag] = str(value)
+                except Exception:
+                    # One unparseable tag must not sink the whole response
+                    exif_data[tag] = repr(value)
         return jsonify({'info': info, 'exif': exif_data, 'has_exif': bool(exif_data)})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Could not read metadata from this image. Please try a different file.'}), 500
 
 if __name__ == '__main__':
     app.run(debug=False, port=5022)

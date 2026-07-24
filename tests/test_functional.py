@@ -161,6 +161,8 @@ def test_app_contract(client, app_id):
     # Regression guards (project standards)
     assert '--primary' not in text, f'{app_id}: leftover --primary token (use --brand)'
     assert 0x08 not in raw, f'{app_id}: U+0008 backspace byte in served HTML'
+    assert text.count('name="twitter:card"') <= 1, \
+        f'{app_id}: duplicate twitter:card meta'
 
 
 _JSONLD_RE = re.compile(
@@ -404,6 +406,163 @@ def test_csv_viewer_rejects_binary_garbage(client):
 def test_csv_viewer_empty_file_is_400_not_500(client):
     r = _post_file(client, '/csv-viewer/api/load', b'', 'empty.csv')
     assert r.status_code == 400 and 'error' in r.get_json()
+
+
+# ── Audit round 2 fixes (apps 5–10, fixed 2026-07-24) ─────────────────────────
+_XFF = [0]
+
+
+def _fresh_ip():
+    """Unique X-Forwarded-For per request so probes of rate-limited endpoints
+    (e.g. /api/generate at 10/min) each get their own limiter bucket."""
+    _XFF[0] += 1
+    return {'X-Forwarded-For': f'10.99.{_XFF[0] % 250}.{_XFF[0] // 250 + 1}'}
+
+
+def _post_json_ip(client, path, payload):
+    r = client.post(path, data=json.dumps(payload),
+                    content_type='application/json', headers=_fresh_ip())
+    try:
+        return r.status_code, r.get_json(), r
+    except Exception:
+        return r.status_code, None, r
+
+
+def _pdf_text(body):
+    import fitz
+    doc = fitz.open(stream=body, filetype='pdf')
+    text = '\n'.join(p.get_text() for p in doc)
+    doc.close()
+    return text
+
+
+def test_invoice_generator_math_and_pdf(client):
+    s, _, r = _post_json_ip(client, '/invoice-generator/api/generate', {
+        'business_name': 'Acme Corp', 'invoice_number': 'INV-42',
+        'currency': '$', 'tax_rate': 10,
+        'items': [{'description': 'Design', 'qty': 2, 'price': 100},
+                  {'description': 'Hosting', 'qty': 3, 'price': 50}],
+    })
+    assert s == 200
+    text = _pdf_text(r.get_data())
+    assert '$350.00' in text and '$35.00' in text and '$385.00' in text
+
+
+def test_invoice_generator_angle_brackets_survive(client):
+    """Names like 'Widgets <LLC>' must render literally in the PDF, not be
+    swallowed as ReportLab markup (audit Major, 2026-07-24)."""
+    s, _, r = _post_json_ip(client, '/invoice-generator/api/generate', {
+        'business_name': 'Widgets <LLC> & Sons',
+        'notes': 'Pay < 30 days & keep this <copy>',
+        'items': [],
+    })
+    assert s == 200
+    text = _pdf_text(r.get_data())
+    assert 'Widgets <LLC> & Sons' in text
+    assert '<copy>' in text
+
+
+def test_invoice_generator_bad_inputs_are_400(client):
+    for payload in [
+        {'items': 'not-a-list'},
+        {'items': ['a', 'b']},
+        {'items': [], 'color': 'not-a-color'},
+        {'items': [{'d': 'x'}] * 501},
+    ]:
+        s, d, _ = _post_json_ip(client, '/invoice-generator/api/generate', payload)
+        assert s == 400 and 'error' in d, f'{payload!r} -> {s}'
+
+
+def test_invoice_generator_coerces_junk_numbers(client):
+    """Non-numeric qty/price/tax coerce to 0 (matching the live preview)
+    instead of blowing up with a 500."""
+    s, _, r = _post_json_ip(client, '/invoice-generator/api/generate', {
+        'items': [{'description': 'x', 'qty': 'abc', 'price': None},
+                  {'description': 'y', 'qty': 2, 'price': 5}],
+        'tax_rate': 'abc',
+    })
+    assert s == 200
+    assert '$10.00' in _pdf_text(r.get_data())
+
+
+def test_invoice_generator_header_injection_sanitized(client):
+    s, _, r = _post_json_ip(client, '/invoice-generator/api/generate', {
+        'invoice_number': 'a\r\nX-Evil: 1', 'items': [],
+    })
+    assert s == 200
+    assert '\n' not in r.headers.get('Content-Disposition', '')
+
+
+def _post_form_ip(client, path, fields):
+    return client.post(path, data=fields, content_type='multipart/form-data',
+                       headers=_fresh_ip())
+
+
+def _png(w=64, h=48):
+    from PIL import Image
+    buf = io.BytesIO()
+    Image.new('RGB', (w, h), (200, 30, 30)).save(buf, format='PNG')
+    return buf.getvalue()
+
+
+def test_image_tools_resize_target_capped(client):
+    """Unbounded targets used to allocate multi-GB images and OOM the worker
+    (audit Major, 2026-07-24)."""
+    r = _post_form_ip(client, '/image-tools/api/process',
+                      {'file': (io.BytesIO(_png()), 'a.png'), 'op': 'resize',
+                       'resize_mode': 'custom', 'width': '30000', 'height': '30000'})
+    assert r.status_code == 400 and 'too large' in r.get_json()['error'].lower()
+
+
+def test_image_tools_bad_params_are_400(client):
+    for fields in [
+        {'quality': 'abc'},
+        {'op': 'resize', 'resize_mode': 'custom', 'width': 'abc'},
+        {'format': 'XYZ'},
+        {'op': 'resize', 'resize_mode': 'percent', 'percent': 'abc'},
+    ]:
+        fields = dict(fields, file=(io.BytesIO(_png()), 'a.png'))
+        r = _post_form_ip(client, '/image-tools/api/process', fields)
+        assert r.status_code == 400 and 'error' in r.get_json(), f'{fields} -> {r.status_code}'
+
+
+def test_image_tools_resize_still_works(client):
+    from PIL import Image
+    r = _post_form_ip(client, '/image-tools/api/process',
+                      {'file': (io.BytesIO(_png(64, 48)), 'a.png'), 'op': 'resize',
+                       'resize_mode': 'percent', 'percent': '50', 'format': 'JPEG'})
+    assert r.status_code == 200
+    out = Image.open(io.BytesIO(r.get_data()))
+    assert out.format == 'JPEG' and out.size == (32, 24)
+
+
+def test_watermark_tool_bad_params_are_400(client):
+    for fields in [{'opacity': 'abc'}, {'size': 'abc'}, {'color': 'red'}, {'format': 'XYZ'}]:
+        fields = dict(fields, image=(io.BytesIO(_png()), 'a.png'))
+        r = _post_form_ip(client, '/watermark-tool/api/watermark', fields)
+        assert r.status_code == 400 and 'error' in r.get_json(), f'{fields} -> {r.status_code}'
+
+
+def test_watermark_tool_accepts_3_digit_hex(client):
+    from PIL import Image
+    r = _post_form_ip(client, '/watermark-tool/api/watermark',
+                      {'image': (io.BytesIO(_png(400, 300)), 'a.png'),
+                       'text': 'SAMPLE', 'color': '#f00'})
+    assert r.status_code == 200
+    out = Image.open(io.BytesIO(r.get_data()))
+    assert out.size == (400, 300)
+
+
+def test_qr_generator_friendly_400s(client):
+    s, d, _ = _post_json_ip(client, '/qr-generator/api/generate',
+                            {'text': 'x', 'size': 'abc'})
+    assert s == 400 and 'number' in d['error']
+    s, d, _ = _post_json_ip(client, '/qr-generator/api/generate',
+                            {'text': 'A' * 5000})
+    assert s == 400 and 'too long' in d['error']
+    s, d, _ = _post_json_ip(client, '/qr-generator/api/generate',
+                            {'text': 'x', 'fg': 'notacolor'})
+    assert s == 400 and 'invalid literal' not in d['error']
 
 
 # ══════════════════════════════════════════════════════════════════════════════

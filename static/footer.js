@@ -377,4 +377,26 @@
     }
     btn.disabled = false; btn.textContent = 'Send Report';
   };
+
+  // ── Drop-zone keyboard accessibility (v10, platform-wide) ─────────────────
+  // Most file apps use a click-only <div class="drop-zone"> wrapping a hidden,
+  // unlabeled <input type=file>, which keyboard and screen-reader users cannot
+  // reach. Make every drop zone focusable and operable with Enter/Space, and
+  // give bare file inputs an accessible name.
+  document.querySelectorAll('.drop-zone').forEach(function (zone) {
+    if (!zone.hasAttribute('tabindex')) zone.tabIndex = 0;
+    if (!zone.getAttribute('role')) zone.setAttribute('role', 'button');
+    if (!zone.getAttribute('aria-label')) {
+      var hint = (zone.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 90);
+      zone.setAttribute('aria-label', hint || 'Choose a file');
+    }
+    zone.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); zone.click(); }
+    });
+  });
+  document.querySelectorAll('input[type="file"]').forEach(function (inp) {
+    if (!inp.getAttribute('aria-label') && !(inp.labels && inp.labels.length)) {
+      inp.setAttribute('aria-label', 'Choose a file');
+    }
+  });
 })();

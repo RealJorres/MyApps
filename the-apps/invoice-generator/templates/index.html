@@ -6,20 +6,19 @@
 <link rel="stylesheet" href="/static/base.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://jorresapps.onrender.com/invoice-generator/">
-<meta name="description" content="Create professional invoices and download them as PDF. Free, no sign-up, no watermarks.">
+<meta name="description" content="Create professional invoices and download them as PDF. Free, no sign-up, no tracking.">
 <meta name="keywords" content="invoice generator, free invoice maker, PDF invoice, billing tool">
 <meta name="author" content="Jorres Apps">
-<meta property="og:title" content="Invoice Generator">
-<meta property="og:description" content="Create professional invoices and download them as PDF. Free, no sign-up, no watermarks.">
+<meta property="og:title" content="Invoice Manager">
+<meta property="og:description" content="Create professional invoices and download them as PDF. Free, no sign-up, no tracking.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jorresapps.onrender.com/static/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Invoice Generator">
-<meta name="twitter:description" content="Create professional invoices and download them as PDF. Free, no sign-up, no watermarks.">
+<meta name="twitter:title" content="Invoice Manager">
+<meta name="twitter:description" content="Create professional invoices and download them as PDF. Free, no sign-up, no tracking.">
 <title>Invoice Manager | Jorres Apps</title>
 <style>
 :root {
@@ -39,6 +38,7 @@ input[type=text], input[type=number], input[type=email], input[type=date], input
 input:focus, textarea:focus, select:focus { border-color: var(--brand); }
 textarea { resize: vertical; min-height: 80px; }
 .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+.layout > * { min-width: 0; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
 .form-grid.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
@@ -226,7 +226,7 @@ textarea { resize: vertical; min-height: 80px; }
             <label for="accent_color_pick">Accent Color</label>
             <div class="color-row">
               <input type="color" id="accent_color_pick" value="#0f766e" oninput="syncColor(this.value)">
-              <input type="text" id="accent_color" value="#0f766e" placeholder="#0f766e" oninput="syncColorText(this.value)">
+              <input type="text" id="accent_color" value="#0f766e" placeholder="#0f766e" aria-label="Accent color hex value" oninput="syncColorText(this.value)">
             </div>
           </div>
         </div>
@@ -384,8 +384,7 @@ textarea { resize: vertical; min-height: 80px; }
 .inv-badge{display:inline-block;padding:.18rem .6rem;border-radius:2rem;font-size:.72rem;font-weight:700;cursor:pointer}
 .inv-badge-paid{background:#d1fae5;color:#065f46}
 .inv-badge-unpaid{background:#fef3c7;color:#92400e}
-.inv-badge-overdue{background:#fee2e2;color:#991b1b  .stats { grid-template-columns: 1fr 1fr !important; }
-}
+.inv-badge-overdue{background:#fee2e2;color:#991b1b}
 </style>
 
 <script>
@@ -418,11 +417,11 @@ function addItem(desc='', qty=1, price=0) {
   const tr = document.createElement('tr');
   tr.id = 'item-row-' + id;
   tr.innerHTML = `
-    <td><input type="text" value="${desc}" placeholder="Service description" oninput="calcRow(${id});updatePreview()"></td>
+    <td><input type="text" value="${desc}" placeholder="Service description" aria-label="Item description" oninput="calcRow(${id});updatePreview()"></td>
     <td><input type="number" value="${qty}" min="0" step="0.01" aria-label="Quantity" oninput="calcRow(${id});updatePreview()"></td>
     <td><input type="number" value="${price}" min="0" step="0.01" aria-label="Unit price" oninput="calcRow(${id});updatePreview()"></td>
     <td class="total-cell" id="row-total-${id}">${getCurrency()}0.00</td>
-    <td><button class="btn btn-danger btn-sm" onclick="removeItem(${id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button></td>
+    <td><button class="btn btn-danger btn-sm" onclick="removeItem(${id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg><span class="sr-only">Remove</span></button></td>
   `;
   tbody.appendChild(tr);
   calcRow(id);
@@ -586,6 +585,11 @@ function setMobInvTab(tab) {
     if (window.innerWidth >= 768) {
       if (form)    form.style.display    = '';
       if (preview) preview.style.display = '';
+    } else {
+      // Re-apply the mobile form/preview state so both columns are never
+      // visible at once on a small screen (a wide preview forces overflow)
+      var btnP = document.getElementById('mobBtnPreview');
+      setMobInvTab(btnP && btnP.classList.contains('active') ? 'preview' : 'form');
     }
   });
 })();
@@ -704,7 +708,7 @@ function renderInvList(){
       <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border);color:${ov?'#dc2626':'inherit'}">${fmtDt(inv.due)}</td>
       <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)"><span class="inv-badge ${bc}" onclick="toggleInvStatus(${inv.id})" title="Click to cycle status">${bl}</span></td>
       <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border);color:var(--muted);font-size:.8rem">${escHtml(inv.notes||'—')}</td>
-      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)"><button class="btn btn-danger btn-sm" onclick="deleteTrackedInvoice(${inv.id})"><span aria-hidden="true">&#x2715;</span><span class="sr-only">Remove</span></button></td>
+      <td style="padding:.6rem .75rem;border-bottom:1px solid var(--border)"><button class="btn btn-danger btn-sm" onclick="deleteTrackedInvoice(${inv.id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg><span class="sr-only">Remove</span></button></td>
     </tr>`;
   }).join('');
 }
@@ -717,8 +721,18 @@ function renderInvTracker(){
   document.getElementById('invDue').value = nd.toISOString().split('T')[0];
   renderInvStats(); renderInvList();
 }
+
+// Sortable column headers must be keyboard-operable
+document.querySelectorAll('#invPanelTrack th[onclick]').forEach(th => {
+  th.tabIndex = 0;
+  th.setAttribute('role', 'button');
+  th.setAttribute('aria-label', 'Sort by ' + th.textContent.trim());
+  th.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); th.click(); }
+  });
+});
 </script>
-<script src="/static/footer.js?v=9"></script>
+<script src="/static/footer.js?v=10"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>

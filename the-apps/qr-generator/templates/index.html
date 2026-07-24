@@ -17,7 +17,6 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="QR Code Generator">
 <meta name="twitter:description" content="Generate QR codes for URLs, text, contact info, and more. Download as high-resolution PNG instantly. Free, no sign-up, no tracking.">
 <title>QR Code Generator | Jorres Apps</title>
@@ -143,7 +142,7 @@ textarea#textInput { min-height: 100px; resize: vertical; }
         </select>
       </div>
       <div class="field">
-        <label>Box Size — <span id="sizeVal">10</span></label>
+        <label for="sizeSlider">Box Size — <span id="sizeVal">10</span></label>
         <div class="slider-row">
           <input type="range" id="sizeSlider" min="1" max="20" value="10" oninput="document.getElementById('sizeVal').textContent=this.value">
         </div>
@@ -269,7 +268,7 @@ function copyQR() {
   });
 }
 </script>
-<script src="/static/footer.js?v=9"></script>
+<script src="/static/footer.js?v=10"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>

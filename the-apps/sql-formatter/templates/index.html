@@ -17,7 +17,6 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jorresapps.onrender.com/static/preview.png">
-<meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQL Formatter">
 <meta name="twitter:description" content="Format and beautify SQL queries for improved readability. Clean up messy SQL instantly. Free, no sign-up, no tracking.">
 <title>SQL Formatter | Jorres Apps</title>
@@ -223,7 +222,7 @@ function hideError() { document.getElementById('errorMsg').style.display = 'none
 document.getElementById('sqlInput').value = `SELECT u.id, u.name, u.email, COUNT(o.id) as order_count, SUM(o.total) as total_spent FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.active = 1 AND u.created_at > '2024-01-01' GROUP BY u.id, u.name, u.email HAVING order_count > 5 ORDER BY total_spent DESC LIMIT 10;`;
 updateLineCounts();
 </script>
-<script src="/static/footer.js?v=9"></script>
+<script src="/static/footer.js?v=10"></script>
 
 <script src="/static/app-nav.js?v=3"></script>
 </body>
